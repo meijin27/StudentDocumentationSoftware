@@ -47,7 +47,7 @@
                     </div>
                 </c:if>                
                 <div class="text-center input-field">
-                    <a href="../../src/main/java/Hello" class="d-block mb-3">新規登録はこちら</a>
+                    <a href="/StudentDocumentationSoftware/login/hello" class="d-block mb-3">新規登録はこちら</a>
                     <a href="CartRemove.action?id=${item.product.id}">パスワードを忘れた方はこちら</a>
                 </div>
             </form>
