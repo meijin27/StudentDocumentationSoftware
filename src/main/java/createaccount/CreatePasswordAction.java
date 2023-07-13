@@ -10,6 +10,7 @@ import tool.Action;
 
 public class CreatePasswordAction extends Action {
 
+	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -29,7 +30,7 @@ public class CreatePasswordAction extends Action {
 			// もしパスワード形式が適切ならばアカウント作成成功画面に遷移
 
 			if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password1)) {
-				return "create.jsp";
+				return "studenttype.jsp";
 			} else {
 				request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
 				return "createpassword.jsp";

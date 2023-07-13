@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
+<%@include file="createmenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
@@ -43,9 +44,6 @@
                         ${accountError}
                     </div>
                 </c:if>                
-                <div class="text-center input-field">
-                    <a href="../login/login-in.jsp" class="d-block mb-3">ログイン画面に戻る場合はこちら</a>
-                </div>
             </form>
         </div>
     </div>

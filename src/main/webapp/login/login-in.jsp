@@ -22,8 +22,8 @@
     }
     /* New */
     .input-field {
-        width: 100%;  
-        max-width: 500px;  /* 最大幅も500pxに */
+        width: 400px;  
+        max-width: 700px;  /* 最大幅も500pxに */
     }
 </style>
 

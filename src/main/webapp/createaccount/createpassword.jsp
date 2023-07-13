@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
+<%@include file="createmenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
@@ -22,7 +23,7 @@
     }
     /* New */
     .input-field {
-        width: 100%;  
+        width: 620px;  
         max-width: 700px;  /* 最大幅も700pxに */
     }
 
@@ -50,9 +51,6 @@
 				    <a href="createaccount.jsp" class="btn btn-secondary md-5 mr-5">戻る</a> <!-- Button changed to link -->
 				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
 				</div>      
-                <div class="text-center input-field">
-                    <a href="../login/login-in.jsp" class="d-block mb-3">ログイン画面に戻る場合はこちら</a>
-                </div>
             </form>
         </div>
     </div>
