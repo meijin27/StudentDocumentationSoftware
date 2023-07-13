@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style>
     html, body {
@@ -21,8 +22,8 @@
     }
     /* New */
     .input-field {
-        width: 100%;
-        max-width: 400px;  /* Adjust as needed */
+        width: 100%;  
+        max-width: 500px;  /* 最大幅も500pxに */
     }
 </style>
 
@@ -43,11 +44,11 @@
                 </div>
                 <c:if test="${not empty loginError}">
                     <div class="alert alert-danger text-center input-field" role="alert">
-                        ログイン名またはパスワードが違います
+                        ${loginError }
                     </div>
                 </c:if>                
                 <div class="text-center input-field">
-                    <a href="/StudentDocumentationSoftware/login/hello" class="d-block mb-3">新規登録はこちら</a>
+                    <a href="/StudentDocumentationSoftware/login/createaccount" class="d-block mb-3">新規登録はこちら</a>
                     <a href="CartRemove.action?id=${item.product.id}">パスワードを忘れた方はこちら</a>
                 </div>
             </form>
@@ -56,3 +57,10 @@
 </div>
 
 <%@include file="../footer.html" %>
+
+<div class="form-group text-center input-field">  <!-- 新しく追加したdiv -->
+    <c:if test="${not empty loginError}">
+        <div class="alert alert-danger text-center" role="alert">  <!-- input-fieldを削除 -->
+            ログイン名またはパスワードが違います
+        </div>
+    </c:if>                
