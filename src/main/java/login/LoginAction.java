@@ -30,7 +30,7 @@ public class LoginAction extends Action {
 				return "login-in.jsp";
 			}
 		}
-		request.setAttribute("loginError", "ログイン名またはパスワードの入力は必須です");
+		request.setAttribute("loginError", "ログイン名およびパスワードの入力は必須です");
 		return "login-in.jsp";
 	}
 }

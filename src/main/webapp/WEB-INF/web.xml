@@ -6,14 +6,5 @@
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
 
-    <servlet>
-        <servlet-name>createaccount</servlet-name>
-        <servlet-class>login.CreateAccount</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>createaccount</servlet-name>
-        <url-pattern>/login/createaccount</url-pattern>
-    </servlet-mapping>
-
 
 </web-app>

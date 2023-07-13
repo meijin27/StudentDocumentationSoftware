@@ -30,26 +30,21 @@
 <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
         <div class="col-md-6">
-            <form class="center-form" action="Login.action" method="post">
+            <form class="center-form" action="CreateAccount.action" method="post">
                 <div class="form-group input-field">
-                    <label for="login">ログイン名</label>
-                    <input type="text" id="login" name="login" class="form-control">
-                </div>
-                <div class="form-group input-field">
-                    <label for="password">パスワード</label>
-                    <input type="password" id="password" name="password" class="form-control">
+                    <label for="account">新規作成するアカウント名</label>
+                    <input type="text" id="account" name="account" class="form-control">
                 </div>
                 <div class="form-group text-center input-field">
-                    <input type="submit" value="ログイン" class="btn btn-primary md-3"/>
+                    <input type="submit" value="次へ" class="btn btn-primary md-5"/>
                 </div>
-                <c:if test="${not empty loginError}">
+                <c:if test="${not empty accountError}">
                     <div class="alert alert-danger text-center input-field" role="alert">
-                        ${loginError }
+                        ${accountError}
                     </div>
                 </c:if>                
                 <div class="text-center input-field">
-                    <a href="../createaccount/createaccount.jsp" class="d-block mb-3">新規登録はこちら</a>
-                    <a href="CartRemove.action?id=${item.product.id}">パスワードを忘れた方はこちら</a>
+                    <a href="../login/login-in.jsp" class="d-block mb-3">ログイン画面に戻る場合はこちら</a>
                 </div>
             </form>
         </div>
