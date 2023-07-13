@@ -3,31 +3,6 @@
 <%@include file="createmenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<style>
-    html, body {
-        height: 100%;
-    }
-    .center-form {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .alert {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    /* New */
-    .input-field {
-        width: 100%;  
-        max-width: 500px;  /* 最大幅も500pxに */
-    }
-</style>
-
 <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
         <div class="col-md-6">

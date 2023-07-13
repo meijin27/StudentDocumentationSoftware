@@ -3,41 +3,6 @@
 <%@include file="createmenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<style>
-    html, body {
-        height: 100%;
-    }
-    .center-form {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
-    .alert {
-        /* white-space: nowrap; */ /* remove this line to allow text wrapping */
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    /* New */
-    .input-field {
-        width: 100%;  
-        max-width: 700px;  /* 最大幅も700pxに */
-    }
-    
-    .radio-option {
-    margin-left: 20px;
-	}
-
-    .radio-group {
-        width: 100%;
-        max-width: 700px;
-    }
-
-</style>
-
 <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
         <div class="col-md-6">
