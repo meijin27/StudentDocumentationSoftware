@@ -4,8 +4,8 @@
 
 <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
-        <div class="col-md-6">
-            <form class="center-form" action="Login.action" method="post">
+        <div class="col-md-6 center-form">
+            <form action="Login.action" method="post">
                 <div class="form-group input-field">
                     <label for="login">ログイン名</label>
                     <input type="text" id="login" name="login" class="form-control">
