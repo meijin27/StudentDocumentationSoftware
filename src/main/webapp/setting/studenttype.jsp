@@ -11,7 +11,6 @@
 				    <input class="radio-option" type="radio" name="type" value="一般学生" checked>一般学生
 				    <input class="radio-option" type="radio" name="type" value="留学生" checked>留学生       
 				    <input class="radio-option" type="radio" name="type" value="職業訓練生" checked>職業訓練生
-				    <a href="createpassword.jsp" class="btn btn-secondary md-5 mr-5">戻る</a> <!-- Button changed to link -->
 				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
 				</div>      
             </form>
