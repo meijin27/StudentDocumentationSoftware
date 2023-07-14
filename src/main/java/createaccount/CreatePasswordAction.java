@@ -58,10 +58,6 @@ public class CreatePasswordAction extends Action {
 			System.out.println(session.getAttribute("account"));
 			System.out.println(secretQuestion);
 			System.out.println(secretAnswer);
-			String salt = PasswordUtil.getNewSalt();
-			System.out.println(salt);
-			String hashedPassword = PasswordUtil.getSaltedHash(password, salt);
-			System.out.println(hashedPassword);
 
 			String account = (String) session.getAttribute("account");
 
@@ -70,7 +66,6 @@ public class CreatePasswordAction extends Action {
 
 			System.out.println(user.getAccount());
 			System.out.println(user.getPassword());
-			System.out.println(user.getSalt());
 			System.out.println(user.getSecretQuestion());
 			System.out.println(user.getSecretAnswer());
 			System.out.println(user.getEncryptedKey());

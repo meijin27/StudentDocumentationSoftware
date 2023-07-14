@@ -5,7 +5,6 @@ public class User implements java.io.Serializable {
 	private int id;
 	private String account;
 	private String password;
-	private String salt;
 	private String secretQuestion;
 	private String secretAnswer;
 	private String encryptedKey;
@@ -22,10 +21,6 @@ public class User implements java.io.Serializable {
 
 	public String getPassword() {
 		return password;
-	}
-
-	public String getSalt() {
-		return salt;
 	}
 
 	public String getSecretQuestion() {
@@ -54,10 +49,6 @@ public class User implements java.io.Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
 	}
 
 	public void setSecretQuestion(String secretQuestion) {
