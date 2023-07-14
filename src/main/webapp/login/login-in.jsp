@@ -21,7 +21,13 @@
                     <div class="alert alert-danger text-center input-field" role="alert">
                         ${loginError }
                     </div>
-                </c:if>                
+                </c:if>
+				<c:if test="${not empty sessionScope.otherError}">
+				    <div class="alert alert-danger text-center input-field" role="alert">
+				        ${sessionScope.otherError}
+				        <% session.removeAttribute("otherError"); %>
+				    </div>
+				</c:if>                
                 <div class="text-center input-field">
                     <a href="../createaccount/createaccount.jsp" class="d-block mb-3">新規登録はこちら</a>
                     <a href="CartRemove.action?id=${item.product.id}">パスワードを忘れた方はこちら</a>

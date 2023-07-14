@@ -1,5 +1,6 @@
 <%@page pageEncoding="UTF-8" %>
 
-<a href="../login/login-in.jsp">ログイン画面に戻る</a>
+<a href="../Logout">ログイン画面に戻る</a>
+
 
 <hr>

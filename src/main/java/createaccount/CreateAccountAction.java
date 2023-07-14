@@ -12,7 +12,6 @@ public class CreateAccountAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		HttpSession session = request.getSession();
-		request.removeAttribute("accountError");
 
 		String account = request.getParameter("account");
 
@@ -20,6 +19,10 @@ public class CreateAccountAction extends Action {
 
 			// もしアカウントがデータベースに登録されていなければパスワード入力画面に遷移
 			if (true) {
+
+				// Save the User object in request scope
+				session.setAttribute("account", account);
+
 				return "createpassword.jsp";
 			} else {
 				request.setAttribute("accountError", "すでに使用されているアカウント名です");

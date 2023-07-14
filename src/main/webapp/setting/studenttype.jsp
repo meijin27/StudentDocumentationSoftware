@@ -1,6 +1,5 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
-<%@include file="createmenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container h-100">
