@@ -3,35 +3,36 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import bean.User;
 
 public class UserDAO extends DAO {
 
-	public User search(String login, String password) throws Exception {
-		User User = null;
+	public User search(String login, String password) {
+		User user = null;
 
-		Connection con = getConnection();
+		try (Connection con = getConnection()) {
 
-		PreparedStatement st;
+			PreparedStatement st = con.prepareStatement(
+					"select * from User where login=? and password=?");
+			st.setString(1, login);
+			st.setString(2, password);
 
-		st = con.prepareStatement(
-				"select * from User where login=? and password=?");
-		st.setString(1, login);
-		st.setString(2, password);
-		ResultSet rs = st.executeQuery();
+			try (ResultSet rs = st.executeQuery()) {
 
-		while (rs.next()) {
-			User = new User();
-			User.setId(rs.getInt("id"));
-			User.setLogin(rs.getString("login"));
-			User.setPassword(rs.getString("password"));
-			User.setStudentType(rs.getString("student"));
+				while (rs.next()) {
+					user = new User();
+					user.setId(rs.getInt("id"));
+					user.setLogin(rs.getString("login"));
+					user.setPassword(rs.getString("password"));
+					user.setStudentType(rs.getString("student"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
-		st.close();
-		con.close();
-
-		return User;
+		return user;
 	}
 }

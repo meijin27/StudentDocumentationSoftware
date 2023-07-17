@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import bean.User;
 import tool.Action;
+import tool.CipherUtil;
 import tool.PasswordUtil;
 
 public class CreatePasswordAction extends Action {
@@ -63,7 +64,11 @@ public class CreatePasswordAction extends Action {
 			System.out.println(user.getEncryptedKey());
 			System.out.println("Iv");
 			System.out.println(user.getIv());
-
+			System.out.println("暗号化された文字列");
+			System.out.println(CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。"));
+			System.out.println("復号された文字列");
+			System.out.println(CipherUtil.decrypt(user.getEncryptionKey(), user.getIv(),
+					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
 			;
 
 			// Save the updated User object back into request scope

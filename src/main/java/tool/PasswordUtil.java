@@ -1,12 +1,7 @@
 package tool;
 
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -30,25 +25,6 @@ public class PasswordUtil {
 		byte[] key = new byte[MASTER_KEY_SIZE];
 		random.nextBytes(key);
 		return Base64.getEncoder().encodeToString(key);
-	}
-
-	// AESで暗号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
-	private static String encryptWithAES(String key, String iv, String value) {
-		try {
-			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
-
-			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(Base64.getDecoder().decode(iv));
-
-			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
-
-			byte[] encrypted = cipher.doFinal(value.getBytes());
-
-			return Base64.getEncoder().encodeToString(encrypted);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	// AESのブロックサイズ（128ビット、16バイト）に対応するランダムな初期化ベクトル（IV）を生成します。
@@ -86,23 +62,14 @@ public class PasswordUtil {
 		return BCrypt.checkpw(candidatePassword, hashedPassword);
 	}
 
+	// AESで暗号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
+	private static String encryptWithAES(String key, String iv, String value) {
+		return CipherUtil.encrypt(key, iv, value);
+	}
+
 	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
 	private static String decryptWithAES(String key, String iv, String encryptedValue) {
-		try {
-			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
-
-			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(Base64.getDecoder().decode(iv));
-
-			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
-			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
-
-			byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedValue));
-
-			return new String(decrypted, "UTF-8");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return CipherUtil.decrypt(key, iv, encryptedValue);
 	}
 
 	// 暗号化されたキーを復号化します。
