@@ -20,9 +20,6 @@ public class CreatePasswordAction extends Action {
 
 		String password = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
-		String secretQuestion = request.getParameter("secretQuestion");
-		String secretAnswer = request.getParameter("secretAnswer");
-		String secretAnswerCheck = request.getParameter("secretAnswerCheck");
 
 		// セッションの有効期限切れや直接パスワード入力ページにアクセスした場合はエラーとして処理
 		if (session.getAttribute("account") == null) {
@@ -41,12 +38,6 @@ public class CreatePasswordAction extends Action {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 		}
 
-		if (secretAnswer == null || secretAnswer.isEmpty()) {
-			request.setAttribute("secretAnswerError", "秘密の質問の答えの入力は必須です");
-		} else if (!secretAnswer.equals(secretAnswerCheck)) {
-			request.setAttribute("secretAnswerError", "秘密の質問の答えが一致しません。再度入力してください。");
-		}
-
 		if (request.getAttribute("passwordError") != null || request.getAttribute("secretAnswerError") != null) {
 			return "createpassword.jsp";
 		}
@@ -54,22 +45,25 @@ public class CreatePasswordAction extends Action {
 		// もしパスワード形式が適切ならばアカウント作成成功画面に遷移
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
 
-			System.out.println(password);
-			System.out.println(session.getAttribute("account"));
-			System.out.println(secretQuestion);
-			System.out.println(secretAnswer);
-
 			String account = (String) session.getAttribute("account");
 
 			User user = new User();
-			user = PasswordUtil.register(account, password, secretQuestion, secretAnswer);
+			user = PasswordUtil.register(account, password);
 
+			System.out.println("正常に動作していれば下記に諸々示される");
+			System.out.println("アカウント名");
 			System.out.println(user.getAccount());
+			System.out.println("パスワード");
 			System.out.println(user.getPassword());
-			System.out.println(user.getSecretQuestion());
-			System.out.println(user.getSecretAnswer());
+			System.out.println("マスターキー");
+			System.out.println(user.getEncryptionKey());
+			System.out.println("復号されたマスターキー");
+			System.out.println(PasswordUtil.getDecryptedKey(account, password, user.getIv(), user.getEncryptedKey()));
+			System.out.println("暗号化されたマスターキー");
 			System.out.println(user.getEncryptedKey());
+			System.out.println("Iv");
 			System.out.println(user.getIv());
+
 			;
 
 			// Save the updated User object back into request scope

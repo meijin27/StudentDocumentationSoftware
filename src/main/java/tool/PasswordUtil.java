@@ -19,14 +19,6 @@ public class PasswordUtil {
 	// AESのキーサイズを設定します。ここでは128bitを使用します。
 	private static final int MASTER_KEY_SIZE = 16;
 
-	// 新しいソルト（ランダムなバイト列）を生成します。このソルトはBase64でエンコードされた文字列として返されます。
-	public static String getNewSalt() {
-		SecureRandom random = new SecureRandom();
-		byte[] salt = new byte[MASTER_KEY_SIZE];
-		random.nextBytes(salt);
-		return Base64.getEncoder().encodeToString(salt);
-	}
-
 	// Bcryptを使用してパスワードをハッシュ化します。
 	public static String getHashedPassword(String password) {
 		return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -46,7 +38,7 @@ public class PasswordUtil {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
 
 			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-			IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes("UTF-8"));
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(Base64.getDecoder().decode(iv));
 
 			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
 			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec);
@@ -68,7 +60,7 @@ public class PasswordUtil {
 	}
 
 	// ユーザーの登録を行います。パスワードはソルトとペッパーを加えてハッシュ化し、秘密の答えは暗号化します。
-	public static User register(String account, String password, String secretQuestion, String secretAnswer) {
+	public static User register(String account, String password) {
 		// パスワードのハッシュ化
 		String hashedPassword = getHashedPassword(password);
 
@@ -77,15 +69,11 @@ public class PasswordUtil {
 		String iv = generateIV();
 		String encryptedKey = encryptWithAES(account + password, iv, encryptionKey);
 
-		// 秘密の答えの暗号化。暗号化キーとIVを鍵として使用します。
-		String encryptedSecretAnswer = encryptWithAES(encryptionKey, iv, secretAnswer);
-
 		// ユーザー情報の作成
 		User user = new User();
 		user.setAccount(account);
 		user.setPassword(hashedPassword);
-		user.setSecretQuestion(secretQuestion);
-		user.setSecretAnswer(encryptedSecretAnswer);
+		user.setEncryptionKey(encryptionKey);
 		user.setEncryptedKey(encryptedKey);
 		user.setIv(iv);
 		// データベースにユーザー情報を保存する処理は省略します。
@@ -97,4 +85,29 @@ public class PasswordUtil {
 	public static boolean isPasswordMatch(String candidatePassword, String hashedPassword) {
 		return BCrypt.checkpw(candidatePassword, hashedPassword);
 	}
+
+	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
+	private static String decryptWithAES(String key, String iv, String encryptedValue) {
+		try {
+			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
+
+			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+			IvParameterSpec ivParameterSpec = new IvParameterSpec(Base64.getDecoder().decode(iv));
+
+			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
+
+			byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedValue));
+
+			return new String(decrypted, "UTF-8");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// 暗号化されたキーを復号化します。
+	public static String getDecryptedKey(String account, String password, String iv, String encryptedKey) {
+		return decryptWithAES(account + password, iv, encryptedKey);
+	}
+
 }

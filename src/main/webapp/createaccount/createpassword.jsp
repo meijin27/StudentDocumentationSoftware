@@ -13,31 +13,12 @@
                     <input type="password" id="password" name="password" class="form-control">
                     <label for="passwordCheck">もう一度同じパスワードを入力してください</label>
                     <input type="password" id="passwordCheck" name="passwordCheck" class="form-control"> <!-- fixed type of input field -->
-                    <label for="secretQuestion">秘密の質問を選択してください。</label>
-                    <select name="secretQuestion">
-			            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
-			            <option value="ペットの名前は？">ペットの名前は？</option>
-			            <option value="卒業した小学校の名前は？">卒業した小学校の名前は？</option>
-			            <option value="母親の旧姓は？">母親の旧姓は？</option>
-			            <option value="初恋の人はだれ？">初恋の人はだれ？</option>
-   			            <option value="座右の銘はなに？">座右の銘はなに？</option>
-			            <option value="はじめて買った車は？">はじめて買った車は？</option>
-        			</select>
-                    <label for="secretAnswer">秘密の質問の答えを入力してください</label>
-                    <input type="password" id="secretAnswer" name="secretAnswer" class="form-control"> 
-                    <label for="secretAnswerCheck">もう一度同じ秘密の質問の答えを入力してください</label>
-                    <input type="password" id="secretAnswerCheck" name="secretAnswerCheck" class="form-control"> 
                 </div>
                 <c:if test="${not empty passwordError}">
                     <div class="alert alert-danger text-center input-field" role="alert">
                         ${passwordError}
                     </div>
                 </c:if>
-                 <c:if test="${not empty secretAnswerError}">
-                    <div class="alert alert-danger text-center input-field" role="alert">
-                        ${secretAnswerError}
-                    </div>
-                </c:if> 
 				<div class="form-group text-center input-field">
 				    <a href="createaccount.jsp" class="btn btn-secondary md-5 mr-5">戻る</a> <!-- Button changed to link -->
 				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->

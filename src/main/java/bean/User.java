@@ -10,6 +10,7 @@ public class User implements java.io.Serializable {
 	private String encryptedKey;
 	private String iv;
 	private String studenttype;
+	private String encryptionKey;
 
 	public int getId() {
 		return id;
@@ -29,6 +30,10 @@ public class User implements java.io.Serializable {
 
 	public String getSecretAnswer() {
 		return secretAnswer;
+	}
+
+	public String getEncryptionKey() {
+		return encryptionKey;
 	}
 
 	public String getEncryptedKey() {
@@ -57,6 +62,10 @@ public class User implements java.io.Serializable {
 
 	public void setSecretAnswer(String secretAnswer) {
 		this.secretAnswer = secretAnswer;
+	}
+
+	public void setEncryptionKey(String encryptionKey) {
+		this.encryptionKey = encryptionKey;
 	}
 
 	public void setEncryptedKey(String encryptedKey) {

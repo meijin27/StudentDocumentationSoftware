@@ -7,6 +7,8 @@
         <div class="col-md-6">
             <form class="center-form" action="StudentType.action" method="post">
 				<div class="form-group text-center input-field">
+                    <label for="account">新規作成するアカウント名</label>
+                    <input type="text" id="account" name="account" class="form-control">
 				    <p>ご自身の学生の種類を選択してください。</p>
 				    <input class="radio-option" type="radio" name="type" value="一般学生" checked>一般学生
 				    <input class="radio-option" type="radio" name="type" value="留学生" checked>留学生       
