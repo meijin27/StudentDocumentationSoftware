@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bean.User;
+import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.PasswordUtil;
@@ -70,6 +71,8 @@ public class CreatePasswordAction extends Action {
 			System.out.println(CipherUtil.decrypt(user.getEncryptionKey(), user.getIv(),
 					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
 			;
+			UserDAO dao = new UserDAO();
+			dao.insert(user);
 
 			// Save the updated User object back into request scope
 			request.setAttribute("accountName", session.getAttribute("account"));

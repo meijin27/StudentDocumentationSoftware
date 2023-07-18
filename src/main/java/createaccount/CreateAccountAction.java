@@ -4,10 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.User;
+import dao.UserDAO;
 import tool.Action;
 
 public class CreateAccountAction extends Action {
-
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -16,10 +17,11 @@ public class CreateAccountAction extends Action {
 		String account = request.getParameter("account");
 
 		if (account != null && !account.isEmpty()) {
+			UserDAO dao = new UserDAO();
+			User user = dao.search(account);
 
-			// もしアカウントがデータベースに登録されていなければパスワード入力画面に遷移
-			if (true) {
-
+			// もしアカウントがデータベースに登録されていなければエラーメッセージを表示
+			if (user == null) {
 				// Save the User object in request scope
 				session.setAttribute("account", account);
 
@@ -32,5 +34,4 @@ public class CreateAccountAction extends Action {
 		request.setAttribute("accountError", "アカウント名の入力は必須です");
 		return "createaccount.jsp";
 	}
-
 }
