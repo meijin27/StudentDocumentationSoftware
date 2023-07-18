@@ -8,6 +8,7 @@ public class User implements java.io.Serializable {
 	private String secretQuestion;
 	private String secretAnswer;
 	private String encryptedKey;
+	private String secondEncryptedKey;
 	private String iv;
 	private String studenttype;
 	private String encryptionKey;
@@ -34,6 +35,10 @@ public class User implements java.io.Serializable {
 
 	public String getEncryptionKey() {
 		return encryptionKey;
+	}
+
+	public String getSecondEncryptedKey() {
+		return secondEncryptedKey;
 	}
 
 	public String getEncryptedKey() {
@@ -74,6 +79,10 @@ public class User implements java.io.Serializable {
 
 	public void setEncryptedKey(String encryptedKey) {
 		this.encryptedKey = encryptedKey;
+	}
+
+	public void setSecondEncryptedKey(String secondEncryptedKey) {
+		this.secondEncryptedKey = secondEncryptedKey;
 	}
 
 	public void setIv(String iv) {

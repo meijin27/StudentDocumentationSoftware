@@ -16,25 +16,28 @@ public class LoginAction extends Action {
 
 		HttpSession session = request.getSession();
 
-		String login = request.getParameter("login");
+		String account = request.getParameter("account");
 		String password = request.getParameter("password");
 
-		if (login != null && !login.isEmpty() && password != null && !password.isEmpty()) {
+		if (account != null && !account.isEmpty() && password != null && !password.isEmpty()) {
 			// ログイン名とパスワードが両方とも入力されているときの処理
 			UserDAO dao = new UserDAO();
-			User user = dao.search(login);
-			int id = user.getId();
+			User user = dao.search(account);
 
 			if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
-
+				int id = user.getId();
 				dao.updateLastLogin(id);
 
-				String encryptionKey = CipherUtil.decrypt(login + password, user.getIv(), user.getEncryptedKey());
+				String encryptionKey = CipherUtil.decrypt(account + password, user.getIv(), user.getEncryptedKey());
 				String iv = user.getIv();
 				session.setAttribute("master_key", encryptionKey);
 				session.setAttribute("iv", iv);
 
-				return "login-succsess.jsp";
+				if (user.getSecondEncryptedKey() == null) {
+					return "../setting/firstsetting.jsp";
+				} else {
+					return "login-succsess.jsp";
+				}
 			} else {
 				request.setAttribute("loginError", "ログイン名またはパスワードが違います");
 				return "login-in.jsp";

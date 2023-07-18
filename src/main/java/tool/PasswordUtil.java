@@ -49,7 +49,6 @@ public class PasswordUtil {
 		User user = new User();
 		user.setAccount(account);
 		user.setPassword(hashedPassword);
-		user.setEncryptionKey(encryptionKey);
 		user.setEncryptedKey(encryptedKey);
 		user.setIv(iv);
 		// データベースにユーザー情報を保存する処理は省略します。

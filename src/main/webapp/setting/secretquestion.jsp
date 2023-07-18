@@ -16,6 +16,7 @@
 			            <option value="初恋の人はだれ？">初恋の人はだれ？</option>
    			            <option value="座右の銘はなに？">座右の銘はなに？</option>
 			            <option value="はじめて買った車は？">はじめて買った車は？</option>
+			            <option value="ご自由にご記載ください">ご自由にご記載ください</option>
         			</select>
                     <label for="secretAnswer">秘密の質問の答えを入力してください</label>
                     <input type="text" id="secretAnswer" name="secretAnswer" class="form-control"> 

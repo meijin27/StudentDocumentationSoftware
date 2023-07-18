@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import bean.User;
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.PasswordUtil;
 
 public class CreatePasswordAction extends Action {
@@ -57,20 +56,18 @@ public class CreatePasswordAction extends Action {
 			System.out.println(user.getAccount());
 			System.out.println("パスワード");
 			System.out.println(user.getPassword());
-			System.out.println("マスターキー");
-			System.out.println(user.getEncryptionKey());
 			System.out.println("復号されたマスターキー");
 			System.out.println(PasswordUtil.getDecryptedKey(account, password, user.getIv(), user.getEncryptedKey()));
 			System.out.println("暗号化されたマスターキー");
 			System.out.println(user.getEncryptedKey());
 			System.out.println("Iv");
 			System.out.println(user.getIv());
-			System.out.println("暗号化された文字列");
-			System.out.println(CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。"));
-			System.out.println("復号された文字列");
-			System.out.println(CipherUtil.decrypt(user.getEncryptionKey(), user.getIv(),
-					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
-			;
+			//			System.out.println("暗号化された文字列");
+			//			System.out.println(CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。"));
+			//			System.out.println("復号された文字列");
+			//			System.out.println(CipherUtil.decrypt(user.getEncryptionKey(), user.getIv(),
+			//					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
+
 			UserDAO dao = new UserDAO();
 			dao.accountInsert(user);
 

@@ -7,8 +7,8 @@
         <div class="col-md-6 center-form">
             <form action="Login.action" method="post">
                 <div class="form-group input-field">
-                    <label for="login">ログイン名</label>
-                    <input type="text" id="login" name="login" class="form-control">
+                    <label for="acount">アカウント名</label>
+                    <input type="text" id="account" name="account" class="form-control">
                 </div>
                 <div class="form-group input-field">
                     <label for="password">パスワード</label>
