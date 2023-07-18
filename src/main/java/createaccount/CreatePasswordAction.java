@@ -72,7 +72,7 @@ public class CreatePasswordAction extends Action {
 					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
 			;
 			UserDAO dao = new UserDAO();
-			dao.insert(user);
+			dao.accountInsert(user);
 
 			// Save the updated User object back into request scope
 			request.setAttribute("accountName", session.getAttribute("account"));

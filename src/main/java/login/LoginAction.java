@@ -23,8 +23,12 @@ public class LoginAction extends Action {
 			// ログイン名とパスワードが両方とも入力されているときの処理
 			UserDAO dao = new UserDAO();
 			User user = dao.search(login);
+			int id = user.getId();
 
 			if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
+
+				dao.updateLastLogin(id);
+
 				String encryptionKey = CipherUtil.decrypt(login + password, user.getIv(), user.getEncryptedKey());
 				String iv = user.getIv();
 				session.setAttribute("master_key", encryptionKey);

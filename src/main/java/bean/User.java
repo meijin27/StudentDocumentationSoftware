@@ -48,6 +48,10 @@ public class User implements java.io.Serializable {
 		return studenttype;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setAccount(String account) {
 		this.account = account;
 	}
