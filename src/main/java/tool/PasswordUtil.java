@@ -47,7 +47,7 @@ public class PasswordUtil {
 
 		// ユーザー情報の作成
 		User user = new User();
-		user.setAccount(account);
+		user.setAccount(CipherUtil.commonEncrypt(account));
 		user.setPassword(hashedPassword);
 		user.setEncryptedKey(encryptedKey);
 		user.setIv(iv);

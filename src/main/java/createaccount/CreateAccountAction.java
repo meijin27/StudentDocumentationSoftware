@@ -7,8 +7,10 @@ import javax.servlet.http.HttpSession;
 import bean.User;
 import dao.UserDAO;
 import tool.Action;
+import tool.CipherUtil;
 
 public class CreateAccountAction extends Action {
+	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -18,7 +20,8 @@ public class CreateAccountAction extends Action {
 
 		if (account != null && !account.isEmpty()) {
 			UserDAO dao = new UserDAO();
-			User user = dao.search(account);
+			String encryptedAccount = CipherUtil.commonEncrypt(account);
+			User user = dao.search(encryptedAccount);
 
 			// もしアカウントがデータベースに登録されていなければエラーメッセージを表示
 			if (user == null) {
@@ -27,7 +30,7 @@ public class CreateAccountAction extends Action {
 
 				return "createpassword.jsp";
 			} else {
-				request.setAttribute("accountError", "すでに使用されているアカウント名です");
+				request.setAttribute("accountError", "このアカウントは使用できません。");
 				return "createaccount.jsp";
 			}
 		}
