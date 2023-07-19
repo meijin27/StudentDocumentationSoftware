@@ -41,8 +41,13 @@ public class LoginAction extends Action {
 
 				if (user.getSecondEncryptedKey() == null) {
 					String contextPath = request.getContextPath();
+					response.sendRedirect(contextPath + "/setting/secret-setting.jsp");
+					return null;
+				} else if (user.getStudentType() == null) {
+					String contextPath = request.getContextPath();
 					response.sendRedirect(contextPath + "/setting/first-setting.jsp");
 					return null;
+
 				} else {
 					return "login-succsess.jsp";
 				}

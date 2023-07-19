@@ -27,6 +27,7 @@ public class UserDAO extends DAO {
 					user.setPassword(rs.getString("password"));
 					user.setEncryptedKey(rs.getString("master_key"));
 					user.setSecondEncryptedKey(rs.getString("second_master_key"));
+					user.setStudentType(rs.getString("studenttype"));
 					user.setIv(rs.getString("iv"));
 				}
 			}
