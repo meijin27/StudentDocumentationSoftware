@@ -35,6 +35,7 @@ public class LoginAction extends Action {
 				System.out.println("復号化されたマスターキー" + encryptionKey);
 				String encryptedKey = CipherUtil.commonEncrypt(encryptionKey);
 				System.out.println("共通暗号化されたマスターキー" + encryptedKey);
+				session.setAttribute("id", id);
 				session.setAttribute("master_key", encryptedKey);
 				session.setAttribute("iv", iv);
 

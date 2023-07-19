@@ -130,8 +130,8 @@
             </div>
 
             <!-- 送信ボタン -->
-            <div class="d-grid">
-				<button class="btn btn-primary" id="submitButton">登録</button>
+            <div class="text-center">
+				<button class="btn btn-primary" id="submitButton">確認画面に進む</button>
             </div>
         </form>
     </main>
