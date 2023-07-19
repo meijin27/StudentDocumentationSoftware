@@ -14,6 +14,15 @@ public class FirstSettingAction extends Action {
 
 		HttpSession session = request.getSession();
 
+		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
+		if (session.getAttribute("master_key") == null) {
+			// ログインページにリダイレクト
+			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath + "/login/login-in.jsp");
+			return null;
+		}
+
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
 		String studentType = request.getParameter("studentType");
@@ -25,20 +34,22 @@ public class FirstSettingAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("master_key") == null) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
-			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath + "/login/login-in.jsp");
-			return null;
-		}
+		session.setAttribute("lastName", lastName);
+		session.setAttribute("firstName", firstName);
+		session.setAttribute("studentType", studentType);
+		session.setAttribute("className", className);
+		session.setAttribute("studentNumber", studentNumber);
+		session.setAttribute("secretQuestion", secretQuestion);
+		session.setAttribute("secretAnswer", secretAnswer);
+		session.setAttribute("birthYear", birthYear);
+		session.setAttribute("birthMonth", birthMonth);
+		session.setAttribute("birthDay", birthDay);
 
 		// 学籍番号が数字にできない場合はエラーを返す
 		try {
 			int number = Integer.parseInt(studentNumber);
 		} catch (NumberFormatException e) {
-			request.setAttribute("studentNumberError", "学籍番号は数字で入力してください。再度入力してください。");
+			request.setAttribute("studentNumberError", "学籍番号は数字で入力してください。");
 		}
 
 		if (request.getParameter("agree") == null) {
@@ -46,13 +57,10 @@ public class FirstSettingAction extends Action {
 		}
 
 		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null) {
-			return "firstsetting.jsp";
+			return "first-setting.jsp";
 		}
 
-		// Save the updated User object back into request scope
-		request.setAttribute("accountName", session.getAttribute("account"));
-		session.removeAttribute("account");
-		return "createsuccess.jsp";
+		return "first-setting-confirmation.jsp";
 
 	}
 

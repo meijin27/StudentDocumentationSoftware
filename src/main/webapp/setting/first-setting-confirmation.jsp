@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
  <main class="container">
-        <h2 class="text-center p-5">初期設定</h2>
+        <h2 class="text-center p-5">入力内容確認</h2>
 
         <form action="FirstSetting.action" method="post">
             <div class="row">
@@ -58,12 +58,7 @@
                     <label class="form-label" for="">学籍番号</label>
                     <span class="text-danger">*</span>
                     <input class="form-control" type="studentNumber" name="studentNumber" placeholder="240001" required>
-                </div>
-                 <c:if test="${not empty studentNumberError}">
-                    <div class="alert alert-danger text-center input-field" role="alert">
-                        ${studentNumberError}
-                    </div>
-                </c:if>                                               
+                </div>                                           
                 <!-- 秘密の質問の答え -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="">秘密の質問の答えを入力してください</label>
@@ -121,7 +116,7 @@
             </div>
 
             <div class="form-check mb-3">
-            	<input class="form-check-input" id="agreeCheckbox" type="checkbox" name="aggree" value="1">
+            	<input class="form-check-input" id="agreeCheckbox" type="checkbox" name="agree" value="1">
                 <label class="form-check-label" for="">同意する</label>
             </div>
             <c:if test="${not empty agreeError}">
@@ -129,6 +124,11 @@
                    ${agreeError}
                </div>
            </c:if>       
+           <c:if test="${not empty studentNumberError}">
+              <div class="alert alert-danger text-center input-field" role="alert">
+                  ${studentNumberError}
+              </div>
+           </c:if>   
             <!-- 送信ボタン -->
             <div class="d-grid">
 				<button class="btn btn-primary" id="submitButton">登録</button>

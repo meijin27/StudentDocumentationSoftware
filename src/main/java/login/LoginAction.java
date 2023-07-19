@@ -39,7 +39,9 @@ public class LoginAction extends Action {
 				session.setAttribute("iv", iv);
 
 				if (user.getSecondEncryptedKey() == null) {
-					return "../setting/firstsetting.jsp";
+					String contextPath = request.getContextPath();
+					response.sendRedirect(contextPath + "/setting/first-setting.jsp");
+					return null;
 				} else {
 					return "login-succsess.jsp";
 				}
