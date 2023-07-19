@@ -33,13 +33,11 @@ public class LoginAction extends Action {
 				dao.updateLastLogin(id);
 				System.out.println("暗号化されたマスターキー" + user.getEncryptedKey());
 				String encryptionKey = CipherUtil.decrypt(account + password, user.getIv(), user.getEncryptedKey());
-				String iv = user.getIv();
 				System.out.println("復号化されたマスターキー" + encryptionKey);
 				String encryptedKey = CipherUtil.commonEncrypt(encryptionKey);
 				System.out.println("共通暗号化されたマスターキー" + encryptedKey);
 				session.setAttribute("id", id);
 				session.setAttribute("master_key", encryptedKey);
-				session.setAttribute("iv", iv);
 
 				if (user.getSecondEncryptedKey() == null) {
 					String contextPath = request.getContextPath();
