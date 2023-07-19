@@ -60,7 +60,7 @@ public class CipherUtil {
 		}
 	}
 
-	// 他のクラスからアクセス可能なencryptメソッド
+	// 他のクラスからアクセス可能なcommonencryptメソッド
 	public static String commonEncrypt(String value) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);
@@ -79,7 +79,7 @@ public class CipherUtil {
 		}
 	}
 
-	// 他のクラスからアクセス可能なdecryptメソッド
+	// 他のクラスからアクセス可能なcommondecryptメソッド
 	public static String commonDecrypt(String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);

@@ -23,16 +23,6 @@ html, body {
     max-width: 500px;  /* 最大幅も500pxに */
 }
 
-.radio-option {
-margin-left: 30px;
-}
-
-.radio-group {
-    width: 100%;
-    min-width: 500px;
-    max-width: 700px;
-}
-
 .btn-primary {
     border-color: rgb(24, 109, 126);
     background-color: rgb(24, 109, 126);

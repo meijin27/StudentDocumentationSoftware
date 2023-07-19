@@ -23,7 +23,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="">学生の種類</label>
                      <span class="text-danger">*</span> 
-                    <select name="studentType" class="form-control">
+                    <select name="studentType" class="form-control" required>
                         <option value="">--- 学生の種類 ---</option>
 			            <option value="一般学生">一般学生</option>
 			            <option value="留学生">留学生</option>
@@ -41,7 +41,7 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="">秘密の質問を選択してください。</label>
                     <span class="text-danger">*</span>                    
-                    <select name="secretQuestion" class="form-control">
+                    <select name="secretQuestion" class="form-control" required>
                         <option value="">--- 秘密の質問 ---</option>
 			            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
 			            <option value="ペットの名前は？">ペットの名前は？</option>
@@ -71,21 +71,57 @@
                     <input class="form-control" type="text"　name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
                 </div>                        			
 
-
-                <!-- 建物名・部屋番号 -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">建物名・部屋番号</label>
-                    <input class="form-control" type="text" name="building" placeholder="YSEマンション 101号室">
-                </div>
-
-            </div>
-
+                <!-- 生年月日 -->
+                <div class="col-md-2 mb-3">
+                    生年月日
+                    <span class="text-danger">*</span>                    
+				    <select name="birthYear" class="form-control" required>
+				        <option value="">--- 年 ---</option>
+				        <% 
+				        int currentYear = java.time.Year.now().getValue();
+				        for(int i=1960; i <= currentYear - 14; i++){ 
+				        %>
+				            <option value="<%= i %>"><%= i %></option>
+				        <% 
+				        } 
+				        %>
+				    </select>
+				</div>
+                <div class="col-md-2 mb-3">				
+                    <span class="text-danger">*</span>                        
+				    <select name="birthMonth" class="form-control" required>
+				        <option value="">--- 月 ---</option>
+				        <% 
+				        for(int i=1; i <= 12; i++){ 
+				        %>
+				            <option value="<%= i %>"><%= i %></option>
+				        <% 
+				        } 
+				        %>
+				    </select>
+				</div>
+                <div class="col-md-2 mb-3">
+                    <span class="text-danger">*</span>                 
+				    <select name="birthDay" class="form-control" required>
+				        <option value="">--- 日 ---</option>
+				        <% 
+				        for(int i=1; i <= 31; i++){ 
+				        %>
+				            <option value="<%= i %>"><%= i %></option>
+				        <% 
+				        } 
+				        %>
+				    </select>
+                </div>         
+             
+             </div>   
+                       
             <div class="alert alert-info">
                 ユーザ登録サービス利用規約・個人情報の取り扱いについて
             </div>
 
             <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" name="aggree" value="1">
+            	<input class="form-check-input" id="agreeCheckbox" type="checkbox" name="aggree" value="1">
                 <label class="form-check-label" for="">同意する</label>
             </div>
             <c:if test="${not empty agreeError}">
@@ -95,9 +131,9 @@
            </c:if>       
             <!-- 送信ボタン -->
             <div class="d-grid">
-                <button class="btn btn-primary">登録</button>
+				<button class="btn btn-primary" id="submitButton">登録</button>
             </div>
         </form>
     </main>
-    
+ <script src="../js/app.js"></script>   
 <%@include file="../footer.html" %>
