@@ -16,6 +16,8 @@ public class LoginAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		HttpSession session = request.getSession();
+		// セッションタイムアウト設定 (1時間)
+		session.setMaxInactiveInterval(3600);
 
 		String account = request.getParameter("account");
 		String password = request.getParameter("password");
