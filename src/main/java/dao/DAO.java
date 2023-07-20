@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DAO {
 
 	// DB接続用定数
-	private static final String DATABASE_NAME = "StudentDocumentationSoftware";
+	private static final String DATABASE_NAME = "student_documentation_software";
 	private static final String PROPATIES = "?characterEncoding=UTF-8&serverTimezone=Asia/Tokyo";
 	private static final String URL = "jdbc:mySQL://localhost/" + DATABASE_NAME + PROPATIES;
 

@@ -95,6 +95,27 @@ public class UserDAO extends DAO {
 		return ivRef.get();
 	}
 
+	public String getAccount(int id) {
+		AtomicReference<String> accountRef = new AtomicReference<>();
+		try {
+			executeSqlOperation(con -> {
+				try (PreparedStatement st = con.prepareStatement(
+						"select account from Users where id=?")) {
+					st.setInt(1, id);
+					try (ResultSet rs = st.executeQuery()) {
+						if (rs.next()) {
+							accountRef.set(rs.getString("account"));
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return accountRef.get();
+	}
+
 	public int accountInsert(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -154,7 +175,7 @@ public class UserDAO extends DAO {
 	public void addLoginLog(int userId) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"INSERT INTO login_log (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
+					"INSERT INTO login_logs (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
 				st.setInt(1, userId);
 				st.executeUpdate();
 			}

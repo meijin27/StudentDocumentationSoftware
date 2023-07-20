@@ -1,4 +1,4 @@
-package firstsetting;
+package firstSetting;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,34 +50,40 @@ public class FirstSettingConfirmationAction extends Action {
 		UserDAO dao = new UserDAO();
 		// セッションからIDの取り出し
 		int id = (int) session.getAttribute("id");
-		// セッションから暗号化したマスターキーの取り出し
-		String master_key = (String) session.getAttribute("master_key");
-		// セッションから暗号化したマスターキーの復号	
-		String encryptionKey = CipherUtil.commonDecrypt(master_key);
+		// データベースから暗号化されたアカウント名の取り出し
+		String encryptedAccount = dao.getAccount(id);
+		// 暗号化されたアカウント名の復号
+		String account = CipherUtil.commonDecrypt(encryptedAccount);
 		// データベースからivの取り出し
 		String iv = dao.getIv(id);
+		// セッションから暗号化したマスターキーの取り出し
+		String reencryptedMasterkey = (String) session.getAttribute("master_key");
+		// セッションから共通暗号キーで再暗号化したマスターキーの復号	
+		String encryptedMasterkey = CipherUtil.commonDecrypt(reencryptedMasterkey);
+		// セッションから暗号化したマスターキーの復号	
+		String masterKey = CipherUtil.decrypt(account + id, iv, encryptedMasterkey);
 
 		// 登録するデータの暗号化
-		String encryptionlastName = CipherUtil.encrypt(encryptionKey, iv, lastName);
-		String encryptionfirstName = CipherUtil.encrypt(encryptionKey, iv, firstName);
-		String encryptionstudentType = CipherUtil.encrypt(encryptionKey, iv, studentType);
-		String encryptionclassName = CipherUtil.encrypt(encryptionKey, iv, className);
-		String encryptionstudentNumber = CipherUtil.encrypt(encryptionKey, iv, studentNumber);
-		String encryptionbirthYear = CipherUtil.encrypt(encryptionKey, iv, birthYear);
-		String encryptionbirthMonth = CipherUtil.encrypt(encryptionKey, iv, birthMonth);
-		String encryptionbirthDay = CipherUtil.encrypt(encryptionKey, iv, birthDay);
+		String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
+		String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
+		String encryptedStudentType = CipherUtil.encrypt(masterKey, iv, studentType);
+		String encryptedClassName = CipherUtil.encrypt(masterKey, iv, className);
+		String encryptedStudentNumber = CipherUtil.encrypt(masterKey, iv, studentNumber);
+		String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
+		String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
+		String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
 
 		// ユーザー情報の作成
 		User user = new User();
 		user.setId(id);
-		user.setLastName(encryptionlastName);
-		user.setFirstName(encryptionfirstName);
-		user.setStudentType(encryptionstudentType);
-		user.setClassName(encryptionclassName);
-		user.setStudentNumber(encryptionstudentNumber);
-		user.setBirthYear(encryptionbirthYear);
-		user.setBirthMonth(encryptionbirthMonth);
-		user.setBirthDay(encryptionbirthDay);
+		user.setLastName(encryptedLastName);
+		user.setFirstName(encryptedFirstName);
+		user.setStudentType(encryptedStudentType);
+		user.setClassName(encryptedClassName);
+		user.setStudentNumber(encryptedStudentNumber);
+		user.setBirthYear(encryptedBirthYear);
+		user.setBirthMonth(encryptedBirthMonth);
+		user.setBirthDay(encryptedBirthDay);
 
 		// 初期設定のデータベースへの登録
 		dao.updateFirstSetting(user);

@@ -27,7 +27,7 @@ public class PasswordUtil {
 		return Base64.getEncoder().encodeToString(key);
 	}
 
-	// AESのブロックサイズ（128ビット、16バイト）に対応するランダムな初期化ベクトル（IV）を生成します。
+	// AESのブロックサイズ（128ビット、16バイト）に対応するランダムな初期化ベクトル（Initialization Vector：IV）を生成します。
 	private static String generateIV() {
 		SecureRandom random = new SecureRandom();
 		byte[] iv = new byte[16];
@@ -35,7 +35,7 @@ public class PasswordUtil {
 		return Base64.getEncoder().encodeToString(iv);
 	}
 
-	// ユーザーの登録を行います。パスワードはソルトとペッパーを加えてハッシュ化し、秘密の答えは暗号化します。
+	// ユーザーの登録を行います。
 	public static User register(String account, String password) {
 		// パスワードのハッシュ化
 		String hashedPassword = getHashedPassword(password);
@@ -65,11 +65,6 @@ public class PasswordUtil {
 	// AESで暗号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
 	private static String encryptWithAES(String key, String iv, String value) {
 		return CipherUtil.encrypt(key, iv, value);
-	}
-
-	// 暗号化されたキーを復号化します。
-	public static String getDecryptedKey(String account, String password, String iv, String encryptedKey) {
-		return decryptWithAES(account + password, iv, encryptedKey);
 	}
 
 	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。

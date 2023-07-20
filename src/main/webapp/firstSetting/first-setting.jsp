@@ -98,7 +98,12 @@
               <div class="alert alert-danger text-center input-field" role="alert">
                   ${studentNumberError}
               </div>
-           </c:if>                          
+           </c:if>            
+           <c:if test="${not empty birthDayError}">
+              <div class="alert alert-danger text-center input-field" role="alert">
+                  ${birthDayError}
+              </div>
+           </c:if>                
             <div class="alert alert-info">
                 ユーザ登録サービス利用規約・個人情報の取り扱いについて
             </div>

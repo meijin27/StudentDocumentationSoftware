@@ -1,4 +1,4 @@
-package firstsetting;
+package firstSetting;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,27 +36,32 @@ public class SecretSettingAction extends Action {
 			UserDAO dao = new UserDAO();
 			// セッションからIDの取り出し
 			int id = (int) session.getAttribute("id");
-			// 秘密の質問は共通暗号化キーで暗号化
-			String encryptionSecretQuestion = CipherUtil.commonEncrypt(secretQuestion);
+			// データベースから暗号化されたアカウント名の取り出し
+			String encryptedAccount = dao.getAccount(id);
+			// 暗号化されたアカウント名の復号
+			String account = CipherUtil.commonDecrypt(encryptedAccount);
+			// データベースからivの取り出し
+			String iv = dao.getIv(id);
+			// 秘密の質問はアカウント名とIDをキーにして暗号化（なるべく文字列をランダム化するためにアカウントが先でIDが後）
+			String encryptedSecretQuestion = CipherUtil.encrypt(account + id, iv, secretQuestion);
 			// 秘密の質問の答えはパスワードと同じくハッシュ化
 			String hashedSecretAnswer = PasswordUtil.getHashedPassword(secretAnswer);
 			// セッションから暗号化したマスターキーの取り出し
-			String master_key = (String) session.getAttribute("master_key");
+			String reencryptedMasterkey = (String) session.getAttribute("master_key");
+			// セッションから共通暗号キーで再暗号化したマスターキーの復号	
+			String encryptedMasterkey = CipherUtil.commonDecrypt(reencryptedMasterkey);
 			// セッションから暗号化したマスターキーの復号	
-			String masterKey = CipherUtil.commonDecrypt(master_key);
-			// データベースからivの取り出し
-			String iv = dao.getIv(id);
-			System.out.println(id + ":" + iv + ":" + secretQuestion + ":" + secretAnswer + ":" + masterKey);
-			// マスターキーを秘密の質問と答えで暗号化
-			String secondMasterKey = CipherUtil.encrypt(secretQuestion + secretAnswer, iv, masterKey);
+			String masterKey = CipherUtil.decrypt(account + id, iv, encryptedMasterkey);
+			// マスターキーを秘密の答えと質問で暗号化（なるべく文字列をランダム化するために答えが先で質問が後）
+			String secondMasterKey = CipherUtil.encrypt(secretAnswer + secretQuestion, iv, masterKey);
 
-			// ユーザー情報の作成
+			// 秘密の質問関連のユーザー情報の作成
 			User user = new User();
 			user.setId(id);
-			user.setSecretQuestion(encryptionSecretQuestion);
+			user.setSecretQuestion(encryptedSecretQuestion);
 			user.setSecretAnswer(hashedSecretAnswer);
 			user.setSecondMasterKey(secondMasterKey);
-			// 秘密の質問と答えのデータベースへの登録
+			// 秘密の質問と答えとパスワード忘れたとき用のマスターキーのデータベースへの登録
 			dao.updateSecret(user);
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Create SecretQuestion & Answer");

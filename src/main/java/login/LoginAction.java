@@ -35,36 +35,43 @@ public class LoginAction extends Action {
 			if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
 				// ユーザーIDを変数に格納
 				int id = user.getId();
+				// ivを変数に格納
+				String iv = user.getIv();
 				// データベースにログイン記録を追加
 				dao.addLoginLog(id);
-
-				System.out.println("暗号化されたマスターキー" + user.getMasterKey());
-				String encryptionKey = CipherUtil.decrypt(account + password, user.getIv(), user.getMasterKey());
-				System.out.println("復号化されたマスターキー" + encryptionKey);
-				String encryptedKey = CipherUtil.commonEncrypt(encryptionKey);
-				System.out.println("共通暗号化されたマスターキー" + encryptedKey);
+				// 暗号化されたマスターキーを復号する
+				String masterKey = CipherUtil.decrypt(account + password, iv, user.getMasterKey());
+				// 復号したマスターキーをアカウントとIDを暗号キーにして暗号化する（なるべく文字列をランダム化するためにアカウントが先でIDが後）
+				String encryptedKey = CipherUtil.encrypt(account + id, iv, masterKey);
+				// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
+				String reencryptedKey = CipherUtil.commonEncrypt(encryptedKey);
+				// セッションにユーザー識別用のIDを持たせる				
 				session.setAttribute("id", id);
-				session.setAttribute("master_key", encryptedKey);
+				// セッションに再暗号化したマスターキーを持たせる
+				session.setAttribute("master_key", reencryptedKey);
 
+				// ユーザーのデータベースに秘密の質問が登録されていなければ秘密の質問と答え登録ページに移動
 				if (user.getSecretQuestion() == null) {
 					String contextPath = request.getContextPath();
-					response.sendRedirect(contextPath + "/firstsetting/secret-setting.jsp");
+					response.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
 					return null;
+					// ユーザーのデータベースに名前等が登録されていなければ初期登録ページに移動
 				} else if (user.getStudentType() == null) {
 					String contextPath = request.getContextPath();
-					response.sendRedirect(contextPath + "/firstsetting/first-setting.jsp");
+					response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 					return null;
-
+					// メインメニューに移動
 				} else {
 					return "login-succsess.jsp";
 				}
+				// 入力されたアカウント名またはパスワードが違う場合の処理
 			} else {
-				request.setAttribute("loginError", "ログイン名またはパスワードが違います");
+				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
 				return "login-in.jsp";
 			}
 		}
-		// アカウントもしくはパスワードが入力されていなければログイン画面に戻す
-		request.setAttribute("loginError", "ログイン名およびパスワードの入力は必須です");
+		// アカウント名もしくはパスワードが入力されていなければログイン画面に戻す
+		request.setAttribute("loginError", "アカウント名およびパスワードの入力は必須です");
 		return "login-in.jsp";
 	}
 }

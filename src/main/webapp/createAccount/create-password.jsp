@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@include file="../header.html" %>
-<%@include file="createmenu.jsp" %>
+<%@include file="create-menu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="container h-100">
@@ -20,7 +20,7 @@
                     </div>
                 </c:if>
 				<div class="form-group text-center input-field">
-				    <a href="createaccount.jsp" class="btn btn-secondary md-5 mr-5">戻る</a> <!-- Button changed to link -->
+				    <a href="createAccount.jsp" class="btn btn-secondary md-5 mr-5">戻る</a> <!-- Button changed to link -->
 				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
 				</div>      
             </form>

@@ -1,4 +1,4 @@
-package createaccount;
+package createAccount;
 
 import java.util.regex.Pattern;
 
@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import bean.User;
 import dao.UserDAO;
 import tool.Action;
+import tool.CipherUtil;
 import tool.PasswordUtil;
 
 public class CreatePasswordAction extends Action {
@@ -16,14 +17,14 @@ public class CreatePasswordAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		// セッションの作成
 		HttpSession session = request.getSession();
-
+		// 入力されたパスワードと再確認用パスワードを変数に格納
 		String password = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
 
-		// セッションの有効期限切れや直接パスワード入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("account") == null) {
+		// セッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("encryptedAccount") == null) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
 			String contextPath = request.getContextPath();
@@ -31,7 +32,7 @@ public class CreatePasswordAction extends Action {
 			return null;
 		}
 
-		// パスワード及び秘密の質問への入力チェック
+		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (password == null || password.isEmpty()) {
 			request.setAttribute("passwordError", "パスワードの入力は必須です");
@@ -39,30 +40,38 @@ public class CreatePasswordAction extends Action {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 		}
 
-		if (request.getAttribute("passwordError") != null || request.getAttribute("secretAnswerError") != null) {
-			return "createpassword.jsp";
+		// パスワードエラーが発生していたら元のページに戻りやり直し
+		if (request.getAttribute("passwordError") != null) {
+			return "create-password.jsp";
 		}
 
-		// もしパスワード形式が適切ならばアカウント作成成功画面に遷移
+		// パスワードが英大文字・小文字・数字をすべて含み８文字以上の場合の処理
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
-
-			String account = (String) session.getAttribute("account");
-
+			// セッションから暗号化されたアカウント名を取り出す
+			String encryptedAccount = (String) session.getAttribute("encryptedAccount");
+			// 暗号化されたアカウント名を復号する
+			String account = CipherUtil.commonDecrypt(encryptedAccount);
+			// ユーザー情報を格納するクラスの作成
 			User user = new User();
+			// PasswordUtilクラスにてユーザー情報を自動入力する
+			//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
 			user = PasswordUtil.register(account, password);
-
+			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
+			// データベースにアカウント登録する
 			dao.accountInsert(user);
 
-			// Save the updated User object back into request scope
-			request.setAttribute("accountName", session.getAttribute("account"));
-			session.removeAttribute("account");
-			return "createsuccess.jsp";
+			// リクエストにアカウント名を格納する
+			request.setAttribute("accountName", account);
+			// セッションから暗号化されたアカウント名を削除する
+			session.removeAttribute("encryptedAccount");
+			// アカウント作成成功画面に遷移
+			return "create-success.jsp";
 
 			// パスワードの入力形式が不適切ならエラー処理
 		} else {
 			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
-			return "createpassword.jsp";
+			return "create-password.jsp";
 		}
 
 	}
