@@ -7,10 +7,10 @@ public class User implements java.io.Serializable {
 	private String password;
 	private String secretQuestion;
 	private String secretAnswer;
-	private String encryptedKey;
-	private String secondEncryptedKey;
+	private String masterKey;
+	private String secondMasterKey;
 	private String iv;
-	private String studenttype;
+	private String studentType;
 	private String lastName;
 	private String firstName;
 	private String className;
@@ -39,12 +39,12 @@ public class User implements java.io.Serializable {
 		return secretAnswer;
 	}
 
-	public String getSecondEncryptedKey() {
-		return secondEncryptedKey;
+	public String getSecondMasterKey() {
+		return secondMasterKey;
 	}
 
-	public String getEncryptedKey() {
-		return encryptedKey;
+	public String getMasterKey() {
+		return masterKey;
 	}
 
 	public String getIv() {
@@ -52,7 +52,7 @@ public class User implements java.io.Serializable {
 	}
 
 	public String getStudentType() {
-		return studenttype;
+		return studentType;
 	}
 
 	public String getLastName() {
@@ -103,20 +103,20 @@ public class User implements java.io.Serializable {
 		this.secretAnswer = secretAnswer;
 	}
 
-	public void setEncryptedKey(String encryptedKey) {
-		this.encryptedKey = encryptedKey;
+	public void setMasterKey(String masterKey) {
+		this.masterKey = masterKey;
 	}
 
-	public void setSecondEncryptedKey(String secondEncryptedKey) {
-		this.secondEncryptedKey = secondEncryptedKey;
+	public void setSecondMasterKey(String secondMasterKey) {
+		this.secondMasterKey = secondMasterKey;
 	}
 
 	public void setIv(String iv) {
 		this.iv = iv;
 	}
 
-	public void setStudentType(String studenttype) {
-		this.studenttype = studenttype;
+	public void setStudentType(String studentType) {
+		this.studentType = studentType;
 	}
 
 	public void setLastName(String lastName) {

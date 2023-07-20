@@ -40,18 +40,19 @@ public class PasswordUtil {
 		// パスワードのハッシュ化
 		String hashedPassword = getHashedPassword(password);
 
-		// 暗号化キーとIVの生成と暗号化。ユーザーIDとパスワードを結合した文字列を鍵として使用します。
+		// マスターキーの作成（暗号化前）
 		String encryptionKey = generateEncryptionKey();
+		// IVの生成
 		String iv = generateIV();
-		String encryptedKey = encryptWithAES(account + password, iv, encryptionKey);
+		// マスターキーの暗号化。ユーザーIDとパスワードを結合した文字列を鍵として使用します。
+		String masterKey = encryptWithAES(account + password, iv, encryptionKey);
 
 		// ユーザー情報の作成
 		User user = new User();
 		user.setAccount(CipherUtil.commonEncrypt(account));
 		user.setPassword(hashedPassword);
-		user.setEncryptedKey(encryptedKey);
+		user.setMasterKey(masterKey);
 		user.setIv(iv);
-		// データベースにユーザー情報を保存する処理は省略します。
 
 		return user;
 	}
@@ -66,14 +67,14 @@ public class PasswordUtil {
 		return CipherUtil.encrypt(key, iv, value);
 	}
 
-	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
-	private static String decryptWithAES(String key, String iv, String encryptedValue) {
-		return CipherUtil.decrypt(key, iv, encryptedValue);
-	}
-
 	// 暗号化されたキーを復号化します。
 	public static String getDecryptedKey(String account, String password, String iv, String encryptedKey) {
 		return decryptWithAES(account + password, iv, encryptedKey);
+	}
+
+	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
+	private static String decryptWithAES(String key, String iv, String encryptedValue) {
+		return CipherUtil.decrypt(key, iv, encryptedValue);
 	}
 
 }

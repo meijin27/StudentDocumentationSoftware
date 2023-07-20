@@ -58,7 +58,7 @@ public class UserDAO extends DAO {
 							user.setId(rs.getInt("id"));
 							user.setAccount(rs.getString("account"));
 							user.setPassword(rs.getString("password"));
-							user.setEncryptedKey(rs.getString("master_key"));
+							user.setMasterKey(rs.getString("master_key"));
 							user.setSecretQuestion(rs.getString("secret_question"));
 							user.setStudentType(rs.getString("student_type"));
 							user.setIv(rs.getString("iv"));
@@ -102,7 +102,7 @@ public class UserDAO extends DAO {
 					"insert into users (account, password, master_key, iv) values(?, ?, ?, ?)")) {
 				st.setString(1, user.getAccount());
 				st.setString(2, user.getPassword());
-				st.setString(3, user.getEncryptedKey());
+				st.setString(3, user.getMasterKey());
 				st.setString(4, user.getIv());
 
 				line[0] = st.executeUpdate();
@@ -119,7 +119,7 @@ public class UserDAO extends DAO {
 					"UPDATE users SET secret_question = ?, secret_answer = ?, second_master_key = ? WHERE id = ?")) {
 				st.setString(1, user.getSecretQuestion());
 				st.setString(2, user.getSecretAnswer());
-				st.setString(3, user.getSecondEncryptedKey());
+				st.setString(3, user.getSecondMasterKey());
 				st.setInt(4, user.getId());
 
 				line[0] = st.executeUpdate();
@@ -151,10 +151,10 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
-	public void addLoginHistory(int userId) throws Exception {
+	public void addLoginLog(int userId) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"INSERT INTO login_history (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
+					"INSERT INTO login_log (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
 				st.setInt(1, userId);
 				st.executeUpdate();
 			}

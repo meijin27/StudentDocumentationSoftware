@@ -43,19 +43,19 @@ public class SecretSettingAction extends Action {
 			// セッションから暗号化したマスターキーの取り出し
 			String master_key = (String) session.getAttribute("master_key");
 			// セッションから暗号化したマスターキーの復号	
-			String encryptionKey = CipherUtil.commonDecrypt(master_key);
+			String masterKey = CipherUtil.commonDecrypt(master_key);
 			// データベースからivの取り出し
 			String iv = dao.getIv(id);
-			System.out.println(id + ":" + iv + ":" + secretQuestion + ":" + secretAnswer + ":" + encryptionKey);
+			System.out.println(id + ":" + iv + ":" + secretQuestion + ":" + secretAnswer + ":" + masterKey);
 			// マスターキーを秘密の質問と答えで暗号化
-			String secondEncryptedKey = CipherUtil.encrypt(secretQuestion + secretAnswer, iv, encryptionKey);
+			String secondMasterKey = CipherUtil.encrypt(secretQuestion + secretAnswer, iv, masterKey);
 
 			// ユーザー情報の作成
 			User user = new User();
 			user.setId(id);
 			user.setSecretQuestion(encryptionSecretQuestion);
 			user.setSecretAnswer(hashedSecretAnswer);
-			user.setSecondEncryptedKey(secondEncryptedKey);
+			user.setSecondMasterKey(secondMasterKey);
 			// 秘密の質問と答えのデータベースへの登録
 			dao.updateSecret(user);
 			// アップデート内容のデータベースへの登録

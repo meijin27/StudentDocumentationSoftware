@@ -51,23 +51,6 @@ public class CreatePasswordAction extends Action {
 			User user = new User();
 			user = PasswordUtil.register(account, password);
 
-			System.out.println("正常に動作していれば下記に諸々示される");
-			System.out.println("アカウント名");
-			System.out.println(user.getAccount());
-			System.out.println("パスワード");
-			System.out.println(user.getPassword());
-			System.out.println("復号されたマスターキー");
-			System.out.println(PasswordUtil.getDecryptedKey(account, password, user.getIv(), user.getEncryptedKey()));
-			System.out.println("暗号化されたマスターキー");
-			System.out.println(user.getEncryptedKey());
-			System.out.println("Iv");
-			System.out.println(user.getIv());
-			//			System.out.println("暗号化された文字列");
-			//			System.out.println(CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。"));
-			//			System.out.println("復号された文字列");
-			//			System.out.println(CipherUtil.decrypt(user.getEncryptionKey(), user.getIv(),
-			//					CipherUtil.encrypt(user.getEncryptionKey(), user.getIv(), "これはTESTです。")));
-
 			UserDAO dao = new UserDAO();
 			dao.accountInsert(user);
 
