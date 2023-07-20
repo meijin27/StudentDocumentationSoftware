@@ -35,7 +35,7 @@ public class FirstSettingConfirmationAction extends Action {
 		String birthYear = (String) session.getAttribute("birthYear");
 		String birthMonth = (String) session.getAttribute("birthMonth");
 		String birthDay = (String) session.getAttribute("birthDay");
-		
+
 		// セッションのデータ削除
 		session.removeAttribute("lastName");
 		session.removeAttribute("firstName");
@@ -55,31 +55,34 @@ public class FirstSettingConfirmationAction extends Action {
 		// セッションから暗号化したマスターキーの復号	
 		String encryptionKey = CipherUtil.commonDecrypt(master_key);
 		// データベースからivの取り出し
-		String iv = dao.;
-		
+		String iv = dao.getIv(id);
+
 		// 登録するデータの暗号化
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		String encryptionlastName = CipherUtil.encrypt(encryptionKey, iv, lastName);
+		String encryptionfirstName = CipherUtil.encrypt(encryptionKey, iv, firstName);
+		String encryptionstudentType = CipherUtil.encrypt(encryptionKey, iv, studentType);
+		String encryptionclassName = CipherUtil.encrypt(encryptionKey, iv, className);
+		String encryptionstudentNumber = CipherUtil.encrypt(encryptionKey, iv, studentNumber);
+		String encryptionbirthYear = CipherUtil.encrypt(encryptionKey, iv, birthYear);
+		String encryptionbirthMonth = CipherUtil.encrypt(encryptionKey, iv, birthMonth);
+		String encryptionbirthDay = CipherUtil.encrypt(encryptionKey, iv, birthDay);
+
 		// ユーザー情報の作成
 		User user = new User();
 		user.setId(id);
-		user.setSecretQuestion(encryptionSecretQuestion);
-		user.setSecretAnswer(hashedSecretAnswer);
+		user.setLastName(encryptionlastName);
+		user.setFirstName(encryptionfirstName);
+		user.setStudentType(encryptionstudentType);
+		user.setClassName(encryptionclassName);
+		user.setStudentNumber(encryptionstudentNumber);
+		user.setBirthYear(encryptionbirthYear);
+		user.setBirthMonth(encryptionbirthMonth);
+		user.setBirthDay(encryptionbirthDay);
 
-		// 秘密の質問と答えのデータベースへの登録
-		dao.updateSecret(user);
+		// 初期設定のデータベースへの登録
+		dao.updateFirstSetting(user);
 		// アップデート内容のデータベースへの登録
-		dao.addOperationLog(id, "Create SecretQuestion & Answer");
+		dao.addOperationLog(id, "Create First Setting");
 
 		return "first-setting-confirmation.jsp";
 

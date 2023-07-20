@@ -74,6 +74,27 @@ public class UserDAO extends DAO {
 		return userRef.get();
 	}
 
+	public String getIv(int id) {
+		AtomicReference<String> ivRef = new AtomicReference<>();
+		try {
+			executeSqlOperation(con -> {
+				try (PreparedStatement st = con.prepareStatement(
+						"select iv from Users where id=?")) {
+					st.setInt(1, id);
+					try (ResultSet rs = st.executeQuery()) {
+						if (rs.next()) {
+							ivRef.set(rs.getString("iv"));
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ivRef.get();
+	}
+
 	public int accountInsert(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -95,10 +116,33 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET secret_question = ?, secret_answer = ? WHERE id = ?")) {
+					"UPDATE users SET secret_question = ?, secret_answer = ?, second_master_key = ? WHERE id = ?")) {
 				st.setString(1, user.getSecretQuestion());
 				st.setString(2, user.getSecretAnswer());
-				st.setInt(3, user.getId());
+				st.setString(3, user.getSecondEncryptedKey());
+				st.setInt(4, user.getId());
+
+				line[0] = st.executeUpdate();
+			}
+		});
+
+		return line[0];
+	}
+
+	public int updateFirstSetting(User user) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE users SET last_name = ?, first_name = ?, student_type = ?, class_name = ?, student_number = ?, birth_year = ?, birth_month = ?, birth_day = ? WHERE id = ?")) {
+				st.setString(1, user.getLastName());
+				st.setString(2, user.getFirstName());
+				st.setString(3, user.getStudentType());
+				st.setString(4, user.getClassName());
+				st.setString(5, user.getStudentNumber());
+				st.setString(6, user.getBirthYear());
+				st.setString(7, user.getBirthMonth());
+				st.setString(8, user.getBirthDay());
+				st.setInt(9, user.getId());
 
 				line[0] = st.executeUpdate();
 			}

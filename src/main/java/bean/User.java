@@ -11,7 +11,13 @@ public class User implements java.io.Serializable {
 	private String secondEncryptedKey;
 	private String iv;
 	private String studenttype;
-	private String encryptionKey;
+	private String lastName;
+	private String firstName;
+	private String className;
+	private String studentNumber;
+	private String birthYear;
+	private String birthMonth;
+	private String birthDay;
 
 	public int getId() {
 		return id;
@@ -33,10 +39,6 @@ public class User implements java.io.Serializable {
 		return secretAnswer;
 	}
 
-	public String getEncryptionKey() {
-		return encryptionKey;
-	}
-
 	public String getSecondEncryptedKey() {
 		return secondEncryptedKey;
 	}
@@ -51,6 +53,34 @@ public class User implements java.io.Serializable {
 
 	public String getStudentType() {
 		return studenttype;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public String getStudentNumber() {
+		return studentNumber;
+	}
+
+	public String getBirthYear() {
+		return birthYear;
+	}
+
+	public String getBirthMonth() {
+		return birthMonth;
+	}
+
+	public String getBirthDay() {
+		return birthDay;
 	}
 
 	public void setId(int id) {
@@ -73,10 +103,6 @@ public class User implements java.io.Serializable {
 		this.secretAnswer = secretAnswer;
 	}
 
-	public void setEncryptionKey(String encryptionKey) {
-		this.encryptionKey = encryptionKey;
-	}
-
 	public void setEncryptedKey(String encryptedKey) {
 		this.encryptedKey = encryptedKey;
 	}
@@ -91,5 +117,33 @@ public class User implements java.io.Serializable {
 
 	public void setStudentType(String studenttype) {
 		this.studenttype = studenttype;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public void setStudentNumber(String studentNumber) {
+		this.studentNumber = studentNumber;
+	}
+
+	public void setBirthYear(String birthYear) {
+		this.birthYear = birthYear;
+	}
+
+	public void setBirthMonth(String birthMonth) {
+		this.birthMonth = birthMonth;
+	}
+
+	public void setBirthDay(String birthDay) {
+		this.birthDay = birthDay;
 	}
 }
