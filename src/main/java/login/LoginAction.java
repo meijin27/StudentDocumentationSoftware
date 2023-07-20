@@ -26,11 +26,11 @@ public class LoginAction extends Action {
 			// ログイン名とパスワードが両方とも入力されているときの処理
 			UserDAO dao = new UserDAO();
 			String encryptedAccount = CipherUtil.commonEncrypt(account);
-			User user = dao.search(encryptedAccount);
+			User user = dao.loginSearch(encryptedAccount);
 
 			if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
 				int id = user.getId();
-				dao.updateLastLogin(id);
+				dao.addLoginHistory(id);
 				System.out.println("暗号化されたマスターキー" + user.getEncryptedKey());
 				String encryptionKey = CipherUtil.decrypt(account + password, user.getIv(), user.getEncryptedKey());
 				System.out.println("復号化されたマスターキー" + encryptionKey);
@@ -39,13 +39,13 @@ public class LoginAction extends Action {
 				session.setAttribute("id", id);
 				session.setAttribute("master_key", encryptedKey);
 
-				if (user.getSecondEncryptedKey() == null) {
+				if (user.getSecretQuestion() == null) {
 					String contextPath = request.getContextPath();
-					response.sendRedirect(contextPath + "/setting/secret-setting.jsp");
+					response.sendRedirect(contextPath + "/firstsetting/secret-setting.jsp");
 					return null;
 				} else if (user.getStudentType() == null) {
 					String contextPath = request.getContextPath();
-					response.sendRedirect(contextPath + "/setting/first-setting.jsp");
+					response.sendRedirect(contextPath + "/firstsetting/first-setting.jsp");
 					return null;
 
 				} else {

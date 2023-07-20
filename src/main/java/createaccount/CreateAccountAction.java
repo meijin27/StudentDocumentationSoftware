@@ -21,7 +21,7 @@ public class CreateAccountAction extends Action {
 		if (account != null && !account.isEmpty()) {
 			UserDAO dao = new UserDAO();
 			String encryptedAccount = CipherUtil.commonEncrypt(account);
-			User user = dao.search(encryptedAccount);
+			User user = dao.loginSearch(encryptedAccount);
 
 			// もしアカウントがデータベースに登録されていなければエラーメッセージを表示
 			if (user == null) {

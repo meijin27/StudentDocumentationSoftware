@@ -8,7 +8,7 @@
 <div class="container h-100">
     <div class="row justify-content-center align-items-center h-100">
         <div class="col-md-6">
-            <form class="center-form" action="CreatePassword.action" method="post">
+            <form class="center-form" action="SecretSetting.action" method="post">
                 <!-- 秘密の質問 -->
                 <div class="col-md-12 mb-3">
                     <label class="form-label" for="">秘密の質問を選択してください。</label>
@@ -18,8 +18,8 @@
 			            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
 			            <option value="ペットの名前は？">ペットの名前は？</option>
 			            <option value="卒業した小学校の名前は？">卒業した小学校の名前は？</option>
-			            <option value="母親の旧姓は？">母親の旧姓は？</option>
-			            <option value="初恋の人はだれ？">初恋の人はだれ？</option>
+			            <option value="母親の旧姓は？">親の旧姓は？</option>
+			            <option value="初恋の人はだれ？">尊敬する人はだれ？</option>
    			            <option value="座右の銘はなに？">座右の銘はなに？</option>
 			            <option value="はじめて買った車は？">はじめて買った車は？</option>
 			            <option value="ご自由にご記載ください">ご自由にご記載ください</option>
@@ -29,11 +29,16 @@
                 <div class="col-md-12 mb-3">
                     <label class="form-label" for="">秘密の質問の答えを入力してください</label>
                     <span class="text-danger">*</span>
-                    <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" value="${secretAnswer}" required>
+                    <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
                 </div>      
 				<div class="form-group text-center input-field">
 				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
 				</div>      
+　	          　<c:if test="${not empty secretError}">
+	              <div class="alert alert-danger text-center input-field" role="alert">
+	                  ${secretError}
+	              </div>
+	            </c:if>        
             </form>
         </div>
     </div>

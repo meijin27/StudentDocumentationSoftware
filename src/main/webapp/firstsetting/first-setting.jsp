@@ -19,53 +19,6 @@
                     <span class="text-danger">*</span>
                     <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
                 </div>
-                <!-- 学生の種類 -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">学生の種類</label>
-                     <span class="text-danger">*</span> 
-                    <select name="studentType" class="form-control" required>
-                        <option value="">--- 学生の種類 ---</option>
-			            <option value="一般学生">一般学生</option>
-			            <option value="留学生">留学生</option>
-			            <option value="職業訓練生">職業訓練生</option>
-        			</select>
-                </div> 
-                <!-- クラス名 -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">クラス名</label>
-                    <span class="text-danger">*</span>
-                    <input class="form-control" type="text" name="className" placeholder="IG11" value="${className}"required>
-                </div>
-            
-                <!-- 秘密の質問 -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">秘密の質問を選択してください。</label>
-                    <span class="text-danger">*</span>                    
-                    <select name="secretQuestion" class="form-control" required>
-                        <option value="">--- 秘密の質問 ---</option>
-			            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
-			            <option value="ペットの名前は？">ペットの名前は？</option>
-			            <option value="卒業した小学校の名前は？">卒業した小学校の名前は？</option>
-			            <option value="母親の旧姓は？">母親の旧姓は？</option>
-			            <option value="初恋の人はだれ？">初恋の人はだれ？</option>
-   			            <option value="座右の銘はなに？">座右の銘はなに？</option>
-			            <option value="はじめて買った車は？">はじめて買った車は？</option>
-			            <option value="ご自由にご記載ください">ご自由にご記載ください</option>
-        			</select>
-                </div>
-                 <!-- 学籍番号 -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">学籍番号</label>
-                    <span class="text-danger">*</span>
-                    <input class="form-control" type="studentNumber" name="studentNumber" placeholder="240001" value="${studentNumber}"required>
-                </div>                                           
-                <!-- 秘密の質問の答え -->
-                <div class="col-md-6 mb-3">
-                    <label class="form-label" for="">秘密の質問の答えを入力してください</label>
-                    <span class="text-danger">*</span>
-                    <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" value="${secretAnswer}" required>
-                </div>                        			
-
                 <!-- 生年月日 -->
                 <div class="col-md-2 mb-3">
                     生年月日
@@ -107,7 +60,33 @@
 				        } 
 				        %>
 				    </select>
-                </div>         
+                </div>                 
+                <!-- 学生の種類 -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="">学生の種類</label>
+                     <span class="text-danger">*</span> 
+                    <select name="studentType" class="form-control" required>
+                        <option value="">--- 学生の種類 ---</option>
+			            <option value="一般学生">一般学生</option>
+			            <option value="留学生">留学生</option>
+			            <option value="職業訓練生">職業訓練生</option>
+        			</select>
+                </div> 
+                <!-- クラス名 -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="">クラス名</label>
+                    <span class="text-danger">*</span>
+                    <input class="form-control" type="text" name="className" placeholder="IG11" value="${className}"required>
+                </div>
+            
+                 <!-- 学籍番号 -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="">学籍番号</label>
+                    <span class="text-danger">*</span>
+                    <input class="form-control" type="studentNumber" name="studentNumber" placeholder="240001" value="${studentNumber}"required>
+                </div>                                                  			
+
+        
              
              </div>   
             <c:if test="${not empty agreeError}">

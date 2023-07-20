@@ -4,58 +4,26 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import bean.User;
 
 public class UserDAO extends DAO {
 
-	public User search(String login) {
-		User user = null;
-
-		try (Connection con = getConnection()) {
-
-			PreparedStatement st = con.prepareStatement(
-					"select * from Users where account=?");
-			st.setString(1, login);
-
-			try (ResultSet rs = st.executeQuery()) {
-
-				while (rs.next()) {
-					user = new User();
-					user.setId(rs.getInt("id"));
-					user.setAccount(rs.getString("account"));
-					user.setPassword(rs.getString("password"));
-					user.setEncryptedKey(rs.getString("master_key"));
-					user.setSecondEncryptedKey(rs.getString("second_master_key"));
-					user.setStudentType(rs.getString("studenttype"));
-					user.setIv(rs.getString("iv"));
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return user;
+	@FunctionalInterface
+	public interface SqlConsumer<T> {
+		void accept(T t) throws SQLException;
 	}
 
-	public int accountInsert(User user) throws Exception {
+	public void executeSqlOperation(SqlConsumer<Connection> operation) throws Exception {
 		Connection con = null;
-		PreparedStatement st = null;
-		int line = 0;
 		try {
 			con = getConnection();
 			con.setAutoCommit(false);
 
-			st = con.prepareStatement(
-					"insert into users (account, password, master_key, iv) values(?, ?, ?, ?)");
-			st.setString(1, user.getAccount());
-			st.setString(2, user.getPassword());
-			st.setString(3, user.getEncryptedKey());
-			st.setString(4, user.getIv());
+			operation.accept(con);
 
-			line = st.executeUpdate();
 			con.commit();
-
 		} catch (Exception e) {
 			if (con != null) {
 				try {
@@ -67,13 +35,6 @@ public class UserDAO extends DAO {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if (st != null) {
-				try {
-					st.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			if (con != null) {
 				try {
 					con.close();
@@ -82,45 +43,88 @@ public class UserDAO extends DAO {
 				}
 			}
 		}
-		return line;
 	}
 
-	public void updateLastLogin(int userId) throws Exception {
-		try (Connection con = getConnection()) {
-			PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?");
-			st.setInt(1, userId);
-			st.executeUpdate();
-		} catch (SQLException e) {
+	public User loginSearch(String login) {
+		AtomicReference<User> userRef = new AtomicReference<>();
+		try {
+			executeSqlOperation(con -> {
+				try (PreparedStatement st = con.prepareStatement(
+						"select * from Users where account=?")) {
+					st.setString(1, login);
+					try (ResultSet rs = st.executeQuery()) {
+						if (rs.next()) {
+							User user = new User();
+							user.setId(rs.getInt("id"));
+							user.setAccount(rs.getString("account"));
+							user.setPassword(rs.getString("password"));
+							user.setEncryptedKey(rs.getString("master_key"));
+							user.setSecretQuestion(rs.getString("secret_question"));
+							user.setStudentType(rs.getString("student_type"));
+							user.setIv(rs.getString("iv"));
+							userRef.set(user);
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
 		}
+
+		return userRef.get();
 	}
 
-	public void updatetime(int userId) throws Exception {
-		try (Connection con = getConnection()) {
-			PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = ?");
-			st.setInt(1, userId);
-			st.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		}
+	public int accountInsert(User user) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"insert into users (account, password, master_key, iv) values(?, ?, ?, ?)")) {
+				st.setString(1, user.getAccount());
+				st.setString(2, user.getPassword());
+				st.setString(3, user.getEncryptedKey());
+				st.setString(4, user.getIv());
+
+				line[0] = st.executeUpdate();
+			}
+		});
+
+		return line[0];
 	}
 
-	public void addOperationLog(int userId, String operation) throws SQLException {
-		String sql = "INSERT INTO operation_logs (user_id, operation) VALUES (?, ?)";
+	public int updateSecret(User user) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE users SET secret_question = ?, secret_answer = ? WHERE id = ?")) {
+				st.setString(1, user.getSecretQuestion());
+				st.setString(2, user.getSecretAnswer());
+				st.setInt(3, user.getId());
 
-		try (Connection conn = getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+				line[0] = st.executeUpdate();
+			}
+		});
 
-			pstmt.setInt(1, userId);
-			pstmt.setString(2, operation);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		}
+		return line[0];
+	}
+
+	public void addLoginHistory(int userId) throws Exception {
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"INSERT INTO login_history (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
+				st.setInt(1, userId);
+				st.executeUpdate();
+			}
+		});
+	}
+
+	public void addOperationLog(int userId, String operation) throws Exception {
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"INSERT INTO operation_logs (user_id, operation) VALUES (?, ?)")) {
+				st.setInt(1, userId);
+				st.setString(2, operation);
+				st.executeUpdate();
+			}
+		});
 	}
 }

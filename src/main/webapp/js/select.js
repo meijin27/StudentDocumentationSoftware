@@ -5,7 +5,6 @@ window.onload = function() {
     .then(data => {
         // 選択肢の初期値を設定する関数
         setInitialSelection('studentType', data.studentType);
-        setInitialSelection('secretQuestion', data.secretQuestion);
         setInitialSelection('birthYear', data.birthYear);
         setInitialSelection('birthMonth', data.birthMonth);
         setInitialSelection('birthDay', data.birthDay);

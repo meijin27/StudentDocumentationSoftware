@@ -1,4 +1,4 @@
-package setting;
+package firstsetting;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ public class FirstSettingAction extends Action {
 		HttpSession session = request.getSession();
 
 		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("master_key") == null) {
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
 			String contextPath = request.getContextPath();
@@ -27,9 +27,7 @@ public class FirstSettingAction extends Action {
 		String firstName = request.getParameter("firstName");
 		String studentType = request.getParameter("studentType");
 		String className = request.getParameter("className");
-		String secretQuestion = request.getParameter("secretQuestion");
 		String studentNumber = request.getParameter("studentNumber");
-		String secretAnswer = request.getParameter("secretAnswer");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
@@ -39,8 +37,6 @@ public class FirstSettingAction extends Action {
 		session.setAttribute("studentType", studentType);
 		session.setAttribute("className", className);
 		session.setAttribute("studentNumber", studentNumber);
-		session.setAttribute("secretQuestion", secretQuestion);
-		session.setAttribute("secretAnswer", secretAnswer);
 		session.setAttribute("birthYear", birthYear);
 		session.setAttribute("birthMonth", birthMonth);
 		session.setAttribute("birthDay", birthDay);
