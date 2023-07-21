@@ -224,11 +224,12 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
-	public void addLoginLog(int userId) throws Exception {
+	public void addLoginLog(int userId, String ipAddress) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"INSERT INTO login_logs (user_id, login_time) VALUES (?, CURRENT_TIMESTAMP)")) {
+					"INSERT INTO login_logs (user_id, login_time, ip_address) VALUES (?, CURRENT_TIMESTAMP, ?)")) {
 				st.setInt(1, userId);
+				st.setString(2, ipAddress);
 				st.executeUpdate();
 			}
 		});

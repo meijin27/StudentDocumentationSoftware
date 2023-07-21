@@ -37,18 +37,20 @@ public class LoginAction extends Action {
 				int id = user.getId();
 				// ivを変数に格納
 				String iv = user.getIv();
+				// クライアントのIPアドレスを取得
+				String ipAddress = request.getRemoteAddr();
 				// データベースにログイン記録を追加
-				dao.addLoginLog(id);
+				dao.addLoginLog(id, ipAddress);
 				// 暗号化されたマスターキーを復号する
 				String masterKey = CipherUtil.decrypt(account + password, iv, user.getMasterKey());
 				// 復号したマスターキーをアカウントとIDを暗号キーにして暗号化する（なるべく文字列をランダム化するためにアカウントが先でIDが後）
 				String encryptedKey = CipherUtil.encrypt(account + id, iv, masterKey);
 				// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
-				String reencryptedKey = CipherUtil.commonEncrypt(encryptedKey);
+				String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
 				// セッションにユーザー識別用のIDを持たせる				
 				session.setAttribute("id", id);
 				// セッションに再暗号化したマスターキーを持たせる
-				session.setAttribute("master_key", reencryptedKey);
+				session.setAttribute("master_key", reEncryptedKey);
 
 				// ユーザーのデータベースに秘密の質問が登録されていなければ秘密の質問と答え登録ページに移動
 				if (user.getSecretQuestion() == null) {
