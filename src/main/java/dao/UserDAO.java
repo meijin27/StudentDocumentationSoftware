@@ -74,37 +74,74 @@ public class UserDAO extends DAO {
 		return userRef.get();
 	}
 
-	public String getIv(int id) {
-		AtomicReference<String> ivRef = new AtomicReference<>();
-		try {
-			executeSqlOperation(con -> {
-				try (PreparedStatement st = con.prepareStatement(
-						"select iv from Users where id=?")) {
-					st.setInt(1, id);
-					try (ResultSet rs = st.executeQuery()) {
-						if (rs.next()) {
-							ivRef.set(rs.getString("iv"));
-						}
-					}
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return ivRef.get();
+	public String getAccount(int id) {
+		return getField("account", id);
 	}
 
-	public String getAccount(int id) {
-		AtomicReference<String> accountRef = new AtomicReference<>();
+	public String getIv(int id) {
+		return getField("iv", id);
+	}
+
+	public String getClassName(int id) {
+		return getField("class_name", id);
+	}
+
+	public String getStudentNumber(int id) {
+		return getField("student_number", id);
+	}
+
+	public String getStudentType(int id) {
+		return getField("student_type", id);
+	}
+
+	public String getBirthYear(int id) {
+		return getField("birth_year", id);
+	}
+
+	public String getBirthMonth(int id) {
+		return getField("birth_month", id);
+	}
+
+	public String getBirthDay(int id) {
+		return getField("birth_day", id);
+	}
+
+	// Setter methods
+
+	public int updateClassName(User user) throws Exception {
+		return updateField("class_name", user.getClassName(), user.getId());
+	}
+
+	public int updateStudentNumber(User user) throws Exception {
+		return updateField("student_number", user.getStudentNumber(), user.getId());
+	}
+
+	public int updateStudentType(User user) throws Exception {
+		return updateField("student_type", user.getStudentType(), user.getId());
+	}
+
+	public int updateBirthYear(User user) throws Exception {
+		return updateField("birth_year", user.getBirthYear(), user.getId());
+	}
+
+	public int updateBirthMonth(User user) throws Exception {
+		return updateField("birth_month", user.getBirthMonth(), user.getId());
+	}
+
+	public int updateBirthDay(User user) throws Exception {
+		return updateField("birth_day", user.getBirthDay(), user.getId());
+	}
+
+	private String getField(String field, int id) {
+		AtomicReference<String> ref = new AtomicReference<>();
 		try {
 			executeSqlOperation(con -> {
 				try (PreparedStatement st = con.prepareStatement(
-						"select account from Users where id=?")) {
+						"select " + field + " from Users where id=?")) {
 					st.setInt(1, id);
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
-							accountRef.set(rs.getString("account"));
+							ref.set(rs.getString(field));
 						}
 					}
 				}
@@ -113,7 +150,7 @@ public class UserDAO extends DAO {
 			e.printStackTrace();
 		}
 
-		return accountRef.get();
+		return ref.get();
 	}
 
 	public int accountInsert(User user) throws Exception {
@@ -164,6 +201,21 @@ public class UserDAO extends DAO {
 				st.setString(7, user.getBirthMonth());
 				st.setString(8, user.getBirthDay());
 				st.setInt(9, user.getId());
+
+				line[0] = st.executeUpdate();
+			}
+		});
+
+		return line[0];
+	}
+
+	private int updateField(String field, String value, int id) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE users SET " + field + " = ? WHERE id = ?")) {
+				st.setString(1, value);
+				st.setInt(2, id);
 
 				line[0] = st.executeUpdate();
 			}

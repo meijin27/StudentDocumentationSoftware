@@ -8,6 +8,8 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.Decrypt;
+import tool.DecryptionResult;
 
 public class FirstSettingConfirmationAction extends Action {
 
@@ -50,18 +52,13 @@ public class FirstSettingConfirmationAction extends Action {
 		UserDAO dao = new UserDAO();
 		// セッションからIDの取り出し
 		int id = (int) session.getAttribute("id");
-		// データベースから暗号化されたアカウント名の取り出し
-		String encryptedAccount = dao.getAccount(id);
-		// 暗号化されたアカウント名の復号
-		String account = CipherUtil.commonDecrypt(encryptedAccount);
-		// データベースからivの取り出し
-		String iv = dao.getIv(id);
-		// セッションから暗号化したマスターキーの取り出し
-		String reencryptedMasterkey = (String) session.getAttribute("master_key");
-		// セッションから共通暗号キーで再暗号化したマスターキーの復号	
-		String encryptedMasterkey = CipherUtil.commonDecrypt(reencryptedMasterkey);
-		// セッションから暗号化したマスターキーの復号	
-		String masterKey = CipherUtil.decrypt(account + id, iv, encryptedMasterkey);
+		// 復号とIDやIV等の取り出しクラスの設定
+		Decrypt decrypt = new Decrypt(dao);
+		DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+		// マスターキーの取り出し			
+		String masterKey = result.getMasterKey();
+		// ivの取り出し
+		String iv = result.getIv();
 
 		// 登録するデータの暗号化
 		String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
