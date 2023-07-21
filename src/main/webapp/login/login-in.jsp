@@ -30,7 +30,7 @@
 				</c:if>                
                 <div class="text-center input-field">
                     <a href="../createAccount/create-account.jsp" class="d-block mb-3">新規登録はこちら</a>
-                    <a href="CartRemove.action?id=${item.product.id}">パスワードを忘れた方はこちら</a>
+                    <a href="../forgotPassword/seach-account.jsp">パスワードを忘れた方はこちら</a>
                 </div>
             </form>
         </div>
