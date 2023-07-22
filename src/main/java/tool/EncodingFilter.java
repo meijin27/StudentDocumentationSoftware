@@ -10,9 +10,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-@WebFilter(urlPatterns = { "/*" })
+@WebFilter(urlPatterns = { "*.jsp", "*.html" })
 public class EncodingFilter implements Filter {
 
+	@Override
 	public void doFilter(
 			ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		request.setCharacterEncoding("UTF-8");
@@ -21,9 +22,11 @@ public class EncodingFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
+	@Override
 	public void init(FilterConfig filtercConfig) {
 	}
 
+	@Override
 	public void destroy() {
 	}
 }
