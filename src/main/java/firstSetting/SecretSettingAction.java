@@ -36,8 +36,10 @@ public class SecretSettingAction extends Action {
 		// もしも入力値が無し、もしくは空の場合はエラーを返す
 		if (secretQuestion != null && !secretQuestion.isEmpty() && secretAnswer != null && !secretAnswer.isEmpty()) {
 			UserDAO dao = new UserDAO();
-			// セッションからIDの取り出し
-			int id = (int) session.getAttribute("id");
+			// セッションから暗号化されたIDの取り出し
+			String strId = (String) session.getAttribute("id");
+			// IDの復号
+			int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
 			// 復号とIDやIV等の取り出しクラスの設定
 			Decrypt decrypt = new Decrypt(dao);
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
@@ -54,14 +56,16 @@ public class SecretSettingAction extends Action {
 			// 秘密の質問の答えはパスワードと同じくハッシュ化
 			String hashedSecretAnswer = PasswordUtil.getHashedPassword(secretAnswer);
 			// マスターキーを秘密の答えと質問で暗号化（なるべく文字列をランダム化するために答えが先で質問が後）
-			String secondMasterKey = CipherUtil.encrypt(secretAnswer + secretQuestion, iv, masterKey);
+			String encryptedKey = CipherUtil.encrypt(secretAnswer + secretQuestion, iv, masterKey);
+			// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
+			String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
 
 			// 秘密の質問関連のユーザー情報の作成
 			User user = new User();
 			user.setId(id);
 			user.setSecretQuestion(reEncryptedSecretQuestion);
 			user.setSecretAnswer(hashedSecretAnswer);
-			user.setSecondMasterKey(secondMasterKey);
+			user.setSecondMasterKey(reEncryptedKey);
 			// 秘密の質問と答えとパスワード忘れたとき用のマスターキーのデータベースへの登録
 			dao.updateSecret(user);
 			// アップデート内容のデータベースへの登録

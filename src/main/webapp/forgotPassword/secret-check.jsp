@@ -6,10 +6,10 @@
 
 
 
- <main class="container">
-        <h2 class="text-center p-5">秘密の質問：${secretQuestion}</h2>
+<main class="container">
+	<h2 class="text-center p-5">秘密の質問：${sessionScope.secretQuestion}</h2>
 
-        <form action="SecretChack.action" method="post">
+        <form action="SecretCheck.action" method="post">
             <div class="row">
                 <!-- 秘密の質問の答え -->
                 <div class="col-md-12 mb-3">
@@ -59,15 +59,16 @@
 				        %>
 				    </select>
                 </div>     
-             </div>               
-				<div class="form-group text-center input-field">
-				    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
-				</div>      
-　	          　<c:if test="${not empty secretError}">
-	              <div class="alert alert-danger text-center input-field" role="alert">
-	                  ${secretError}
-	              </div>
-	            </c:if>        
+            </div>               
+			<div class="form-group text-center input-field">
+			    <a href="seach-account.jsp" class="btn btn-secondary md-5 mr-5">戻る</a>
+			    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
+			</div>      
+            <c:if test="${not empty secretError}">
+              <div class="alert alert-danger text-center input-field" role="alert">
+                  ${secretError}
+              </div>
+            </c:if>        
         </form>
     </main>
 

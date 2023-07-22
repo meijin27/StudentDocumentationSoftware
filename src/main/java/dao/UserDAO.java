@@ -79,8 +79,20 @@ public class UserDAO extends DAO {
 		return getField("account", id);
 	}
 
+	public String getPassword(int id) {
+		return getField("password", id);
+	}
+
 	public String getIv(int id) {
 		return getField("iv", id);
+	}
+
+	public String getSecretAnswer(int id) {
+		return getField("secret_answer", id);
+	}
+
+	public String getSecondMasterKey(int id) {
+		return getField("second_master_key", id);
 	}
 
 	public String getClassName(int id) {
@@ -108,6 +120,18 @@ public class UserDAO extends DAO {
 	}
 
 	// Setter methods
+
+	public int updatePassword(User user) throws Exception {
+		return updateField("password", user.getPassword(), user.getId());
+	}
+
+	public int updateMasterKey(User user) throws Exception {
+		return updateField("master_key", user.getMasterKey(), user.getId());
+	}
+
+	public int updateSecondMasterKey(User user) throws Exception {
+		return updateField("second_master_key", user.getSecondMasterKey(), user.getId());
+	}
 
 	public int updateClassName(User user) throws Exception {
 		return updateField("class_name", user.getClassName(), user.getId());

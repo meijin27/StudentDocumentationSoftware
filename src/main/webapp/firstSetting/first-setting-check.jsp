@@ -4,7 +4,7 @@
 
  <main class="container">
         <h2 class="text-center p-5">入力内容確認</h2>
-        <form action="FirstSettingConfirmation.action" method="post">
+        <form action="FirstSettingCheck.action" method="post">
 		    <div class="content">
 		        <p>姓: ${sessionScope.lastName}</p>
 		        <p>名: ${sessionScope.firstName}</p>

@@ -41,14 +41,18 @@ public class LoginAction extends Action {
 				String ipAddress = request.getRemoteAddr();
 				// データベースにログイン記録を追加
 				dao.addLoginLog(id, ipAddress);
+				// マスターキーの共通暗号からの復号
+				String encryptedMasterKey = CipherUtil.commonDecrypt(user.getMasterKey());
 				// 暗号化されたマスターキーを復号する
-				String masterKey = CipherUtil.decrypt(account + password, iv, user.getMasterKey());
+				String masterKey = CipherUtil.decrypt(password + account, iv, encryptedMasterKey);
 				// 復号したマスターキーをアカウントとIDを暗号キーにして暗号化する（なるべく文字列をランダム化するためにアカウントが先でIDが後）
 				String encryptedKey = CipherUtil.encrypt(account + id, iv, masterKey);
 				// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
 				String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
+				// IDを共通暗号キーで暗号化する
+				String strId = CipherUtil.commonEncrypt(String.valueOf(id));
 				// セッションにユーザー識別用のIDを持たせる				
-				session.setAttribute("id", id);
+				session.setAttribute("id", strId);
 				// セッションに再暗号化したマスターキーを持たせる
 				session.setAttribute("master_key", reEncryptedKey);
 

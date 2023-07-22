@@ -77,7 +77,7 @@ public class FirstSettingAction extends Action {
 		}
 
 		// エラーがない場合は確認画面に進む
-		return "first-setting-confirmation.jsp";
+		return "first-setting-check.jsp";
 
 	}
 

@@ -11,7 +11,7 @@ import tool.CipherUtil;
 import tool.Decrypt;
 import tool.DecryptionResult;
 
-public class FirstSettingConfirmationAction extends Action {
+public class FirstSettingCheckAction extends Action {
 
 	@Override
 	public String execute(
@@ -50,8 +50,10 @@ public class FirstSettingConfirmationAction extends Action {
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();
-		// セッションからIDの取り出し
-		int id = (int) session.getAttribute("id");
+		// セッションから暗号化されたIDの取り出し
+		String strId = (String) session.getAttribute("id");
+		// IDの復号
+		int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
 		// 復号とIDやIV等の取り出しクラスの設定
 		Decrypt decrypt = new Decrypt(dao);
 		DecryptionResult result = decrypt.getDecryptedMasterKey(session);
@@ -70,24 +72,34 @@ public class FirstSettingConfirmationAction extends Action {
 		String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
 		String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
 
+		// 共通暗号キーによる暗号化
+		String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
+		String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
+		String reEncryptedStudentType = CipherUtil.commonEncrypt(encryptedStudentType);
+		String reEncryptedClassName = CipherUtil.commonEncrypt(encryptedClassName);
+		String reEncryptedStudentNumber = CipherUtil.commonEncrypt(encryptedStudentNumber);
+		String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
+		String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
+		String reEncryptedBirthDay = CipherUtil.commonEncrypt(encryptedBirthDay);
+
 		// ユーザー情報の作成
 		User user = new User();
 		user.setId(id);
-		user.setLastName(encryptedLastName);
-		user.setFirstName(encryptedFirstName);
-		user.setStudentType(encryptedStudentType);
-		user.setClassName(encryptedClassName);
-		user.setStudentNumber(encryptedStudentNumber);
-		user.setBirthYear(encryptedBirthYear);
-		user.setBirthMonth(encryptedBirthMonth);
-		user.setBirthDay(encryptedBirthDay);
+		user.setLastName(reEncryptedLastName);
+		user.setFirstName(reEncryptedFirstName);
+		user.setStudentType(reEncryptedStudentType);
+		user.setClassName(reEncryptedClassName);
+		user.setStudentNumber(reEncryptedStudentNumber);
+		user.setBirthYear(reEncryptedBirthYear);
+		user.setBirthMonth(reEncryptedBirthMonth);
+		user.setBirthDay(reEncryptedBirthDay);
 
 		// 初期設定のデータベースへの登録
 		dao.updateFirstSetting(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Create First Setting");
 
-		return "first-setting-confirmation.jsp";
+		return "first-setting-check.jsp";
 
 	}
 

@@ -41,17 +41,19 @@ public class PasswordUtil {
 		String hashedPassword = getHashedPassword(password);
 
 		// マスターキーの作成（暗号化前）
-		String encryptionKey = generateEncryptionKey();
+		String masterKey = generateEncryptionKey();
 		// IVの生成
 		String iv = generateIV();
 		// マスターキーの暗号化。ユーザーIDとパスワードを結合した文字列を鍵として使用します。
-		String masterKey = encryptWithAES(account + password, iv, encryptionKey);
+		String encryptedKey = encryptWithAES(password + account, iv, masterKey);
+		// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
+		String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
 
 		// ユーザー情報の作成
 		User user = new User();
 		user.setAccount(CipherUtil.commonEncrypt(account));
 		user.setPassword(hashedPassword);
-		user.setMasterKey(masterKey);
+		user.setMasterKey(reEncryptedKey);
 		user.setIv(iv);
 
 		return user;
@@ -65,11 +67,6 @@ public class PasswordUtil {
 	// AESで暗号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
 	private static String encryptWithAES(String key, String iv, String value) {
 		return CipherUtil.encrypt(key, iv, value);
-	}
-
-	// AESで復号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
-	private static String decryptWithAES(String key, String iv, String encryptedValue) {
-		return CipherUtil.decrypt(key, iv, encryptedValue);
 	}
 
 }

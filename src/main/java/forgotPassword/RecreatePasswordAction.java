@@ -1,4 +1,4 @@
-package createAccount;
+package forgotPassword;
 
 import java.util.regex.Pattern;
 
@@ -10,9 +10,11 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.Decrypt;
+import tool.DecryptionResult;
 import tool.PasswordUtil;
 
-public class CreatePasswordAction extends Action {
+public class RecreatePasswordAction extends Action {
 
 	@Override
 	public String execute(
@@ -24,7 +26,7 @@ public class CreatePasswordAction extends Action {
 		String passwordCheck = request.getParameter("passwordCheck");
 
 		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("encryptedAccount") == null) {
+		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
 			String contextPath = request.getContextPath();
@@ -47,31 +49,45 @@ public class CreatePasswordAction extends Action {
 
 		// パスワードが英大文字・小文字・数字をすべて含み８文字以上の場合の処理
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
-			// セッションから暗号化されたアカウント名を取り出す
-			String encryptedAccount = (String) session.getAttribute("encryptedAccount");
-			// 暗号化されたアカウント名を復号する
-			String account = CipherUtil.commonDecrypt(encryptedAccount);
-			// ユーザー情報を格納するクラスの作成
-			User user = new User();
-			// PasswordUtilクラスにてユーザー情報を自動入力する
-			//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
-			user = PasswordUtil.register(account, password);
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
-			// データベースにアカウント登録する
-			dao.accountInsert(user);
+			// セッションから暗号化されたIDの取り出し
+			String strId = (String) session.getAttribute("id");
+			// IDの復号
+			int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// アカウントの取り出し
+			String account = result.getAccount();
+			// マスターキーの取り出し			
+			String masterKey = result.getMasterKey();
+			// ivの取り出し
+			String iv = result.getIv();
+			// マスターキーの新暗号化
+			String encryptedKey = CipherUtil.encrypt(password + account, iv, masterKey);
+			// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
+			String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
+			// PasswordUtilクラスにてパスワードをハッシュ化する
+			String newPassword = PasswordUtil.getHashedPassword(password);
 
-			// リクエストにアカウント名を格納する
-			request.setAttribute("accountName", account);
+			// 更新する情報をUserクラスを作成し格納する
+			User user = new User();
+			user.setId(id);
+			user.setPassword(newPassword);
+			user.setMasterKey(reEncryptedKey);
+			// データベースのパスワードとマスターキーを更新する
+			dao.updatePassword(user);
+			dao.updateMasterKey(user);
 			// セッションの全削除
 			session.invalidate();
-			// アカウント作成成功画面に遷移
-			return "create-success.jsp";
+			// パスワード再作成成功画面に遷移
+			return "recreate-success.jsp";
 
 			// パスワードの入力形式が不適切ならエラー処理
 		} else {
 			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
-			return "create-password.jsp";
+			return "recreate-password.jsp";
 		}
 
 	}

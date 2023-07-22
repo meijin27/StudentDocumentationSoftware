@@ -13,8 +13,10 @@ public class Decrypt {
 	}
 
 	public DecryptionResult getDecryptedMasterKey(HttpSession session) throws Exception {
-		// セッションからIDの取り出し
-		int id = (int) session.getAttribute("id");
+		// セッションから暗号化されたIDの取り出し
+		String strId = (String) session.getAttribute("id");
+		// IDの復号
+		int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
 		// データベースから暗号化されたアカウント名の取り出し
 		String encryptedAccount = dao.getAccount(id);
 		// 暗号化されたアカウント名の復号
