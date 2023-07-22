@@ -33,6 +33,8 @@ public class FirstSettingCheckAction extends Action {
 		String firstName = (String) session.getAttribute("firstName");
 		String studentType = (String) session.getAttribute("studentType");
 		String className = (String) session.getAttribute("className");
+		String schoolYear = (String) session.getAttribute("schoolYear");
+		String classNumber = (String) session.getAttribute("classNumber");
 		String studentNumber = (String) session.getAttribute("studentNumber");
 		String birthYear = (String) session.getAttribute("birthYear");
 		String birthMonth = (String) session.getAttribute("birthMonth");
@@ -43,6 +45,8 @@ public class FirstSettingCheckAction extends Action {
 		session.removeAttribute("firstName");
 		session.removeAttribute("studentType");
 		session.removeAttribute("className");
+		session.removeAttribute("schoolYear");
+		session.removeAttribute("classNumber");
 		session.removeAttribute("studentNumber");
 		session.removeAttribute("birthYear");
 		session.removeAttribute("birthMonth");
@@ -67,6 +71,8 @@ public class FirstSettingCheckAction extends Action {
 		String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
 		String encryptedStudentType = CipherUtil.encrypt(masterKey, iv, studentType);
 		String encryptedClassName = CipherUtil.encrypt(masterKey, iv, className);
+		String encryptedSchoolYear = CipherUtil.encrypt(masterKey, iv, schoolYear);
+		String encryptedClassNumber = CipherUtil.encrypt(masterKey, iv, classNumber);
 		String encryptedStudentNumber = CipherUtil.encrypt(masterKey, iv, studentNumber);
 		String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
 		String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
@@ -77,6 +83,8 @@ public class FirstSettingCheckAction extends Action {
 		String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
 		String reEncryptedStudentType = CipherUtil.commonEncrypt(encryptedStudentType);
 		String reEncryptedClassName = CipherUtil.commonEncrypt(encryptedClassName);
+		String reEncryptedSchoolYear = CipherUtil.commonEncrypt(encryptedSchoolYear);
+		String reEncryptedClassNumber = CipherUtil.commonEncrypt(encryptedClassNumber);
 		String reEncryptedStudentNumber = CipherUtil.commonEncrypt(encryptedStudentNumber);
 		String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
 		String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
@@ -89,6 +97,8 @@ public class FirstSettingCheckAction extends Action {
 		user.setFirstName(reEncryptedFirstName);
 		user.setStudentType(reEncryptedStudentType);
 		user.setClassName(reEncryptedClassName);
+		user.setSchoolYear(reEncryptedSchoolYear);
+		user.setClassNumber(reEncryptedClassNumber);
 		user.setStudentNumber(reEncryptedStudentNumber);
 		user.setBirthYear(reEncryptedBirthYear);
 		user.setBirthMonth(reEncryptedBirthMonth);

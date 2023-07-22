@@ -10,6 +10,8 @@
 		        <p>名: ${sessionScope.firstName}</p>
 		        <p>学生種別: ${sessionScope.studentType}</p>
 		        <p>クラス名: ${sessionScope.className}</p>
+		        <p>学年: ${sessionScope.schoolYear}</p>		       
+		        <p>組: ${sessionScope.classNumber}</p>		        
 		        <p>学生番号: ${sessionScope.studentNumber}</p>
 		        <p>生年: ${sessionScope.birthYear}</p>
 		        <p>生月: ${sessionScope.birthMonth}</p>

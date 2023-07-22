@@ -76,15 +76,43 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="">クラス名</label>
                     <span class="text-danger">*</span>
-                    <input class="form-control" type="text" name="className" placeholder="IG11" value="${className}"required>
+                    <input class="form-control" type="text" name="className" placeholder="IT・ゲームソフト科" value="${className}"required>
                 </div>
-            
-                 <!-- 学籍番号 -->
+                <!-- 学籍番号 -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label" for="">学籍番号</label>
                     <span class="text-danger">*</span>
                     <input class="form-control" type="studentNumber" name="studentNumber" placeholder="240001" value="${studentNumber}"required>
                 </div>                                                  			
+                <!-- 学年 -->
+                <div class="col-md-2 mb-3">
+                    <label class="form-label" for="">学年</label>
+                    <span class="text-danger">*</span>                    
+				    <select name="schoolYear" class="form-control" required>
+				        <option value="">--- 学年 ---</option>
+				        <% 
+				        for(int i=1; i <= 2; i++){ 
+				        %>
+				            <option value="<%= i %>"><%= i %></option>
+				        <% 
+				        } 
+				        %>
+				    </select>
+				</div>
+                <div class="col-md-2 mb-3">	
+                    <label class="form-label" for="">組</label>
+                    <span class="text-danger">*</span>                        
+				    <select name="classNumber" class="form-control" required>
+				        <option value="">--- 組 ---</option>
+				        <% 
+				        for(int i=1; i <= 4; i++){ 
+				        %>
+				            <option value="<%= i %>"><%= i %></option>
+				        <% 
+				        } 
+				        %>
+				    </select>
+				</div>            
 
         
              
@@ -120,6 +148,6 @@
         </form>
     </main>
 
-<script src="../js/select.js"></script>  
+
 <script src="../js/app.js"></script>   
 <%@include file="../footer.html" %>

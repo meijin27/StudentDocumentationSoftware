@@ -31,6 +31,8 @@ public class FirstSettingAction extends Action {
 		String firstName = request.getParameter("firstName");
 		String studentType = request.getParameter("studentType");
 		String className = request.getParameter("className");
+		String schoolYear = request.getParameter("schoolYear");
+		String classNumber = request.getParameter("classNumber");
 		String studentNumber = request.getParameter("studentNumber");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
@@ -41,6 +43,8 @@ public class FirstSettingAction extends Action {
 		session.setAttribute("firstName", firstName);
 		session.setAttribute("studentType", studentType);
 		session.setAttribute("className", className);
+		session.setAttribute("schoolYear", schoolYear);
+		session.setAttribute("classNumber", classNumber);
 		session.setAttribute("studentNumber", studentNumber);
 		session.setAttribute("birthYear", birthYear);
 		session.setAttribute("birthMonth", birthMonth);

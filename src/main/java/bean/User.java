@@ -14,6 +14,8 @@ public class User implements java.io.Serializable {
 	private String lastName;
 	private String firstName;
 	private String className;
+	private String schoolYear;
+	private String classNumber;
 	private String studentNumber;
 	private String birthYear;
 	private String birthMonth;
@@ -65,6 +67,14 @@ public class User implements java.io.Serializable {
 
 	public String getClassName() {
 		return className;
+	}
+
+	public String getSchoolYear() {
+		return schoolYear;
+	}
+
+	public String getClassNumber() {
+		return classNumber;
 	}
 
 	public String getStudentNumber() {
@@ -129,6 +139,14 @@ public class User implements java.io.Serializable {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public void setSchoolYear(String schoolYear) {
+		this.schoolYear = schoolYear;
+	}
+
+	public void setClassNumber(String classNumber) {
+		this.classNumber = classNumber;
 	}
 
 	public void setStudentNumber(String studentNumber) {

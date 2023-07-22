@@ -99,6 +99,14 @@ public class UserDAO extends DAO {
 		return getField("class_name", id);
 	}
 
+	public String getSchoolYear(int id) {
+		return getField("school_year", id);
+	}
+
+	public String getClassNumber(int id) {
+		return getField("class_number", id);
+	}
+
 	public String getStudentNumber(int id) {
 		return getField("student_number", id);
 	}
@@ -135,6 +143,14 @@ public class UserDAO extends DAO {
 
 	public int updateClassName(User user) throws Exception {
 		return updateField("class_name", user.getClassName(), user.getId());
+	}
+
+	public int updateSchoolYear(User user) throws Exception {
+		return updateField("school_year", user.getSchoolYear(), user.getId());
+	}
+
+	public int updateClassNumber(User user) throws Exception {
+		return updateField("class_number", user.getClassNumber(), user.getId());
 	}
 
 	public int updateStudentNumber(User user) throws Exception {
@@ -216,16 +232,18 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET last_name = ?, first_name = ?, student_type = ?, class_name = ?, student_number = ?, birth_year = ?, birth_month = ?, birth_day = ? WHERE id = ?")) {
+					"UPDATE users SET last_name = ?, first_name = ?, student_type = ?, class_name = ?, school_year = ?, class_number = ?, student_number = ?, birth_year = ?, birth_month = ?, birth_day = ? WHERE id = ?")) {
 				st.setString(1, user.getLastName());
 				st.setString(2, user.getFirstName());
 				st.setString(3, user.getStudentType());
 				st.setString(4, user.getClassName());
-				st.setString(5, user.getStudentNumber());
-				st.setString(6, user.getBirthYear());
-				st.setString(7, user.getBirthMonth());
-				st.setString(8, user.getBirthDay());
-				st.setInt(9, user.getId());
+				st.setString(5, user.getSchoolYear());
+				st.setString(6, user.getClassNumber());
+				st.setString(7, user.getStudentNumber());
+				st.setString(8, user.getBirthYear());
+				st.setString(9, user.getBirthMonth());
+				st.setString(10, user.getBirthDay());
+				st.setInt(11, user.getId());
 
 				line[0] = st.executeUpdate();
 			}
