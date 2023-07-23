@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/Logout")
 public class Logout extends HttpServlet {
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// セッションを取得し、無効化
@@ -20,6 +21,6 @@ public class Logout extends HttpServlet {
 
 		// ログインページにリダイレクト
 		String contextPath = request.getContextPath();
-		response.sendRedirect(contextPath + "/login/login-in.jsp");
+		response.sendRedirect(contextPath + "/login/login.jsp");
 	}
 }

@@ -30,7 +30,7 @@ public class RecreatePasswordAction extends Action {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
 			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath + "/login/login-in.jsp");
+			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
 
@@ -44,7 +44,7 @@ public class RecreatePasswordAction extends Action {
 
 		// パスワードエラーが発生していたら元のページに戻りやり直し
 		if (request.getAttribute("passwordError") != null) {
-			return "create-password.jsp";
+			return "recreate-password.jsp";
 		}
 
 		// パスワードが英大文字・小文字・数字をすべて含み８文字以上の場合の処理

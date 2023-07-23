@@ -1,14 +1,11 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header.html" %>
-<%@include file="forgot-menu.jsp" %>
+<%@include file="../header/header-forgotPassword.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
-
-
-<main class="container">
-	<h2 class="text-center p-5">秘密の質問：${sessionScope.secretQuestion}</h2>
-
+<main class="form-forgot w-100 m-auto text-center flex-shrink-0">
+	<div class="container">
+	<h2 class="p-1">秘密の質問:</h2>
+	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${sessionScope.secretQuestion}</strong></h2>
         <form action="SecretCheck.action" method="post">
             <div class="row">
                 <!-- 秘密の質問の答え -->
@@ -17,7 +14,7 @@
                     <span class="text-danger">*</span>
                     <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
                 </div>
-                                <!-- 生年月日 -->
+                <!-- 生年月日 -->
                 <div class="col-md-4 mb-3">
                     生年月日
                     <span class="text-danger">*</span>                    
@@ -60,17 +57,15 @@
 				    </select>
                 </div>     
             </div>               
-			<div class="form-group text-center input-field">
-			    <a href="seach-account.jsp" class="btn btn-secondary md-5 mr-5">戻る</a>
-			    <input type="submit" value="次へ" class="btn btn-primary md-5"/> <!-- Margin Right added -->
-			</div>      
             <c:if test="${not empty secretError}">
               <div class="alert alert-danger text-center input-field" role="alert">
                   ${secretError}
               </div>
-            </c:if>        
+            </c:if>
+            <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>
     </main>
 
-<%@include file="../footer.html" %>
+<%@include file="../footer.jsp"%>
+
 

@@ -1,27 +1,23 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header.html" %>
-<%@include file="forgot-menu.jsp" %>
+<%@include file="../header/header-forgotPassword.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<div class="container h-100">
-    <div class="row justify-content-center align-items-center h-100">
-        <div class="col-md-6">
-            <form class="center-form" action="SeachAccount.action" method="post">
-                <div class="form-group input-field">
-                    <label for="account">アカウント名を入力してください</label>
-                    <input type="text" id="account" name="account" class="form-control">
-                </div>
-                <div class="form-group text-center input-field">
-                    <input type="submit" value="次へ" class="btn btn-primary md-5"/>
-                </div>
-                <c:if test="${not empty accountError}">
-                    <div class="alert alert-danger text-center input-field" role="alert">
-                        ${accountError}
-                    </div>
-                </c:if>                
-            </form>
-        </div>
-    </div>
-</div>
+<main class="form-forgot w-100 m-auto text-center flex-shrink-0">
+	<div class="container">
+		<form action="SeachAccount.action" method="post">
+	        <p>アカウント名を入力してください<P>
+		    <div class="form-floating">
+		      <input type="text" class="form-control mb-3" id="account" name="account" placeholder="Accont">
+		      <label for="account">Account</label>
+		    </div>
+		    <c:if test="${not empty accountError}">
+		       <div class="alert alert-danger" role="alert">
+		           ${accountError}
+		       </div>
+		   </c:if>               
+		    <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
+		</form>
+	</div>
+</main>
 
-<%@include file="../footer.html" %> 
+<%@include file="../footer.jsp" %> 

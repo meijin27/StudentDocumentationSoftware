@@ -73,11 +73,11 @@ public class LoginAction extends Action {
 				// 入力されたアカウント名またはパスワードが違う場合の処理
 			} else {
 				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
-				return "login-in.jsp";
+				return "login.jsp";
 			}
 		}
 		// アカウント名もしくはパスワードが入力されていなければログイン画面に戻す
 		request.setAttribute("loginError", "アカウント名およびパスワードの入力は必須です");
-		return "login-in.jsp";
+		return "login.jsp";
 	}
 }

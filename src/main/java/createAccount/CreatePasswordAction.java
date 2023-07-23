@@ -28,7 +28,7 @@ public class CreatePasswordAction extends Action {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
 			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath + "/login/login-in.jsp");
+			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
 
