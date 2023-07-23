@@ -1,6 +1,5 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header.html" %>
-<%@include file="first-menu.jsp" %>
+<%@include file="../header/header-firstSetting.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
  <main class="container">
@@ -25,5 +24,6 @@
             </div>
         </form>
     </main>
-    
-<%@include file="../footer.html" %>
+
+<%@include file="../footer.jsp"%>
+
