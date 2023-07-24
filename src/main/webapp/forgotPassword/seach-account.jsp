@@ -7,7 +7,7 @@
 		<form action="SeachAccount.action" method="post">
 	        <p>アカウント名を入力してください<P>
 		    <div class="form-floating">
-		      <input type="text" class="form-control mb-3" id="account" name="account" placeholder="Accont">
+		      <input type="text" class="form-control mb-5" id="account" name="account" placeholder="Accont">
 		      <label for="account">Account</label>
 		    </div>
 		    <c:if test="${not empty accountError}">

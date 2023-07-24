@@ -15,7 +15,7 @@
                     <input class="form-control" type="text" name="secretAnswer" required>
                 </div>
                 <!-- 生年月日 -->
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-5">
                     生年月日
                     <span class="text-danger">*</span>                    
 				    <select name="birthYear" class="form-control" required>
@@ -30,7 +30,7 @@
 				        %>
 				    </select>
 				</div>
-                <div class="col-md-4 mb-3">				
+                <div class="col-md-4 mb-5">				
                     <span class="text-danger">*</span>                        
 				    <select name="birthMonth" class="form-control" required>
 				        <option value="">--- 月 ---</option>
@@ -43,7 +43,7 @@
 				        %>
 				    </select>
 				</div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-5">
                     <span class="text-danger">*</span>                 
 				    <select name="birthDay" class="form-control" required>
 				        <option value="">--- 日 ---</option>

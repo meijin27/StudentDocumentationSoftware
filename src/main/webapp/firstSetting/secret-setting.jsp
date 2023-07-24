@@ -24,7 +24,7 @@
         			</select>
                 </div>
                 <!-- 秘密の質問の答え -->
-                <div class="col-md-12 mb-3">
+                <div class="col-md-12 mb-5">
                     <label class="form-label" for="">秘密の質問の答えを入力してください</label>
                     <span class="text-danger">*</span>
                     <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>

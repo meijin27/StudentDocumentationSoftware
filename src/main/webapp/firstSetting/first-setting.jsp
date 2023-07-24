@@ -91,7 +91,7 @@
                    <label class="form-label" for="">学年</label>
                    <span class="text-danger">*</span>                    
 			    <select name="schoolYear" class="form-control" required>
-			        <option value="">-- 学年 --</option>
+			        <option value="">- 学年 -</option>
 			        <% 
 			        for(int i=1; i <= 2; i++){ 
 			        %>
