@@ -46,6 +46,10 @@ main > .container {
   color: transparent;
 }
 
+.text-left {
+    text-align: left;
+}
+
 footer.footer {
   margin-top: auto;
   width: 100%;
