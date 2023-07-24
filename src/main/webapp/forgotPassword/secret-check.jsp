@@ -2,7 +2,7 @@
 <%@include file="../header/header-forgotPassword.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<main class="form-forgot w-100 m-auto text-center flex-shrink-0">
+<main class="form-forgot w-100 m-auto flex-shrink-0">
 	<div class="container">
 	<h2 class="p-1">秘密の質問:</h2>
 	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${sessionScope.secretQuestion}</strong></h2>

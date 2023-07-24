@@ -22,7 +22,7 @@ main > .container {
 }
 
 .form-first {
-  max-width: 430px;
+  max-width: 630px;
   padding: 15px;
 }
 
@@ -40,6 +40,10 @@ main > .container {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.invisible-text {
+  color: transparent;
 }
 
 footer.footer {

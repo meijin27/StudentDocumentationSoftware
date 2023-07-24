@@ -2,8 +2,8 @@
 <%@include file="../header/header-firstSetting.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
- <main class="container">
-        <h2 class="text-center p-5">初期設定</h2>
+<main class="form-first w-100 m-auto flex-shrink-0">
+        <h2 class="p-5">初期設定</h2>
 
         <form action="FirstSetting.action" method="post">
             <div class="row">
@@ -21,7 +21,7 @@
                 </div>
                 <!-- 生年月日 -->
                 <div class="col-md-2 mb-3">
-                    生年月日
+                    <label class="form-label" for="birthYear">生年月日</label>
                     <span class="text-danger">*</span>                    
 				    <select name="birthYear" class="form-control" required>
 				        <option value="">--- 年 ---</option>
@@ -36,7 +36,8 @@
 				    </select>
 				</div>
                 <div class="col-md-2 mb-3">				
-                    <span class="text-danger">*</span>                        
+	  				<label class="form-label invisible-text" for="birthManth">月</label>
+	  				<span class="text-danger">*</span>                        
 				    <select name="birthMonth" class="form-control" required>
 				        <option value="">--- 月 ---</option>
 				        <% 
@@ -49,6 +50,7 @@
 				    </select>
 				</div>
                 <div class="col-md-2 mb-3">
+	  				<label class="form-label invisible-text" for="birthDay">日</label>
                     <span class="text-danger">*</span>                 
 				    <select name="birthDay" class="form-control" required>
 				        <option value="">--- 日 ---</option>
@@ -136,15 +138,12 @@
                 ユーザ登録サービス利用規約・個人情報の取り扱いについて
             </div>
 
-            <div class="form-check mb-3">
+            <div class="form-first  mb-3">
             	<input class="form-check-input" id="agreeCheckbox" type="checkbox" name="agree" value="1">
                 <label class="form-check-label" for="">同意する</label>
             </div>
 
-            <!-- 送信ボタン -->
-            <div class="text-center">
-				<button class="btn btn-primary" id="submitButton">確認画面に進む</button>
-            </div>
+			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
         </form>
     </main>
 

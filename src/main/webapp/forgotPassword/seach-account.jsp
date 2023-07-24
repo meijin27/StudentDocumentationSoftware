@@ -2,7 +2,7 @@
 <%@include file="../header/header-forgotPassword.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<main class="form-forgot w-100 m-auto text-center flex-shrink-0">
+<main class="form-forgot w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="SeachAccount.action" method="post">
 	        <p>アカウント名を入力してください<P>
