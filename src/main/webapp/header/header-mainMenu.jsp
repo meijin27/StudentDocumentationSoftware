@@ -18,9 +18,6 @@
       <div class="collapse navbar-collapse navbar-custom" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp">Home</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="<%=request.getContextPath()%>/Logout">Logout</a>
           </li>
         </ul>

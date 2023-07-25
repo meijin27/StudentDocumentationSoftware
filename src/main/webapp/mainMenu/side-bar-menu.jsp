@@ -48,39 +48,76 @@
             </a>
           </li>
         </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-          <span>Saved reports</span>
-          <a class="link-secondary" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle" class="align-text-bottom"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Current month
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul>
-      </div>
+<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+  <span>届け出</span>
+  <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+    <span class="expand-icon" data-feather="plus-circle"></span>
+    <span class="collapse-icon d-none" data-feather="minus-circle"></span>
+  </a>
+</h6>
+<div id="collapse1" class="collapse">
+	        <ul class="nav flex-column mb-2">
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              欠席届
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              就職活動
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              退学
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              その他
+	            </a>
+	          </li>
+	        </ul>
+	      </div>       
+<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+  <span>各種設定</span>
+  <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+    <span class="expand-icon" data-feather="plus-circle"></span>
+    <span class="collapse-icon d-none" data-feather="minus-circle"></span>
+  </a>
+</h6>
+<div id="collapse2" class="collapse">
+	        <ul class="nav flex-column mb-2">
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              パスワードの変更
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              秘密の質問と答えの変更
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              クラス・学年・組の変更
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              学籍番号の変更
+	            </a>
+	          </li>
+	        </ul>
+	      </div>
+       </div>     
     </nav>
 
