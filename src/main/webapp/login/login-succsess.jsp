@@ -5,4 +5,4 @@
 <p>あなたのマスターキーは${master_key}です。</p>
 <p>あなたのivは${iv}です。</p>
 
-<%@include file="../footer.jsp" %>
+<%@include file="../footer/footer.jsp" %>

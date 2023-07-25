@@ -47,7 +47,7 @@ public class SecretCheckAction extends Action {
 		String CheckBirthMonth = dao.getBirthMonth(id);
 		String CheckBirthDay = dao.getBirthDay(id);
 		// 秘密の質問の答えの一致確認		
-		if (PasswordUtil.isPasswordMatch(secretAnswer, CheckSecretAnswer)) {
+		if (secretAnswer.length() <= 32 && PasswordUtil.isPasswordMatch(secretAnswer, CheckSecretAnswer)) {
 			// データベースからセカンドマスターキーの取り出し
 			String reEncryptedSecondMasterKey = dao.getSecondMasterKey(id);
 			// セカンドマスターキーの共通暗号からの復号

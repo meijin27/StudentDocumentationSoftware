@@ -20,6 +20,12 @@ public class CreateAccountAction extends Action {
 
 		// アカウント名が入力されている場合の処理
 		if (account != null && !account.isEmpty()) {
+			// 文字数が32文字より多い場合はエラーを返す
+			if (account.length() > 32) {
+				System.out.println(account.length());
+				request.setAttribute("accountError", "32文字以下で入力してください。");
+				return "create-account.jsp";
+			}
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
 			// 入力されたアカウント名を共通暗号キーで暗号化
@@ -27,7 +33,6 @@ public class CreateAccountAction extends Action {
 			// データベースに暗号化されたアカウント名が登録されているか確認するため
 			// 登録されているアカウント名と一致した場合は一致したユーザーデータを格納する
 			User user = dao.loginSearch(encryptedAccount);
-
 			// ユーザーデータがnullである　＝　未登録アカウントの場合の処理
 			if (user == null) {
 				// セッションに共通暗号キーで暗号化されたアカウント名を格納
@@ -41,7 +46,7 @@ public class CreateAccountAction extends Action {
 			}
 		}
 		// アカウント名未入力の場合は元のページに戻す
-		request.setAttribute("accountError", "アカウント名の入力は必須です");
+		request.setAttribute("accountError", "アカウント名の入力は必須です。");
 		return "create-account.jsp";
 	}
 }

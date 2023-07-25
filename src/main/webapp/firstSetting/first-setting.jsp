@@ -123,6 +123,11 @@
 		   <div class="alert alert-danger text-center input-field" role="alert">
 		       ${agreeError}
 		   </div>
+		</c:if>
+		<c:if test="${not empty  valueLongError}">
+	    	<div class="alert alert-danger" role="alert">
+	        	${valueLongError}
+	    	</div>
 		</c:if>       
 		<c:if test="${not empty studentNumberError}">
 		  <div class="alert alert-danger text-center input-field" role="alert">
@@ -145,7 +150,7 @@
 		                <h5 class="modal-title" id="termsModalLabel">利用規約</h5>
 		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
-		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/firstSetting/terms_of_use.txt">
+		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/terms_of_use.txt">
 		
 		             </div>
 		             <div class="modal-footer">
@@ -165,7 +170,7 @@
 		                <h5 class="modal-title" id="privacyModalLabel">プライバシーポリシー</h5>
 		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
-		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/firstSetting/privacy_policy.txt">
+		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/privacy_policy.txt">
 		            </div>
 		            <div class="modal-footer">
 		                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
@@ -187,6 +192,6 @@
 <script src="../js/modal.js"></script>   
 <script src="../js/first_setting.js"></script>   
 
-<%@include file="../footer.jsp"%>
+<%@include file="../footer/footer.jsp"%>
 
 

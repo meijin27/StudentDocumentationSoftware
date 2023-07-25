@@ -20,6 +20,11 @@ public class SeachAccountAction extends Action {
 
 		// アカウント名が入力されている場合の処理		
 		if (account != null && !account.isEmpty()) {
+			// 文字数が32文字より多い場合はエラーを返す
+			if (account.length() > 32) {
+				request.setAttribute("accountError", "32文字以下で入力してください。");
+				return "seach-account.jsp";
+			}
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
 			// 入力されたアカウント名を共通暗号キーで暗号化

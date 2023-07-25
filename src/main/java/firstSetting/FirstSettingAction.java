@@ -53,13 +53,17 @@ public class FirstSettingAction extends Action {
 		// 学籍番号が数字にできない場合はエラーを返す
 		try {
 			int number = Integer.parseInt(studentNumber);
+			// 学籍番号が半角6桁でなければエラーを返す
+			if (!studentNumber.matches("^\\d{6}$")) {
+				request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("studentNumberError", "学籍番号は数字で入力してください。");
 		}
 
 		// 「同意する」ボタンが押されていない場合はエラーにする。
 		if (request.getParameter("agree") == null) {
-			request.setAttribute("agreeError", "「同意する」をチェックしない限り登録できません。");
+			request.setAttribute("agreeError", "「利用規約及びプライバシーポリシーに同意する」をチェックしない限り登録できません。");
 		}
 
 		// 生年月日が存在しない日付の場合はエラーにする
@@ -74,9 +78,14 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("birthDayError", "存在しない日付です。");
 		}
 
+		// 文字数が32文字より多い場合はエラーを返す
+		if (lastName.length() > 32 || firstName.length() > 32 || className.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		}
+
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null
-				|| request.getAttribute("birthDayError") != null) {
+				|| request.getAttribute("birthDayError") != null || request.getAttribute("valueLongError") != null) {
 			return "first-setting.jsp";
 		}
 

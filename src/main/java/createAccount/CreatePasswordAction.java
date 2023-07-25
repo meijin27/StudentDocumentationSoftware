@@ -38,6 +38,8 @@ public class CreatePasswordAction extends Action {
 			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
+		} else if (password.length() > 32) {
+			request.setAttribute("passwordError", "32文字以下で入力してください。");
 		}
 
 		// パスワードエラーが発生していたら元のページに戻りやり直し

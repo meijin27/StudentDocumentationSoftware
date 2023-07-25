@@ -34,11 +34,11 @@
 	              <div class="alert alert-danger text-center input-field" role="alert">
 	                  ${secretError}
 	              </div>
-	            </c:if>        
+	            </c:if>
              </div>         
         </form>
      </div>
 </main>
 
 
-<%@include file="../footer.jsp"%>
+<%@include file="../footer/footer.jsp"%>

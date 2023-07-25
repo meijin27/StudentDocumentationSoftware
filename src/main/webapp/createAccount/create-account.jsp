@@ -14,10 +14,10 @@
 		       <div class="alert alert-danger" role="alert">
 		           ${accountError}
 		       </div>
-		   </c:if>               
+		    </c:if>               
 		    <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
 		</form>
 	</div>
 </main>
 
-<%@include file="../footer.jsp" %> 
+<%@include file="../footer/footer.jsp" %> 

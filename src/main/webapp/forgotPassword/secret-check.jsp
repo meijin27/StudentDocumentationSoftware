@@ -66,6 +66,6 @@
         </form>
     </main>
 
-<%@include file="../footer.jsp"%>
+<%@include file="../footer/footer.jsp"%>
 
 
