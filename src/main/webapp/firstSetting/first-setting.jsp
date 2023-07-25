@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header/header-firstSetting.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:import url="/header/header-firstSetting.jsp" />
 
 <main class="form-first w-100 m-auto flex-shrink-0">
        <h2 class="p-5">初期設定</h2>
@@ -150,9 +150,8 @@
 		                <h5 class="modal-title" id="termsModalLabel">利用規約</h5>
 		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
-		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/terms_of_use.txt">
-		
-		             </div>
+			            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/terms_of_use.txt">		
+			            </div>
 		             <div class="modal-footer">
 		                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
 		             </div>
@@ -170,8 +169,8 @@
 		                <h5 class="modal-title" id="privacyModalLabel">プライバシーポリシー</h5>
 		                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		            </div>
-		            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/privacy_policy.txt">
-		            </div>
+			            <div class="modal-body" data-terms-url="<%=request.getContextPath()%>/txt/privacy_policy.txt">
+			            </div>
 		            <div class="modal-footer">
 		                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
 		            </div>
@@ -189,9 +188,9 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.0-beta3/js/bootstrap.bundle.min.js"></script>
-<script src="../js/modal.js"></script>   
-<script src="../js/first_setting.js"></script>   
+<script src="<%=request.getContextPath()%>//js/modal.js"></script>
+<script src="<%=request.getContextPath()%>/js/first_setting.js"></script>
 
-<%@include file="../footer/footer.jsp"%>
+<c:import url="/footer/footer.jsp" />
 
 

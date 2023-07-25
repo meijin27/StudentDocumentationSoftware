@@ -7,5 +7,9 @@
 </footer>
   </div>
 </div>
+<script src="<%=request.getContextPath()%>/js/feather.min.js"></script>
+<script>
+  feather.replace();
+</script>
 </body>
 </html>

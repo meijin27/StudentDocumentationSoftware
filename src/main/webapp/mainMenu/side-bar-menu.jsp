@@ -1,5 +1,4 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header/header-mainMenu.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- 現在のURLを取得 -->
@@ -19,7 +18,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/orders.jsp") ? " active" : "" %>" href="#">
+            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/createAccount/createAccount.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/createAccount/create-account.jsp">
               <span data-feather="file" class="align-text-bottom"></span>
               Orders
             </a>
@@ -85,8 +84,3 @@
       </div>
     </nav>
 
-
-
-<script src="../js/feather.min.js"></script>  
-
-<%@include file="../footer/footer-main-menu.jsp" %> 

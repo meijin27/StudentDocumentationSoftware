@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header/header-firstSetting.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:import url="/header/header-firstSetting.jsp" />
 
 <main class="form-first w-100 m-auto text-center flex-shrink-0">
 	<div class="container">
@@ -41,4 +41,4 @@
 </main>
 
 
-<%@include file="../footer/footer.jsp"%>
+<c:import url="/footer/footer.jsp" />

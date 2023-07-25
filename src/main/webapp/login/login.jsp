@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header/header-login.jsp" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:import url="/header/header-login.jsp" />
+
 
 <main class="form-login w-100 m-auto">
   <form action="Login.action" method="post">
@@ -28,9 +29,9 @@
 	</c:if>
     <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Login</button>
 
-    <a href="../createAccount/create-account.jsp" class="d-block mb-3">新規登録はこちら</a>
-    <a href="../forgotPassword/seach-account.jsp">パスワードを忘れた方はこちら</a>
+	<a href="<%=request.getContextPath()%>/createAccount/create-account.jsp" class="d-block mb-3">新規登録はこちら</a>
+    <a href="<%=request.getContextPath()%>/forgotPassword/seach-account.jsp">パスワードを忘れた方はこちら</a>
     
 </main>
 
-<%@include file="../footer/footer.jsp" %> 
+<c:import url="/footer/footer.jsp" />

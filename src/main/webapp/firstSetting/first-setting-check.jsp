@@ -1,6 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
-<%@include file="../header/header-firstSetting.jsp"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:import url="/header/header-firstSetting.jsp" />
 
 <main class="form-first w-100 m-auto flex-shrink-0">
      <h2 class="p-5">入力内容確認</h2>
@@ -23,5 +23,5 @@
      </form>
 </main>
 
-<%@include file="../footer/footer.jsp"%>
+<c:import url="/footer/footer.jsp" />
 
