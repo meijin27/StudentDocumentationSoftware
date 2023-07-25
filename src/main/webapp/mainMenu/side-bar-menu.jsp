@@ -94,26 +94,38 @@
 	        <ul class="nav flex-column mb-2">
 	          <li class="nav-item">
 	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
-	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              <span data-feather="settings" class="align-text-bottom"></span>
 	              パスワードの変更
 	            </a>
 	          </li>
 	          <li class="nav-item">
 	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
-	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              <span data-feather="settings" class="align-text-bottom"></span>
 	              秘密の質問と答えの変更
 	            </a>
 	          </li>
 	          <li class="nav-item">
 	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
-	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              <span data-feather="settings" class="align-text-bottom"></span>
 	              クラス・学年・組の変更
 	            </a>
 	          </li>
 	          <li class="nav-item">
 	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
-	              <span data-feather="file-text" class="align-text-bottom"></span>
+	              <span data-feather="settings" class="align-text-bottom"></span>
 	              学籍番号の変更
+	            </a>
+	          </li>
+	          	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="settings" class="align-text-bottom"></span>
+	              クラス・学年・組の変更
+	            </a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+	              <span data-feather="trash-2" class="align-text-bottom"></span>
+	              アカウントの削除
 	            </a>
 	          </li>
 	        </ul>
