@@ -83,6 +83,8 @@ public class RecreatePasswordAction extends Action {
 			dao.updateMasterKey(user);
 			// セッションの全削除
 			session.invalidate();
+			// アップデート内容のデータベースへの登録
+			dao.addOperationLog(id, "Forgot Password Recreate");
 			// パスワード再作成成功画面に遷移
 			return "recreate-success.jsp";
 

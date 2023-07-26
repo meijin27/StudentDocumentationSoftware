@@ -2,12 +2,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-createAccount.jsp" />
 
-<main class="form-create w-100 m-auto text-center flex-shrink-0">
+<main class="form-createAccount w-100 m-auto text-center flex-shrink-0">
 	<div class="container">
 		<form action="CreateAccount.action" method="post">
-	        <P>新規作成するアカウント名を入力してください</P>
+	        <P>新規作成するアカウント名を入力してください<span class="text-danger">*</span></P>
 		    <div class="form-floating">
-		      <input type="text" class="form-control mb-3" id="account" name="account" placeholder="New Accont">
+		      <input type="text" class="form-control mb-3" id="account" name="account" placeholder="New Accont" required>
 		      <label for="account">New Account</label>
 		    </div>
 		    <c:if test="${not empty accountError}">

@@ -38,6 +38,14 @@ public class FirstSettingAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
+		// 未入力項目があればエラーを返す
+		if (lastName == null || firstName == null || studentType == null || className == null ||
+				schoolYear == null || classNumber == null || studentNumber == null ||
+				birthYear == null || birthMonth == null || birthDay == null) {
+			request.setAttribute("nullError", "未入力項目があります。");
+			return "first-setting.jsp";
+		}
+
 		// 入力された値をセッションに格納
 		session.setAttribute("lastName", lastName);
 		session.setAttribute("firstName", firstName);

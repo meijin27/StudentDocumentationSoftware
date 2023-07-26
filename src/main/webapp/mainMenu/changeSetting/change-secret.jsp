@@ -1,13 +1,20 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:import url="/header/header-firstSetting.jsp" />
+<c:import url="/header/header-mainMenu.jsp" />
 
-<main class="form-firstSetting w-100 m-auto text-center flex-shrink-0">
+<%@include file="/mainMenu/side-bar-menu.jsp" %>
+
+<main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
 	<div class="container">
-        <form action="SecretSetting.action" method="post">
+		<form action="ChangeSecret.action" method="post">
+			 <p>現在のパスワードを入力してください<span class="text-danger">*</span></p>
+			 <div class="form-floating mb-5">
+				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
+			 	<label	for="password">Password</label>
+			 </div>			
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
-                 <label class="form-label" for="">秘密の質問を選択してください。</label>
+                 <label class="form-label" for="">新しい秘密の質問を選択してください。</label>
                  <span class="text-danger">*</span>                    
                  <select name="secretQuestion" class="form-control" required>
                     <option value="">--- 秘密の質問 ---</option>
@@ -24,7 +31,7 @@
              </div>
             <!-- 秘密の質問の答え -->
             <div class="col-md-12 mb-5">
-                <label class="form-label" for="">秘密の質問の答えを入力してください</label>
+                <label class="form-label" for="">新しい秘密の質問の答えを入力してください</label>
                 <span class="text-danger">*</span>
                 <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
             </div>      
@@ -35,8 +42,8 @@
               </div>
             </c:if>
         </form>
-     </div>
+	</div>
 </main>
 
+<c:import url="/footer/footer-main-menu.jsp" />
 
-<c:import url="/footer/footer.jsp" />

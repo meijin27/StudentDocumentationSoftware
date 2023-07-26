@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
 
-<main class="form-first w-100 m-auto flex-shrink-0">
+<main class="form-firstSetting w-100 m-auto flex-shrink-0">
        <h2 class="p-5">初期設定</h2>
 
        <form action="FirstSetting.action" method="post">
@@ -119,6 +119,11 @@
        
             
         </div>   
+        <c:if test="${not empty nullError}">
+		   <div class="alert alert-danger text-center input-field" role="alert">
+		       ${nullError}
+		   </div>
+		</c:if>
 		<c:if test="${not empty agreeError}">
 		   <div class="alert alert-danger text-center input-field" role="alert">
 		       ${agreeError}
@@ -178,7 +183,7 @@
 		    </div>
 		</div>
 
-        <div class="form-first  mb-3">
+        <div class="mb-3">
            	<input class="form-check-input" id="agreeCheckbox" type="checkbox" name="agree" value="1">
             <label class="form-check-label" for="">利用規約及びプライバシーポリシーに同意する</label>
         </div>

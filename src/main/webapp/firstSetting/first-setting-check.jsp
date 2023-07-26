@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
 
-<main class="form-first w-100 m-auto flex-shrink-0">
+<main class="form-firstSetting w-100 m-auto flex-shrink-0">
      <h2 class="p-5">入力内容確認</h2>
      <form action="FirstSettingCheck.action" method="post">
 

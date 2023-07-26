@@ -108,8 +108,10 @@ public class FirstSettingCheckAction extends Action {
 		dao.updateFirstSetting(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Create First Setting");
-
-		return "first-setting-check.jsp";
+		// メインページにリダイレクト
+		String contextPath = request.getContextPath();
+		response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+		return null;
 
 	}
 

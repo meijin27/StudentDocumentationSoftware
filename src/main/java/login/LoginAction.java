@@ -76,8 +76,10 @@ public class LoginAction extends Action {
 				} else {
 					// セッションに暗号化した学生の種類を持たせる
 					session.setAttribute("student_type", studentType);
-
-					return "login-succsess.jsp";
+					// メインページにリダイレクト
+					String contextPath = request.getContextPath();
+					response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+					return null;
 				}
 				// 入力されたアカウント名またはパスワードが違う場合の処理
 			} else {
