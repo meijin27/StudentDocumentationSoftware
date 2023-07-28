@@ -96,7 +96,7 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("birthDayError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
+		// 文字数が64文字より多い場合はエラーを返す
 		if (lastName.length() > 64 || firstName.length() > 64 || className.length() > 64 || address.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}

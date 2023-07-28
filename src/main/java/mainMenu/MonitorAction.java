@@ -42,9 +42,6 @@ public class MonitorAction extends Action {
 		// ivの取り出し
 		String iv = result.getIv();
 
-		System.out.println("復号時マスターキー：" + masterKey);
-		System.out.println("復号時IV：" + iv);
-
 		// データベースから照合用データの取り出しと復号とセッションに格納
 		session.setAttribute("monitorId", id);
 		session.setAttribute("account", account);
@@ -66,14 +63,8 @@ public class MonitorAction extends Action {
 		session.setAttribute("secretQuestion", secretQuestion);
 
 		String reEncryptedLastName = dao.getLastName(id);
-		System.out.println("reEncryptedLastName:" + reEncryptedLastName);
-
 		String encryptedLastName = (reEncryptedLastName != null) ? CipherUtil.commonDecrypt(reEncryptedLastName) : null;
-		System.out.println("encryptedLastName" + encryptedLastName);
-
 		String lastName = (encryptedLastName != null) ? CipherUtil.decrypt(masterKey, iv, encryptedLastName) : null;
-		System.out.println("lastName" + lastName);
-
 		session.setAttribute("lastName", lastName);
 
 		String reEncryptedFirstName = dao.getFirstName(id);
@@ -158,6 +149,14 @@ public class MonitorAction extends Action {
 		String namePESO = (encryptedNamePESO != null) ? CipherUtil.decrypt(masterKey, iv, encryptedNamePESO) : null;
 		session.setAttribute("namePESO", namePESO);
 
+		String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
+		String encryptedSupplyNumber = (reEncryptedSupplyNumber != null)
+				? CipherUtil.commonDecrypt(reEncryptedSupplyNumber)
+				: null;
+		String supplyNumber = (encryptedSupplyNumber != null) ? CipherUtil.decrypt(masterKey, iv, encryptedSupplyNumber)
+				: null;
+		session.setAttribute("supplyNumber", supplyNumber);
+
 		String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
 		String encryptedAttendanceNumber = (reEncryptedAttendanceNumber != null)
 				? CipherUtil.commonDecrypt(reEncryptedAttendanceNumber)
@@ -175,14 +174,6 @@ public class MonitorAction extends Action {
 				? CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance)
 				: null;
 		session.setAttribute("employmentInsurance", employmentInsurance);
-
-		String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
-		String encryptedSupplyNumber = (reEncryptedSupplyNumber != null)
-				? CipherUtil.commonDecrypt(reEncryptedSupplyNumber)
-				: null;
-		String supplyNumber = (encryptedSupplyNumber != null) ? CipherUtil.decrypt(masterKey, iv, encryptedSupplyNumber)
-				: null;
-		session.setAttribute("supplyNumber", supplyNumber);
 
 		return "monitor.jsp";
 	}

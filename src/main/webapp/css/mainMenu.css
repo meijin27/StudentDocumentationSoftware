@@ -52,6 +52,24 @@ footer.footer {
   text-align: left;
 }
 
+.data-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.data-label {
+  width: 120px; /* 固定されている表示内容の幅を指定。必要に応じて調整してください。 */
+  text-align: left;
+  margin-left: 50px;
+}
+
+.data-value {
+  margin-left: 20px; /* 固定されている表示内容と変化する表示内容の間隔を指定。必要に応じて調整してください。 */
+}
+
+
 /*
  * Sidebar
  */

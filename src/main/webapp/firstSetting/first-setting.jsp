@@ -23,13 +23,13 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">電話番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="tel" name="tel" placeholder="08011112222"value="${tel}" required>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}" required>
 	            </div>
 	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">郵便番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="tel" name="postCode" placeholder="2310017" value="${postCode}" required>
+	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}" required>
 	            </div>
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-3">

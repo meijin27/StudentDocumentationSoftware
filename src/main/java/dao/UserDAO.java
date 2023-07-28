@@ -344,6 +344,24 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	public int updateVocationalTraineeSetting(User user) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE users SET name_PESO = ?, supply_number = ?, attendance_number = ?, employment_insurance = ? WHERE id = ?")) {
+				st.setString(1, user.getNamePESO());
+				st.setString(2, user.getSupplyNumber());
+				st.setString(3, user.getAttendanceNumber());
+				st.setString(4, user.getEmploymentInsurance());
+				st.setString(5, user.getId());
+
+				line[0] = st.executeUpdate();
+			}
+		});
+
+		return line[0];
+	}
+
 	private int updateField(String field, String value, String id) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {

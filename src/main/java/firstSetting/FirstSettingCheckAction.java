@@ -70,9 +70,6 @@ public class FirstSettingCheckAction extends Action {
 		// ivの取り出し
 		String iv = result.getIv();
 
-		System.out.println("暗号時マスターキー：" + masterKey);
-		System.out.println("暗号時IV：" + iv);
-		System.out.println("lastName:" + lastName);
 		// 登録するデータの暗号化
 		String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
 		String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
@@ -88,10 +85,6 @@ public class FirstSettingCheckAction extends Action {
 		String encryptedSchoolYear = CipherUtil.encrypt(masterKey, iv, schoolYear);
 		String encryptedClassNumber = CipherUtil.encrypt(masterKey, iv, classNumber);
 
-		System.out.println("encryptedLastName:" + encryptedLastName);
-		String kaidokuLastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-		System.out.println("kaidokuLastName:" + kaidokuLastName);
-
 		// 共通暗号キーによる暗号化
 		String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
 		String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
@@ -106,11 +99,6 @@ public class FirstSettingCheckAction extends Action {
 		String reEncryptedStudentNumber = CipherUtil.commonEncrypt(encryptedStudentNumber);
 		String reEncryptedSchoolYear = CipherUtil.commonEncrypt(encryptedSchoolYear);
 		String reEncryptedClassNumber = CipherUtil.commonEncrypt(encryptedClassNumber);
-		System.out.println("reEncryptedLastName:" + reEncryptedLastName);
-		String kaidoku2LastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-		System.out.println("kaidoku2LastName:" + kaidoku2LastName);
-		String kaidoku3LastName = CipherUtil.decrypt(masterKey, iv, kaidoku2LastName);
-		System.out.println("kaidoku3LastName:" + kaidoku3LastName);
 
 		// ユーザー情報の作成
 		User user = new User();
@@ -133,22 +121,14 @@ public class FirstSettingCheckAction extends Action {
 		dao.updateFirstSetting(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Create First Setting");
-
-		String reEncryptedLastName2 = dao.getLastName(id);
-		System.out.println("reEncryptedLastName2:" + reEncryptedLastName2);
-
-		String encryptedLastName2 = (reEncryptedLastName2 != null) ? CipherUtil.commonDecrypt(reEncryptedLastName2)
-				: null;
-		System.out.println("encryptedLastName" + encryptedLastName2);
-
-		String lastName2 = (encryptedLastName2 != null) ? CipherUtil.decrypt(masterKey, iv, encryptedLastName2) : null;
-		System.out.println("lastName" + lastName2);
-
-		// メインページにリダイレクト
-		String contextPath = request.getContextPath();
-		response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
-		return null;
-
+		if (studentType.equals("職業訓練生")) {
+			return "vocational-trainee-setting.jsp";
+		} else {
+			// メインページにリダイレクト
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+			return null;
+		}
 	}
 
 }
