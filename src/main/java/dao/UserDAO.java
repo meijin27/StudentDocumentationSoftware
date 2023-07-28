@@ -50,7 +50,7 @@ public class UserDAO extends DAO {
 		try {
 			executeSqlOperation(con -> {
 				try (PreparedStatement st = con.prepareStatement(
-						"select * from Users where account=?")) {
+						"select * from Users where account=? and is_deleted=FALSE")) {
 					st.setString(1, login);
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
@@ -267,7 +267,7 @@ public class UserDAO extends DAO {
 		try {
 			executeSqlOperation(con -> {
 				try (PreparedStatement st = con.prepareStatement(
-						"select " + field + " from Users where id=?")) {
+						"select " + field + " from Users where id=? and is_deleted=FALSE")) {
 					st.setString(1, id);
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
@@ -304,7 +304,7 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET secret_question = ?, secret_answer = ?, second_master_key = ? WHERE id = ?")) {
+					"UPDATE users SET secret_question = ?, secret_answer = ?, second_master_key = ? WHERE id = ? and is_deleted=FALSE")) {
 				st.setString(1, user.getSecretQuestion());
 				st.setString(2, user.getSecretAnswer());
 				st.setString(3, user.getSecondMasterKey());
@@ -321,7 +321,7 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET last_name = ?, first_name = ?, tel = ?, post_code = ?, address = ?, birth_year = ?, birth_month = ?, birth_day = ?, student_type = ?, class_name = ?, student_number = ?, school_year = ?, class_number = ? WHERE id = ?")) {
+					"UPDATE users SET last_name = ?, first_name = ?, tel = ?, post_code = ?, address = ?, birth_year = ?, birth_month = ?, birth_day = ?, student_type = ?, class_name = ?, student_number = ?, school_year = ?, class_number = ? WHERE id = ? and is_deleted=FALSE")) {
 				st.setString(1, user.getLastName());
 				st.setString(2, user.getFirstName());
 				st.setString(3, user.getTel());
@@ -348,7 +348,7 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET name_PESO = ?, supply_number = ?, attendance_number = ?, employment_insurance = ? WHERE id = ?")) {
+					"UPDATE users SET name_PESO = ?, supply_number = ?, attendance_number = ?, employment_insurance = ? WHERE id = ? and is_deleted=FALSE")) {
 				st.setString(1, user.getNamePESO());
 				st.setString(2, user.getSupplyNumber());
 				st.setString(3, user.getAttendanceNumber());
@@ -366,10 +366,23 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET " + field + " = ? WHERE id = ?")) {
+					"UPDATE users SET " + field + " = ? WHERE id = ? and is_deleted=FALSE")) {
 				st.setString(1, value);
 				st.setString(2, id);
 
+				line[0] = st.executeUpdate();
+			}
+		});
+
+		return line[0];
+	}
+
+	public int accountDeleted(String userId) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE Users SET is_deleted = TRUE WHERE id = ?")) {
+				st.setString(1, userId);
 				line[0] = st.executeUpdate();
 			}
 		});
