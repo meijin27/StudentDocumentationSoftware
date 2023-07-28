@@ -45,13 +45,13 @@ public class UserDAO extends DAO {
 		}
 	}
 
-	public User loginSearch(String login) {
+	public User loginSearch(String account) {
 		AtomicReference<User> userRef = new AtomicReference<>();
 		try {
 			executeSqlOperation(con -> {
 				try (PreparedStatement st = con.prepareStatement(
 						"select * from Users where account=? and is_deleted=FALSE")) {
-					st.setString(1, login);
+					st.setString(1, account);
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
 							User user = new User();
@@ -63,6 +63,30 @@ public class UserDAO extends DAO {
 							user.setBirthYear(rs.getString("birth_year"));
 							user.setStudentType(rs.getString("student_type"));
 							user.setIv(rs.getString("iv"));
+							userRef.set(user);
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return userRef.get();
+	}
+
+	public User createSearch(String account) {
+		AtomicReference<User> userRef = new AtomicReference<>();
+		try {
+			executeSqlOperation(con -> {
+				try (PreparedStatement st = con.prepareStatement(
+						"select * from Users where account = ?")) {
+					st.setString(1, account);
+					try (ResultSet rs = st.executeQuery()) {
+						if (rs.next()) {
+							User user = new User();
+							user.setId(rs.getString("id"));
+							user.setAccount(rs.getString("account"));
 							userRef.set(user);
 						}
 					}

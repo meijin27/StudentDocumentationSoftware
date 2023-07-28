@@ -220,19 +220,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-name-date-of-birth.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-name-date-of-birth.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
                                  氏名・生年月日の変更
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-address-tel.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-address-tel.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
                                 住所・電話番号の変更
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-student-info.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-student-info.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
                                 学生種類・学籍番号・クラス・学年・組の変更
                             </a>
@@ -240,7 +240,7 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="settings" class="align-text-bottom"></span>
-                               職業訓練の内容変更
+                               職業訓練生登録内容変更
                             </a>
                         </li>
                         <li class="nav-item">

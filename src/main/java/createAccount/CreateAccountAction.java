@@ -32,7 +32,7 @@ public class CreateAccountAction extends Action {
 			String encryptedAccount = CipherUtil.commonEncrypt(account);
 			// データベースに暗号化されたアカウント名が登録されているか確認するため
 			// 登録されているアカウント名と一致した場合は一致したユーザーデータを格納する
-			User user = dao.loginSearch(encryptedAccount);
+			User user = dao.createSearch(encryptedAccount);
 			// ユーザーデータがnullである　＝　未登録アカウントの場合の処理
 			if (user == null) {
 				// セッションに共通暗号キーで暗号化されたアカウント名を格納

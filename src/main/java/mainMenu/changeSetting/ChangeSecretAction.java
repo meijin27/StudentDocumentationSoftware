@@ -93,7 +93,7 @@ public class ChangeSecretAction extends Action {
 				dao.updateSecret(user);
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Change SecretQuestion & Answer");
-				// パスワード変更成功画面に遷移
+				// 秘密の質問と答え変更成功画面に遷移
 				request.setAttribute("changes", "秘密の質問と答えを変更しました。");
 				return "change-success.jsp";
 			} else {

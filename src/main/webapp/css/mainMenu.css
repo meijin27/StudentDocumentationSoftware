@@ -31,6 +31,10 @@ main > .container {
   border-top-right-radius: 0;
 }
 
+.invisible-text {
+  color: transparent;
+}
+
 footer.footer {
   position: fixed;
   width: 100%;
