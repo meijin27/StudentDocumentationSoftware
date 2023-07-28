@@ -261,13 +261,13 @@
                 <div id="collapse6" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/terms-of-use.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/terms-of-use.jsp">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/rules/terms-of-use.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/rules/terms-of-use.jsp">
                                     <span data-feather="book-open" class="align-text-bottom"></span>
                                     利用規約
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/privacy-policy.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/privacy-policy.jsp">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/rules/privacy-policy.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/rules/privacy-policy.jsp">
                                     <span data-feather="book-open" class="align-text-bottom"></span>
                                     プライバシーポリシー
                             </a>
