@@ -36,7 +36,7 @@ public class SecretCheckAction extends Action {
 		// セッションから暗号化されたIDの取り出し
 		String strId = (String) session.getAttribute("id");
 		// IDの復号
-		int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
+		String id = CipherUtil.commonDecrypt(strId);
 		// セッションから秘密の質問の取り出し
 		String secretQuestion = (String) session.getAttribute("secretQuestion");
 		// データベースからivの取り出し

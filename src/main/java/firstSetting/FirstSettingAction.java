@@ -29,19 +29,22 @@ public class FirstSettingAction extends Action {
 		// 入力された値を変数に格納
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
-		String studentType = request.getParameter("studentType");
-		String className = request.getParameter("className");
-		String schoolYear = request.getParameter("schoolYear");
-		String classNumber = request.getParameter("classNumber");
-		String studentNumber = request.getParameter("studentNumber");
+		String tel = request.getParameter("tel");
+		String postCode = request.getParameter("postCode");
+		String address = request.getParameter("address");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
+		String studentType = request.getParameter("studentType");
+		String className = request.getParameter("className");
+		String studentNumber = request.getParameter("studentNumber");
+		String schoolYear = request.getParameter("schoolYear");
+		String classNumber = request.getParameter("classNumber");
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || studentType == null || className == null ||
-				schoolYear == null || classNumber == null || studentNumber == null ||
-				birthYear == null || birthMonth == null || birthDay == null) {
+		if (lastName == null || firstName == null || tel == null || postCode == null || address == null ||
+				birthYear == null || birthMonth == null || birthDay == null || studentType == null || className == null
+				|| studentNumber == null || schoolYear == null || classNumber == null) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "first-setting.jsp";
 		}
@@ -49,24 +52,31 @@ public class FirstSettingAction extends Action {
 		// 入力された値をセッションに格納
 		session.setAttribute("lastName", lastName);
 		session.setAttribute("firstName", firstName);
-		session.setAttribute("studentType", studentType);
-		session.setAttribute("className", className);
-		session.setAttribute("schoolYear", schoolYear);
-		session.setAttribute("classNumber", classNumber);
-		session.setAttribute("studentNumber", studentNumber);
+		session.setAttribute("tel", tel);
+		session.setAttribute("postCode", postCode);
+		session.setAttribute("address", address);
 		session.setAttribute("birthYear", birthYear);
 		session.setAttribute("birthMonth", birthMonth);
 		session.setAttribute("birthDay", birthDay);
+		session.setAttribute("studentType", studentType);
+		session.setAttribute("className", className);
+		session.setAttribute("studentNumber", studentNumber);
+		session.setAttribute("schoolYear", schoolYear);
+		session.setAttribute("classNumber", classNumber);
 
-		// 学籍番号が数字にできない場合はエラーを返す
-		try {
-			int number = Integer.parseInt(studentNumber);
-			// 学籍番号が半角6桁でなければエラーを返す
-			if (!studentNumber.matches("^\\d{6}$")) {
-				request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
-			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("studentNumberError", "学籍番号は数字で入力してください。");
+		// 電話番号が半角10~11桁でなければエラーを返す
+		if (!tel.matches("^\\d{10,11}$")) {
+			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
+		}
+
+		// 郵便番号が半角7桁でなければエラーを返す
+		if (!postCode.matches("^\\d{7}$")) {
+			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
+		}
+
+		// 学籍番号が半角6桁でなければエラーを返す
+		if (!studentNumber.matches("^\\d{6}$")) {
+			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
 		// 「同意する」ボタンが押されていない場合はエラーにする。
@@ -87,13 +97,14 @@ public class FirstSettingAction extends Action {
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す
-		if (lastName.length() > 32 || firstName.length() > 32 || className.length() > 32) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		if (lastName.length() > 64 || firstName.length() > 64 || className.length() > 64 || address.length() > 64) {
+			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null
-				|| request.getAttribute("birthDayError") != null || request.getAttribute("valueLongError") != null) {
+				|| request.getAttribute("birthDayError") != null || request.getAttribute("valueLongError") != null
+				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
 			return "first-setting.jsp";
 		}
 

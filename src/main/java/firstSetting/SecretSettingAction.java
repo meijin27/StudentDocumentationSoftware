@@ -40,14 +40,13 @@ public class SecretSettingAction extends Action {
 				request.setAttribute("secretError", "32文字以下で入力してください。");
 				return "secret-setting.jsp";
 			}
+			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
-			// セッションから暗号化されたIDの取り出し
-			String strId = (String) session.getAttribute("id");
-			// IDの復号
-			int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
 			// 復号とIDやIV等の取り出しクラスの設定
 			Decrypt decrypt = new Decrypt(dao);
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
 			// アカウント名の取り出し			
 			String account = result.getAccount();
 			// マスターキーの取り出し			

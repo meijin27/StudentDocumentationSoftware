@@ -12,20 +12,20 @@
             <div class="position-sticky pt-3 sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link<%= currentURL.equals(request.getContextPath() + " /mainMenu/main-menu.jsp") ? " active" : "" %>" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp">
+                        <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/main-menu.jsp") ? " active" : "" %>" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp">
                                 <span data-feather="home" class="align-text-bottom"></span>
                                 Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link<%= currentURL.equals(request.getContextPath() + " /mainMenu/monitor.jsp") ? " active" : "" %>" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/monitor.jsp">
+                        <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/monitor.jsp") ? " active" : "" %>" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/monitor.jsp">
                                 <span data-feather="file" class="align-text-bottom"></span>
                                 monitor
                         </a>
                     </li>
                 </ul>                
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                            <span>諸届・願出（証明書発行等）</span>
+                            <span>諸届・願出（証明書等）</span>
                             <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse1"
                                 aria-expanded="false" aria-controls="collapse1">
                                 <span class="expand-icon" data-feather="plus-circle"></span>
@@ -120,8 +120,7 @@
                         </li>
                     </ul>
                 </div>
-                <h6
-                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
                     <span>職業訓練用書類</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse4"
                         aria-expanded="false" aria-controls="collapse4">
@@ -193,8 +192,7 @@
                         </li>
                     </ul>
                 </div>
-                <h6
-                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
                     <span>各種設定</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
                         <span class="expand-icon" data-feather="plus-circle"></span>
@@ -247,8 +245,7 @@
                         </li>
                     </ul>
                 </div>
-                <h6
-                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
                     <span>規約類</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
                         <span class="expand-icon" data-feather="plus-circle"></span>

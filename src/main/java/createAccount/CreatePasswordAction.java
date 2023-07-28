@@ -62,7 +62,6 @@ public class CreatePasswordAction extends Action {
 			UserDAO dao = new UserDAO();
 			// データベースにアカウント登録する
 			dao.accountInsert(user);
-
 			// リクエストにアカウント名を格納する
 			request.setAttribute("accountName", account);
 			// セッションの全削除

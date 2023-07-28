@@ -56,9 +56,9 @@ public class ChangePasswordAction extends Action {
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
 			// セッションから暗号化されたIDの取り出し
-			String strId = (String) session.getAttribute("id");
+			String encryptedId = (String) session.getAttribute("id");
 			// IDの復号
-			int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
+			String id = CipherUtil.commonDecrypt(encryptedId);
 			// IDでデータベースを検索
 			String registerPassword = dao.getPassword(id);
 			// 現在のパスワードの一致確認
@@ -86,12 +86,6 @@ public class ChangePasswordAction extends Action {
 				// データベースのパスワードとマスターキーを更新する
 				dao.updatePassword(user);
 				dao.updateMasterKey(user);
-				// 復号したマスターキーをアカウントとIDを暗号キーにして暗号化する（なるべく文字列をランダム化するためにアカウントが先でIDが後）
-				String encryptedMasterKey = CipherUtil.encrypt(account + id, iv, masterKey);
-				// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
-				String reEncryptedMasterKey = CipherUtil.commonEncrypt(encryptedMasterKey);
-				// セッションに再暗号化したマスターキーを持たせる
-				session.setAttribute("master_key", reEncryptedMasterKey);
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Change Password");
 				// パスワード変更成功画面に遷移

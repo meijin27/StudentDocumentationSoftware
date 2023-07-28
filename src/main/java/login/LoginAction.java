@@ -38,7 +38,7 @@ public class LoginAction extends Action {
 			// データベースにアカウント名が存在し、パスワードが一致した場合の処理
 			if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
 				// ユーザーIDを変数に格納
-				int id = user.getId();
+				String id = user.getId();
 				// ivを変数に格納
 				String iv = user.getIv();
 				// クライアントのIPアドレスを取得
@@ -56,9 +56,9 @@ public class LoginAction extends Action {
 				// ユーザーの学生の種類を変数に格納(この時点で暗号化されている)
 				String studentType = user.getStudentType();
 				// IDを共通暗号キーで暗号化する
-				String strId = CipherUtil.commonEncrypt(String.valueOf(id));
+				String encryptedId = CipherUtil.commonEncrypt(id);
 				// セッションにユーザー識別用の暗号化したIDを持たせる				
-				session.setAttribute("id", strId);
+				session.setAttribute("id", encryptedId);
 				// セッションに再暗号化したマスターキーを持たせる
 				session.setAttribute("master_key", reEncryptedKey);
 

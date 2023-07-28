@@ -14,9 +14,9 @@ public class Decrypt {
 
 	public DecryptionResult getDecryptedMasterKey(HttpSession session) throws Exception {
 		// セッションから暗号化されたIDの取り出し
-		String strId = (String) session.getAttribute("id");
+		String encryptedId = (String) session.getAttribute("id");
 		// IDの復号
-		int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
+		String id = CipherUtil.commonDecrypt(encryptedId);
 		// データベースから暗号化されたアカウント名の取り出し
 		String encryptedAccount = dao.getAccount(id);
 		// 暗号化されたアカウント名の復号
@@ -30,6 +30,6 @@ public class Decrypt {
 		// セッションから暗号化したマスターキーの復号	
 		String masterKey = CipherUtil.decrypt(account + id, iv, encryptedMasterkey);
 
-		return new DecryptionResult(account, masterKey, iv);
+		return new DecryptionResult(id, account, masterKey, iv);
 	}
 }

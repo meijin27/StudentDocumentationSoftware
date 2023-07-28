@@ -55,7 +55,7 @@ public class UserDAO extends DAO {
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
 							User user = new User();
-							user.setId(rs.getInt("id"));
+							user.setId(rs.getString("id"));
 							user.setAccount(rs.getString("account"));
 							user.setPassword(rs.getString("password"));
 							user.setMasterKey(rs.getString("master_key"));
@@ -75,60 +75,105 @@ public class UserDAO extends DAO {
 		return userRef.get();
 	}
 
-	public String getAccount(int id) {
+	// Getter methods
+
+	public String getAccount(String id) {
 		return getField("account", id);
 	}
 
-	public String getPassword(int id) {
+	public String getPassword(String id) {
 		return getField("password", id);
 	}
 
-	public String getIv(int id) {
-		return getField("iv", id);
+	public String getMasterKey(String id) {
+		return getField("master_key", id);
 	}
 
-	public String getSecretAnswer(int id) {
-		return getField("secret_answer", id);
-	}
-
-	public String getSecondMasterKey(int id) {
+	public String getSecondMasterKey(String id) {
 		return getField("second_master_key", id);
 	}
 
-	public String getClassName(int id) {
-		return getField("class_name", id);
+	public String getIv(String id) {
+		return getField("iv", id);
 	}
 
-	public String getSchoolYear(int id) {
-		return getField("school_year", id);
+	public String getSecretQuestion(String id) {
+		return getField("secret_question", id);
 	}
 
-	public String getClassNumber(int id) {
-		return getField("class_number", id);
+	public String getSecretAnswer(String id) {
+		return getField("secret_answer", id);
 	}
 
-	public String getStudentNumber(int id) {
-		return getField("student_number", id);
+	public String getLastName(String id) {
+		return getField("last_name", id);
 	}
 
-	public String getStudentType(int id) {
-		return getField("student_type", id);
+	public String getFirstName(String id) {
+		return getField("first_name", id);
 	}
 
-	public String getBirthYear(int id) {
+	public String getTel(String id) {
+		return getField("tel", id);
+	}
+
+	public String getPostCode(String id) {
+		return getField("post_code", id);
+	}
+
+	public String getAddress(String id) {
+		return getField("address", id);
+	}
+
+	public String getBirthYear(String id) {
 		return getField("birth_year", id);
 	}
 
-	public String getBirthMonth(int id) {
+	public String getBirthMonth(String id) {
 		return getField("birth_month", id);
 	}
 
-	public String getBirthDay(int id) {
+	public String getBirthDay(String id) {
 		return getField("birth_day", id);
 	}
 
-	// Setter methods
+	public String getStudentType(String id) {
+		return getField("student_type", id);
+	}
 
+	public String getClassName(String id) {
+		return getField("class_name", id);
+	}
+
+	public String getStudentNumber(String id) {
+		return getField("student_number", id);
+	}
+
+	public String getSchoolYear(String id) {
+		return getField("school_year", id);
+	}
+
+	public String getClassNumber(String id) {
+		return getField("class_number", id);
+	}
+
+	public String getNamePESO(String id) {
+		return getField("name_PESO", id);
+	}
+
+	public String getAttendanceNumber(String id) {
+		return getField("attendance_number", id);
+	}
+
+	public String getEmploymentInsurance(String id) {
+		return getField("employment_insurance", id);
+	}
+
+	public String getSupplyNumber(String id) {
+		return getField("supply_number", id);
+	}
+
+	// Setter methods
 	public int updatePassword(User user) throws Exception {
 		return updateField("password", user.getPassword(), user.getId());
 	}
@@ -141,24 +186,32 @@ public class UserDAO extends DAO {
 		return updateField("second_master_key", user.getSecondMasterKey(), user.getId());
 	}
 
-	public int updateClassName(User user) throws Exception {
-		return updateField("class_name", user.getClassName(), user.getId());
+	public int updateSecretQuestion(User user) throws Exception {
+		return updateField("secret_question", user.getSecretQuestion(), user.getId());
 	}
 
-	public int updateSchoolYear(User user) throws Exception {
-		return updateField("school_year", user.getSchoolYear(), user.getId());
+	public int updateSecretAnswer(User user) throws Exception {
+		return updateField("secret_answer", user.getSecretAnswer(), user.getId());
 	}
 
-	public int updateClassNumber(User user) throws Exception {
-		return updateField("class_number", user.getClassNumber(), user.getId());
+	public int updateLastName(User user) throws Exception {
+		return updateField("last_name", user.getLastName(), user.getId());
 	}
 
-	public int updateStudentNumber(User user) throws Exception {
-		return updateField("student_number", user.getStudentNumber(), user.getId());
+	public int updateFirstName(User user) throws Exception {
+		return updateField("first_name", user.getFirstName(), user.getId());
 	}
 
-	public int updateStudentType(User user) throws Exception {
-		return updateField("student_type", user.getStudentType(), user.getId());
+	public int updateTel(User user) throws Exception {
+		return updateField("tel", user.getTel(), user.getId());
+	}
+
+	public int updatePostCode(User user) throws Exception {
+		return updateField("post_code", user.getPostCode(), user.getId());
+	}
+
+	public int updateAddress(User user) throws Exception {
+		return updateField("address", user.getAddress(), user.getId());
 	}
 
 	public int updateBirthYear(User user) throws Exception {
@@ -173,13 +226,49 @@ public class UserDAO extends DAO {
 		return updateField("birth_day", user.getBirthDay(), user.getId());
 	}
 
-	private String getField(String field, int id) {
+	public int updateStudentType(User user) throws Exception {
+		return updateField("student_type", user.getStudentType(), user.getId());
+	}
+
+	public int updateClassName(User user) throws Exception {
+		return updateField("class_name", user.getClassName(), user.getId());
+	}
+
+	public int updateStudentNumber(User user) throws Exception {
+		return updateField("student_number", user.getStudentNumber(), user.getId());
+	}
+
+	public int updateSchoolYear(User user) throws Exception {
+		return updateField("school_year", user.getSchoolYear(), user.getId());
+	}
+
+	public int updateClassNumber(User user) throws Exception {
+		return updateField("class_number", user.getClassNumber(), user.getId());
+	}
+
+	public int updateNamePESO(User user) throws Exception {
+		return updateField("name_peso", user.getNamePESO(), user.getId());
+	}
+
+	public int updateAttendanceNumber(User user) throws Exception {
+		return updateField("attendance_number", user.getAttendanceNumber(), user.getId());
+	}
+
+	public int updateEmploymentInsurance(User user) throws Exception {
+		return updateField("employment_insurance", user.getEmploymentInsurance(), user.getId());
+	}
+
+	public int updateSupplyNumber(User user) throws Exception {
+		return updateField("supply_number", user.getSupplyNumber(), user.getId());
+	}
+
+	private String getField(String field, String id) {
 		AtomicReference<String> ref = new AtomicReference<>();
 		try {
 			executeSqlOperation(con -> {
 				try (PreparedStatement st = con.prepareStatement(
 						"select " + field + " from Users where id=?")) {
-					st.setInt(1, id);
+					st.setString(1, id);
 					try (ResultSet rs = st.executeQuery()) {
 						if (rs.next()) {
 							ref.set(rs.getString(field));
@@ -219,7 +308,7 @@ public class UserDAO extends DAO {
 				st.setString(1, user.getSecretQuestion());
 				st.setString(2, user.getSecretAnswer());
 				st.setString(3, user.getSecondMasterKey());
-				st.setInt(4, user.getId());
+				st.setString(4, user.getId());
 
 				line[0] = st.executeUpdate();
 			}
@@ -232,18 +321,21 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET last_name = ?, first_name = ?, student_type = ?, class_name = ?, school_year = ?, class_number = ?, student_number = ?, birth_year = ?, birth_month = ?, birth_day = ? WHERE id = ?")) {
+					"UPDATE users SET last_name = ?, first_name = ?, tel = ?, post_code = ?, address = ?, birth_year = ?, birth_month = ?, birth_day = ?, student_type = ?, class_name = ?, student_number = ?, school_year = ?, class_number = ? WHERE id = ?")) {
 				st.setString(1, user.getLastName());
 				st.setString(2, user.getFirstName());
-				st.setString(3, user.getStudentType());
-				st.setString(4, user.getClassName());
-				st.setString(5, user.getSchoolYear());
-				st.setString(6, user.getClassNumber());
-				st.setString(7, user.getStudentNumber());
-				st.setString(8, user.getBirthYear());
-				st.setString(9, user.getBirthMonth());
-				st.setString(10, user.getBirthDay());
-				st.setInt(11, user.getId());
+				st.setString(3, user.getTel());
+				st.setString(4, user.getPostCode());
+				st.setString(5, user.getAddress());
+				st.setString(6, user.getBirthYear());
+				st.setString(7, user.getBirthMonth());
+				st.setString(8, user.getBirthDay());
+				st.setString(9, user.getStudentType());
+				st.setString(10, user.getClassName());
+				st.setString(11, user.getStudentNumber());
+				st.setString(12, user.getSchoolYear());
+				st.setString(13, user.getClassNumber());
+				st.setString(14, user.getId());
 
 				line[0] = st.executeUpdate();
 			}
@@ -252,13 +344,13 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
-	private int updateField(String field, String value, int id) throws Exception {
+	private int updateField(String field, String value, String id) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
 					"UPDATE users SET " + field + " = ? WHERE id = ?")) {
 				st.setString(1, value);
-				st.setInt(2, id);
+				st.setString(2, id);
 
 				line[0] = st.executeUpdate();
 			}
@@ -267,22 +359,22 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
-	public void addLoginLog(int userId, String ipAddress) throws Exception {
+	public void addLoginLog(String userId, String ipAddress) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
 					"INSERT INTO login_logs (user_id, login_time, ip_address) VALUES (?, CURRENT_TIMESTAMP, ?)")) {
-				st.setInt(1, userId);
+				st.setString(1, userId);
 				st.setString(2, ipAddress);
 				st.executeUpdate();
 			}
 		});
 	}
 
-	public void addOperationLog(int userId, String operation) throws Exception {
+	public void addOperationLog(String userId, String operation) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
 					"INSERT INTO operation_logs (user_id, operation) VALUES (?, ?)")) {
-				st.setInt(1, userId);
+				st.setString(1, userId);
 				st.setString(2, operation);
 				st.executeUpdate();
 			}

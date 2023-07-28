@@ -8,14 +8,17 @@
 
 		        <p>姓: ${sessionScope.lastName}</p>
 		        <p>名: ${sessionScope.firstName}</p>
-		        <p>学生種別: ${sessionScope.studentType}</p>
-		        <p>クラス名: ${sessionScope.className}</p>
-		        <p>学年: ${sessionScope.schoolYear}</p>		       
-		        <p>組: ${sessionScope.classNumber}</p>		        
-		        <p>学生番号: ${sessionScope.studentNumber}</p>
+		        <p>電話番号: ${sessionScope.tel}</p>
+		        <p>郵便番号: ${sessionScope.postCode}</p>
+		        <p>住所: ${sessionScope.address}</p>		        
 		        <p>生年: ${sessionScope.birthYear}</p>
 		        <p>生月: ${sessionScope.birthMonth}</p>
 		        <p>生日: ${sessionScope.birthDay}</p>
+		        <p>学生種別: ${sessionScope.studentType}</p>
+		        <p>クラス名: ${sessionScope.className}</p>
+		        <p>学生番号: ${sessionScope.studentNumber}</p>
+		        <p>学年: ${sessionScope.schoolYear}</p>		       
+		        <p>組: ${sessionScope.classNumber}</p>		        
 
             <!-- 登録ボタン -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>

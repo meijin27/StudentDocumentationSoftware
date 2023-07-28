@@ -5,7 +5,10 @@
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
-	<div class="container">
+	<div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1>パスワードの変更</h1>
+    </div>
+    <div class="container">
 		<form action="ChangePassword.action" method="post">
 			<p>現在のパスワードを入力してください<span class="text-danger">*</span></p>
 			

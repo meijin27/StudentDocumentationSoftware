@@ -39,7 +39,7 @@ public class SeachAccountAction extends Action {
 				// 秘密の質問と生年の登録を確認し、登録済みならパスワード再設定にすすむ
 				if (reEncryptedSecretQuestion != null && user.getBirthYear() != null) {
 					// ユーザーIDを変数に格納
-					int id = user.getId();
+					String id = user.getId();
 					// データベースからivの取り出し
 					String iv = dao.getIv(id);
 					// IDを共通暗号キーで暗号化する

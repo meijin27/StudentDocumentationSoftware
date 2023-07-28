@@ -40,8 +40,8 @@ public class ChangeSecretAction extends Action {
 		// 未入力及び不一致はエラー処理		
 		if (password == null) {
 			request.setAttribute("secretError", "パスワードの入力は必須です");
-		} else if (secretQuestion == null && secretQuestion.isEmpty() && secretAnswer == null
-				&& secretAnswer.isEmpty()) {
+		} else if (secretQuestion == null || secretQuestion.isEmpty() || secretAnswer == null
+				|| secretAnswer.isEmpty()) {
 			request.setAttribute("secretError", "未選択・未入力項目があります。");
 		} else if (password.length() > 32 || secretAnswer.length() > 32) {
 			request.setAttribute("secretError", "32文字以下で入力してください。");
@@ -57,9 +57,9 @@ public class ChangeSecretAction extends Action {
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
 			// セッションから暗号化されたIDの取り出し
-			String strId = (String) session.getAttribute("id");
+			String encryptedId = (String) session.getAttribute("id");
 			// IDの復号
-			int id = Integer.parseInt(CipherUtil.commonDecrypt(strId));
+			String id = CipherUtil.commonDecrypt(encryptedId);
 			// IDでデータベースを検索
 			String registerPassword = dao.getPassword(id);
 			// 現在のパスワードの一致確認
