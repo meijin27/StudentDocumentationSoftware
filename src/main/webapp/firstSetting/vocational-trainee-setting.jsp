@@ -27,25 +27,28 @@
 	                <input class="form-control" type="text" name="attendanceNumber" placeholder="16"value="${attendanceNumber}" required>
 	            </div>
 
-	            <!-- 雇用保険 -->
+				<!-- 雇用保険 -->
 				<div class="col-md-6 mb-5">
 				    <label class="form-label">雇用保険の有無</label>
 				    <span class="text-danger">*</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
-				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceYes" value="有" required>
+				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceYes" value="有" 
+				                   <% if ("有".equals(session.getAttribute("employmentInsurance"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="employmentInsuranceYes">
 				                有
 				            </label>
 				        </div>
 				        <div class="form-check form-check-inline ml-lg-5">
-				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceNo" value="無" required>
+				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceNo" value="無"
+				                   <% if ("無".equals(session.getAttribute("employmentInsurance"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="employmentInsuranceNo">
 				                無
 				            </label>
 				        </div>
 				    </div>
 				</div>
+
 	        </div>
 	        
 	        <c:if test="${not empty nullError}">
