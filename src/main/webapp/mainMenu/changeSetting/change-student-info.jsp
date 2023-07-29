@@ -6,7 +6,7 @@
 
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
 	<div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1>学生情報の変更</h1>
+        <h1>学生種類・学籍番号・クラス・学年・組の変更</h1>
     </div>
     <div class="container">
 		<form action="ChangeStudentInfo.action" method="post">
@@ -22,17 +22,17 @@
 	                    <option value="職業訓練生">職業訓練生</option>
 	                </select>
 	            </div>
-	            <!-- クラス名 -->
-	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="">クラス名</label>
-	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="className" placeholder="IT・ゲームソフト科"value="${className}" required>
-	            </div>
 	            <!-- 学籍番号 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="">学籍番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
+	            </div>
+	            <!-- クラス名 -->
+	            <div class="col-md-4 mb-3">
+	                <label class="form-label" for="">クラス名</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="className" placeholder="IT・ゲームソフト科"value="${className}" required>
 	            </div>
 	            <!-- 学年 -->
 	            <div class="col-md-4 mb-3">
