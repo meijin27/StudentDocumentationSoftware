@@ -45,11 +45,11 @@ public class VocationalTraineeSettingAction extends Action {
 			supplyNumber = "支給番号は雇用保険有の方のみに付与されます。";
 		}
 
-		// 入力された値をセッションに格納
-		session.setAttribute("namePESO", namePESO);
-		session.setAttribute("supplyNumber", supplyNumber);
-		session.setAttribute("attendanceNumber", attendanceNumber);
-		session.setAttribute("employmentInsurance", employmentInsurance);
+		// 入力された値をリクエストに格納
+		request.setAttribute("namePESO", namePESO);
+		request.setAttribute("supplyNumber", supplyNumber);
+		request.setAttribute("attendanceNumber", attendanceNumber);
+		request.setAttribute("employmentInsurance", employmentInsurance);
 
 		// 出席番号が半角2桁以下でなければエラーを返す
 		if (!attendanceNumber.matches("^\\d{1,2}$")) {

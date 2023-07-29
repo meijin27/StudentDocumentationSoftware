@@ -10,8 +10,6 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
-import tool.Decrypt;
-import tool.DecryptionResult;
 import tool.PasswordUtil;
 
 public class RecreatePasswordAction extends Action {
@@ -25,14 +23,25 @@ public class RecreatePasswordAction extends Action {
 		String password = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
+		// リクエストの有効期限切れの場合はエラーとして処理
+		if (request.getParameter("encryptedId") == null || request.getParameter("master_key") == null) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
+
+		// リクエストから暗号化されたIDの取り出し
+		String encryptedId = request.getParameter("encryptedId");
+		// リクエストに共通暗号キーで暗号化されたIDを格納
+		request.setAttribute("encryptedId", encryptedId);
+		// IDの復号
+		String id = CipherUtil.commonDecrypt(encryptedId);
+		// リクエストから暗号化されたマスターキーの取り出し
+		String reEncryptedMasterkey = request.getParameter("master_key");
+		// リクエストに暗号化されたマスターキーを格納
+		request.setAttribute("master_key", reEncryptedMasterkey);
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
@@ -53,17 +62,16 @@ public class RecreatePasswordAction extends Action {
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();
-			// 復号とIDやIV等の取り出しクラスの設定
-			Decrypt decrypt = new Decrypt(dao);
-			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
-			// IDの取り出し
-			String id = result.getId();
-			// アカウントの取り出し
-			String account = result.getAccount();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
+			// データベースから暗号化されたアカウント名の取り出し
+			String encryptedAccount = dao.getAccount(id);
+			// 暗号化されたアカウント名の復号
+			String account = CipherUtil.commonDecrypt(encryptedAccount);
+			// データベースからivの取り出し
+			String iv = dao.getIv(id);
+			// リクエストから取り出した共通暗号キーで再暗号化したマスターキーの復号	
+			String encryptedMasterkey = CipherUtil.commonDecrypt(reEncryptedMasterkey);
+			// リクエストから取り出した暗号化したマスターキーの復号	
+			String masterKey = CipherUtil.decrypt(account + id, iv, encryptedMasterkey);
 			// マスターキーの新暗号化
 			String encryptedKey = CipherUtil.encrypt(password + account, iv, masterKey);
 			// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
@@ -79,8 +87,6 @@ public class RecreatePasswordAction extends Action {
 			// データベースのパスワードとマスターキーを更新する
 			dao.updatePassword(user);
 			dao.updateMasterKey(user);
-			// セッションの全削除
-			session.invalidate();
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Forgot Password Recreate");
 			// パスワード再作成成功画面に遷移

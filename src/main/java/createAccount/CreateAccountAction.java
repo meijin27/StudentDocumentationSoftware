@@ -2,7 +2,6 @@ package createAccount;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import bean.User;
 import dao.UserDAO;
@@ -13,8 +12,7 @@ public class CreateAccountAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// セッションの作成
-		HttpSession session = request.getSession();
+
 		// 入力されたアカウント名を変数に格納
 		String account = request.getParameter("account");
 
@@ -35,8 +33,8 @@ public class CreateAccountAction extends Action {
 			User user = dao.createSearch(encryptedAccount);
 			// ユーザーデータがnullである　＝　未登録アカウントの場合の処理
 			if (user == null) {
-				// セッションに共通暗号キーで暗号化されたアカウント名を格納
-				session.setAttribute("encryptedAccount", encryptedAccount);
+				// リクエストに共通暗号キーで暗号化されたアカウント名を格納
+				request.setAttribute("encryptedAccount", encryptedAccount);
 				// パスワード登録画面に移動
 				return "create-password.jsp";
 				// もしアカウントがデータベースに登録されていればエラーメッセージを表示			

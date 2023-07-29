@@ -58,9 +58,13 @@ public class MonitorAction extends Action {
 
 		String reEncryptedSecretQuestion = dao.getSecretQuestion(id);
 		// 暗号化した秘密の質問を共通暗号キーで復号化する
-		String encryptedSecretQuestion = CipherUtil.commonDecrypt(reEncryptedSecretQuestion);
+		String encryptedSecretQuestion = (reEncryptedSecretQuestion != null)
+				? CipherUtil.commonDecrypt(reEncryptedSecretQuestion)
+				: null;
 		// 秘密の質問はアカウント名とIDをキーにして復号化
-		String secretQuestion = CipherUtil.decrypt(account + id, iv, encryptedSecretQuestion);
+		String secretQuestion = (encryptedSecretQuestion != null)
+				? CipherUtil.decrypt(account + id, iv, encryptedSecretQuestion)
+				: null;
 		// セッションに秘密の質問を持たせる				
 		request.setAttribute("secretQuestion", secretQuestion);
 

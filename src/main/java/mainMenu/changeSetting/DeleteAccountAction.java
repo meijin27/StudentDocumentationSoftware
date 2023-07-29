@@ -60,8 +60,9 @@ public class DeleteAccountAction extends Action {
 			dao.addOperationLog(id, "Delete Account");
 			// データベースからアカウントの削除
 			dao.accountDeleted(id);
-			// セッションを無効化
-			session.invalidate();
+			// セッションを消去
+			session.removeAttribute("id");
+			session.removeAttribute("master_key");
 			// アカウント削除後、ログインページにリダイレクト
 			session.setAttribute("otherError", "アカウントが削除されました。");
 			String contextPath = request.getContextPath();

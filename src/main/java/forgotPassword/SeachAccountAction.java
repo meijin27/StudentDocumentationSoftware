@@ -2,7 +2,6 @@ package forgotPassword;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import bean.User;
 import dao.UserDAO;
@@ -13,8 +12,7 @@ public class SeachAccountAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// セッションの作成
-		HttpSession session = request.getSession();
+
 		// 入力されたアカウント名を変数に格納
 		String account = request.getParameter("account");
 
@@ -43,15 +41,15 @@ public class SeachAccountAction extends Action {
 					// データベースからivの取り出し
 					String iv = dao.getIv(id);
 					// IDを共通暗号キーで暗号化する
-					String strId = CipherUtil.commonEncrypt(String.valueOf(id));
-					// セッションにユーザー識別用のIDを持たせる				
-					session.setAttribute("id", strId);
+					String encryptedId = CipherUtil.commonEncrypt(String.valueOf(id));
+					// リクエストにユーザー識別用のIDを持たせる				
+					request.setAttribute("encryptedId", encryptedId);
 					// 暗号化した秘密の質問を共通暗号キーで復号化する
 					String encryptedSecretQuestion = CipherUtil.commonDecrypt(reEncryptedSecretQuestion);
 					// 秘密の質問はアカウント名とIDをキーにして復号化
 					String secretQuestion = CipherUtil.decrypt(account + id, iv, encryptedSecretQuestion);
-					// セッションに秘密の質問を持たせる				
-					session.setAttribute("secretQuestion", secretQuestion);
+					// リクエストに秘密の質問を持たせる				
+					request.setAttribute("secretQuestion", secretQuestion);
 					// 秘密の質問と答え確認画面に移動
 					return "secret-check.jsp";
 					// もしアカウントがデータベースに登録されていればエラーメッセージを表示			

@@ -17,14 +17,26 @@ public class SecretCheckAction extends Action {
 		// セッションの作成
 		HttpSession session = request.getSession();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("id") == null || session.getAttribute("secretQuestion") == null) {
+		// リクエストの有効期限切れの場合はエラーとして処理
+		if (request.getParameter("encryptedId") == null || request.getParameter("secretQuestion") == null) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
+
+		// リクエストから暗号化されたIDの取り出し
+		String encryptedId = request.getParameter("encryptedId");
+		// リクエストに共通暗号キーで暗号化されたIDを格納
+		request.setAttribute("encryptedId", encryptedId);
+		// IDの復号
+		String id = CipherUtil.commonDecrypt(encryptedId);
+
+		// リクエストから秘密の質問の取り出し
+		String secretQuestion = request.getParameter("secretQuestion");
+		// リクエストに秘密の質問を格納
+		request.setAttribute("secretQuestion", secretQuestion);
 
 		// 入力された値の変数への格納
 		String secretAnswer = request.getParameter("secretAnswer");
@@ -47,12 +59,6 @@ public class SecretCheckAction extends Action {
 
 		// データベース操作用クラス
 		UserDAO dao = new UserDAO();
-		// セッションから暗号化されたIDの取り出し
-		String strId = (String) session.getAttribute("id");
-		// IDの復号
-		String id = CipherUtil.commonDecrypt(strId);
-		// セッションから秘密の質問の取り出し
-		String secretQuestion = (String) session.getAttribute("secretQuestion");
 		// データベースからivの取り出し
 		String iv = dao.getIv(id);
 		// データベースから照合用データの取り出し
@@ -80,8 +86,6 @@ public class SecretCheckAction extends Action {
 			// 生年月日の一致確認(暗号化されたデータ同士の照合)
 			if (reEncryptedBirthYear.equals(CheckBirthYear) && reEncryptedBirthMonth.equals(CheckBirthMonth)
 					&& reEncryptedBirthDay.equals(CheckBirthDay)) {
-				// セッションの秘密の質問データ削除
-				session.removeAttribute("secretQuestion");
 				// データベースからアカウントの取り出し
 				String encryptedAcconunt = dao.getAccount(id);
 				// アカウントの共通暗号からの復号
@@ -90,8 +94,8 @@ public class SecretCheckAction extends Action {
 				String encryptedKey = CipherUtil.encrypt(account + id, iv, secondMasterKey);
 				// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
 				String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
-				// セッションに再暗号化したマスターキーを持たせる
-				session.setAttribute("master_key", reEncryptedKey);
+				// リクエストに再暗号化したマスターキーを持たせる
+				request.setAttribute("master_key", reEncryptedKey);
 				return "recreate-password.jsp";
 			}
 		}

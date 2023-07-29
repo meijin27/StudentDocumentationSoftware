@@ -9,73 +9,102 @@
 	
 			<div class="data-row">
 		        <div class="data-label"><p>姓: </p></div>
-		        <div class="data-value"><p>${sessionScope.lastName}</p></div>
+		        <div class="data-value"><p>${lastName}</p></div>
 		    </div>
-		
+		    <input type="hidden" name="lastName" value="${lastName}">
+
 		    <div class="data-row">
 		        <div class="data-label"><p>名:</p></div>
-		        <div class="data-value"><p>${sessionScope.firstName}</p></div>
+		        <div class="data-value"><p>${firstName}</p></div>
 		    </div>
+		    <input type="hidden" name="firstName" value="${firstName}">
 		
 		    <div class="data-row">
 				<div class="data-label"><p>電話番号:</p></div>
-				<div class="data-value"><p>${sessionScope.tel}</p></div>
+				<div class="data-value"><p>${tel}</p></div>
 		    </div>
+		    <input type="hidden" name="tel" value="${tel}">
 		
 		    <div class="data-row">
 				<div class="data-label"><p>郵便番号:</p></div>
-				<div class="data-value"><p>${sessionScope.postCode}</p></div>
+				<div class="data-value"><p>${postCode}</p></div>
 		    </div>
+		    <input type="hidden" name="postCode" value="${postCode}">
 		
 		    <div class="data-row">
 		        <div class="data-label"><p>住所:</p></div>
-		        <div class="data-value"><p>${sessionScope.address}</p></div>
+		        <div class="data-value"><p>${address}</p></div>
 		    </div>
+		    <input type="hidden" name="address" value="${address}">
 		
 			<div class="data-row">
 		        <div class="data-label"><p>生年:</p></div>
-		        <div class="data-value"><p>${sessionScope.birthYear}</p></div>
+		        <div class="data-value"><p>${birthYear}</p></div>
 		    </div>
-		
+		    <input type="hidden" name="birthYear" value="${birthYear}">
+		    
 		    <div class="data-row">
 		        <div class="data-label"><p>生月:</p></div>
-		        <div class="data-value"><p>${sessionScope.birthMonth}</p></div>
+		        <div class="data-value"><p>${birthMonth}</p></div>
 		    </div>
+		    <input type="hidden" name="birthMonth" value="${birthMonth}">
 		
 		    <div class="data-row">
 		        <div class="data-label"><p>生日:</p></div>
-		        <div class="data-value"><p>${sessionScope.birthDay}</p></div>
+		        <div class="data-value"><p>${birthDay}</p></div>
 		    </div>
+		    <input type="hidden" name="birthDay" value="${birthDay}">
 		
 		    <div class="data-row">
 				<div class="data-label"><p>学生種別:</p></div>
-				<div class="data-value"><p>${sessionScope.studentType}</p></div>
+				<div class="data-value"><p>${studentType}</p></div>
 		    </div>
-		
+		    <input type="hidden" name="studentType" value="${studentType}">
+
 		    <div class="data-row">
 				<div class="data-label"><p>クラス名:</p></div>
-				<div class="data-value"><p>${sessionScope.className}</p></div>
+				<div class="data-value"><p>${className}</p></div>
 		    </div>
+		    <input type="hidden" name="className" value="${className}">
 		
 		    <div class="data-row">
 		        <div class="data-label"><p>学生番号:</p></div>
-		        <div class="data-value"><p>${sessionScope.studentNumber}</p></div>
+		        <div class="data-value"><p>${studentNumber}</p></div>
 		    </div>
+		    <input type="hidden" name="studentNumber" value="${studentNumber}">
 		
 			<div class="data-row">
 		        <div class="data-label"><p>学年:</p></div>
-		        <div class="data-value"><p>${sessionScope.schoolYear}</p></div>
+		        <div class="data-value"><p>${schoolYear}</p></div>
 		    </div>
+		    <input type="hidden" name="schoolYear" value="${schoolYear}">
 		
 		    <div class="data-row">
 		        <div class="data-label"><p>組:</p></div>
-		        <div class="data-value"><p>${sessionScope.classNumber}</p></div>
+		        <div class="data-value"><p>${classNumber}</p></div>
 		    </div>        
-	
+		    <input type="hidden" name="classNumber" value="${classNumber}">
+
             <!-- 登録ボタン -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
-			<a href="first-setting.jsp" class="w-100 btn btn-lg btn-secondary mb-3">戻る</a>         
-	     </form>
+	     </form>            
+	    <form action="FirstSettingCheck.action" method="post">
+		    <input type="hidden" name="lastName" value="${lastName}">
+		    <input type="hidden" name="firstName" value="${firstName}">
+		    <input type="hidden" name="tel" value="${tel}">
+		    <input type="hidden" name="postCode" value="${postCode}">
+		    <input type="hidden" name="address" value="${address}">
+		    <input type="hidden" name="birthYear" value="${birthYear}">
+		    <input type="hidden" name="birthMonth" value="${birthMonth}">
+		    <input type="hidden" name="birthDay" value="${birthDay}">
+		    <input type="hidden" name="studentType" value="${studentType}">
+		    <input type="hidden" name="className" value="${className}">
+		    <input type="hidden" name="studentNumber" value="${studentNumber}">
+		    <input type="hidden" name="schoolYear" value="${schoolYear}">
+		    <input type="hidden" name="classNumber" value="${classNumber}">
+		    <input type="hidden" name="goBack" value="true">
+		    <input type="submit" class="w-100 btn btn-lg btn-secondary mb-3" value="戻る">
+		</form>
 	</div>     
 </main>
 

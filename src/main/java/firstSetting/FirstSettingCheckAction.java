@@ -28,35 +28,41 @@ public class FirstSettingCheckAction extends Action {
 			return null;
 		}
 
-		// セッションからデータの取り出し
-		String lastName = (String) session.getAttribute("lastName");
-		String firstName = (String) session.getAttribute("firstName");
-		String tel = (String) session.getAttribute("tel");
-		String postCode = (String) session.getAttribute("postCode");
-		String address = (String) session.getAttribute("address");
-		String birthYear = (String) session.getAttribute("birthYear");
-		String birthMonth = (String) session.getAttribute("birthMonth");
-		String birthDay = (String) session.getAttribute("birthDay");
-		String studentType = (String) session.getAttribute("studentType");
-		String className = (String) session.getAttribute("className");
-		String studentNumber = (String) session.getAttribute("studentNumber");
-		String schoolYear = (String) session.getAttribute("schoolYear");
-		String classNumber = (String) session.getAttribute("classNumber");
+		// リクエストからデータの取り出し
+		String lastName = request.getParameter("lastName");
+		String firstName = request.getParameter("firstName");
+		String tel = request.getParameter("tel");
+		String postCode = request.getParameter("postCode");
+		String address = request.getParameter("address");
+		String birthYear = request.getParameter("birthYear");
+		String birthMonth = request.getParameter("birthMonth");
+		String birthDay = request.getParameter("birthDay");
+		String studentType = request.getParameter("studentType");
+		String className = request.getParameter("className");
+		String studentNumber = request.getParameter("studentNumber");
+		String schoolYear = request.getParameter("schoolYear");
+		String classNumber = request.getParameter("classNumber");
+		String goBack = request.getParameter("goBack");
 
-		// セッションのデータ削除
-		session.removeAttribute("lastName");
-		session.removeAttribute("firstName");
-		session.removeAttribute("tel");
-		session.removeAttribute("postCode");
-		session.removeAttribute("address");
-		session.removeAttribute("birthYear");
-		session.removeAttribute("birthMonth");
-		session.removeAttribute("birthDay");
-		session.removeAttribute("studentType");
-		session.removeAttribute("className");
-		session.removeAttribute("studentNumber");
-		session.removeAttribute("schoolYear");
-		session.removeAttribute("classNumber");
+		// 入力された値をリクエストに格納
+		request.setAttribute("lastName", lastName);
+		request.setAttribute("firstName", firstName);
+		request.setAttribute("tel", tel);
+		request.setAttribute("postCode", postCode);
+		request.setAttribute("address", address);
+		request.setAttribute("birthYear", birthYear);
+		request.setAttribute("birthMonth", birthMonth);
+		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("studentType", studentType);
+		request.setAttribute("className", className);
+		request.setAttribute("studentNumber", studentNumber);
+		request.setAttribute("schoolYear", schoolYear);
+		request.setAttribute("classNumber", classNumber);
+
+		// 「戻る」ボタンが押された場合は入力フォームへ戻る
+		if (goBack != null) {
+			return "first-setting.jsp";
+		}
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();

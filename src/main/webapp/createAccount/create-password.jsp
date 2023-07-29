@@ -21,6 +21,7 @@
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>
 			</c:if>
+		    <input type="hidden" name="encryptedAccount" value="${encryptedAccount}">
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
 			<a href="create-account.jsp" class="w-100 btn btn-lg btn-secondary mb-3">戻る</a>
 		</form>

@@ -74,8 +74,6 @@ public class LoginAction extends Action {
 					return null;
 					// メインメニューに移動
 				} else {
-					// セッションに暗号化した学生の種類を持たせる
-					session.setAttribute("student_type", studentType);
 					// メインページにリダイレクト
 					String contextPath = request.getContextPath();
 					response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");

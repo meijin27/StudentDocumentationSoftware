@@ -53,20 +53,20 @@ public class FirstSettingAction extends Action {
 			return "first-setting.jsp";
 		}
 
-		// 入力された値をセッションに格納
-		session.setAttribute("lastName", lastName);
-		session.setAttribute("firstName", firstName);
-		session.setAttribute("tel", tel);
-		session.setAttribute("postCode", postCode);
-		session.setAttribute("address", address);
-		session.setAttribute("birthYear", birthYear);
-		session.setAttribute("birthMonth", birthMonth);
-		session.setAttribute("birthDay", birthDay);
-		session.setAttribute("studentType", studentType);
-		session.setAttribute("className", className);
-		session.setAttribute("studentNumber", studentNumber);
-		session.setAttribute("schoolYear", schoolYear);
-		session.setAttribute("classNumber", classNumber);
+		// 入力された値をリクエストに格納
+		request.setAttribute("lastName", lastName);
+		request.setAttribute("firstName", firstName);
+		request.setAttribute("tel", tel);
+		request.setAttribute("postCode", postCode);
+		request.setAttribute("address", address);
+		request.setAttribute("birthYear", birthYear);
+		request.setAttribute("birthMonth", birthMonth);
+		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("studentType", studentType);
+		request.setAttribute("className", className);
+		request.setAttribute("studentNumber", studentNumber);
+		request.setAttribute("schoolYear", schoolYear);
+		request.setAttribute("classNumber", classNumber);
 
 		// 電話番号が半角10~11桁でなければエラーを返す
 		if (!tel.matches("^\\d{10,11}$")) {

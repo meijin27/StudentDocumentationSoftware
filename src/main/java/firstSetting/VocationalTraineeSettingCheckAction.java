@@ -28,17 +28,23 @@ public class VocationalTraineeSettingCheckAction extends Action {
 			return null;
 		}
 
-		// セッションからデータの取り出し
-		String namePESO = (String) session.getAttribute("namePESO");
-		String supplyNumber = (String) session.getAttribute("supplyNumber");
-		String attendanceNumber = (String) session.getAttribute("attendanceNumber");
-		String employmentInsurance = (String) session.getAttribute("employmentInsurance");
+		// リクエストからデータの取り出し
+		String namePESO = request.getParameter("namePESO");
+		String supplyNumber = request.getParameter("supplyNumber");
+		String attendanceNumber = request.getParameter("attendanceNumber");
+		String employmentInsurance = request.getParameter("employmentInsurance");
+		String goBack = request.getParameter("goBack");
 
-		// セッションのデータ削除
-		session.removeAttribute("namePESO");
-		session.removeAttribute("supplyNumber");
-		session.removeAttribute("attendanceNumber");
-		session.removeAttribute("employmentInsurance");
+		// 入力された値をリクエストに格納
+		request.setAttribute("namePESO", namePESO);
+		request.setAttribute("supplyNumber", supplyNumber);
+		request.setAttribute("attendanceNumber", attendanceNumber);
+		request.setAttribute("employmentInsurance", employmentInsurance);
+
+		// 「戻る」ボタンが押された場合は入力フォームへ戻る
+		if (goBack != null) {
+			return "vocational-trainee-setting.jsp";
+		}
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();

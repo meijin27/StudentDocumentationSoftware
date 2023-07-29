@@ -5,7 +5,7 @@
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
 	<h2 class="p-1">秘密の質問:</h2>
-	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${sessionScope.secretQuestion}</strong></h2>
+	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${secretQuestion}</strong></h2>
         <form action="SecretCheck.action" method="post">
             <div class="row">
                 <!-- 秘密の質問の答え -->
@@ -62,6 +62,8 @@
                   ${secretError}
               </div>
             </c:if>
+		    <input type="hidden" name="encryptedId" value="${encryptedId}">
+		    <input type="hidden" name="secretQuestion" value="${secretQuestion}">           
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>
     </main>
