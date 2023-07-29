@@ -48,7 +48,7 @@ public class ChangeStudentInfoAction extends Action {
 				|| schoolYear.isEmpty()
 				|| classNumber.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-studento-info.jsp";
+			return "change-student-info.jsp";
 		}
 
 		// 学籍番号が半角6桁でなければエラーを返す
@@ -63,7 +63,7 @@ public class ChangeStudentInfoAction extends Action {
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("valueLongError") != null || request.getAttribute("studentNumberError") != null) {
-			return "change-studento-info.jsp";
+			return "change-student-info.jsp";
 		}
 
 		// リクエストのデータ削除
