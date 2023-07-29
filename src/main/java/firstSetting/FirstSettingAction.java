@@ -20,7 +20,7 @@ public class FirstSettingAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -42,8 +42,12 @@ public class FirstSettingAction extends Action {
 		String classNumber = request.getParameter("classNumber");
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || tel == null || postCode == null || address == null ||
-				birthYear == null || birthMonth == null || birthDay == null || studentType == null || className == null
+		if (lastName.isEmpty() || firstName.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
+				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || studentType.isEmpty()
+				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()
+				|| lastName == null || firstName == null || tel == null || postCode == null || address == null ||
+				birthYear == null || birthMonth == null || birthDay == null || studentType == null
+				|| className == null
 				|| studentNumber == null || schoolYear == null || classNumber == null) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "first-setting.jsp";
@@ -80,7 +84,7 @@ public class FirstSettingAction extends Action {
 		}
 
 		// 「同意する」ボタンが押されていない場合はエラーにする。
-		if (request.getParameter("agree") == null) {
+		if (request.getParameter("agree").isEmpty() || request.getParameter("agree") == null) {
 			request.setAttribute("agreeError", "「利用規約及びプライバシーポリシーに同意する」をチェックしない限り登録できません。");
 		}
 

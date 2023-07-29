@@ -25,7 +25,7 @@ public class ChangePasswordAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -38,7 +38,7 @@ public class ChangePasswordAction extends Action {
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null || newPassword == null || newPassword.isEmpty()) {
+		if (password == null || password.isEmpty() || newPassword == null || newPassword.isEmpty()) {
 			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (!newPassword.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "新パスワードと確認用パスワードが一致しません。再度入力してください。");

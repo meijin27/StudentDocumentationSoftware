@@ -1,11 +1,15 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:import url="/header/header-firstSetting.jsp" />
+<c:import url="/header/header-mainMenu.jsp" />
 
-<main class="form-firstSetting w-100 m-auto flex-shrink-0">
-    <h2 class="p-5">職業訓練生の設定</h2>
-    <div class="content">
-	    <form action="VocationalTraineeSetting.action" method="post">
+<%@include file="/mainMenu/side-bar-menu.jsp" %>
+
+<main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
+	<div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1>職業訓練生の登録情報変更</h1>
+    </div>
+    <div class="container">
+		<form action="ChangeVocationalTrainee.action" method="post">
 	        <div class="row">
 	            <!-- 公共職業安定所名 Public Employment Security Office-->
 	            <div class="col-md-6 mb-3">
@@ -66,14 +70,12 @@
 	                ${attendanceNumberError}
 	            </div>
 	        </c:if>
-	
-	        <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
-			<a href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp" class="w-100 btn btn-lg btn-secondary mb-3">登録スキップ</a>         
+	        </div>
 
-	    </form>
-    </div>
+			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">変更</button>
+		</form>
+	</div>
 </main>
 
-<c:import url="/footer/footer.jsp" />
-
+<c:import url="/footer/footer-main-menu.jsp" />
 

@@ -10,122 +10,122 @@
 
 	    <div class="data-row">
 	        <div class="data-label"><p>ID:</p></div>
-	        <div class="data-value"><p>${sessionScope.monitorId}</p></div>
+	        <div class="data-value"><p>${monitorId}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>アカウント名:</p></div>
-	        <div class="data-value"><p>${sessionScope.account}</p></div>
+	        <div class="data-value"><p>${account}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>パスワード:</p></div>
-	        <div class="data-value"><p>${sessionScope.password}</p></div>
+	        <div class="data-value"><p>${password}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>マスターキー:</p></div>
-			<div class="data-value"><p>${sessionScope.monitorMasterKey}</p></div>
+			<div class="data-value"><p>${monitorMasterKey}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>IV:</p></div>
-			<div class="data-value"><p>${sessionScope.iv}</p></div>
+			<div class="data-value"><p>${iv}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>秘密の質問:</p></div>
-	        <div class="data-value"><p>${sessionScope.secretQuestion}</p></div>
+	        <div class="data-value"><p>${secretQuestion}</p></div>
 	    </div>
 	
 		<div class="data-row">
 	        <div class="data-label"><p>秘密の質問の答え:</p></div>
-	        <div class="data-value"><p>${sessionScope.secretAnswer}</p></div>
+	        <div class="data-value"><p>${secretAnswer}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>姓: </p></div>
-	        <div class="data-value"><p>${sessionScope.lastName}</p></div>
+	        <div class="data-value"><p>${lastName}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>名:</p></div>
-	        <div class="data-value"><p>${sessionScope.firstName}</p></div>
+	        <div class="data-value"><p>${firstName}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>電話番号:</p></div>
-			<div class="data-value"><p>${sessionScope.tel}</p></div>
+			<div class="data-value"><p>${tel}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>郵便番号:</p></div>
-			<div class="data-value"><p>${sessionScope.postCode}</p></div>
+			<div class="data-value"><p>${postCode}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>住所:</p></div>
-	        <div class="data-value"><p>${sessionScope.address}</p></div>
+	        <div class="data-value"><p>${address}</p></div>
 	    </div>
 	
 		<div class="data-row">
 	        <div class="data-label"><p>生年:</p></div>
-	        <div class="data-value"><p>${sessionScope.birthYear}</p></div>
+	        <div class="data-value"><p>${birthYear}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>生月:</p></div>
-	        <div class="data-value"><p>${sessionScope.birthMonth}</p></div>
+	        <div class="data-value"><p>${birthMonth}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>生日:</p></div>
-	        <div class="data-value"><p>${sessionScope.birthDay}</p></div>
+	        <div class="data-value"><p>${birthDay}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>学生種別:</p></div>
-			<div class="data-value"><p>${sessionScope.studentType}</p></div>
+			<div class="data-value"><p>${studentType}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>クラス名:</p></div>
-			<div class="data-value"><p>${sessionScope.className}</p></div>
+			<div class="data-value"><p>${className}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>学生番号:</p></div>
-	        <div class="data-value"><p>${sessionScope.studentNumber}</p></div>
+	        <div class="data-value"><p>${studentNumber}</p></div>
 	    </div>
 	
 		<div class="data-row">
 	        <div class="data-label"><p>学年:</p></div>
-	        <div class="data-value"><p>${sessionScope.schoolYear}</p></div>
+	        <div class="data-value"><p>${schoolYear}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>組:</p></div>
-	        <div class="data-value"><p>${sessionScope.classNumber}</p></div>
+	        <div class="data-value"><p>${classNumber}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>公共職業安定所名:</p></div>
-	        <div class="data-value"><p>${sessionScope.namePESO}</p></div>
+	        <div class="data-value"><p>${namePESO}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>支給番号:</p></div>
-			<div class="data-value"><p>${sessionScope.supplyNumber}</p></div>
+			<div class="data-value"><p>${supplyNumber}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>出席番号:</p></div>
-			<div class="data-value"><p>${sessionScope.attendanceNumber}</p></div>
+			<div class="data-value"><p>${attendanceNumber}</p></div>
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>雇用保険有無:</p></div>
-	        <div class="data-value"><p>${sessionScope.employmentInsurance}</p></div>
+	        <div class="data-value"><p>${employmentInsurance}</p></div>
 	    </div>
 	
 	

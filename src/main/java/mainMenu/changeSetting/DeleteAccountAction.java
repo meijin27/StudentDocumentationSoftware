@@ -21,7 +21,7 @@ public class DeleteAccountAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -32,7 +32,7 @@ public class DeleteAccountAction extends Action {
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null) {
+		if (password == null || password.isEmpty()) {
 			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (password.length() > 32) {
 			request.setAttribute("passwordError", "32文字以下で入力してください。");

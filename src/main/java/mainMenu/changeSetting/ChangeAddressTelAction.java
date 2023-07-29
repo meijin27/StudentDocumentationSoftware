@@ -22,7 +22,7 @@ public class ChangeAddressTelAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -33,13 +33,14 @@ public class ChangeAddressTelAction extends Action {
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 
-		// 入力された値をセッションに格納	
-		session.setAttribute("tel", tel);
-		session.setAttribute("postCode", postCode);
-		session.setAttribute("address", address);
+		// 入力された値をリクエストに格納	
+		request.setAttribute("tel", tel);
+		request.setAttribute("postCode", postCode);
+		request.setAttribute("address", address);
 
 		// 未入力項目があればエラーを返す
-		if (tel == null || postCode == null || address == null) {
+		if (tel == null || postCode == null || address == null || tel.isEmpty() || postCode.isEmpty()
+				|| address.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 		}
 
@@ -64,10 +65,10 @@ public class ChangeAddressTelAction extends Action {
 			return "change-address-tel.jsp";
 		}
 
-		// セッションのデータ削除
-		session.removeAttribute("tel");
-		session.removeAttribute("postCode");
-		session.removeAttribute("address");
+		// リクエストのデータ削除
+		request.removeAttribute("tel");
+		request.removeAttribute("postCode");
+		request.removeAttribute("address");
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();
@@ -103,7 +104,7 @@ public class ChangeAddressTelAction extends Action {
 		dao.updateAddress(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Change Address & Tel");
-		// 名前と生年月日変更成功画面に遷移
+		// 住所と電話番号変更成功画面に遷移
 		request.setAttribute("changes", "住所と電話番号を変更しました。");
 		return "change-success.jsp";
 

@@ -28,7 +28,7 @@ public class RecreatePasswordAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;

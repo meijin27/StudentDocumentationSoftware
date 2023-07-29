@@ -238,9 +238,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-vocational-trainee.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-vocational-trainee.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
-                               職業訓練生登録内容変更
+                               職業訓練生登録情報変更
                             </a>
                         </li>
                         <li class="nav-item">

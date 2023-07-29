@@ -22,7 +22,7 @@ public class FirstSettingCheckAction extends Action {
 		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
 		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;

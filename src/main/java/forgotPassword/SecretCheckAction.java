@@ -20,7 +20,7 @@ public class SecretCheckAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("secretQuestion") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -31,6 +31,20 @@ public class SecretCheckAction extends Action {
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
+
+		// もしも入力値が無し、もしくは空の場合はエラーを返す
+		if (secretAnswer == null || secretAnswer.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
+				|| birthDay.isEmpty() || birthYear == null || birthMonth == null || birthDay == null) {
+			request.setAttribute("secretError", "未入力項目があります。");
+			return "secret-check.jsp";
+		}
+
+		// 文字数が32文字より多い場合はエラーを返す		
+		if (secretAnswer.length() > 32) {
+			request.setAttribute("secretError", "32文字以下で入力してください。");
+			return "secret-check.jsp";
+		}
+
 		// データベース操作用クラス
 		UserDAO dao = new UserDAO();
 		// セッションから暗号化されたIDの取り出し

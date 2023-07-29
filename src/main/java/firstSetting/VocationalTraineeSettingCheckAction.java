@@ -22,7 +22,7 @@ public class VocationalTraineeSettingCheckAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -72,7 +72,7 @@ public class VocationalTraineeSettingCheckAction extends Action {
 		user.setAttendanceNumber(reEncryptedAttendanceNumber);
 		user.setEmploymentInsurance(reEncryptedEmploymentInsurance);
 
-		// 初期設定のデータベースへの登録
+		// 職業訓練生設定のデータベースへの登録
 		dao.updateVocationalTraineeSetting(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Create Vocational Trainee Setting");

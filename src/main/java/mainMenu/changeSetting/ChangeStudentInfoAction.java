@@ -22,7 +22,7 @@ public class ChangeStudentInfoAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -35,17 +35,20 @@ public class ChangeStudentInfoAction extends Action {
 		String schoolYear = request.getParameter("schoolYear");
 		String classNumber = request.getParameter("classNumber");
 
-		// 入力された値をセッションに格納	
-		session.setAttribute("studentType", studentType);
-		session.setAttribute("className", className);
-		session.setAttribute("studentNumber", studentNumber);
-		session.setAttribute("schoolYear", schoolYear);
-		session.setAttribute("classNumber", classNumber);
+		// 入力された値をリクエストに格納	
+		request.setAttribute("studentType", studentType);
+		request.setAttribute("className", className);
+		request.setAttribute("studentNumber", studentNumber);
+		request.setAttribute("schoolYear", schoolYear);
+		request.setAttribute("classNumber", classNumber);
 
 		// 未入力項目があればエラーを返す
 		if (studentType == null || className == null || studentNumber == null || schoolYear == null
-				|| classNumber == null) {
+				|| classNumber == null || studentType.isEmpty() || className.isEmpty() || studentNumber.isEmpty()
+				|| schoolYear.isEmpty()
+				|| classNumber.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
+			return "change-studento-info.jsp";
 		}
 
 		// 学籍番号が半角6桁でなければエラーを返す
@@ -59,17 +62,16 @@ public class ChangeStudentInfoAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("valueLongError") != null
-				|| request.getAttribute("studentNumberError") != null) {
+		if (request.getAttribute("valueLongError") != null || request.getAttribute("studentNumberError") != null) {
 			return "change-studento-info.jsp";
 		}
 
-		// セッションのデータ削除
-		session.removeAttribute("studentType");
-		session.removeAttribute("className");
-		session.removeAttribute("studentNumber");
-		session.removeAttribute("schoolYear");
-		session.removeAttribute("classNumber");
+		// リクエストのデータ削除
+		request.removeAttribute("studentType");
+		request.removeAttribute("className");
+		request.removeAttribute("studentNumber");
+		request.removeAttribute("schoolYear");
+		request.removeAttribute("classNumber");
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();
@@ -114,7 +116,7 @@ public class ChangeStudentInfoAction extends Action {
 		dao.updateClassNumber(user);
 		// アップデート内容のデータベースへの登録
 		dao.addOperationLog(id, "Change Student Infometion");
-		// 名前と生年月日変更成功画面に遷移
+		// 学生情報変更成功画面に遷移
 		request.setAttribute("changes", "学生情報を変更しました。");
 		return "change-success.jsp";
 

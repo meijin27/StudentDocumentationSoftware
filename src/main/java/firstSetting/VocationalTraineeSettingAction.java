@@ -17,7 +17,7 @@ public class VocationalTraineeSettingAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -30,12 +30,13 @@ public class VocationalTraineeSettingAction extends Action {
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
-		if (namePESO == null || attendanceNumber == null || employmentInsurance == null) {
+		if (namePESO.isEmpty() || attendanceNumber.isEmpty() || employmentInsurance.isEmpty() || namePESO == null
+				|| supplyNumber == null || attendanceNumber == null || employmentInsurance == null) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "vocational-trainee-setting.jsp";
 		}
 		// 未入力項目があればエラーを返す(雇用保険「有」の場合は支給番号を記載する必要あり)
-		else if (employmentInsurance.equals("有") && supplyNumber == null) {
+		else if (employmentInsurance.equals("有") && supplyNumber.isEmpty()) {
 			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
 			return "vocational-trainee-setting.jsp";
 		}

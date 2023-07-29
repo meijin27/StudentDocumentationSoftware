@@ -25,7 +25,7 @@ public class ChangeNameDateofBirthAction extends Action {
 		// セッションの有効期限切れの場合はエラーとして処理
 		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
 			// ログインページにリダイレクト
-			session.setAttribute("otherError", "エラーが発生しました。やり直してください。");
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
 			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
@@ -38,15 +38,17 @@ public class ChangeNameDateofBirthAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// 入力された値をセッションに格納		
-		session.setAttribute("lastName", lastName);
-		session.setAttribute("firstName", firstName);
-		session.setAttribute("birthYear", birthYear);
-		session.setAttribute("birthMonth", birthMonth);
-		session.setAttribute("birthDay", birthDay);
+		// 入力された値をリクエストに格納		
+		request.setAttribute("lastName", lastName);
+		request.setAttribute("firstName", firstName);
+		request.setAttribute("birthYear", birthYear);
+		request.setAttribute("birthMonth", birthMonth);
+		request.setAttribute("birthDay", birthDay);
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || birthYear == null || birthMonth == null || birthDay == null) {
+		if (lastName == null || firstName == null || birthYear == null || birthMonth == null || birthDay == null
+				|| lastName.isEmpty() || firstName.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
+				|| birthDay.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 		}
 
@@ -73,12 +75,12 @@ public class ChangeNameDateofBirthAction extends Action {
 			return "change-name-date-of-birth.jsp";
 		}
 
-		// セッションのデータ削除
-		session.removeAttribute("lastName");
-		session.removeAttribute("firstName");
-		session.removeAttribute("birthYear");
-		session.removeAttribute("birthMonth");
-		session.removeAttribute("birthDay");
+		// リクエストのデータ削除
+		request.removeAttribute("lastName");
+		request.removeAttribute("firstName");
+		request.removeAttribute("birthYear");
+		request.removeAttribute("birthMonth");
+		request.removeAttribute("birthDay");
 
 		// データベースとの接続用
 		UserDAO dao = new UserDAO();
