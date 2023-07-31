@@ -21,7 +21,6 @@ public class SampleAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		try {
 			// PDF and Font path
 			String pdfPath = "/pdf/vocationalTraineePDF/別紙　領収書添付用.pdf";
@@ -45,6 +44,7 @@ public class SampleAction extends Action {
 			editor.close("別紙　領収書添付用.pdf");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("errorMessage", "内部エラーが発生しました。");
 		}
 
 		return "sample.jsp";
