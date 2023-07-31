@@ -9,7 +9,10 @@
         <h1>PDFサンプル作成</h1><br>
 			
 		<form action="Sample.action" method="post">
-		
+			<c:if test="${not empty errorMessage}">
+				<div class="alert alert-danger" role="alert">${errorMessage}
+				</div>
+			</c:if>
 			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">更新</button>
 		</form>
     </div>
