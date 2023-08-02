@@ -1,5 +1,8 @@
 package firstSetting;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -8,10 +11,12 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 
 public class VocationalTraineeSettingCheckAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(VocationalTraineeSettingCheckAction.class);
 
 	@Override
 	public String execute(
@@ -46,46 +51,52 @@ public class VocationalTraineeSettingCheckAction extends Action {
 			return "vocational-trainee-setting.jsp";
 		}
 
-		// データベースとの接続用
-		UserDAO dao = new UserDAO();
-		// 復号とIDやIV等の取り出しクラスの設定
-		Decrypt decrypt = new Decrypt(dao);
-		DecryptionResult result = decrypt.getDecryptedMasterKey(session);
-		// IDの取り出し
-		String id = result.getId();
-		// マスターキーの取り出し			
-		String masterKey = result.getMasterKey();
-		// ivの取り出し
-		String iv = result.getIv();
+		try {
+			// データベースとの接続用
+			UserDAO dao = new UserDAO();
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
+			// マスターキーの取り出し			
+			String masterKey = result.getMasterKey();
+			// ivの取り出し
+			String iv = result.getIv();
 
-		// 登録するデータの暗号化
-		String encryptedNamePESO = CipherUtil.encrypt(masterKey, iv, namePESO);
-		String encryptedSupplyNumber = CipherUtil.encrypt(masterKey, iv, supplyNumber);
-		String encryptedAttendanceNumber = CipherUtil.encrypt(masterKey, iv, attendanceNumber);
-		String encryptedEmploymentInsurance = CipherUtil.encrypt(masterKey, iv, employmentInsurance);
+			// 登録するデータの暗号化
+			String encryptedNamePESO = CipherUtil.encrypt(masterKey, iv, namePESO);
+			String encryptedSupplyNumber = CipherUtil.encrypt(masterKey, iv, supplyNumber);
+			String encryptedAttendanceNumber = CipherUtil.encrypt(masterKey, iv, attendanceNumber);
+			String encryptedEmploymentInsurance = CipherUtil.encrypt(masterKey, iv, employmentInsurance);
 
-		// 共通暗号キーによる暗号化
-		String reEncryptedNamePESO = CipherUtil.commonEncrypt(encryptedNamePESO);
-		String reEncryptedSupplyNumber = CipherUtil.commonEncrypt(encryptedSupplyNumber);
-		String reEncryptedAttendanceNumber = CipherUtil.commonEncrypt(encryptedAttendanceNumber);
-		String reEncryptedEmploymentInsurance = CipherUtil.commonEncrypt(encryptedEmploymentInsurance);
+			// 共通暗号キーによる暗号化
+			String reEncryptedNamePESO = CipherUtil.commonEncrypt(encryptedNamePESO);
+			String reEncryptedSupplyNumber = CipherUtil.commonEncrypt(encryptedSupplyNumber);
+			String reEncryptedAttendanceNumber = CipherUtil.commonEncrypt(encryptedAttendanceNumber);
+			String reEncryptedEmploymentInsurance = CipherUtil.commonEncrypt(encryptedEmploymentInsurance);
 
-		// ユーザー情報の作成
-		User user = new User();
-		user.setId(id);
-		user.setNamePESO(reEncryptedNamePESO);
-		user.setSupplyNumber(reEncryptedSupplyNumber);
-		user.setAttendanceNumber(reEncryptedAttendanceNumber);
-		user.setEmploymentInsurance(reEncryptedEmploymentInsurance);
+			// ユーザー情報の作成
+			User user = new User();
+			user.setId(id);
+			user.setNamePESO(reEncryptedNamePESO);
+			user.setSupplyNumber(reEncryptedSupplyNumber);
+			user.setAttendanceNumber(reEncryptedAttendanceNumber);
+			user.setEmploymentInsurance(reEncryptedEmploymentInsurance);
 
-		// 職業訓練生設定のデータベースへの登録
-		dao.updateVocationalTraineeSetting(user);
-		// アップデート内容のデータベースへの登録
-		dao.addOperationLog(id, "Create Vocational Trainee Setting");
+			// 職業訓練生設定のデータベースへの登録
+			dao.updateVocationalTraineeSetting(user);
+			// アップデート内容のデータベースへの登録
+			dao.addOperationLog(id, "Create Vocational Trainee Setting");
 
-		String contextPath = request.getContextPath();
-		response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
-		return null;
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+			return null;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
+			return "vocational-trainee-setting.jsp";
+		}
 	}
 
 }

@@ -2,6 +2,8 @@ package mainMenu.changeSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,10 +13,12 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 
 public class ChangeNameDateofBirthAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(ChangeNameDateofBirthAction.class);
 
 	@Override
 	public String execute(
@@ -82,48 +86,54 @@ public class ChangeNameDateofBirthAction extends Action {
 		request.removeAttribute("birthMonth");
 		request.removeAttribute("birthDay");
 
-		// データベースとの接続用
-		UserDAO dao = new UserDAO();
-		// 復号とIDやIV等の取り出しクラスの設定
-		Decrypt decrypt = new Decrypt(dao);
-		DecryptionResult result = decrypt.getDecryptedMasterKey(session);
-		// IDの取り出し
-		String id = result.getId();
-		// マスターキーの取り出し			
-		String masterKey = result.getMasterKey();
-		// ivの取り出し
-		String iv = result.getIv();
+		try {
+			// データベースとの接続用
+			UserDAO dao = new UserDAO();
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
+			// マスターキーの取り出し			
+			String masterKey = result.getMasterKey();
+			// ivの取り出し
+			String iv = result.getIv();
 
-		// 登録するデータの暗号化
-		String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
-		String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
-		String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
-		String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
-		String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
+			// 登録するデータの暗号化
+			String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
+			String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
+			String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
+			String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
+			String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
 
-		// 共通暗号キーによる暗号化
-		String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
-		String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
-		String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
-		String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
-		String reEncryptedBirthDay = CipherUtil.commonEncrypt(encryptedBirthDay);
+			// 共通暗号キーによる暗号化
+			String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
+			String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
+			String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
+			String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
+			String reEncryptedBirthDay = CipherUtil.commonEncrypt(encryptedBirthDay);
 
-		// ユーザー情報の作成
-		User user = new User();
-		user.setId(id);
-		user.setLastName(reEncryptedLastName);
-		user.setFirstName(reEncryptedFirstName);
-		user.setBirthYear(reEncryptedBirthYear);
-		user.setBirthMonth(reEncryptedBirthMonth);
-		user.setBirthDay(reEncryptedBirthDay);
-		// データベースへの登録
-		dao.updateLastName(user);
-		dao.updateFirstName(user);
-		dao.updateBirthYear(user);
-		dao.updateBirthMonth(user);
-		dao.updateBirthDay(user);
-		// アップデート内容のデータベースへの登録
-		dao.addOperationLog(id, "Change Name & Date of Birth");
+			// ユーザー情報の作成
+			User user = new User();
+			user.setId(id);
+			user.setLastName(reEncryptedLastName);
+			user.setFirstName(reEncryptedFirstName);
+			user.setBirthYear(reEncryptedBirthYear);
+			user.setBirthMonth(reEncryptedBirthMonth);
+			user.setBirthDay(reEncryptedBirthDay);
+			// データベースへの登録
+			dao.updateLastName(user);
+			dao.updateFirstName(user);
+			dao.updateBirthYear(user);
+			dao.updateBirthMonth(user);
+			dao.updateBirthDay(user);
+			// アップデート内容のデータベースへの登録
+			dao.addOperationLog(id, "Change Name & Date of Birth");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
+			return "change-name-date-of-birth.jsp";
+		}
 		// 名前と生年月日変更成功画面に遷移
 		request.setAttribute("changes", "名前と生年月日を変更しました。");
 		return "change-success.jsp";

@@ -127,7 +127,11 @@
 	        <div class="data-label"><p>雇用保険有無:</p></div>
 	        <div class="data-value"><p>${employmentInsurance}</p></div>
 	    </div>
-	
+        <c:if test="${not empty innerError}">
+            <div class="alert alert-danger text-center input-field" role="alert">
+                ${innerError}
+            </div>
+        </c:if>	
 	
 			
 		<form action="Monitor.action" method="post">

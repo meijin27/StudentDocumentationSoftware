@@ -37,6 +37,13 @@ public class CreatePasswordAction extends Action {
 			return null;
 		}
 
+		// ユーザー情報を格納するクラスの作成
+		User user = new User();
+		// リクエストから暗号化されたアカウント名を取り出す
+		String encryptedAccount = request.getParameter("encryptedAccount");
+		// リクエストに共通暗号キーで暗号化されたアカウント名を格納
+		request.setAttribute("encryptedAccount", encryptedAccount);
+
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (password == null || password.isEmpty()) {
@@ -54,13 +61,6 @@ public class CreatePasswordAction extends Action {
 
 		// パスワードが英大文字・小文字・数字をすべて含み８文字以上の場合の処理
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
-			// ユーザー情報を格納するクラスの作成
-			User user = new User();
-			// リクエストから暗号化されたアカウント名を取り出す
-			String encryptedAccount = request.getParameter("encryptedAccount");
-			// リクエストに共通暗号キーで暗号化されたアカウント名を格納
-			request.setAttribute("encryptedAccount", encryptedAccount);
-
 			try {
 				// 暗号化されたアカウント名を復号する
 				String account = CipherUtil.commonDecrypt(encryptedAccount);
@@ -83,6 +83,7 @@ public class CreatePasswordAction extends Action {
 
 			// パスワードの入力形式が不適切ならエラー処理
 		} else {
+
 			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
 			return "create-password.jsp";
 		}

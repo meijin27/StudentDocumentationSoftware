@@ -1,5 +1,8 @@
 package mainMenu.changeSetting;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -8,9 +11,11 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.CustomLogger;
 import tool.PasswordUtil;
 
 public class DeleteAccountAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(DeleteAccountAction.class);
 
 	@Override
 	public String execute(
@@ -43,33 +48,39 @@ public class DeleteAccountAction extends Action {
 			return "delete-account.jsp";
 		}
 
-		// データベース操作用クラス
-		UserDAO dao = new UserDAO();
-		// セッションから暗号化されたIDの取り出し
-		String encryptedId = (String) session.getAttribute("id");
-		// IDの復号
-		String id = CipherUtil.commonDecrypt(encryptedId);
-		// IDでデータベースを検索
-		String registerPassword = dao.getPassword(id);
-		// 現在のパスワードの一致確認
-		if (PasswordUtil.isPasswordMatch(password, registerPassword)) {
-			// 削除するID情報をUserクラスを作成し格納する
-			User user = new User();
-			user.setId(id);
-			// アップデート内容のデータベースへの登録
-			dao.addOperationLog(id, "Delete Account");
-			// データベースからアカウントの削除
-			dao.accountDeleted(id);
-			// セッションを消去
-			session.removeAttribute("id");
-			session.removeAttribute("master_key");
-			// アカウント削除後、ログインページにリダイレクト
-			session.setAttribute("otherError", "アカウントが削除されました。");
-			String contextPath = request.getContextPath();
-			response.sendRedirect(contextPath + "/login/login.jsp");
-			return null;
-		} else {
-			request.setAttribute("passwordError", "パスワードが一致しません。");
+		try {
+			// データベース操作用クラス
+			UserDAO dao = new UserDAO();
+			// セッションから暗号化されたIDの取り出し
+			String encryptedId = (String) session.getAttribute("id");
+			// IDの復号
+			String id = CipherUtil.commonDecrypt(encryptedId);
+			// IDでデータベースを検索
+			String registerPassword = dao.getPassword(id);
+			// 現在のパスワードの一致確認
+			if (PasswordUtil.isPasswordMatch(password, registerPassword)) {
+				// 削除するID情報をUserクラスを作成し格納する
+				User user = new User();
+				user.setId(id);
+				// アップデート内容のデータベースへの登録
+				dao.addOperationLog(id, "Delete Account");
+				// データベースからアカウントの削除
+				dao.accountDeleted(id);
+				// セッションを消去
+				session.removeAttribute("id");
+				session.removeAttribute("master_key");
+				// アカウント削除後、ログインページにリダイレクト
+				session.setAttribute("otherError", "アカウントが削除されました。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			} else {
+				request.setAttribute("passwordError", "パスワードが一致しません。");
+				return "delete-account.jsp";
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("passwordError", "内部エラーが発生しました。");
 			return "delete-account.jsp";
 		}
 	}

@@ -70,6 +70,11 @@
 	                ${attendanceNumberError}
 	            </div>
 	        </c:if>
+	        <c:if test="${not empty  innerError}">
+	            <div class="alert alert-danger" role="alert">
+	                ${innerError}
+	            </div>
+	        </c:if>
 	        </div>
 
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">変更</button>

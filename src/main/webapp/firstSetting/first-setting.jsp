@@ -165,6 +165,11 @@
 	                ${birthDayError}
 	            </div>
 	        </c:if>
+	        <c:if test="${not empty innerError}">
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${innerError}
+	            </div>
+	        </c:if>
 	        <button type="button" class="w-100 btn btn-warning btn-primary mb-3" data-bs-toggle="modal"
 	            data-bs-target="#termsModal" id="termsLink">
 	            利用規約を確認する
