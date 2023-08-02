@@ -2,6 +2,8 @@ package tool;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = { "*.action" })
 public class FrontController extends HttpServlet {
+	private static final Logger logger = CustomLogger.getLogger(FrontController.class);
 
 	@Override
 	public void doPost(
@@ -24,7 +27,7 @@ public class FrontController extends HttpServlet {
 			String url = action.execute(request, response);
 			request.getRequestDispatcher(url).forward(request, response);
 		} catch (Exception e) {
-			e.printStackTrace(out);
+			logger.log(Level.SEVERE, "Page transition failed", e);
 		}
 	}
 

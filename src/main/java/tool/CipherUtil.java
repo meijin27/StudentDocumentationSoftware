@@ -2,6 +2,7 @@ package tool;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.logging.Level;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -22,7 +23,6 @@ public class CipherUtil {
 		}
 	}
 
-	// 他のクラスからアクセス可能なencryptメソッド
 	public static String encrypt(String key, String iv, String value) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
@@ -37,11 +37,11 @@ public class CipherUtil {
 
 			return Base64.getEncoder().encodeToString(encrypted);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			CustomLogger.getLogger(CipherUtil.class).log(Level.SEVERE, "Encryption failed.", e);
+			throw new RuntimeException("An error occurred during encryption.");
 		}
 	}
 
-	// 他のクラスからアクセス可能なdecryptメソッド
 	public static String decrypt(String key, String iv, String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
@@ -56,11 +56,11 @@ public class CipherUtil {
 
 			return new String(decrypted, "UTF-8");
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			CustomLogger.getLogger(CipherUtil.class).log(Level.SEVERE, "Decryption failed.", e);
+			throw new RuntimeException("An error occurred during decryption.");
 		}
 	}
 
-	// 他のクラスからアクセス可能なcommonencryptメソッド
 	public static String commonEncrypt(String value) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);
@@ -75,11 +75,11 @@ public class CipherUtil {
 
 			return Base64.getEncoder().encodeToString(encrypted);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			CustomLogger.getLogger(CipherUtil.class).log(Level.SEVERE, "Common encryption failed.", e);
+			throw new RuntimeException("An error occurred during common encryption.");
 		}
 	}
 
-	// 他のクラスからアクセス可能なcommondecryptメソッド
 	public static String commonDecrypt(String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);
@@ -94,8 +94,8 @@ public class CipherUtil {
 
 			return new String(decrypted, "UTF-8");
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			CustomLogger.getLogger(CipherUtil.class).log(Level.SEVERE, "Common decryption failed.", e);
+			throw new RuntimeException("An error occurred during common decryption.");
 		}
 	}
-
 }

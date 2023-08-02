@@ -24,7 +24,7 @@ public class SampleAction extends Action {
 		try {
 			// PDF and Font path
 			String pdfPath = "/pdf/vocationalTraineePDF/別紙　領収書添付用.pdf";
-			String fontPath = "/font/MS-PMincho-02.ttf";
+			String fontPath = "a/font/MS-PMincho-02.ttf";
 
 			// Create an EditPDF object
 			EditPDF editor = new EditPDF(pdfPath);

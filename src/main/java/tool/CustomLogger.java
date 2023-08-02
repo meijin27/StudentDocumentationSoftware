@@ -12,35 +12,39 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class CustomLogger {
-	public static Logger getLogger(Class<?> className) {
-		Logger logger = Logger.getLogger(className.getName());
-		try {
-			String userHome = System.getProperty("user.home");
-			String appFolderPath = userHome + "/StudentDocumentationSoftwareLog";
-			File appFolder = new File(appFolderPath);
-			if (!appFolder.exists()) {
-				appFolder.mkdir();
-			}
-			Handler fileHandler = new FileHandler(appFolderPath + "/logfile.log", true);
+	private static Logger logger;
 
-			// Create a custom Formatter
-			Formatter formatter = new Formatter() {
-				private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-				@Override
-				public String format(LogRecord record) {
-					return String.format("%s [%s] %s: %s%n",
-							sdf.format(new Date(record.getMillis())),
-							record.getLevel().getName(),
-							record.getSourceClassName(),
-							record.getMessage());
+	public static synchronized Logger getLogger(Class<?> className) {
+		if (logger == null) {
+			logger = Logger.getLogger(className.getName());
+			try {
+				String userHome = System.getProperty("user.home");
+				String appFolderPath = userHome + "/StudentDocumentationSoftwareLog";
+				File appFolder = new File(appFolderPath);
+				if (!appFolder.exists()) {
+					appFolder.mkdir();
 				}
-			};
+				Handler fileHandler = new FileHandler(appFolderPath + "/logfile.log", true);
 
-			fileHandler.setFormatter(formatter);
-			logger.addHandler(fileHandler);
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Failed to set up logger.", e);
+				// Create a custom Formatter
+				Formatter formatter = new Formatter() {
+					private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+					@Override
+					public String format(LogRecord record) {
+						return String.format("%s [%s] %s: %s%n",
+								sdf.format(new Date(record.getMillis())),
+								record.getLevel().getName(),
+								record.getSourceClassName(),
+								record.getMessage());
+					}
+				};
+
+				fileHandler.setFormatter(formatter);
+				logger.addHandler(fileHandler);
+			} catch (IOException e) {
+				logger.log(Level.SEVERE, "Failed to set up logger.", e);
+			}
 		}
 		return logger;
 	}

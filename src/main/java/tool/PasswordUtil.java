@@ -2,71 +2,88 @@ package tool;
 
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.logging.Level;
 
 import org.mindrot.jbcrypt.BCrypt;
 
 import bean.User;
 
 public class PasswordUtil {
-	// 使用する暗号化アルゴリズムを設定します。ここではAES/CBC/PKCS5Paddingを使用します。
 	private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
-
-	// AESのキーサイズを設定します。ここでは128bitを使用します。
 	private static final int MASTER_KEY_SIZE = 16;
 
-	// Bcryptを使用してパスワードをハッシュ化します。
 	public static String getHashedPassword(String password) {
-		return BCrypt.hashpw(password, BCrypt.gensalt());
+		try {
+			return BCrypt.hashpw(password, BCrypt.gensalt());
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE, "Password hashing failed.", e);
+			throw new RuntimeException("An error occurred during password hashing.");
+		}
 	}
 
-	// ランダムな暗号化キーを生成します。このキーはBase64でエンコードされた文字列として返されます。
 	private static String generateEncryptionKey() {
-		SecureRandom random = new SecureRandom();
-		byte[] key = new byte[MASTER_KEY_SIZE];
-		random.nextBytes(key);
-		return Base64.getEncoder().encodeToString(key);
+		try {
+			SecureRandom random = new SecureRandom();
+			byte[] key = new byte[MASTER_KEY_SIZE];
+			random.nextBytes(key);
+			return Base64.getEncoder().encodeToString(key);
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE, "Encryption key generation failed.", e);
+			throw new RuntimeException("An error occurred during encryption key generation.");
+		}
 	}
 
-	// AESのブロックサイズ（128ビット、16バイト）に対応するランダムな初期化ベクトル（Initialization Vector：IV）を生成します。
 	private static String generateIV() {
-		SecureRandom random = new SecureRandom();
-		byte[] iv = new byte[16];
-		random.nextBytes(iv);
-		return Base64.getEncoder().encodeToString(iv);
+		try {
+			SecureRandom random = new SecureRandom();
+			byte[] iv = new byte[16];
+			random.nextBytes(iv);
+			return Base64.getEncoder().encodeToString(iv);
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE,
+					"Initialization Vector (IV) generation failed.", e);
+			throw new RuntimeException("An error occurred during Initialization Vector (IV) generation.");
+		}
 	}
 
-	// ユーザーの登録を行います。
 	public static User register(String account, String password) {
-		// パスワードのハッシュ化
-		String hashedPassword = getHashedPassword(password);
+		try {
+			String hashedPassword = getHashedPassword(password);
 
-		// マスターキーの作成（暗号化前）
-		String masterKey = generateEncryptionKey();
-		// IVの生成
-		String iv = generateIV();
-		// マスターキーの暗号化。ユーザーIDとパスワードを結合した文字列を鍵として使用します。
-		String encryptedKey = encryptWithAES(password + account, iv, masterKey);
-		// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
-		String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
+			String masterKey = generateEncryptionKey();
+			String iv = generateIV();
+			String encryptedKey = encryptWithAES(password + account, iv, masterKey);
+			String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
 
-		// ユーザー情報の作成
-		User user = new User();
-		user.setAccount(CipherUtil.commonEncrypt(account));
-		user.setPassword(hashedPassword);
-		user.setMasterKey(reEncryptedKey);
-		user.setIv(iv);
+			User user = new User();
+			user.setAccount(CipherUtil.commonEncrypt(account));
+			user.setPassword(hashedPassword);
+			user.setMasterKey(reEncryptedKey);
+			user.setIv(iv);
 
-		return user;
+			return user;
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE, "User registration failed.", e);
+			throw new RuntimeException("An error occurred during user registration.");
+		}
 	}
 
-	// Bcryptを使用して、保存されたパスワードハッシュとユーザーが入力したパスワードを比較します。
 	public static boolean isPasswordMatch(String candidatePassword, String hashedPassword) {
-		return BCrypt.checkpw(candidatePassword, hashedPassword);
+		try {
+			return BCrypt.checkpw(candidatePassword, hashedPassword);
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE, "Password matching failed.", e);
+			throw new RuntimeException("An error occurred during password matching.");
+		}
 	}
 
-	// AESで暗号化を行います。鍵としては、生成した暗号化キーとIVを使用します。
 	private static String encryptWithAES(String key, String iv, String value) {
-		return CipherUtil.encrypt(key, iv, value);
+		try {
+			return CipherUtil.encrypt(key, iv, value);
+		} catch (Exception e) {
+			CustomLogger.getLogger(PasswordUtil.class).log(Level.SEVERE, "AES encryption failed.", e);
+			throw new RuntimeException("An error occurred during AES encryption.");
+		}
 	}
 
 }

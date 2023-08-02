@@ -1,5 +1,7 @@
 package createAccount;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +12,11 @@ import bean.User;
 import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
+import tool.CustomLogger;
 import tool.PasswordUtil;
 
 public class CreatePasswordAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(CreatePasswordAction.class);
 
 	@Override
 	public String execute(
@@ -33,13 +37,6 @@ public class CreatePasswordAction extends Action {
 			return null;
 		}
 
-		// リクエストから暗号化されたアカウント名を取り出す
-		String encryptedAccount = request.getParameter("encryptedAccount");
-		// リクエストに共通暗号キーで暗号化されたアカウント名を格納
-		request.setAttribute("encryptedAccount", encryptedAccount);
-		// 暗号化されたアカウント名を復号する
-		String account = CipherUtil.commonDecrypt(encryptedAccount);
-
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (password == null || password.isEmpty()) {
@@ -59,15 +56,28 @@ public class CreatePasswordAction extends Action {
 		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
 			// ユーザー情報を格納するクラスの作成
 			User user = new User();
-			// PasswordUtilクラスにてユーザー情報を自動入力する
-			//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
-			user = PasswordUtil.register(account, password);
-			// データベース操作用クラス
-			UserDAO dao = new UserDAO();
-			// データベースにアカウント登録する
-			dao.accountInsert(user);
-			// リクエストにアカウント名を格納する
-			request.setAttribute("accountName", account);
+			// リクエストから暗号化されたアカウント名を取り出す
+			String encryptedAccount = request.getParameter("encryptedAccount");
+			// リクエストに共通暗号キーで暗号化されたアカウント名を格納
+			request.setAttribute("encryptedAccount", encryptedAccount);
+
+			try {
+				// 暗号化されたアカウント名を復号する
+				String account = CipherUtil.commonDecrypt(encryptedAccount);
+				// PasswordUtilクラスにてユーザー情報を自動入力する
+				//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
+				user = PasswordUtil.register(account, password);
+				// データベース操作用クラス
+				UserDAO dao = new UserDAO();
+				// データベースにアカウント登録する
+				dao.accountInsert(user);
+				// リクエストにアカウント名を格納する
+				request.setAttribute("accountName", account);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				request.setAttribute("passwordError", "内部エラーが発生しました。");
+				return "create-password.jsp";
+			}
 			// アカウント作成成功画面に遷移
 			return "create-success.jsp";
 
