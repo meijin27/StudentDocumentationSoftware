@@ -2,12 +2,15 @@ package tool;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 
 public class EditPDF {
 	private static final Logger logger = CustomLogger.getLogger(EditPDF.class);
@@ -26,25 +29,75 @@ public class EditPDF {
 			// PDPageContentStreamを追加モードで作成
 			contentStream = new PDPageContentStream(document, page,
 					PDPageContentStream.AppendMode.APPEND, true, true);
-			contentStream.beginText();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException("Failed to load PDF file.");
+		}
+	}
+
+	// "left"、"center"、または "right" を align パラメータとして渡すことで、テキストの配置を左揃え、中央揃え、または右揃えにすることができます。
+	public void writeText(PDFont font, String text, float startX, float startY, float width, String align,
+			int initialFontSize)
+			throws IOException {
+		try {
+			// フォントサイズ
+			int fontSize = initialFontSize;
+			// テキストの幅の計算
+			float textWidth = font.getStringWidth(text) / 1000 * fontSize;
+			// テキストを中央ぞろえにする場合の開始位置計算
+			float adjustedStartX = startX;
+
+			if ("center".equals(align)) {
+				// 中央揃えの場合の調整
+				adjustedStartX = startX + (width - textWidth) / 2;
+			} else if ("right".equals(align)) {
+				// 右揃えの場合の調整
+				adjustedStartX = startX + width - textWidth;
+			}
+
+			// テキストが指定された範囲に収まるように、フォントサイズを徐々に減少させながら調整します。
+			while (font.getStringWidth(text) / 1000 * fontSize > width && fontSize > 0) {
+				fontSize--;
+			}
+			// テキストが指定した範囲内に収まらない場合にエラーを起こす
+			if (fontSize == 0) {
+				logger.log(Level.SEVERE, "Text doesn't fit within the defined width");
+				throw new RuntimeException("Text doesn't fit within the defined width");
+			}
+
+			// Write the text
+			contentStream.beginText();
+			contentStream.setFont(font, fontSize);
+			contentStream.newLineAtOffset(adjustedStartX, startY);
+			contentStream.showText(text);
+			contentStream.endText();
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException("Failed to write text.");
 		}
 	}
 
 	public void close(String filename) {
 		try {
-			contentStream.endText();
 			contentStream.close();
+
+			// Create a formatter
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+			// Get the current date and time
+			LocalDateTime now = LocalDateTime.now();
+			filename = filename.substring(0, filename.length() - 4);
+			String newFilename = filename + formatter.format(now) + ".pdf";
 
 			// ダウンロードフォルダに保管する
 			String home = System.getProperty("user.home");
-			String downloadPath = home + File.separator + "Downloads" + File.separator + filename;
+			String downloadPath = home + File.separator + "Downloads" + File.separator + newFilename;
 			document.save(downloadPath);
 
 			document.close();
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException("Process cannot be saved.");
 		}
 	}
 
