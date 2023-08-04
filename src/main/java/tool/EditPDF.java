@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,6 +75,29 @@ public class EditPDF {
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			throw new RuntimeException("Failed to write text.");
+		}
+	}
+
+	public void writeSymbolsOnCalendar(PDFont font, Map<Integer, String> daySymbolMap, float startX, float startY,
+			float dayWidth, float dayHeight, int fontSize) throws IOException {
+		try {
+			for (Map.Entry<Integer, String> entry : daySymbolMap.entrySet()) {
+				Integer day = entry.getKey();
+				String symbol = entry.getValue();
+
+				// Calculate position based on day number. This depends on the layout of your PDF.
+				int row = (day - 1) / 7; // Assuming a 7-day week starting from day 1.
+				int column = (day - 1) % 7;
+
+				float textStartX = startX + column * dayWidth;
+				float textStartY = startY - row * dayHeight; // Assuming startY is the top position and y decreases downwards.
+
+				// Write the symbol on the day.
+				writeText(font, symbol, textStartX, textStartY, dayWidth, "center", fontSize);
+			}
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException("Failed to write symbols on calendar.");
 		}
 	}
 

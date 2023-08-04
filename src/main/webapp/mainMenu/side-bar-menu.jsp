@@ -131,15 +131,15 @@
                 <div id="collapse4" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/certificate-vocational-training.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/certificate-vocational-training.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
-                                公共職業訓練等受講証明書　（様式第15号）
+                                公共職業訓練等受講証明書
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="edit" class="align-text-bottom"></span>
-                                委託訓練欠席（遅刻・早退）届　（様式14-2）
+                                委託訓練欠席（遅刻・早退）届
                             </a>
                         </li>
                         <li class="nav-item">
@@ -187,7 +187,7 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="edit" class="align-text-bottom"></span>
-                                氏名・住所等変更届（様式15）
+                                氏名・住所等変更届
                             </a>
                         </li>
                         <li class="nav-item">
