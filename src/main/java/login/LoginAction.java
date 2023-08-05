@@ -61,8 +61,15 @@ public class LoginAction extends Action {
 					String encryptedKey = CipherUtil.encrypt(account + id, iv, masterKey);
 					// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
 					String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
-					// ユーザーの学生の種類を変数に格納(この時点で暗号化されている)
-					String studentType = user.getStudentType();
+					// ユーザーの学生の種類
+					String studentType = null;
+					// ユーザーの学生の種類が登録されている場合
+					if (user.getStudentType() != null) {
+						// ユーザーの学生の種類を共通暗号からの復号
+						String encryptedStudentType = CipherUtil.commonDecrypt(user.getStudentType());
+						// 暗号化された学生の種類を復号する
+						studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+					}
 					// IDを共通暗号キーで暗号化する
 					String encryptedId = CipherUtil.commonEncrypt(id);
 					// セッションにユーザー識別用の暗号化したIDを持たせる				
@@ -79,6 +86,11 @@ public class LoginAction extends Action {
 					} else if (studentType == null) {
 						String contextPath = request.getContextPath();
 						response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+						return null;
+						// ユーザーのデータベースにハローワーク名等が登録されていなければ職業訓練生登録ページに移動
+					} else if (studentType.equals("職業訓練生") && user.getNamePESO() == null) {
+						String contextPath = request.getContextPath();
+						response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
 						return null;
 						// メインメニューに移動
 					} else {

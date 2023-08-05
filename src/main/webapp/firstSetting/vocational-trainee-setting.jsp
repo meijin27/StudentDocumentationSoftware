@@ -72,7 +72,6 @@
 	            </div>
 	        </c:if>	
 	        <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
-			<a href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp" class="w-100 btn btn-lg btn-secondary mb-3">登録スキップ</a>         
 
 	    </form>
     </div>

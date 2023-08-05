@@ -71,8 +71,6 @@ public class CertificateVocationalTrainingAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// アカウント名の取り出し			
-			String account = result.getAccount();
 			// マスターキーの取り出し			
 			String masterKey = result.getMasterKey();
 			// ivの取り出し
@@ -80,6 +78,13 @@ public class CertificateVocationalTrainingAction extends Action {
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
+			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedLastName == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
 			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
 			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
 			// 名のデータベースからの取り出し
@@ -93,32 +98,35 @@ public class CertificateVocationalTrainingAction extends Action {
 			String reEncryptedClassName = dao.getClassName(id);
 			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
 			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
+			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+			// もし学生種類が職業訓練生でなければエラーを返す
+			if (!studentType.equals("職業訓練生")) {
+				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
+				return "certificate-vocational-training.jsp";
+			}
+
 			// 公共職業安定所名のデータベースからの取り出し
 			String reEncryptedNamePESO = dao.getNamePESO(id);
+			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedNamePESO == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
 			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
 			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
 			// 支給番号のデータベースからの取り出し
 			String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
 			String encryptedSupplyNumber = CipherUtil.commonDecrypt(reEncryptedSupplyNumber);
 			String supplyNumber = CipherUtil.decrypt(masterKey, iv, encryptedSupplyNumber);
-			// 出席番号のデータベースからの取り出し
-			String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
-			String encryptedAttendanceNumber = CipherUtil.commonDecrypt(reEncryptedAttendanceNumber);
-			String attendanceNumber = CipherUtil.decrypt(masterKey, iv, encryptedAttendanceNumber);
 			// 雇用保険のデータベースからの取り出し
 			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
 			String encryptedEmploymentInsurance = CipherUtil.commonDecrypt(reEncryptedEmploymentInsurance);
 			String employmentInsurance = CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance);
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
-			// もし学生種類が職業訓練生出なければエラーを返す
-			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
-				return "certificate-vocational-training.jsp";
-			}
 			// もし雇用保険が無ければエラーを返す
 			if (employmentInsurance.equals("無")) {
 				request.setAttribute("errorMessage", "当該書類は雇用保険が「有」の場合のみ発行可能です。");
@@ -133,9 +141,6 @@ public class CertificateVocationalTrainingAction extends Action {
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
-			// 	public void writeText(PDFont font, String text, float startX, float startY, float width, String align, int initialFontSize)
-			//editor.writeText(font, className, 150f, 105f, 115f, "center", 12);
-			//editor.writeText(font, name, 382f, 105f, 117f, "center", 12);
 			editor.writeText(font, name, 135f, 493f, 200f, "left", 12);
 			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
 			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);

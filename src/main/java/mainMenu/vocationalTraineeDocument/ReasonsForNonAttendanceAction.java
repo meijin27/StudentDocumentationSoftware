@@ -159,6 +159,13 @@ public class ReasonsForNonAttendanceAction extends Action {
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
+			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedLastName == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
 			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
 			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
 			// 名のデータベースからの取り出し
@@ -186,7 +193,7 @@ public class ReasonsForNonAttendanceAction extends Action {
 			String reEncryptedStudentType = dao.getStudentType(id);
 			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
 			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
-			// もし学生種類が職業訓練生出なければエラーを返す
+			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
 				return "reasons-for-non-attendance.jsp";
@@ -194,6 +201,13 @@ public class ReasonsForNonAttendanceAction extends Action {
 
 			// 公共職業安定所名のデータベースからの取り出し
 			String reEncryptedNamePESO = dao.getNamePESO(id);
+			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedNamePESO == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
 			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
 			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
 

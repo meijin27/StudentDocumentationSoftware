@@ -70,8 +70,8 @@ public class UserDAO extends DAO {
 						user.setPassword(rs.getString("password"));
 						user.setMasterKey(rs.getString("master_key"));
 						user.setSecretQuestion(rs.getString("secret_question"));
-						user.setBirthYear(rs.getString("birth_year"));
 						user.setStudentType(rs.getString("student_type"));
+						user.setNamePESO(rs.getString("name_PESO"));
 						user.setIv(rs.getString("iv"));
 						userRef.set(user);
 					}
