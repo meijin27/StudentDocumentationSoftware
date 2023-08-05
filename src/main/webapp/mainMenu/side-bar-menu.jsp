@@ -143,13 +143,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/absence-due-to-injury-or-illness.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/absence-due-to-injury-or-illness.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 傷病による欠席理由申立書
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/reasons-for-non-attendance.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/reasons-for-non-attendance.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 欠席理由申立書
                             </a>

@@ -22,8 +22,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class ReasonsForNonAttendanceAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(ReasonsForNonAttendanceAction.class);
+public class AbsenceDueToInjuryOrIllnessAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(AbsenceDueToInjuryOrIllnessAction.class);
 
 	@Override
 	public String execute(
@@ -42,12 +42,8 @@ public class ReasonsForNonAttendanceAction extends Action {
 		}
 
 		// 入力された値を変数に格納
-		String relativeName = request.getParameter("relativeName");
-		String birthYear = request.getParameter("birthYear");
-		String birthMonth = request.getParameter("birthMonth");
-		String birthDay = request.getParameter("birthDay");
-		String relativeAddress = request.getParameter("relativeAddress");
-		String nonAttendanceReason = request.getParameter("nonAttendanceReason");
+		String disease = request.getParameter("disease");
+		String reason = request.getParameter("reason");
 		String startYear = request.getParameter("startYear");
 		String startMonth = request.getParameter("startMonth");
 		String startDay = request.getParameter("startDay");
@@ -59,34 +55,26 @@ public class ReasonsForNonAttendanceAction extends Action {
 		String requestDay = request.getParameter("requestDay");
 
 		// 未入力項目があればエラーを返す
-		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
-				|| relativeAddress == null || requestYear == null
-				|| requestMonth == null || requestDay == null || nonAttendanceReason == null || startYear == null
+		if (disease == null || reason == null || requestYear == null
+				|| requestMonth == null || requestDay == null || startYear == null
 				|| startMonth == null || startDay == null || endYear == null || endMonth == null || endDay == null
-				|| relativeName.isEmpty() || birthYear.isEmpty()
-				|| birthMonth.isEmpty() || birthDay.isEmpty()
-				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty() || nonAttendanceReason.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
+				|| disease.isEmpty() || reason.isEmpty()
+				|| requestYear.isEmpty() || requestMonth.isEmpty()
+				|| requestDay.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
 				|| startDay.isEmpty()
 				|| endYear.isEmpty() || endMonth.isEmpty()
 				|| endDay.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "reasons-for-non-attendance.jsp";
+			return "absence-due-to-injury-or-illness.jsp";
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(birthYear);
-			int checkMonth = Integer.parseInt(birthMonth);
-			int checkDay = Integer.parseInt(birthDay);
+			int checkYear = Integer.parseInt(requestYear);
+			int checkMonth = Integer.parseInt(requestMonth);
+			int checkDay = Integer.parseInt(requestDay);
 			// 日付の妥当性チェック
 			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-			checkYear = Integer.parseInt(requestYear);
-			checkMonth = Integer.parseInt(requestMonth);
-			checkDay = Integer.parseInt(requestDay);
-			// 日付の妥当性チェック
-			Date = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			checkYear = Integer.parseInt(startYear);
 			checkMonth = Integer.parseInt(startMonth);
@@ -124,15 +112,15 @@ public class ReasonsForNonAttendanceAction extends Action {
 			request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (relativeName.length() > 64 || relativeAddress.length() > 64) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		// 文字数が32文字より多い場合はエラーを返す
+		if (disease.length() > 32 || reason.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null) {
-			return "reasons-for-non-attendance.jsp";
+			return "absence-due-to-injury-or-illness.jsp";
 		}
 
 		// 日付フォーマットの定義
@@ -185,7 +173,7 @@ public class ReasonsForNonAttendanceAction extends Action {
 			// クラス名がnullになった場合はエラーを返す
 			if (className.length() == 0) {
 				request.setAttribute("errorMessage", "クラス名が不正です。クラス名を修正してください。");
-				return "reasons-for-non-attendance.jsp";
+				return "absence-due-to-injury-or-illness.jsp";
 			}
 
 			// 学生種類のデータベースからの取り出し
@@ -195,7 +183,7 @@ public class ReasonsForNonAttendanceAction extends Action {
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
-				return "reasons-for-non-attendance.jsp";
+				return "absence-due-to-injury-or-illness.jsp";
 			}
 
 			// 公共職業安定所名のデータベースからの取り出し
@@ -211,7 +199,7 @@ public class ReasonsForNonAttendanceAction extends Action {
 			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/vocationalTraineePDF/欠席理由申立書.pdf";
+			String pdfPath = "/pdf/vocationalTraineePDF/傷病による欠席理由申立書.pdf";
 			String fontPath = "/font/MS-PMincho-02.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
@@ -219,11 +207,6 @@ public class ReasonsForNonAttendanceAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-			editor.writeText(font, relativeName, 95f, 656f, 130f, "center", 12);
-			editor.writeText(font, relativeAddress, 270f, 658f, 220f, "left", 12);
-			editor.writeText(font, birthYear, 135f, 620f, 40f, "left", 12);
-			editor.writeText(font, birthMonth, 180f, 620f, 40f, "left", 12);
-			editor.writeText(font, birthDay, 215f, 620f, 40f, "left", 12);
 			editor.writeText(font, startYear, 130f, 477f, 40f, "left", 12);
 			editor.writeText(font, startMonth, 190f, 477f, 40f, "left", 12);
 			editor.writeText(font, startDay, 237f, 477f, 40f, "left", 12);
@@ -238,49 +221,17 @@ public class ReasonsForNonAttendanceAction extends Action {
 			editor.writeText(font, className, 110f, 169f, 130f, "center", 12);
 			editor.writeText(font, name, 377f, 169f, 140f, "center", 12);
 
-			switch (nonAttendanceReason) {
-			case "看護":
-				editor.drawEllipse(125f, 543f, 40f, 20f);
-				break;
-			case "危篤":
-				editor.drawEllipse(191f, 543f, 40f, 20f);
-				break;
-			case "結婚式":
-				editor.drawEllipse(252f, 543f, 50f, 20f);
-				break;
-			case "葬儀":
-				editor.drawEllipse(320f, 543f, 40f, 20f);
-				break;
-			case "命日の法事":
-				editor.drawEllipse(385f, 543f, 80f, 20f);
-				break;
-			case "入園式":
-				editor.drawEllipse(121f, 507f, 50f, 20f);
-				break;
-			case "入学式":
-				editor.drawEllipse(186f, 507f, 50f, 20f);
-				break;
-			case "卒園式":
-				editor.drawEllipse(250f, 507f, 50f, 20f);
-				break;
-			case "卒業式":
-				editor.drawEllipse(317f, 507f, 50f, 20f);
-				break;
-			default:
-				break;
-			}
-
 			// Close and save
-			editor.close("欠席理由申立書.pdf");
+			editor.close("傷病による欠席理由申立書.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Reasons for Non Attendance");
+			dao.addOperationLog(id, "Printing Absence Due to Injury or Illness");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「欠席理由申立書」を作成しました。");
+			request.setAttribute("createPDF", "「傷病による欠席理由申立書」を作成しました。");
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("errorMessage", "内部エラーが発生しました。");
-			return "reasons-for-non-attendance.jsp";
+			return "absence-due-to-injury-or-illness.jsp";
 		}
 	}
 }
