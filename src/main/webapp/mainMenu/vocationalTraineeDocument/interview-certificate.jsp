@@ -32,7 +32,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="startManth">月</label>
+	                <label class="form-label" for="startMonth">月</label>
 	                <span class="text-danger">*</span>
 	                <select name="startMonth" class="form-control" required>
 	                    <option value="">-- 月 --</option>
@@ -104,7 +104,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="endManth">月</label>
+	                <label class="form-label" for="endMonth">月</label>
 	                <span class="text-danger">*</span>
 	                <select name="endMonth" class="form-control" required>
 	                    <option value="">-- 月 --</option>
@@ -171,11 +171,16 @@
 	                ${valueLongError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty bayError}">
+	        <c:if test="${not empty dayError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${dayError}
 	            </div>
 	        </c:if>	        
+   	        <c:if test="${not empty logicalError}">
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${logicalError}
+	            </div>
+	        </c:if>	   
 			<c:if test="${not empty errorMessage}">
 				<div class="alert alert-danger" role="alert">${errorMessage}
 				</div>

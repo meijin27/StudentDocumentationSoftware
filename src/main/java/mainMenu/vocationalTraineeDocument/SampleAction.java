@@ -34,7 +34,7 @@ public class SampleAction extends Action {
 			// 	public void writeText(PDFont font, String text, float startX, float startY, float width, String align, int initialFontSize)
 			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩", 150f, 105f, 115f, "left", 12);
 			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩", 382f, 105f, 117f, "left", 12);
-			//			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮", 382f, 105f, 118f, "left", 12);
+			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮", 382f, 105f, 118f, "left", 12);
 
 			// Close and save
 			editor.close("別紙　領収書添付用.pdf");

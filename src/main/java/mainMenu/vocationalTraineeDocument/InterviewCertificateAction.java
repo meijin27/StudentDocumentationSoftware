@@ -42,39 +42,39 @@ public class InterviewCertificateAction extends Action {
 		// 入力された値を変数に格納
 		String jobSearch = request.getParameter("jobSearch");
 		String startYear = request.getParameter("startYear");
-		String startManth = request.getParameter("startManth");
+		String startMonth = request.getParameter("startMonth");
 		String startDay = request.getParameter("startDay");
 		String startForenoonOrMidday = request.getParameter("startForenoonOrMidday");
 		String startHour = request.getParameter("startHour");
 		String endYear = request.getParameter("endYear");
-		String endManth = request.getParameter("endManth");
+		String endMonth = request.getParameter("endMonth");
 		String endDay = request.getParameter("endDay");
 		String endForenoonOrMidday = request.getParameter("endForenoonOrMidday");
 		String endHour = request.getParameter("endHour");
 
 		// 未入力項目があればエラーを返す
-		if (jobSearch.isEmpty() || startYear.isEmpty() || startManth.isEmpty() || startDay.isEmpty()
-				|| startForenoonOrMidday.isEmpty() || startHour.isEmpty() || endYear.isEmpty() || endManth.isEmpty()
+		if (jobSearch.isEmpty() || startYear.isEmpty() || startMonth.isEmpty() || startDay.isEmpty()
+				|| startForenoonOrMidday.isEmpty() || startHour.isEmpty() || endYear.isEmpty() || endMonth.isEmpty()
 				|| endDay.isEmpty() || endForenoonOrMidday.isEmpty() || endHour.isEmpty()
-				|| jobSearch == null || startYear == null || startManth == null || startDay == null
+				|| jobSearch == null || startYear == null || startMonth == null || startDay == null
 				|| startForenoonOrMidday == null || startHour == null
-				|| endYear == null || endManth == null || endDay == null || endForenoonOrMidday == null
+				|| endYear == null || endMonth == null || endDay == null || endForenoonOrMidday == null
 				|| endHour == null) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "interview-certificate.jsp";
 		}
-		System.out.println(11111);
+
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
 			int checkYear = Integer.parseInt(startYear) + 2018;
-			int checkMonth = Integer.parseInt(startManth);
+			int checkMonth = Integer.parseInt(startMonth);
 			int checkDay = Integer.parseInt(startDay);
 
 			// 日付の妥当性チェック
 			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			checkYear = Integer.parseInt(endYear) + 2018;
-			checkMonth = Integer.parseInt(endManth);
+			checkMonth = Integer.parseInt(endMonth);
 			checkDay = Integer.parseInt(endDay);
 
 			Date = LocalDate.of(checkYear, checkMonth, checkDay);
@@ -83,16 +83,45 @@ public class InterviewCertificateAction extends Action {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
+		// 開始時刻が終了時刻よりも前かどうかをチェックする
+		int checkStartYear = Integer.parseInt(startYear);
+		int checkStartMonth = Integer.parseInt(startMonth);
+		int checkStartDay = Integer.parseInt(startDay);
+		int checkStartHour = Integer.parseInt(startHour);
+
+		int checkEndYear = Integer.parseInt(endYear);
+		int checkEndMonth = Integer.parseInt(endMonth);
+		int checkEndDay = Integer.parseInt(endDay);
+		int checkEndHour = Integer.parseInt(endHour);
+
+		// 年度が整合とれるか確認する
+		if (checkStartYear > checkEndYear) {
+			request.setAttribute("logicalError", "開始年は終了年よりも前でなければなりません。");
+			// 月が整合取れるか確認する
+		} else if (checkStartYear == checkEndYear && checkStartMonth > checkEndMonth) {
+			request.setAttribute("logicalError", "開始月は終了月よりも前でなければなりません。");
+			// 日付が整合取れるか確認する
+		} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth && checkStartDay > checkEndDay) {
+			request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
+			// 時刻が整合取れるか確認する
+		} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth && checkStartDay == checkEndDay) {
+			if (startForenoonOrMidday.equals("午後") && endForenoonOrMidday.equals("午前")) {
+				request.setAttribute("logicalError", "開始時刻は終了時刻よりも前でなければなりません。");
+			} else if (startForenoonOrMidday.equals(endForenoonOrMidday) && checkStartHour > checkEndHour) {
+				request.setAttribute("logicalError", "開始時刻は終了時刻よりも前でなければなりません。");
+			}
+		}
+
 		// 文字数が64文字より多い場合はエラーを返す
 		if (jobSearch.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
+		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
+				|| request.getAttribute("valueLongError") != null) {
 			return "interview-certificate.jsp";
 		}
-		System.out.println(21111);
 
 		try {
 			// データベース操作用クラス
@@ -132,7 +161,6 @@ public class InterviewCertificateAction extends Action {
 				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
 				return "interview-certificate.jsp";
 			}
-			System.out.println(31111);
 
 			// 公共職業安定所名のデータベースからの取り出し
 			String reEncryptedNamePESO = dao.getNamePESO(id);
@@ -147,25 +175,32 @@ public class InterviewCertificateAction extends Action {
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
-			editor.writeText(font, className, 135f, 493f, 200f, "left", 12);
-			editor.writeText(font, name, 485f, 493f, 30f, "left", 12);
-			editor.writeText(font, jobSearch, 518f, 493f, 30f, "left", 12);
-			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
-			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
+			editor.writeText(font, className, 230f, 645f, 230f, "center", 12);
+			editor.writeText(font, name, 230f, 600f, 230f, "center", 12);
+			editor.writeText(font, jobSearch, 230f, 560f, 230f, "center", 12);
+			editor.writeText(font, startYear, 290f, 508f, 70f, "left", 12);
+			editor.writeText(font, startMonth, 323f, 508f, 70f, "left", 12);
+			editor.writeText(font, startDay, 355f, 508f, 70f, "left", 12);
+			editor.writeText(font, startHour, 430f, 508f, 70f, "left", 12);
+
+			editor.writeText(font, endYear, 290f, 436f, 70f, "left", 12);
+			editor.writeText(font, endMonth, 323f, 436f, 70f, "left", 12);
+			editor.writeText(font, endDay, 355f, 436f, 70f, "left", 12);
+			editor.writeText(font, endHour, 430f, 436f, 70f, "left", 12);
 
 			if (startForenoonOrMidday.equals("午前")) {
-				editor.writeText(font, "〇", 445f, 255f, 50f, "left", 16);
+				editor.writeText(font, "〇", 396f, 518f, 50f, "left", 32);
 			} else {
-				editor.writeText(font, "〇", 484f, 255f, 50f, "left", 16);
+				editor.writeText(font, "〇", 396f, 483f, 50f, "left", 32);
 			}
 
 			if (endForenoonOrMidday.equals("午前")) {
-				editor.writeText(font, "〇", 445f, 233f, 50f, "left", 16);
+				editor.writeText(font, "〇", 396f, 446f, 50f, "left", 32);
 			} else {
-				editor.writeText(font, "〇", 484f, 233f, 50f, "left", 16);
+				editor.writeText(font, "〇", 396f, 410f, 50f, "left", 32);
 			}
 
-			editor.writeText(font, namePESO, 30f, 150f, 40f, "left", 16);
+			editor.writeText(font, namePESO, 150f, 285f, 70f, "center", 12);
 
 			// Close and save
 			editor.close("面接証明書.pdf");
