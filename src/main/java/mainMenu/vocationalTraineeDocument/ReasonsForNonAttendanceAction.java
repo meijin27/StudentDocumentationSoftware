@@ -143,7 +143,6 @@ public class ReasonsForNonAttendanceAction extends Action {
 		LocalDate endDate = LocalDate.parse(endYear + "-" + endMonth + "-" + endDay, formatter);
 		// 間の日数を計算
 		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
-		System.out.println("The difference between the dates is: " + daysBetween + " days.");
 
 		try {
 			// データベース操作用クラス
@@ -226,36 +225,33 @@ public class ReasonsForNonAttendanceAction extends Action {
 			editor.writeText(font, className, 110f, 169f, 130f, "center", 12);
 			editor.writeText(font, name, 377f, 169f, 140f, "center", 12);
 
-			editor.drawEllipse(122f, 508f, 50f, 20f);
-			editor.drawEllipse(125f, 542f, 40f, 20f);
-
 			switch (nonAttendanceReason) {
 			case "看護":
-				// 看護の処理をここに書きます
+				editor.drawEllipse(125f, 543f, 40f, 20f);
 				break;
 			case "危篤":
-				// 危篤の処理をここに書きます
+				editor.drawEllipse(191f, 543f, 40f, 20f);
 				break;
 			case "結婚式":
-				// 結婚式の処理をここに書きます
+				editor.drawEllipse(252f, 543f, 50f, 20f);
 				break;
 			case "葬儀":
-				// 葬儀の処理をここに書きます
+				editor.drawEllipse(320f, 543f, 40f, 20f);
 				break;
 			case "命日の法事":
-				// 命日の法事の処理をここに書きます
+				editor.drawEllipse(385f, 543f, 80f, 20f);
 				break;
 			case "入園式":
-				// 入園式の処理をここに書きます
+				editor.drawEllipse(121f, 507f, 50f, 20f);
 				break;
 			case "入学式":
-				// 入学式の処理をここに書きます
+				editor.drawEllipse(186f, 507f, 50f, 20f);
 				break;
 			case "卒園式":
-				// 卒園式の処理をここに書きます
+				editor.drawEllipse(250f, 507f, 50f, 20f);
 				break;
 			case "卒業式":
-				// 卒業式の処理をここに書きます
+				editor.drawEllipse(317f, 507f, 50f, 20f);
 				break;
 			default:
 				break;
