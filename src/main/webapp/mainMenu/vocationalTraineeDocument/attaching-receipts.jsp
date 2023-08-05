@@ -8,7 +8,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「別紙　領収書添付用」作成</h1><br>
     </div>			
-		<form action="attachingReceipts.action" method="post">
+		<form action="AttachingReceipts.action" method="post">
 			<c:if test="${not empty errorMessage}">
 				<div class="alert alert-danger" role="alert">${errorMessage}
 				</div>

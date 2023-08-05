@@ -167,7 +167,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/interview-certificate.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/interview-certificate.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 面接証明書
                             </a>
@@ -193,7 +193,7 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="edit" class="align-text-bottom"></span>
-                                証明書交付願（様式24）
+                                証明書交付願
                             </a>
                         </li>
                     </ul>

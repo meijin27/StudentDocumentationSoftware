@@ -35,8 +35,9 @@
 			</div>
 	        <div class="row">				
 	            <!-- 証明書対象期間 -->
+   	            <p>証明書対象期間（令和　年　月）</p>
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
+	                <label class="form-label" for="subjectYear">令和　年</label>
 	                <span class="text-danger">*</span>
 	                <select name="subjectYear" class="form-control" required>
 	                    <option value="">-- 令和　年 --</option>
@@ -49,7 +50,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label invisible-text" for="subjectManth">月</label>
+	                <label class="form-label" for="subjectManth">月</label>
 	                <span class="text-danger">*</span>
 	                <select name="subjectMonth" class="form-control" required>
 	                    <option value="">-- 月 --</option>

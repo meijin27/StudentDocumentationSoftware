@@ -18,9 +18,9 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class attachingReceiptsAction extends Action {
+public class AttachingReceiptsAction extends Action {
 
-	private static final Logger logger = CustomLogger.getLogger(attachingReceiptsAction.class);
+	private static final Logger logger = CustomLogger.getLogger(AttachingReceiptsAction.class);
 
 	@Override
 	public String execute(
@@ -102,6 +102,8 @@ public class attachingReceiptsAction extends Action {
 
 			// Close and save
 			editor.close("別紙　領収書添付用.pdf");
+			// 出力内容のデータベースへの登録
+			dao.addOperationLog(id, "Printing Attaching Receipts");
 			// PDF作成成功画面に遷移
 			request.setAttribute("createPDF", "「別紙　領収書添付用」を作成しました。");
 			return "create-pdf-success.jsp";

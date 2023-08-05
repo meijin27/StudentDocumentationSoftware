@@ -22,7 +22,7 @@
 				        <option value="">--- 年 ---</option>
 				        <% 
 				        int currentYear = java.time.Year.now().getValue();
-				        for(int i=1960; i <= currentYear - 14; i++){ 
+				        for(int i=currentYear-60; i <= currentYear - 14; i++){ 
 				        %>
 				            <option value="<%= i %>"><%= i %></option>
 				        <% 

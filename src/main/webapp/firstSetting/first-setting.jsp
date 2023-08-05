@@ -43,7 +43,7 @@
 	                <span class="text-danger">*</span>
 	                <select name="birthYear" class="form-control" required>
 	                    <option value="">-- 年 --</option>
-	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=1960; i <=currentYear - 14;
+	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <= currentYear - 14;
 	                        i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>

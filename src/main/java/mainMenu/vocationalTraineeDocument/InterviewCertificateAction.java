@@ -1,7 +1,7 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,9 +20,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class CertificateVocationalTrainingAction extends Action {
-
-	private static final Logger logger = CustomLogger.getLogger(CertificateVocationalTrainingAction.class);
+public class InterviewCertificateAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(InterviewCertificateAction.class);
 
 	@Override
 	public String execute(
@@ -40,28 +39,60 @@ public class CertificateVocationalTrainingAction extends Action {
 			return null;
 		}
 
-		Map<Integer, String> calendar = new HashMap<>();
-		for (int i = 1; i <= 31; i++) {
-			String day = "day" + i;
-			String marker = request.getParameter(day);
-			if (marker != null) {
-				calendar.put(i, marker);
-			}
-		}
-
 		// 入力された値を変数に格納
-		String subjectYear = request.getParameter("subjectYear");
-		String subjectMonth = request.getParameter("subjectMonth");
-		String problems = request.getParameter("problems");
-		String income = request.getParameter("income");
+		String jobSearch = request.getParameter("jobSearch");
+		String startYear = request.getParameter("startYear");
+		String startManth = request.getParameter("startManth");
+		String startDay = request.getParameter("startDay");
+		String startForenoonOrMidday = request.getParameter("startForenoonOrMidday");
+		String startHour = request.getParameter("startHour");
+		String endYear = request.getParameter("endYear");
+		String endManth = request.getParameter("endManth");
+		String endDay = request.getParameter("endDay");
+		String endForenoonOrMidday = request.getParameter("endForenoonOrMidday");
+		String endHour = request.getParameter("endHour");
 
 		// 未入力項目があればエラーを返す
-		if (subjectYear.isEmpty() || subjectMonth.isEmpty() || problems.isEmpty() || income.isEmpty()
-				|| subjectYear == null || subjectMonth == null || problems == null
-				|| income == null) {
+		if (jobSearch.isEmpty() || startYear.isEmpty() || startManth.isEmpty() || startDay.isEmpty()
+				|| startForenoonOrMidday.isEmpty() || startHour.isEmpty() || endYear.isEmpty() || endManth.isEmpty()
+				|| endDay.isEmpty() || endForenoonOrMidday.isEmpty() || endHour.isEmpty()
+				|| jobSearch == null || startYear == null || startManth == null || startDay == null
+				|| startForenoonOrMidday == null || startHour == null
+				|| endYear == null || endManth == null || endDay == null || endForenoonOrMidday == null
+				|| endHour == null) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-vocational-training.jsp";
+			return "interview-certificate.jsp";
 		}
+		System.out.println(11111);
+		// 年月日が存在しない日付の場合はエラーにする
+		try {
+			int checkYear = Integer.parseInt(startYear) + 2018;
+			int checkMonth = Integer.parseInt(startManth);
+			int checkDay = Integer.parseInt(startDay);
+
+			// 日付の妥当性チェック
+			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
+
+			checkYear = Integer.parseInt(endYear) + 2018;
+			checkMonth = Integer.parseInt(endManth);
+			checkDay = Integer.parseInt(endDay);
+
+			Date = LocalDate.of(checkYear, checkMonth, checkDay);
+
+		} catch (DateTimeException e) {
+			request.setAttribute("dayError", "存在しない日付です。");
+		}
+
+		// 文字数が64文字より多い場合はエラーを返す
+		if (jobSearch.length() > 64) {
+			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
+			return "interview-certificate.jsp";
+		}
+		System.out.println(21111);
 
 		try {
 			// データベース操作用クラス
@@ -71,8 +102,6 @@ public class CertificateVocationalTrainingAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// アカウント名の取り出し			
-			String account = result.getAccount();
 			// マスターキーの取り出し			
 			String masterKey = result.getMasterKey();
 			// ivの取り出し
@@ -93,22 +122,6 @@ public class CertificateVocationalTrainingAction extends Action {
 			String reEncryptedClassName = dao.getClassName(id);
 			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
 			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
-			// 支給番号のデータベースからの取り出し
-			String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
-			String encryptedSupplyNumber = CipherUtil.commonDecrypt(reEncryptedSupplyNumber);
-			String supplyNumber = CipherUtil.decrypt(masterKey, iv, encryptedSupplyNumber);
-			// 出席番号のデータベースからの取り出し
-			String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
-			String encryptedAttendanceNumber = CipherUtil.commonDecrypt(reEncryptedAttendanceNumber);
-			String attendanceNumber = CipherUtil.decrypt(masterKey, iv, encryptedAttendanceNumber);
-			// 雇用保険のデータベースからの取り出し
-			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
-			String encryptedEmploymentInsurance = CipherUtil.commonDecrypt(reEncryptedEmploymentInsurance);
-			String employmentInsurance = CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance);
 
 			// 学生種類のデータベースからの取り出し
 			String reEncryptedStudentType = dao.getStudentType(id);
@@ -117,58 +130,54 @@ public class CertificateVocationalTrainingAction extends Action {
 			// もし学生種類が職業訓練生出なければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
-				return "certificate-vocational-training.jsp";
+				return "interview-certificate.jsp";
 			}
-			// もし雇用保険が無ければエラーを返す
-			if (employmentInsurance.equals("無")) {
-				request.setAttribute("errorMessage", "当該書類は雇用保険が「有」の場合のみ発行可能です。");
-				return "certificate-vocational-training.jsp";
-			}
+			System.out.println(31111);
+
+			// 公共職業安定所名のデータベースからの取り出し
+			String reEncryptedNamePESO = dao.getNamePESO(id);
+			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
+			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/vocationalTraineePDF/公共職業訓練等受講証明書.pdf";
+			String pdfPath = "/pdf/vocationalTraineePDF/面接証明書.pdf";
 			String fontPath = "/font/MS-PMincho-02.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
-			// 	public void writeText(PDFont font, String text, float startX, float startY, float width, String align, int initialFontSize)
-			//editor.writeText(font, className, 150f, 105f, 115f, "center", 12);
-			//editor.writeText(font, name, 382f, 105f, 117f, "center", 12);
-			editor.writeText(font, name, 135f, 493f, 200f, "left", 12);
-			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
-			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);
+			editor.writeText(font, className, 135f, 493f, 200f, "left", 12);
+			editor.writeText(font, name, 485f, 493f, 30f, "left", 12);
+			editor.writeText(font, jobSearch, 518f, 493f, 30f, "left", 12);
 			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
-			editor.writeSymbolsOnCalendar(font, calendar, 408f, 447f, 21f, 21f, 20);
+			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
 
-			if (problems.equals("した")) {
+			if (startForenoonOrMidday.equals("午前")) {
 				editor.writeText(font, "〇", 445f, 255f, 50f, "left", 16);
 			} else {
 				editor.writeText(font, "〇", 484f, 255f, 50f, "left", 16);
 			}
 
-			if (income.equals("得た")) {
+			if (endForenoonOrMidday.equals("午前")) {
 				editor.writeText(font, "〇", 445f, 233f, 50f, "left", 16);
 			} else {
 				editor.writeText(font, "〇", 484f, 233f, 50f, "left", 16);
 			}
 
 			editor.writeText(font, namePESO, 30f, 150f, 40f, "left", 16);
-			editor.writeText(font, name, 310f, 165f, 200f, "left", 12);
-			editor.writeText(font, supplyNumber, 310f, 147f, 200f, "left", 12);
 
 			// Close and save
-			editor.close("公共職業訓練等受講証明書.pdf");
+			editor.close("面接証明書.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Certificate Vocational Training");
+			dao.addOperationLog(id, "Printing Interview Certificate");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「公共職業訓練等受講証明書」を作成しました。");
+			request.setAttribute("createPDF", "「面接証明書」を作成しました。");
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("errorMessage", "内部エラーが発生しました。");
-			return "certificate-vocational-training.jsp";
+			return "interview-certificate.jsp";
 		}
 	}
 }
