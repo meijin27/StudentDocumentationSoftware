@@ -78,6 +78,7 @@ public class EditPDF {
 		}
 	}
 
+	// 受講証明書のカレンダーへの描画用メソッド
 	public void writeSymbolsOnCalendar(PDFont font, Map<Integer, String> daySymbolMap, float startX, float startY,
 			float dayWidth, float dayHeight, int fontSize) throws IOException {
 		try {
@@ -99,6 +100,24 @@ public class EditPDF {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			throw new RuntimeException("Failed to write symbols on calendar.");
 		}
+	}
+
+	// 楕円描画用メソッド
+	public void drawEllipse(float x, float y, float width, float height) throws IOException {
+		float kappa = 0.5522848f;
+		float ox = (width / 2) * kappa; // control point offset horizontal
+		float oy = (height / 2) * kappa; // control point offset vertical
+		float xe = x + width; // x-end
+		float ye = y + height; // y-end
+		float xm = x + width / 2; // x-middle
+		float ym = y + height / 2; // y-middle
+
+		contentStream.moveTo(x, ym);
+		contentStream.curveTo(x, ym - oy, xm - ox, y, xm, y);
+		contentStream.curveTo(xm + ox, y, xe, ym - oy, xe, ym);
+		contentStream.curveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+		contentStream.curveTo(xm - ox, ye, x, ym + oy, x, ym);
+		contentStream.closeAndStroke();
 	}
 
 	public void close(String filename) {

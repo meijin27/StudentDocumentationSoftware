@@ -42,13 +42,13 @@ public class FirstSettingAction extends Action {
 		String classNumber = request.getParameter("classNumber");
 
 		// 未入力項目があればエラーを返す
-		if (lastName.isEmpty() || firstName.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
-				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || studentType.isEmpty()
-				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()
-				|| lastName == null || firstName == null || tel == null || postCode == null || address == null ||
+		if (lastName == null || firstName == null || tel == null || postCode == null || address == null ||
 				birthYear == null || birthMonth == null || birthDay == null || studentType == null
 				|| className == null
-				|| studentNumber == null || schoolYear == null || classNumber == null) {
+				|| studentNumber == null || schoolYear == null || classNumber == null || lastName.isEmpty()
+				|| firstName.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
+				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || studentType.isEmpty()
+				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "first-setting.jsp";
 		}

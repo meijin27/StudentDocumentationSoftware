@@ -30,8 +30,9 @@ public class VocationalTraineeSettingAction extends Action {
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
-		if (namePESO.isEmpty() || attendanceNumber.isEmpty() || employmentInsurance.isEmpty() || namePESO == null
-				|| supplyNumber == null || attendanceNumber == null || employmentInsurance == null) {
+		if (namePESO == null
+				|| supplyNumber == null || attendanceNumber == null || employmentInsurance == null || namePESO.isEmpty()
+				|| attendanceNumber.isEmpty() || employmentInsurance.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "vocational-trainee-setting.jsp";
 		}

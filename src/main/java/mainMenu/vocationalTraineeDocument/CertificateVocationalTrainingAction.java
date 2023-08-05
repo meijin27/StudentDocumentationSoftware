@@ -56,9 +56,9 @@ public class CertificateVocationalTrainingAction extends Action {
 		String income = request.getParameter("income");
 
 		// 未入力項目があればエラーを返す
-		if (subjectYear.isEmpty() || subjectMonth.isEmpty() || problems.isEmpty() || income.isEmpty()
-				|| subjectYear == null || subjectMonth == null || problems == null
-				|| income == null) {
+		if (subjectYear == null || subjectMonth == null || problems == null
+				|| income == null || subjectYear.isEmpty() || subjectMonth.isEmpty() || problems.isEmpty()
+				|| income.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "certificate-vocational-training.jsp";
 		}

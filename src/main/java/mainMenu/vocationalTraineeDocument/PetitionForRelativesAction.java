@@ -50,11 +50,12 @@ public class PetitionForRelativesAction extends Action {
 		String requestDay = request.getParameter("requestDay");
 
 		// 未入力項目があればエラーを返す
-		if (relativeName.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty()
-				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty() || requestDay.isEmpty()
-				|| relativeName == null || birthYear == null || birthMonth == null || birthDay == null
+		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
 				|| relativeAddress == null || requestYear == null
-				|| requestMonth == null || requestDay == null) {
+				|| requestMonth == null || requestDay == null || relativeName.isEmpty() || birthYear.isEmpty()
+				|| birthMonth.isEmpty() || birthDay.isEmpty()
+				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
+				|| requestDay.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "petition-for-relatives.jsp";
 		}
@@ -123,7 +124,7 @@ public class PetitionForRelativesAction extends Action {
 			// クラス名がnullになった場合はエラーを返す
 			if (className.length() == 0) {
 				request.setAttribute("errorMessage", "クラス名が不正です。クラス名を修正してください。");
-				return "attaching-receipts.jsp";
+				return "petition-for-relatives.jsp";
 			}
 
 			// 学生種類のデータベースからの取り出し
@@ -133,7 +134,7 @@ public class PetitionForRelativesAction extends Action {
 			// もし学生種類が職業訓練生出なければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
-				return "interview-certificate.jsp";
+				return "petition-for-relatives.jsp";
 			}
 
 			// 公共職業安定所名のデータベースからの取り出し

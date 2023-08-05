@@ -47,8 +47,9 @@ public class SecretCheckAction extends Action {
 		String birthDay = request.getParameter("birthDay");
 
 		// もしも入力値が無し、もしくは空の場合はエラーを返す
-		if (secretAnswer == null || secretAnswer.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
-				|| birthDay.isEmpty() || birthYear == null || birthMonth == null || birthDay == null) {
+		if (secretAnswer == null || birthYear == null || birthMonth == null || birthDay == null
+				|| secretAnswer.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
+				|| birthDay.isEmpty()) {
 			request.setAttribute("secretError", "未入力項目があります。");
 			return "secret-check.jsp";
 		}
