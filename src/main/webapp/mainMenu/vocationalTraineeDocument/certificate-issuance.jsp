@@ -64,11 +64,11 @@
   	            <!-- 申請年月日 -->
 	            <p>申請年月日</p>
 	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="requestYear">年</label>
+	                <label class="form-label" for="requestYear">令和　年</label>
 	                <span class="text-danger">*</span>
 	                <select name="requestYear" class="form-control" required>
-	                    <option value="">-- 年 --</option>
-	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
+	                    <option value="">-- 令和　年 --</option>
+	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>
