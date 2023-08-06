@@ -43,7 +43,7 @@ public class SeachAccountAction extends Action {
 					// 秘密の質問を取り出す
 					String reEncryptedSecretQuestion = user.getSecretQuestion();
 					// 秘密の質問と生年の登録を確認し、登録済みならパスワード再設定にすすむ
-					if (reEncryptedSecretQuestion != null && user.getBirthYear() != null) {
+					if (reEncryptedSecretQuestion != null && user.getStudentType() != null) {
 						// ユーザーIDを変数に格納
 						String id = user.getId();
 						// データベースからivの取り出し
