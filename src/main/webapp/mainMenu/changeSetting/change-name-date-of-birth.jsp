@@ -12,26 +12,39 @@
 		<form action="ChangeNameDateofBirth.action" method="post">
 	        <div class="row">
 	            <!-- 姓 -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">姓</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}" required>
 	            </div>
 	            <!-- 名 -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">名</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
 	            </div>
+   	            <!-- 姓（ふりがな） -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">姓（ふりがな）</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}" required>
+	            </div>
+	            <!-- 名（ふりがな） -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">名（ふりがな）</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
+	            </div>
 	        </div>
 	        <div class="row">	        
-	            <!-- 生年月日 -->
-	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="birthYear">生年月日</label>
+	            <!-- 名（ふりがな） -->
+	            <p>生年月日</p>
+	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="birthYear">年</label>
 	                <span class="text-danger">*</span>
 	                <select name="birthYear" class="form-control" required>
 	                    <option value="">-- 年 --</option>
-	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 60; i <=currentYear - 14;
+	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <=currentYear;
 	                        i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>
@@ -39,8 +52,8 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-3">
-	                <label class="form-label invisible-text" for="birthManth">月</label>
+	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="birthMonth">月</label>
 	                <span class="text-danger">*</span>
 	                <select name="birthMonth" class="form-control" required>
 	                    <option value="">-- 月 --</option>
@@ -51,8 +64,8 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-3">
-	                <label class="form-label invisible-text" for="birthDay">日</label>
+	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="birthDay">日</label>
 	                <span class="text-danger">*</span>
 	                <select name="birthDay" class="form-control" required>
 	                    <option value="">-- 日 --</option>
@@ -62,11 +75,16 @@
 	                        </option>
 	                    <% } %>
 	                </select>
-	            </div>
+	            </div>	      
 	        </div>
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
+	            </div>
+	        </c:if>
+   	        <c:if test="${not empty  rubyError}">
+	            <div class="alert alert-danger" role="alert">
+	                ${rubyError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
@@ -74,7 +92,7 @@
 	                ${valueLongError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty birthDayError}">
+	        <c:if test="${not empty dayError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${birthDayError}
 	            </div>

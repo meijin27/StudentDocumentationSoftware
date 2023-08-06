@@ -52,6 +52,19 @@ public class InterviewCertificateAction extends Action {
 		String endForenoonOrMidday = request.getParameter("endForenoonOrMidday");
 		String endHour = request.getParameter("endHour");
 
+		// 入力された値をリクエストに格納		
+		request.setAttribute("jobSearch", jobSearch);
+		request.setAttribute("startYear", startYear);
+		request.setAttribute("startMonth", startMonth);
+		request.setAttribute("startDay", startDay);
+		request.setAttribute("startForenoonOrMidday", startForenoonOrMidday);
+		request.setAttribute("startHour", startHour);
+		request.setAttribute("endYear", endYear);
+		request.setAttribute("endMonth", endMonth);
+		request.setAttribute("endDay", endDay);
+		request.setAttribute("endForenoonOrMidday", endForenoonOrMidday);
+		request.setAttribute("endHour", endHour);
+
 		// 未入力項目があればエラーを返す
 		if (jobSearch == null || startYear == null || startMonth == null || startDay == null
 				|| startForenoonOrMidday == null || startHour == null
@@ -122,6 +135,19 @@ public class InterviewCertificateAction extends Action {
 				|| request.getAttribute("valueLongError") != null) {
 			return "interview-certificate.jsp";
 		}
+
+		// リクエストのデータ削除
+		request.removeAttribute("jobSearch");
+		request.removeAttribute("startYear");
+		request.removeAttribute("startMonth");
+		request.removeAttribute("startDay");
+		request.removeAttribute("startForenoonOrMidday");
+		request.removeAttribute("startHour");
+		request.removeAttribute("endYear");
+		request.removeAttribute("endMonth");
+		request.removeAttribute("endDay");
+		request.removeAttribute("endForenoonOrMidday");
+		request.removeAttribute("endHour");
 
 		try {
 			// データベース操作用クラス

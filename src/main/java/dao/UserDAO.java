@@ -153,21 +153,26 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE users SET last_name = ?, first_name = ?, tel = ?, post_code = ?, address = ?, birth_year = ?, birth_month = ?, birth_day = ?, student_type = ?, class_name = ?, student_number = ?, school_year = ?, class_number = ? WHERE id = ? and is_deleted=FALSE")) {
+					"UPDATE users SET last_name = ?, first_name = ?, last_name_ruby = ?, first_name_ruby = ?, tel = ?, post_code = ?, address = ?, birth_year = ?, birth_month = ?, birth_day = ?, admission_year = ?, admission_month = ?, admission_day = ?, student_type = ?, class_name = ?, student_number = ?, school_year = ?, class_number = ? WHERE id = ? and is_deleted=FALSE")) {
 				st.setString(1, user.getLastName());
 				st.setString(2, user.getFirstName());
-				st.setString(3, user.getTel());
-				st.setString(4, user.getPostCode());
-				st.setString(5, user.getAddress());
-				st.setString(6, user.getBirthYear());
-				st.setString(7, user.getBirthMonth());
-				st.setString(8, user.getBirthDay());
-				st.setString(9, user.getStudentType());
-				st.setString(10, user.getClassName());
-				st.setString(11, user.getStudentNumber());
-				st.setString(12, user.getSchoolYear());
-				st.setString(13, user.getClassNumber());
-				st.setString(14, user.getId());
+				st.setString(3, user.getLastNameRuby());
+				st.setString(4, user.getFirstNameRuby());
+				st.setString(5, user.getTel());
+				st.setString(6, user.getPostCode());
+				st.setString(7, user.getAddress());
+				st.setString(8, user.getBirthYear());
+				st.setString(9, user.getBirthMonth());
+				st.setString(10, user.getBirthDay());
+				st.setString(11, user.getAdmissionYear());
+				st.setString(12, user.getAdmissionMonth());
+				st.setString(13, user.getAdmissionDay());
+				st.setString(14, user.getStudentType());
+				st.setString(15, user.getClassName());
+				st.setString(16, user.getStudentNumber());
+				st.setString(17, user.getSchoolYear());
+				st.setString(18, user.getClassNumber());
+				st.setString(19, user.getId());
 
 				line[0] = st.executeUpdate();
 			}
@@ -282,6 +287,14 @@ public class UserDAO extends DAO {
 		return getField("first_name", id);
 	}
 
+	public String getLastNameRuby(String id) {
+		return getField("last_name_ruby", id);
+	}
+
+	public String getFirstNameRuby(String id) {
+		return getField("first_name_ruby", id);
+	}
+
 	public String getTel(String id) {
 		return getField("tel", id);
 	}
@@ -304,6 +317,18 @@ public class UserDAO extends DAO {
 
 	public String getBirthDay(String id) {
 		return getField("birth_day", id);
+	}
+
+	public String getAdmissionYear(String id) {
+		return getField("admission_year", id);
+	}
+
+	public String getAdmissionMonth(String id) {
+		return getField("admission_month", id);
+	}
+
+	public String getAdmissionDay(String id) {
+		return getField("admission_day", id);
 	}
 
 	public String getStudentType(String id) {
@@ -371,6 +396,14 @@ public class UserDAO extends DAO {
 		return updateField("first_name", user.getFirstName(), user.getId());
 	}
 
+	public int updateLastNameRuby(User user) throws Exception {
+		return updateField("last_name_ruby", user.getLastNameRuby(), user.getId());
+	}
+
+	public int updateFirstNameRuby(User user) throws Exception {
+		return updateField("first_name_ruby", user.getFirstNameRuby(), user.getId());
+	}
+
 	public int updateTel(User user) throws Exception {
 		return updateField("tel", user.getTel(), user.getId());
 	}
@@ -393,6 +426,18 @@ public class UserDAO extends DAO {
 
 	public int updateBirthDay(User user) throws Exception {
 		return updateField("birth_day", user.getBirthDay(), user.getId());
+	}
+
+	public int updateAdmissionYear(User user) throws Exception {
+		return updateField("admission_year", user.getAdmissionYear(), user.getId());
+	}
+
+	public int updateAdmissionMonth(User user) throws Exception {
+		return updateField("admission_month", user.getAdmissionMonth(), user.getId());
+	}
+
+	public int updateAdmissionDay(User user) throws Exception {
+		return updateField("admission_day", user.getAdmissionDay(), user.getId());
 	}
 
 	public int updateStudentType(User user) throws Exception {

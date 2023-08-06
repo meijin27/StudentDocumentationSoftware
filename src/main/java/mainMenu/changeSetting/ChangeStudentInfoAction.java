@@ -1,5 +1,7 @@
 package mainMenu.changeSetting;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +41,9 @@ public class ChangeStudentInfoAction extends Action {
 		String studentNumber = request.getParameter("studentNumber");
 		String schoolYear = request.getParameter("schoolYear");
 		String classNumber = request.getParameter("classNumber");
+		String admissionYear = request.getParameter("admissionYear");
+		String admissionMonth = request.getParameter("admissionMonth");
+		String admissionDay = request.getParameter("admissionDay");
 
 		// 入力された値をリクエストに格納	
 		request.setAttribute("studentType", studentType);
@@ -46,14 +51,32 @@ public class ChangeStudentInfoAction extends Action {
 		request.setAttribute("studentNumber", studentNumber);
 		request.setAttribute("schoolYear", schoolYear);
 		request.setAttribute("classNumber", classNumber);
+		request.setAttribute("admissionYear", admissionYear);
+		request.setAttribute("admissionMonth", admissionMonth);
+		request.setAttribute("admissionDay", admissionDay);
 
 		// 未入力項目があればエラーを返す
 		if (studentType == null || className == null || studentNumber == null || schoolYear == null
-				|| classNumber == null || studentType.isEmpty() || className.isEmpty() || studentNumber.isEmpty()
+				|| classNumber == null || admissionYear == null
+				|| admissionMonth == null || admissionDay == null || studentType.isEmpty() || className.isEmpty()
+				|| studentNumber.isEmpty()
 				|| schoolYear.isEmpty()
-				|| classNumber.isEmpty()) {
+				|| classNumber.isEmpty() || admissionYear.isEmpty()
+				|| admissionMonth.isEmpty() || admissionDay.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "change-student-info.jsp";
+		}
+
+		// 生年月日が存在しない日付の場合はエラーにする
+		try {
+			int year = Integer.parseInt(admissionYear);
+			int month = Integer.parseInt(admissionMonth);
+			int day = Integer.parseInt(admissionDay);
+
+			// 日付の妥当性チェック
+			LocalDate Date = LocalDate.of(year, month, day);
+		} catch (DateTimeException e) {
+			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 学籍番号が半角6桁でなければエラーを返す
@@ -67,7 +90,8 @@ public class ChangeStudentInfoAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("valueLongError") != null || request.getAttribute("studentNumberError") != null) {
+		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null
+				|| request.getAttribute("studentNumberError") != null) {
 			return "change-student-info.jsp";
 		}
 
@@ -77,6 +101,9 @@ public class ChangeStudentInfoAction extends Action {
 		request.removeAttribute("studentNumber");
 		request.removeAttribute("schoolYear");
 		request.removeAttribute("classNumber");
+		request.removeAttribute("admissionYear");
+		request.removeAttribute("admissionMonth");
+		request.removeAttribute("admissionDay");
 
 		try {
 			// データベースとの接続用
@@ -97,6 +124,9 @@ public class ChangeStudentInfoAction extends Action {
 			String encryptedStudentNumber = CipherUtil.encrypt(masterKey, iv, studentNumber);
 			String encryptedSchoolYear = CipherUtil.encrypt(masterKey, iv, schoolYear);
 			String encryptedClassNumber = CipherUtil.encrypt(masterKey, iv, classNumber);
+			String encryptedAdmissionYear = CipherUtil.encrypt(masterKey, iv, admissionYear);
+			String encryptedAdmissionMonth = CipherUtil.encrypt(masterKey, iv, admissionMonth);
+			String encryptedAdmissionDay = CipherUtil.encrypt(masterKey, iv, admissionDay);
 
 			// 共通暗号キーによる暗号化
 			String reEncryptedStudentType = CipherUtil.commonEncrypt(encryptedStudentType);
@@ -104,6 +134,9 @@ public class ChangeStudentInfoAction extends Action {
 			String reEncryptedStudentNumber = CipherUtil.commonEncrypt(encryptedStudentNumber);
 			String reEncryptedSchoolYear = CipherUtil.commonEncrypt(encryptedSchoolYear);
 			String reEncryptedClassNumber = CipherUtil.commonEncrypt(encryptedClassNumber);
+			String reEncryptedAdmissionYear = CipherUtil.commonEncrypt(encryptedAdmissionYear);
+			String reEncryptedAdmissionMonth = CipherUtil.commonEncrypt(encryptedAdmissionMonth);
+			String reEncryptedAdmissionDay = CipherUtil.commonEncrypt(encryptedAdmissionDay);
 
 			// ユーザー情報の作成
 			User user = new User();
@@ -113,6 +146,9 @@ public class ChangeStudentInfoAction extends Action {
 			user.setStudentNumber(reEncryptedStudentNumber);
 			user.setSchoolYear(reEncryptedSchoolYear);
 			user.setClassNumber(reEncryptedClassNumber);
+			user.setAdmissionYear(reEncryptedAdmissionYear);
+			user.setAdmissionMonth(reEncryptedAdmissionMonth);
+			user.setAdmissionDay(reEncryptedAdmissionDay);
 
 			// データベースへの登録
 			dao.updateStudentType(user);
@@ -120,6 +156,9 @@ public class ChangeStudentInfoAction extends Action {
 			dao.updateStudentNumber(user);
 			dao.updateSchoolYear(user);
 			dao.updateClassNumber(user);
+			dao.updateAdmissionYear(user);
+			dao.updateAdmissionMonth(user);
+			dao.updateAdmissionDay(user);
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Change Student Infometion");
 		} catch (Exception e) {

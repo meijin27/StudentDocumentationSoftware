@@ -2,6 +2,7 @@ package firstSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,12 +30,17 @@ public class FirstSettingAction extends Action {
 		// 入力された値を変数に格納
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
+		String lastNameRuby = request.getParameter("lastNameRuby");
+		String firstNameRuby = request.getParameter("firstNameRuby");
 		String tel = request.getParameter("tel");
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
+		String admissionYear = request.getParameter("admissionYear");
+		String admissionMonth = request.getParameter("admissionMonth");
+		String admissionDay = request.getParameter("admissionDay");
 		String studentType = request.getParameter("studentType");
 		String className = request.getParameter("className");
 		String studentNumber = request.getParameter("studentNumber");
@@ -42,12 +48,16 @@ public class FirstSettingAction extends Action {
 		String classNumber = request.getParameter("classNumber");
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || tel == null || postCode == null || address == null ||
-				birthYear == null || birthMonth == null || birthDay == null || studentType == null
+		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || tel == null
+				|| postCode == null || address == null ||
+				birthYear == null || birthMonth == null || birthDay == null || admissionYear == null
+				|| admissionMonth == null || admissionDay == null || studentType == null
 				|| className == null
 				|| studentNumber == null || schoolYear == null || classNumber == null || lastName.isEmpty()
-				|| firstName.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
-				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || studentType.isEmpty()
+				|| firstName.isEmpty() || lastNameRuby.isEmpty()
+				|| firstNameRuby.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
+				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || admissionYear.isEmpty()
+				|| admissionMonth.isEmpty() || admissionDay.isEmpty() || studentType.isEmpty()
 				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "first-setting.jsp";
@@ -56,17 +66,28 @@ public class FirstSettingAction extends Action {
 		// 入力された値をリクエストに格納
 		request.setAttribute("lastName", lastName);
 		request.setAttribute("firstName", firstName);
+		request.setAttribute("lastNameRuby", lastNameRuby);
+		request.setAttribute("firstNameRuby", firstNameRuby);
 		request.setAttribute("tel", tel);
 		request.setAttribute("postCode", postCode);
 		request.setAttribute("address", address);
 		request.setAttribute("birthYear", birthYear);
 		request.setAttribute("birthMonth", birthMonth);
 		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("admissionYear", admissionYear);
+		request.setAttribute("admissionMonth", admissionMonth);
+		request.setAttribute("admissionDay", admissionDay);
 		request.setAttribute("studentType", studentType);
 		request.setAttribute("className", className);
 		request.setAttribute("studentNumber", studentNumber);
 		request.setAttribute("schoolYear", schoolYear);
 		request.setAttribute("classNumber", classNumber);
+
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
+		if (pattern.matcher(lastNameRuby).matches() || pattern.matcher(firstNameRuby).matches()) {
+			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		}
 
 		// 電話番号が半角10~11桁でなければエラーを返す
 		if (!tel.matches("^\\d{10,11}$")) {
@@ -95,19 +116,28 @@ public class FirstSettingAction extends Action {
 			int day = Integer.parseInt(birthDay);
 
 			// 日付の妥当性チェック
-			LocalDate birthDate = LocalDate.of(year, month, day);
+			LocalDate date = LocalDate.of(year, month, day);
+			// 入学年月日が存在しない日付の場合はエラーにする
+			year = Integer.parseInt(admissionYear);
+			month = Integer.parseInt(admissionMonth);
+			day = Integer.parseInt(admissionDay);
+
+			// 日付の妥当性チェック
+			date = LocalDate.of(year, month, day);
 		} catch (DateTimeException e) {
-			request.setAttribute("birthDayError", "存在しない日付です。");
+			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す
-		if (lastName.length() > 64 || firstName.length() > 64 || className.length() > 64 || address.length() > 64) {
+		if (lastName.length() > 64 || firstName.length() > 64 || lastNameRuby.length() > 64
+				|| firstNameRuby.length() > 64 || className.length() > 64 || address.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null
-				|| request.getAttribute("birthDayError") != null || request.getAttribute("valueLongError") != null
+				|| request.getAttribute("rubyError") != null || request.getAttribute("dayError") != null
+				|| request.getAttribute("valueLongError") != null
 				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
 			return "first-setting.jsp";
 		}

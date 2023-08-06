@@ -18,24 +18,18 @@
 		        <div class="data-value"><p>${firstName}</p></div>
 		    </div>
 		    <input type="hidden" name="firstName" value="${firstName}">
-		
-		    <div class="data-row">
-				<div class="data-label"><p>電話番号:</p></div>
-				<div class="data-value"><p>${tel}</p></div>
+		    
+			<div class="data-row">
+		        <div class="data-label"><p>姓（ふりがな）: </p></div>
+		        <div class="data-value"><p>${lastNameRuby}</p></div>
 		    </div>
-		    <input type="hidden" name="tel" value="${tel}">
-		
+		    <input type="hidden" name="lastNameRuby" value="${lastNameRuby}">
+
 		    <div class="data-row">
-				<div class="data-label"><p>郵便番号:</p></div>
-				<div class="data-value"><p>${postCode}</p></div>
+		        <div class="data-label"><p>名（ふりがな）:</p></div>
+		        <div class="data-value"><p>${firstNameRuby}</p></div>
 		    </div>
-		    <input type="hidden" name="postCode" value="${postCode}">
-		
-		    <div class="data-row">
-		        <div class="data-label"><p>住所:</p></div>
-		        <div class="data-value"><p>${address}</p></div>
-		    </div>
-		    <input type="hidden" name="address" value="${address}">
+		    <input type="hidden" name="firstNameRuby" value="${firstNameRuby}">
 		
 			<div class="data-row">
 		        <div class="data-label"><p>生年:</p></div>
@@ -54,6 +48,42 @@
 		        <div class="data-value"><p>${birthDay}</p></div>
 		    </div>
 		    <input type="hidden" name="birthDay" value="${birthDay}">
+		    		
+		    <div class="data-row">
+				<div class="data-label"><p>電話番号:</p></div>
+				<div class="data-value"><p>${tel}</p></div>
+		    </div>
+		    <input type="hidden" name="tel" value="${tel}">
+		
+		    <div class="data-row">
+				<div class="data-label"><p>郵便番号:</p></div>
+				<div class="data-value"><p>${postCode}</p></div>
+		    </div>
+		    <input type="hidden" name="postCode" value="${postCode}">
+		
+		    <div class="data-row">
+		        <div class="data-label"><p>住所:</p></div>
+		        <div class="data-value"><p>${address}</p></div>
+		    </div>
+		    <input type="hidden" name="address" value="${address}">
+
+			<div class="data-row">
+		        <div class="data-label"><p>入学年:</p></div>
+		        <div class="data-value"><p>${admissionYear}</p></div>
+		    </div>
+		    <input type="hidden" name="admissionYear" value="${admissionYear}">
+		    
+		    <div class="data-row">
+		        <div class="data-label"><p>入学月:</p></div>
+		        <div class="data-value"><p>${admissionMonth}</p></div>
+		    </div>
+		    <input type="hidden" name="admissionMonth" value="${admissionMonth}">
+		
+		    <div class="data-row">
+		        <div class="data-label"><p>入学日:</p></div>
+		        <div class="data-value"><p>${admissionDay}</p></div>
+		    </div>
+		    <input type="hidden" name="admissionDay" value="${admissionDay}">
 		
 		    <div class="data-row">
 				<div class="data-label"><p>学生種別:</p></div>
@@ -91,12 +121,17 @@
 	    <form action="FirstSettingCheck.action" method="post">
 		    <input type="hidden" name="lastName" value="${lastName}">
 		    <input type="hidden" name="firstName" value="${firstName}">
+   		    <input type="hidden" name="lastNameRuby" value="${lastNameRuby}">
+		    <input type="hidden" name="firstNameRuby" value="${firstNameRuby}">
 		    <input type="hidden" name="tel" value="${tel}">
 		    <input type="hidden" name="postCode" value="${postCode}">
 		    <input type="hidden" name="address" value="${address}">
 		    <input type="hidden" name="birthYear" value="${birthYear}">
 		    <input type="hidden" name="birthMonth" value="${birthMonth}">
 		    <input type="hidden" name="birthDay" value="${birthDay}">
+   		    <input type="hidden" name="birthYear" value="${admissionYear}">
+		    <input type="hidden" name="birthMonth" value="${admissionMonth}">
+		    <input type="hidden" name="birthDay" value="${admissionDay}">
 		    <input type="hidden" name="studentType" value="${studentType}">
 		    <input type="hidden" name="className" value="${className}">
 		    <input type="hidden" name="studentNumber" value="${studentNumber}">

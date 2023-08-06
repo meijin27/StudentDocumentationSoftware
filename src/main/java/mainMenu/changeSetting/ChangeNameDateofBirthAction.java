@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,8 @@ public class ChangeNameDateofBirthAction extends Action {
 		// 入力された値を変数に格納
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
+		String lastNameRuby = request.getParameter("lastNameRuby");
+		String firstNameRuby = request.getParameter("firstNameRuby");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
@@ -45,15 +48,25 @@ public class ChangeNameDateofBirthAction extends Action {
 		// 入力された値をリクエストに格納		
 		request.setAttribute("lastName", lastName);
 		request.setAttribute("firstName", firstName);
+		request.setAttribute("lastNameRuby", lastNameRuby);
+		request.setAttribute("firstNameRuby", firstNameRuby);
 		request.setAttribute("birthYear", birthYear);
 		request.setAttribute("birthMonth", birthMonth);
 		request.setAttribute("birthDay", birthDay);
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || birthYear == null || birthMonth == null || birthDay == null
-				|| lastName.isEmpty() || firstName.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
+		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || birthYear == null
+				|| birthMonth == null || birthDay == null
+				|| lastName.isEmpty() || firstName.isEmpty() || lastNameRuby.isEmpty() || firstNameRuby.isEmpty()
+				|| birthYear.isEmpty() || birthMonth.isEmpty()
 				|| birthDay.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
+		}
+
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
+		if (!pattern.matcher(lastNameRuby).matches() || !pattern.matcher(firstNameRuby).matches()) {
+			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
 		}
 
 		// 生年月日が存在しない日付の場合はエラーにする
@@ -63,18 +76,20 @@ public class ChangeNameDateofBirthAction extends Action {
 			int day = Integer.parseInt(birthDay);
 
 			// 日付の妥当性チェック
-			LocalDate birthDate = LocalDate.of(year, month, day);
+			LocalDate date = LocalDate.of(year, month, day);
 		} catch (DateTimeException e) {
-			request.setAttribute("birthDayError", "存在しない日付です。");
+			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す
-		if (lastName.length() > 64 || firstName.length() > 64) {
+		if (lastName.length() > 64 || firstName.length() > 64 || lastNameRuby.length() > 64
+				|| firstNameRuby.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("birthDayError") != null
+		if (request.getAttribute("nullError") != null || request.getAttribute("rubyError") != null
+				|| request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null) {
 			return "change-name-date-of-birth.jsp";
 		}
@@ -82,6 +97,8 @@ public class ChangeNameDateofBirthAction extends Action {
 		// リクエストのデータ削除
 		request.removeAttribute("lastName");
 		request.removeAttribute("firstName");
+		request.removeAttribute("lastNameRuby");
+		request.removeAttribute("firstNameRuby");
 		request.removeAttribute("birthYear");
 		request.removeAttribute("birthMonth");
 		request.removeAttribute("birthDay");
@@ -102,6 +119,8 @@ public class ChangeNameDateofBirthAction extends Action {
 			// 登録するデータの暗号化
 			String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
 			String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
+			String encryptedLastNameRuby = CipherUtil.encrypt(masterKey, iv, lastNameRuby);
+			String encryptedFirstNameRuby = CipherUtil.encrypt(masterKey, iv, firstNameRuby);
 			String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
 			String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
 			String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
@@ -109,6 +128,8 @@ public class ChangeNameDateofBirthAction extends Action {
 			// 共通暗号キーによる暗号化
 			String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
 			String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
+			String reEncryptedLastNameRuby = CipherUtil.commonEncrypt(encryptedLastNameRuby);
+			String reEncryptedFirstNameRuby = CipherUtil.commonEncrypt(encryptedFirstNameRuby);
 			String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
 			String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
 			String reEncryptedBirthDay = CipherUtil.commonEncrypt(encryptedBirthDay);
@@ -118,12 +139,16 @@ public class ChangeNameDateofBirthAction extends Action {
 			user.setId(id);
 			user.setLastName(reEncryptedLastName);
 			user.setFirstName(reEncryptedFirstName);
+			user.setLastNameRuby(reEncryptedLastNameRuby);
+			user.setFirstNameRuby(reEncryptedFirstNameRuby);
 			user.setBirthYear(reEncryptedBirthYear);
 			user.setBirthMonth(reEncryptedBirthMonth);
 			user.setBirthDay(reEncryptedBirthDay);
 			// データベースへの登録
 			dao.updateLastName(user);
 			dao.updateFirstName(user);
+			dao.updateLastNameRuby(user);
+			dao.updateFirstNameRuby(user);
 			dao.updateBirthYear(user);
 			dao.updateBirthMonth(user);
 			dao.updateBirthDay(user);

@@ -12,12 +12,17 @@ public class User implements java.io.Serializable {
 	private String secretAnswer;// 秘密の質問の答え
 	private String lastName;// 姓
 	private String firstName;// 名
+	private String lastNameRuby;// 姓（ふりがな）
+	private String firstNameRuby;// 名（ふりがな）
 	private String tel;// 電話番号
 	private String postCode;// 郵便番号
 	private String address;// 住所
 	private String birthYear;// 生年
 	private String birthMonth;// 生月
 	private String birthDay;// 生日
+	private String admissionYear;// 入学年
+	private String admissionMonth;//入学月
+	private String admissionDay;// 入学日
 	private String studentType; // 学生種類
 	private String className; // クラス名
 	private String studentNumber; // 学籍番号
@@ -69,6 +74,14 @@ public class User implements java.io.Serializable {
 		return firstName;
 	}
 
+	public String getLastNameRuby() {
+		return lastNameRuby;
+	}
+
+	public String getFirstNameRuby() {
+		return firstNameRuby;
+	}
+
 	public String getTel() {
 		return tel;
 	}
@@ -91,6 +104,18 @@ public class User implements java.io.Serializable {
 
 	public String getBirthDay() {
 		return birthDay;
+	}
+
+	public String getAdmissionYear() {
+		return admissionYear;
+	}
+
+	public String getAdmissionMonth() {
+		return admissionMonth;
+	}
+
+	public String getAdmissionDay() {
+		return admissionDay;
 	}
 
 	public String getStudentType() {
@@ -170,6 +195,14 @@ public class User implements java.io.Serializable {
 		this.firstName = firstName;
 	}
 
+	public void setLastNameRuby(String lastNameRuby) {
+		this.lastNameRuby = lastNameRuby;
+	}
+
+	public void setFirstNameRuby(String firstNameRuby) {
+		this.firstNameRuby = firstNameRuby;
+	}
+
 	public void setTel(String tel) {
 		this.tel = tel;
 	}
@@ -192,6 +225,18 @@ public class User implements java.io.Serializable {
 
 	public void setBirthDay(String birthDay) {
 		this.birthDay = birthDay;
+	}
+
+	public void setAdmissionYear(String admissionYear) {
+		this.admissionYear = admissionYear;
+	}
+
+	public void setAdmissionMonth(String admissionMonth) {
+		this.admissionMonth = admissionMonth;
+	}
+
+	public void setAdmissionDay(String admissionDay) {
+		this.admissionDay = admissionDay;
 	}
 
 	public void setStudentType(String studentType) {

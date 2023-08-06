@@ -52,6 +52,16 @@
 	        <div class="data-label"><p>名:</p></div>
 	        <div class="data-value"><p>${firstName}</p></div>
 	    </div>
+
+	    <div class="data-row">
+	        <div class="data-label"><p>姓（ふりがな）: </p></div>
+	        <div class="data-value"><p>${lastNameRuby}</p></div>
+	    </div>
+	
+	    <div class="data-row">
+	        <div class="data-label"><p>名（ふりがな）:</p></div>
+	        <div class="data-value"><p>${firstNameRuby}</p></div>
+	    </div>
 	
 	    <div class="data-row">
 			<div class="data-label"><p>電話番号:</p></div>
@@ -82,7 +92,22 @@
 	        <div class="data-label"><p>生日:</p></div>
 	        <div class="data-value"><p>${birthDay}</p></div>
 	    </div>
+	    
+		<div class="data-row">
+	        <div class="data-label"><p>入学年:</p></div>
+	        <div class="data-value"><p>${admissionYear}</p></div>
+	    </div>
+	    
+	    <div class="data-row">
+	        <div class="data-label"><p>入学月:</p></div>
+	        <div class="data-value"><p>${admissionMonth}</p></div>
+	    </div>
 	
+	    <div class="data-row">
+	        <div class="data-label"><p>入学日:</p></div>
+	        <div class="data-value"><p>${admissionDay}</p></div>
+	    </div>
+		    	
 	    <div class="data-row">
 			<div class="data-label"><p>学生種別:</p></div>
 			<div class="data-value"><p>${studentType}</p></div>

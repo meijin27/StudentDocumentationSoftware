@@ -58,6 +58,23 @@ public class ReasonsForNonAttendanceAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
+		// 入力された値をリクエストに格納		
+		request.setAttribute("relativeName", relativeName);
+		request.setAttribute("birthYear", birthYear);
+		request.setAttribute("birthMonth", birthMonth);
+		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("relativeAddress", relativeAddress);
+		request.setAttribute("nonAttendanceReason", nonAttendanceReason);
+		request.setAttribute("startYear", startYear);
+		request.setAttribute("startMonth", startMonth);
+		request.setAttribute("startDay", startDay);
+		request.setAttribute("endYear", endYear);
+		request.setAttribute("endMonth", endMonth);
+		request.setAttribute("endDay", endDay);
+		request.setAttribute("requestYear", requestYear);
+		request.setAttribute("requestMonth", requestMonth);
+		request.setAttribute("requestDay", requestDay);
+
 		// 未入力項目があればエラーを返す
 		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
 				|| relativeAddress == null || requestYear == null
@@ -142,6 +159,23 @@ public class ReasonsForNonAttendanceAction extends Action {
 		LocalDate endDate = LocalDate.parse(endYear + "-" + endMonth + "-" + endDay, formatter);
 		// 間の日数を計算
 		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
+
+		// リクエストのデータ削除
+		request.removeAttribute("relativeName");
+		request.removeAttribute("birthYear");
+		request.removeAttribute("birthMonth");
+		request.removeAttribute("birthDay");
+		request.removeAttribute("relativeAddress");
+		request.removeAttribute("nonAttendanceReason");
+		request.removeAttribute("startYear");
+		request.removeAttribute("startMonth");
+		request.removeAttribute("startDay");
+		request.removeAttribute("endYear");
+		request.removeAttribute("endMonth");
+		request.removeAttribute("endDay");
+		request.removeAttribute("requestYear");
+		request.removeAttribute("requestMonth");
+		request.removeAttribute("requestDay");
 
 		try {
 			// データベース操作用クラス

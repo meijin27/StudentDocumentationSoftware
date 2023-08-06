@@ -55,6 +55,12 @@ public class CertificateVocationalTrainingAction extends Action {
 		String problems = request.getParameter("problems");
 		String income = request.getParameter("income");
 
+		// 入力された値をリクエストに格納		
+		request.setAttribute("subjectYear", subjectYear);
+		request.setAttribute("subjectMonth", subjectMonth);
+		request.setAttribute("problems", problems);
+		request.setAttribute("income", income);
+
 		// 未入力項目があればエラーを返す
 		if (subjectYear == null || subjectMonth == null || problems == null
 				|| income == null || subjectYear.isEmpty() || subjectMonth.isEmpty() || problems.isEmpty()
@@ -62,6 +68,12 @@ public class CertificateVocationalTrainingAction extends Action {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "certificate-vocational-training.jsp";
 		}
+
+		// リクエストのデータ削除
+		request.removeAttribute("subjectYear");
+		request.removeAttribute("subjectMonth");
+		request.removeAttribute("problems");
+		request.removeAttribute("income");
 
 		try {
 			// データベース操作用クラス

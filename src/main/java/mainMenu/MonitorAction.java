@@ -86,6 +86,24 @@ public class MonitorAction extends Action {
 					: null;
 			request.setAttribute("firstName", firstName);
 
+			String reEncryptedLastNameRuby = dao.getLastNameRuby(id);
+			String encryptedLastNameRuby = (reEncryptedLastNameRuby != null)
+					? CipherUtil.commonDecrypt(reEncryptedLastNameRuby)
+					: null;
+			String lastNameRuby = (encryptedLastNameRuby != null)
+					? CipherUtil.decrypt(masterKey, iv, encryptedLastNameRuby)
+					: null;
+			request.setAttribute("lastNameRuby", lastNameRuby);
+
+			String reEncryptedFirstNameRuby = dao.getFirstNameRuby(id);
+			String encryptedFirstNameRuby = (reEncryptedFirstNameRuby != null)
+					? CipherUtil.commonDecrypt(reEncryptedFirstNameRuby)
+					: null;
+			String firstNameRuby = (encryptedFirstNameRuby != null)
+					? CipherUtil.decrypt(masterKey, iv, encryptedFirstNameRuby)
+					: null;
+			request.setAttribute("firstNameRuby", firstNameRuby);
+
 			String reEncryptedTel = dao.getTel(id);
 			String encryptedTel = (reEncryptedTel != null) ? CipherUtil.commonDecrypt(reEncryptedTel) : null;
 			String tel = (encryptedTel != null) ? CipherUtil.decrypt(masterKey, iv, encryptedTel) : null;
@@ -123,6 +141,33 @@ public class MonitorAction extends Action {
 					: null;
 			String birthDay = (encryptedBirthDay != null) ? CipherUtil.decrypt(masterKey, iv, encryptedBirthDay) : null;
 			request.setAttribute("birthDay", birthDay);
+
+			String reEncryptedAdmissionYear = dao.getAdmissionYear(id);
+			String encryptedAdmissionYear = (reEncryptedAdmissionYear != null)
+					? CipherUtil.commonDecrypt(reEncryptedAdmissionYear)
+					: null;
+			String admissionYear = (encryptedAdmissionYear != null)
+					? CipherUtil.decrypt(masterKey, iv, encryptedAdmissionYear)
+					: null;
+			request.setAttribute("admissionYear", admissionYear);
+
+			String reEncryptedAdmissionMonth = dao.getAdmissionMonth(id);
+			String encryptedAdmissionMonth = (reEncryptedAdmissionMonth != null)
+					? CipherUtil.commonDecrypt(reEncryptedAdmissionMonth)
+					: null;
+			String admissionMonth = (encryptedAdmissionMonth != null)
+					? CipherUtil.decrypt(masterKey, iv, encryptedAdmissionMonth)
+					: null;
+			request.setAttribute("admissionMonth", admissionMonth);
+
+			String reEncryptedAdmissionDay = dao.getAdmissionDay(id);
+			String encryptedAdmissionDay = (reEncryptedAdmissionDay != null)
+					? CipherUtil.commonDecrypt(reEncryptedAdmissionDay)
+					: null;
+			String admissionDay = (encryptedAdmissionDay != null)
+					? CipherUtil.decrypt(masterKey, iv, encryptedAdmissionDay)
+					: null;
+			request.setAttribute("admissionDay", admissionDay);
 
 			String reEncryptedStudentType = dao.getStudentType(id);
 			String encryptedStudentType = (reEncryptedStudentType != null)

@@ -173,12 +173,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="edit" class="align-text-bottom"></span>
-                                失業認定申告書
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 就労証明書
@@ -191,7 +185,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/certificate-issuance.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/certificate-issuance.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 証明書交付願
                             </a>
@@ -234,7 +228,7 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-student-info.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-student-info.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
-                                学生種類・学籍番号・クラス・学年・組の変更
+                                学生種類・学籍番号・クラス・学年・組・入学年月日の変更
                             </a>
                         </li>
                         <li class="nav-item">

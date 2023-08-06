@@ -49,6 +49,16 @@ public class PetitionForRelativesAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
+		// 入力された値をリクエストに格納		
+		request.setAttribute("relativeName", relativeName);
+		request.setAttribute("birthYear", birthYear);
+		request.setAttribute("birthMonth", birthMonth);
+		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("relativeAddress", relativeAddress);
+		request.setAttribute("requestYear", requestYear);
+		request.setAttribute("requestMonth", requestMonth);
+		request.setAttribute("requestDay", requestDay);
+
 		// 未入力項目があればエラーを返す
 		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
 				|| relativeAddress == null || requestYear == null
@@ -88,6 +98,16 @@ public class PetitionForRelativesAction extends Action {
 		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
 			return "petition-for-relatives.jsp";
 		}
+
+		// リクエストのデータ削除
+		request.removeAttribute("relativeName");
+		request.removeAttribute("birthYear");
+		request.removeAttribute("birthMonth");
+		request.removeAttribute("birthDay");
+		request.removeAttribute("relativeAddress");
+		request.removeAttribute("requestYear");
+		request.removeAttribute("requestMonth");
+		request.removeAttribute("requestDay");
 
 		try {
 			// データベース操作用クラス

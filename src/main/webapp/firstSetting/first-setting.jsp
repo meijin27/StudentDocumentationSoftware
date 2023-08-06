@@ -19,24 +19,6 @@
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
 	            </div>
-	            <!-- 電話番号 -->
-	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">電話番号</label>
-	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}" required>
-	            </div>
-	            <!-- 郵便番号 -->
-	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">郵便番号</label>
-	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}" required>
-	            </div>
-	            <!-- 住所 -->
-	            <div class="col-md-12 mb-3">
-	                <label class="form-label" for="">住所</label>
-	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="${address}" required>
-	            </div>
 	            <!-- 生年月日 -->
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="birthYear">生年月日</label>
@@ -75,9 +57,77 @@
 	                    <% } %>
 	                </select>
 	            </div>
+	            <!-- 姓（ふりがな） -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">姓（ふりがな）</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}" required>
+	            </div>
+	            <!-- 名（ふりがな） -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">名（ふりがな）</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
+	            </div>
+	            <!-- 電話番号 -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">電話番号</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}" required>
+	            </div>
+	            <!-- 郵便番号 -->
+	            <div class="col-md-3 mb-3">
+	                <label class="form-label" for="">郵便番号</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}" required>
+	            </div>
+	            <!-- 住所 -->
+	            <div class="col-md-12 mb-3">
+	                <label class="form-label" for="">住所</label>
+	                <span class="text-danger">*</span>
+	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="${address}" required>
+	            </div>
+
+  	            <!-- 入校年月日 -->
+	            <div class="col-md-2 mb-3">
+	                <label class="form-label" for="admissionYear">入校日</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionYear" class="form-control" required>
+	                    <option value="">-- 年 --</option>
+	                    <% for(int i=currentYear-2; i <= currentYear;
+	                        i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>
+	            <div class="col-md-2 mb-3">
+	                <label class="form-label invisible-text" for="admissionManth">月</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionMonth" class="form-control" required>
+	                    <option value="">-- 月 --</option>
+	                    <% for(int i=1; i <=12; i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>
+	            <div class="col-md-2 mb-3">
+	                <label class="form-label invisible-text" for="admissionDay">日</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionDay" class="form-control" required>
+	                    <option value="">-- 日 --</option>
+	                    <% for(int i=1; i <=31; i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>
 	        </div>
 	        <div class="row">
-	
 	            <!-- 学生の種類 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学生の種類</label>
@@ -127,8 +177,6 @@
 	                </select>
 	            </div>
 	
-	
-	
 	        </div>
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
@@ -138,6 +186,11 @@
 	        <c:if test="${not empty agreeError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${agreeError}
+	            </div>
+	        </c:if>
+  	        <c:if test="${not empty  rubyError}">
+	            <div class="alert alert-danger" role="alert">
+	                ${rubyError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
@@ -160,9 +213,9 @@
 	                ${studentNumberError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty birthDayError}">
+	        <c:if test="${not empty dayError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${birthDayError}
+	                ${dayError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty innerError}">

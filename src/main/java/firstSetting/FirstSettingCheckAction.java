@@ -36,12 +36,17 @@ public class FirstSettingCheckAction extends Action {
 		// リクエストからデータの取り出し
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
+		String lastNameRuby = request.getParameter("lastNameRuby");
+		String firstNameRuby = request.getParameter("firstNameRuby");
 		String tel = request.getParameter("tel");
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
+		String admissionYear = request.getParameter("admissionYear");
+		String admissionMonth = request.getParameter("admissionMonth");
+		String admissionDay = request.getParameter("admissionDay");
 		String studentType = request.getParameter("studentType");
 		String className = request.getParameter("className");
 		String studentNumber = request.getParameter("studentNumber");
@@ -52,12 +57,17 @@ public class FirstSettingCheckAction extends Action {
 		// 入力された値をリクエストに格納
 		request.setAttribute("lastName", lastName);
 		request.setAttribute("firstName", firstName);
+		request.setAttribute("lastNameRuby", lastNameRuby);
+		request.setAttribute("firstNameRuby", firstNameRuby);
 		request.setAttribute("tel", tel);
 		request.setAttribute("postCode", postCode);
 		request.setAttribute("address", address);
 		request.setAttribute("birthYear", birthYear);
 		request.setAttribute("birthMonth", birthMonth);
 		request.setAttribute("birthDay", birthDay);
+		request.setAttribute("admissionYear", admissionYear);
+		request.setAttribute("admissionMonth", admissionMonth);
+		request.setAttribute("admissionDay", admissionDay);
 		request.setAttribute("studentType", studentType);
 		request.setAttribute("className", className);
 		request.setAttribute("studentNumber", studentNumber);
@@ -68,6 +78,25 @@ public class FirstSettingCheckAction extends Action {
 		if (goBack != null) {
 			return "first-setting.jsp";
 		}
+
+		// リクエストのデータ削除
+		request.removeAttribute("lastName");
+		request.removeAttribute("firstName");
+		request.removeAttribute("lastNameRuby");
+		request.removeAttribute("tel");
+		request.removeAttribute("postCode");
+		request.removeAttribute("address");
+		request.removeAttribute("birthYear");
+		request.removeAttribute("birthMonth");
+		request.removeAttribute("birthDay");
+		request.removeAttribute("admissionYear");
+		request.removeAttribute("admissionMonth");
+		request.removeAttribute("admissionDay");
+		request.removeAttribute("studentType");
+		request.removeAttribute("className");
+		request.removeAttribute("studentNumber");
+		request.removeAttribute("schoolYear");
+		request.removeAttribute("classNumber");
 
 		try {
 			// データベースとの接続用
@@ -85,12 +114,17 @@ public class FirstSettingCheckAction extends Action {
 			// 登録するデータの暗号化
 			String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);
 			String encryptedFirstName = CipherUtil.encrypt(masterKey, iv, firstName);
+			String encryptedLastNameRuby = CipherUtil.encrypt(masterKey, iv, lastNameRuby);
+			String encryptedFirstNameRuby = CipherUtil.encrypt(masterKey, iv, firstNameRuby);
 			String encryptedTel = CipherUtil.encrypt(masterKey, iv, tel);
 			String encryptedPostCode = CipherUtil.encrypt(masterKey, iv, postCode);
 			String encryptedAddress = CipherUtil.encrypt(masterKey, iv, address);
 			String encryptedBirthYear = CipherUtil.encrypt(masterKey, iv, birthYear);
 			String encryptedBirthMonth = CipherUtil.encrypt(masterKey, iv, birthMonth);
 			String encryptedBirthDay = CipherUtil.encrypt(masterKey, iv, birthDay);
+			String encryptedAdmissionYear = CipherUtil.encrypt(masterKey, iv, admissionYear);
+			String encryptedAdmissionMonth = CipherUtil.encrypt(masterKey, iv, admissionMonth);
+			String encryptedAdmissionDay = CipherUtil.encrypt(masterKey, iv, admissionDay);
 			String encryptedStudentType = CipherUtil.encrypt(masterKey, iv, studentType);
 			String encryptedClassName = CipherUtil.encrypt(masterKey, iv, className);
 			String encryptedStudentNumber = CipherUtil.encrypt(masterKey, iv, studentNumber);
@@ -100,12 +134,17 @@ public class FirstSettingCheckAction extends Action {
 			// 共通暗号キーによる暗号化
 			String reEncryptedLastName = CipherUtil.commonEncrypt(encryptedLastName);
 			String reEncryptedFirstName = CipherUtil.commonEncrypt(encryptedFirstName);
+			String reEncryptedLastNameRuby = CipherUtil.commonEncrypt(encryptedLastNameRuby);
+			String reEncryptedFirstNameRuby = CipherUtil.commonEncrypt(encryptedFirstNameRuby);
 			String reEncryptedTel = CipherUtil.commonEncrypt(encryptedTel);
 			String reEncryptedPostCode = CipherUtil.commonEncrypt(encryptedPostCode);
 			String reEncryptedAddress = CipherUtil.commonEncrypt(encryptedAddress);
 			String reEncryptedBirthYear = CipherUtil.commonEncrypt(encryptedBirthYear);
 			String reEncryptedBirthMonth = CipherUtil.commonEncrypt(encryptedBirthMonth);
 			String reEncryptedBirthDay = CipherUtil.commonEncrypt(encryptedBirthDay);
+			String reEncryptedAdmissionYear = CipherUtil.commonEncrypt(encryptedAdmissionYear);
+			String reEncryptedAdmissionMonth = CipherUtil.commonEncrypt(encryptedAdmissionMonth);
+			String reEncryptedAdmissionDay = CipherUtil.commonEncrypt(encryptedAdmissionDay);
 			String reEncryptedStudentType = CipherUtil.commonEncrypt(encryptedStudentType);
 			String reEncryptedClassName = CipherUtil.commonEncrypt(encryptedClassName);
 			String reEncryptedStudentNumber = CipherUtil.commonEncrypt(encryptedStudentNumber);
@@ -117,12 +156,17 @@ public class FirstSettingCheckAction extends Action {
 			user.setId(id);
 			user.setLastName(reEncryptedLastName);
 			user.setFirstName(reEncryptedFirstName);
+			user.setLastNameRuby(reEncryptedLastNameRuby);
+			user.setFirstNameRuby(reEncryptedFirstNameRuby);
 			user.setTel(reEncryptedTel);
 			user.setPostCode(reEncryptedPostCode);
 			user.setAddress(reEncryptedAddress);
 			user.setBirthYear(reEncryptedBirthYear);
 			user.setBirthMonth(reEncryptedBirthMonth);
 			user.setBirthDay(reEncryptedBirthDay);
+			user.setAdmissionYear(reEncryptedAdmissionYear);
+			user.setAdmissionMonth(reEncryptedAdmissionMonth);
+			user.setAdmissionDay(reEncryptedAdmissionDay);
 			user.setStudentType(reEncryptedStudentType);
 			user.setClassName(reEncryptedClassName);
 			user.setStudentNumber(reEncryptedStudentNumber);
