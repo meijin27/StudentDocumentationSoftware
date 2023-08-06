@@ -207,19 +207,22 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-			editor.writeText(font, startYear, 130f, 477f, 40f, "left", 12);
-			editor.writeText(font, startMonth, 190f, 477f, 40f, "left", 12);
-			editor.writeText(font, startDay, 237f, 477f, 40f, "left", 12);
-			editor.writeText(font, endYear, 130f, 440f, 40f, "left", 12);
-			editor.writeText(font, endMonth, 190f, 440f, 40f, "left", 12);
-			editor.writeText(font, endDay, 237f, 440f, 40f, "left", 12);
-			editor.writeText(font, daysBetween, 310f, 440f, 40f, "left", 12);
-			editor.writeText(font, namePESO, 362f, 257f, 50f, "center", 12);
-			editor.writeText(font, requestYear, 100f, 207f, 40f, "left", 12);
-			editor.writeText(font, requestMonth, 155f, 207f, 40f, "left", 12);
-			editor.writeText(font, requestDay, 192f, 207f, 40f, "left", 12);
-			editor.writeText(font, className, 110f, 169f, 130f, "center", 12);
-			editor.writeText(font, name, 377f, 169f, 140f, "center", 12);
+			editor.writeText(font, name, 198f, 643f, 75f, "center", 12);
+			editor.writeText(font, disease, 357f, 643f, 95f, "center", 12);
+			editor.writeText(font, reason, 165f, 597f, 300f, "center", 12);
+			editor.writeText(font, startYear, 195f, 550f, 40f, "left", 12);
+			editor.writeText(font, startMonth, 263f, 550f, 40f, "left", 12);
+			editor.writeText(font, startDay, 310f, 550f, 40f, "left", 12);
+			editor.writeText(font, endYear, 195f, 513f, 40f, "left", 12);
+			editor.writeText(font, endMonth, 262f, 513f, 40f, "left", 12);
+			editor.writeText(font, endDay, 310f, 513f, 40f, "left", 12);
+			editor.writeText(font, daysBetween, 380f, 513f, 40f, "left", 12);
+			editor.writeText(font, namePESO, 322f, 309f, 50f, "center", 12);
+			editor.writeText(font, requestYear, 145f, 249f, 40f, "left", 12);
+			editor.writeText(font, requestMonth, 194f, 249f, 40f, "left", 12);
+			editor.writeText(font, requestDay, 227f, 249f, 40f, "left", 12);
+			editor.writeText(font, className, 145f, 220f, 110f, "center", 12);
+			editor.writeText(font, name, 382f, 218f, 105f, "center", 12);
 
 			// Close and save
 			editor.close("傷病による欠席理由申立書.pdf");

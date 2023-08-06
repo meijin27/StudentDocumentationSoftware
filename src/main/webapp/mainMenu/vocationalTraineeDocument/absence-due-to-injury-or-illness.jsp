@@ -6,7 +6,7 @@
 
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
-        <h1>「欠席理由申立書」作成</h1><br>
+        <h1>「傷病による欠席理由申立書」作成</h1><br>
     </div>			  
 		<form action="AbsenceDueToInjuryOrIllness.action" method="post">
 	        <div class="row">

@@ -45,10 +45,15 @@ public class EditPDF {
 			int fontSize = initialFontSize;
 			// テキストの幅の計算
 			float textWidth = font.getStringWidth(text) / 1000 * fontSize;
+
 			// テキストを中央ぞろえにする場合の開始位置計算
 			float adjustedStartX = startX;
 
-			if ("center".equals(align)) {
+			if (textWidth > width) {
+				// テキストの幅が指定した範囲よりも大きい場合、開始位置をstartXのままにするか、
+				// さらなる処理（例：テキストの切り捨てなど）を行う。
+				adjustedStartX = startX;
+			} else if ("center".equals(align)) {
 				// 中央揃えの場合の調整
 				adjustedStartX = startX + (width - textWidth) / 2;
 			} else if ("right".equals(align)) {
