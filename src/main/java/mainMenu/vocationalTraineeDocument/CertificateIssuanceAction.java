@@ -256,11 +256,64 @@ public class CertificateIssuanceAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-			editor.writeText(font, requestYear, 105f, 62f, 40f, "left", 12);
-			editor.writeText(font, requestMonth, 155f, 62f, 40f, "left", 12);
-			editor.writeText(font, requestDay, 195f, 62f, 40f, "left", 12);
-			editor.writeText(font, className, 100f, 32f, 130f, "center", 12);
-			editor.writeText(font, name, 377f, 32f, 140f, "center", 12);
+			editor.writeText(font, className, 160f, 671f, 260f, "center", 12);
+			editor.writeText(font, JapaneseAdmissionYear, 410f, 649f, 40f, "left", 12);
+			editor.writeText(font, admissionMonth, 443f, 649f, 40f, "left", 12);
+			editor.writeText(font, admissionDay, 475f, 649f, 40f, "left", 12);
+
+			editor.writeText(font, nameRuby, 160f, 613f, 130f, "center", 8);
+			editor.writeText(font, name, 160f, 600f, 130f, "center", 12);
+
+			if (JapaneseYear.equals("昭和")) {
+				editor.drawEllipse(364f, 611f, 40f, 20f);
+			} else {
+				editor.drawEllipse(363f, 590f, 40f, 20f);
+			}
+
+			editor.writeText(font, JapaneseBirthYear, 420f, 607f, 40f, "left", 12);
+			editor.writeText(font, birthMonth, 453f, 607f, 40f, "left", 12);
+			editor.writeText(font, birthDay, 485f, 607f, 40f, "left", 12);
+
+			editor.writeText(font, firstPostCode, 180f, 562f, 125f, "left", 12);
+			editor.writeText(font, lastPostCode, 220f, 562f, 125f, "left", 12);
+
+			if (address.length() > 29) {
+				editor.writeText(font, address.substring(0, 29), 160f, 540f, 350f, "left", 12);
+				editor.writeText(font, address.substring(29, address.length()), 160f, 520f, 350f, "left", 12);
+			} else {
+				editor.writeText(font, address, 160f, 530f, 350f, "left", 12);
+			}
+
+			editor.writeText(font, firstTel, 375f, 499f, 117f, "left", 12);
+			editor.writeText(font, secondTel, 423f, 499f, 117f, "left", 12);
+			editor.writeText(font, lastTel, 470f, 499f, 117f, "left", 12);
+
+			if (reason.length() > 29) {
+				editor.writeText(font, reason.substring(0, 29), 160f, 473f, 350f, "left", 12);
+				editor.writeText(font, reason.substring(29, reason.length()), 160f, 453f, 350f, "left", 12);
+			} else {
+				editor.writeText(font, reason, 160f, 463f, 350f, "left", 12);
+			}
+
+			editor.writeText(font, propose, 160f, 417f, 350f, "center", 12);
+
+			if (!proofOfStudent.isEmpty()) {
+				editor.writeText(font, "レ", 195f, 372f, 40f, "left", 12);
+				editor.writeText(font, proofOfStudent, 443f, 372f, 40f, "left", 12);
+			}
+			if (!certificateOfCompletion.isEmpty()) {
+				editor.writeText(font, "レ", 195f, 351f, 40f, "left", 12);
+				editor.writeText(font, certificateOfCompletion, 443f, 351f, 40f, "left", 12);
+			}
+			if (!certificateOfExpectedCompletion.isEmpty()) {
+				editor.writeText(font, "レ", 195f, 330f, 40f, "left", 12);
+				editor.writeText(font, certificateOfExpectedCompletion, 443f, 330f, 40f, "left", 12);
+			}
+			editor.writeText(font, requestYear, 132f, 241f, 40f, "left", 12);
+			editor.writeText(font, requestMonth, 163f, 241f, 40f, "left", 12);
+			editor.writeText(font, requestDay, 195f, 241f, 40f, "left", 12);
+
+			editor.writeText(font, name, 330f, 156f, 180f, "left", 12);
 
 			// Close and save
 			editor.close("証明書交付願.pdf");
