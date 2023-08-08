@@ -50,7 +50,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="subjectManth">月</label>
+	                <label class="form-label" for="subjectMonth">月</label>
 	                <span class="text-danger">*</span>
 	                <select name="subjectMonth" class="form-control" required>
 	                    <option value="">-- 月 --</option>

@@ -95,7 +95,7 @@ public class AttachingReceiptsAction extends Action {
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/別紙　領収書添付用.pdf";
-			String fontPath = "/font/MS-PMincho-02.ttf";
+			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成

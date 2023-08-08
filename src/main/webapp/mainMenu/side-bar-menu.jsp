@@ -173,7 +173,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/certificate-of-employment.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/certificate-of-employment.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 就労証明書
                             </a>

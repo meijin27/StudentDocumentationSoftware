@@ -1,5 +1,6 @@
 package mainMenu.vocationalTraineeDocument;
 
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -40,15 +41,6 @@ public class CertificateVocationalTrainingAction extends Action {
 			return null;
 		}
 
-		Map<Integer, String> calendar = new HashMap<>();
-		for (int i = 1; i <= 31; i++) {
-			String day = "day" + i;
-			String marker = request.getParameter(day);
-			if (marker != null) {
-				calendar.put(i, marker);
-			}
-		}
-
 		// 入力された値を変数に格納
 		String subjectYear = request.getParameter("subjectYear");
 		String subjectMonth = request.getParameter("subjectMonth");
@@ -67,6 +59,23 @@ public class CertificateVocationalTrainingAction extends Action {
 				|| income.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "certificate-vocational-training.jsp";
+		}
+
+		// 日付毎に入力された記号をMAPに格納する
+		int year = Integer.parseInt(subjectYear);
+		int month = Integer.parseInt(subjectMonth);
+		int daysInMonth = YearMonth.of(year + 2018, month).lengthOfMonth(); // 令和年を西暦に変換
+		Map<Integer, String> calendar = new HashMap<>();
+		for (int i = 1; i <= 31; i++) {
+			String day = "day" + i;
+			String marker = request.getParameter(day);
+			// カレンダーに存在しない日付であれば強制的に「/」にする
+			if (i > daysInMonth) {
+				calendar.put(i, "／");
+				// 入力された値がnullでなければ記号を格納する。未選択の場合は空文字列を格納する。	
+			} else if (marker != null) {
+				calendar.put(i, marker);
+			}
 		}
 
 		// リクエストのデータ削除
@@ -147,7 +156,7 @@ public class CertificateVocationalTrainingAction extends Action {
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/公共職業訓練等受講証明書.pdf";
-			String fontPath = "/font/MS-PMincho-02.ttf";
+			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
@@ -157,8 +166,7 @@ public class CertificateVocationalTrainingAction extends Action {
 			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
 			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);
 			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
-			editor.writeSymbolsOnCalendar(font, calendar, 408f, 447f, 21f, 21f, 20);
-
+			editor.writeSymbolsOnCalendar(font, calendar, 408f, 447f, 21f, 21.5f, 20);
 			if (problems.equals("した")) {
 				editor.writeText(font, "〇", 445f, 255f, 50f, "left", 16);
 			} else {

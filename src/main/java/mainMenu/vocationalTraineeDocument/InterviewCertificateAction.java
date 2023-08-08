@@ -209,7 +209,7 @@ public class InterviewCertificateAction extends Action {
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/面接証明書.pdf";
-			String fontPath = "/font/MS-PMincho-02.ttf";
+			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
