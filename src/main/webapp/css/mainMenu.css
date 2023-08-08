@@ -31,6 +31,14 @@ main > .container {
   border-top-right-radius: 0;
 }
 
+.left-align {
+    text-align: left;
+}
+
+.margin-bottom-50 {
+    margin-bottom: 50px;
+}
+
 .invisible-text {
   color: transparent;
 }

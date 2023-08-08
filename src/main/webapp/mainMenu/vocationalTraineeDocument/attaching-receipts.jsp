@@ -9,8 +9,8 @@
         <h1>「別紙　領収書添付用」作成</h1><br>
     </div>			
 		<form action="AttachingReceipts.action" method="post">
-			<c:if test="${not empty errorMessage}">
-				<div class="alert alert-danger" role="alert">${errorMessage}
+			<c:if test="${not empty innerError}">
+				<div class="alert alert-danger" role="alert">${innerError}
 				</div>
 			</c:if>
 			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>

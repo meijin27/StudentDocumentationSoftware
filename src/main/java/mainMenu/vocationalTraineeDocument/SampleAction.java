@@ -43,7 +43,7 @@ public class SampleAction extends Action {
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("errorMessage", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "sample.jsp";
 		}
 	}

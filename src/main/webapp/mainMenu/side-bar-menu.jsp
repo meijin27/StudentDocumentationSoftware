@@ -179,7 +179,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/notification-of-change.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/notification-of-change.jsp">
                                 <span data-feather="edit" class="align-text-bottom"></span>
                                 氏名・住所等変更届
                             </a>

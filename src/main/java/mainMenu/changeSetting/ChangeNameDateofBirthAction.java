@@ -81,10 +81,10 @@ public class ChangeNameDateofBirthAction extends Action {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (lastName.length() > 64 || firstName.length() > 64 || lastNameRuby.length() > 64
-				|| firstNameRuby.length() > 64) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		// 文字数が32文字より多い場合はエラーを返す
+		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
+				|| firstNameRuby.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

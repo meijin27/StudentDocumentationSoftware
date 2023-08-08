@@ -157,7 +157,7 @@ public class CertificateOfEmploymentAction extends Action {
 			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
+				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "certificate-of-employment.jsp";
 			}
 
@@ -205,7 +205,7 @@ public class CertificateOfEmploymentAction extends Action {
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("errorMessage", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "certificate-of-employment.jsp";
 		}
 	}

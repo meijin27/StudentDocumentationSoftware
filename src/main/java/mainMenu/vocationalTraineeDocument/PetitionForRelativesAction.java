@@ -89,9 +89,9 @@ public class PetitionForRelativesAction extends Action {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (relativeName.length() > 64 || relativeAddress.length() > 64) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		// 文字数が多い場合はエラーを返す
+		if (relativeName.length() > 32 || relativeAddress.length() > 64) {
+			request.setAttribute("valueLongError", "名前は32文字以下、住所は64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
@@ -150,7 +150,7 @@ public class PetitionForRelativesAction extends Action {
 			}
 			// クラス名がnullになった場合はエラーを返す
 			if (className.length() == 0) {
-				request.setAttribute("errorMessage", "クラス名が不正です。クラス名を修正してください。");
+				request.setAttribute("innerError", "クラス名が不正です。クラス名を修正してください。");
 				return "petition-for-relatives.jsp";
 			}
 
@@ -160,7 +160,7 @@ public class PetitionForRelativesAction extends Action {
 			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("errorMessage", "当該書類は職業訓練生のみが発行可能です。");
+				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "petition-for-relatives.jsp";
 			}
 
@@ -206,7 +206,7 @@ public class PetitionForRelativesAction extends Action {
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("errorMessage", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "petition-for-relatives.jsp";
 		}
 	}

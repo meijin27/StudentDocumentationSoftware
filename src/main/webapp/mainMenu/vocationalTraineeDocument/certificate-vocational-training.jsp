@@ -11,12 +11,12 @@
 		<form action="CertificateVocationalTraining.action" method="post">
 	        <div class="row">
   		    	<label class="form-label">日付ごとに該当する印を選択してください。</label>
-   		    	<label class="form-label">①公共職業訓練等を受けた日　無印</label>
-  		    	<label class="form-label">②公共職業訓練等が行われなかった日（日・祝日等）　＝印</label>
-  		    	<label class="form-label">③病気又は負傷により公共職業訓練等を受けなかった日　〇印</label>
-  		    	<label class="form-label">④やむを得ない理由により公共職業訓練等を受けなかった日　△印</label>
-   		    	<label class="form-label">⑤やむを得ない理由がなく公共職業訓練等を受けなかった日　✕印</label>
-   		    	<label class="form-label">⑥入校前、修了後、対校日翌日以降、カレンダー上存在しない日　／印</label>
+   		    	<label class="form-label left-align">①公共職業訓練等を受けた日　無印</label>
+  		    	<label class="form-label left-align">②公共職業訓練等が行われなかった日（日・祝日等）　＝印</label>
+  		    	<label class="form-label left-align">③病気又は負傷により公共職業訓練等を受けなかった日　〇印</label>
+  		    	<label class="form-label left-align">④やむを得ない理由により公共職業訓練等を受けなかった日　△印</label>
+   		    	<label class="form-label left-align">⑤やむを得ない理由がなく公共職業訓練等を受けなかった日　✕印</label>
+   		    	<label class="form-label left-align">⑥入校前、修了後、対校日翌日以降、カレンダー上存在しない日　／印</label>
         
 			<% for (int i = 1; i <= 31; i++) { %>
 			    <div class="col-md-2 mb-3">
@@ -108,8 +108,8 @@
 				<div class="alert alert-danger" role="alert">${nullMessage}
 				</div>
 			</c:if>
-			<c:if test="${not empty errorMessage}">
-				<div class="alert alert-danger" role="alert">${errorMessage}
+			<c:if test="${not empty innerError}">
+				<div class="alert alert-danger" role="alert">${innerError}
 				</div>
 			</c:if>
 			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
