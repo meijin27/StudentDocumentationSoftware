@@ -11,22 +11,22 @@
 		<form action="InterviewCertificate.action" method="post">
 	        <div class="row">
    	            <!-- 求人職種 -->
-	            <div class="col-md-12 mb-3">
+	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">求人職種</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="jobSearch" placeholder="製造業" value="${jobSearch}" required>
 	            </div>
 	            <!-- 面接年月日（自） -->
 	            <p>面接年月日（自）</p>
-	            <div class="col-md-2 mb-3">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="startYear">令和　年</label>
 	                <span class="text-danger">*</span>
-	                <select name="startYear" class="form-control" required>
+	                <select name="startYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            令和<%= i %>年（<%= i+2018 %>年）
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -34,11 +34,11 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="startMonth">月</label>
 	                <span class="text-danger">*</span>
-	                <select name="startMonth" class="form-control" required>
+	                <select name="startMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -46,30 +46,30 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="startDay">日</label>
 	                <span class="text-danger">*</span>
-	                <select name="startDay" class="form-control" required>
+	                <select name="startDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>日
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>	        
   				<!-- 午前・午後 -->
-				<div class="col-md-4 mb-5">
+				<div class="col-md-2 mb-5">
 				    <label class="form-label">午前・午後</label>
 				    <span class="text-danger">*</span>
-				    <div class="d-flex align-items-center justify-content-center">
-				        <div class="form-check form-check-inline mr-lg-5">
+				    <div class="d-flex flex-column align-items-start"> 
+				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="startForenoonOrMidday" id="startForenoon" value="午前" 
-				                   <% if ("午前".equals(session.getAttribute("startForenoonOrMidday"))) { %> checked <% } %> required>
+				                   <% if ("午前".equals(request.getParameter("startForenoonOrMidday"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="startForenoon">
 				                午前
 				            </label>
 				        </div>
-				        <div class="form-check form-check-inline ml-lg-5">
-				            <input class="form-check-input" type="radio" name="startForenoonOrMidday" id="startMidday" value="午後"
-				                   <% if ("午後".equals(session.getAttribute("startForenoonOrMidday"))) { %> checked <% } %> required>
+				        <div class="form-check"> 
+				            <input class="form-check-input" type="radio" name="startForenoonOrMidday" id="startMidday" value="午後" 
+				                   <% if ("午後".equals(request.getParameter("startForenoonOrMidday"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="startMidday">
 				                午後
 				            </label>
@@ -79,26 +79,26 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="startHour">時</label>
 	                <span class="text-danger">*</span>
-	                <select name="startHour" class="form-control" required>
+	                <select name="startHour" class="form-control select-center" required>
 	                    <option value="">-- 時 --</option>
 	                    <% for(int i=0; i <=11; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>時
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>	
   	            <!-- 面接年月日（至） -->
 	            <p>面接年月日（至）</p>
-	            <div class="col-md-2 mb-3">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="endYear">令和　年</label>
 	                <span class="text-danger">*</span>
-	                <select name="endYear" class="form-control" required>
+	                <select name="endYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            令和<%= i %>年（<%= i+2018 %>年）
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -106,11 +106,11 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="endMonth">月</label>
 	                <span class="text-danger">*</span>
-	                <select name="endMonth" class="form-control" required>
+	                <select name="endMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -118,30 +118,30 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="endDay">日</label>
 	                <span class="text-danger">*</span>
-	                <select name="endDay" class="form-control" required>
+	                <select name="endDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>日
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>	        
   				<!-- 午前・午後 -->
-				<div class="col-md-4 mb-5">
+				<div class="col-md-2 mb-5">
 				    <label class="form-label">午前・午後</label>
 				    <span class="text-danger">*</span>
-				    <div class="d-flex align-items-center justify-content-center">
-				        <div class="form-check form-check-inline mr-lg-5">
+				    <div class="d-flex flex-column align-items-start"> 
+				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="endForenoonOrMidday" id="endForenoon" value="午前" 
-				                   <% if ("午前".equals(session.getAttribute("endForenoonOrMidday"))) { %> checked <% } %> required>
+				                   <% if ("午前".equals(request.getParameter("endForenoonOrMidday"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="endForenoon">
 				                午前
 				            </label>
 				        </div>
-				        <div class="form-check form-check-inline ml-lg-5">
-				            <input class="form-check-input" type="radio" name="endForenoonOrMidday" id="endMidday" value="午後"
-				                   <% if ("午後".equals(session.getAttribute("endForenoonOrMidday"))) { %> checked <% } %> required>
+				        <div class="form-check"> 
+				            <input class="form-check-input" type="radio" name="endForenoonOrMidday" id="endMidday" value="午後" 
+				                   <% if ("午後".equals(request.getParameter("endForenoonOrMidday"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="endMidday">
 				                午後
 				            </label>
@@ -151,11 +151,11 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label" for="endHour">時</label>
 	                <span class="text-danger">*</span>
-	                <select name="endHour" class="form-control" required>
+	                <select name="endHour" class="form-control select-center" required>
 	                    <option value="">-- 時 --</option>
 	                    <% for(int i=0; i <=11; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>時
 	                        </option>
 	                    <% } %>
 	                </select>

@@ -21,26 +21,26 @@
 	            </div>
 	            <!-- 生年月日 -->
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="birthYear">生年月日</label>
+	                <label class="form-label invisible-text" for="birthYear">年</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthYear" class="form-control" required>
+	                <select name="birthYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <= currentYear - 14;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>年
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label invisible-text" for="birthManth">月</label>
+	                <label class="form-label" for="birthManth">生年月日</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthMonth" class="form-control" required>
+	                <select name="birthMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -48,11 +48,11 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label invisible-text" for="birthDay">日</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthDay" class="form-control" required>
+	                <select name="birthDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>日
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -90,26 +90,26 @@
 
   	            <!-- 入校年月日 -->
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="admissionYear">入校日</label>
+	                <label class="form-label invisible-text" for="admissionYear">年</label>
 	                <span class="text-danger">*</span>
-	                <select name="admissionYear" class="form-control" required>
+	                <select name="admissionYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% for(int i=currentYear-2; i <= currentYear;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>年
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label invisible-text" for="admissionManth">月</label>
+	                <label class="form-label" for="admissionManth">入学日</label>
 	                <span class="text-danger">*</span>
-	                <select name="admissionMonth" class="form-control" required>
+	                <select name="admissionMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -117,61 +117,70 @@
 	            <div class="col-md-2 mb-3">
 	                <label class="form-label invisible-text" for="admissionDay">日</label>
 	                <span class="text-danger">*</span>
-	                <select name="admissionDay" class="form-control" required>
+	                <select name="admissionDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>日
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
-	        </div>
-	        <div class="row">
+
 	            <!-- 学生の種類 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学生の種類</label>
 	                <span class="text-danger">*</span>
-	                <select name="studentType" class="form-control" required>
+	                <select name="studentType" class="form-control select-center" required>
 	                    <option value="">- 学生の種類 -</option>
 	                    <option value="一般学生">一般学生</option>
 	                    <option value="留学生">留学生</option>
 	                    <option value="職業訓練生">職業訓練生</option>
 	                </select>
 	            </div>
-	            <!-- クラス名 -->
-	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">クラス名</label>
-	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="className" placeholder="IT・ゲームソフト科"value="${className}" required>
-	            </div>
 	            <!-- 学籍番号 -->
-	            <div class="col-md-2 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学籍番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
 	            </div>
+	            <!-- クラス名 -->
+	            <div class="col-md-6 mb-3">
+	                <label class="form-label" for="">クラス名</label>
+	                <span class="text-danger">*</span>
+	                <select name="className" class="form-control select-center" required>
+	                    <option value="">-- クラス名 --</option>
+	                    <option value="ＩＴ・ゲームソフト科">ＩＴ・ゲームソフト科</option>
+	                    <option value="ＡＩ・データサイエンス科">ＡＩ・データサイエンス科</option>
+	                    <option value="デジタルビジネスデザイン科">デジタルビジネスデザイン科</option>
+   	                    <option value="グローバルＩＴシステム科">グローバルＩＴシステム科</option>
+	                    <option value="グローバルＩＴビジネス科">グローバルＩＴビジネス科</option>
+	                    <option value="ロボット・ＩＯＴソフト科">ロボット・ＩＯＴソフト科</option>
+   	                    <option value="ＩＴライセンス科（通信制）">ＩＴライセンス科（通信制）</option>
+	                </select>
+	            </div>
 	            <!-- 学年 -->
-	            <div class="col-md-2 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学年</label>
 	                <span class="text-danger">*</span>
-	                <select name="schoolYear" class="form-control" required>
+	                <select name="schoolYear" class="form-control select-center" required>
 	                    <option value="">- 学年 -</option>
 	                    <% for(int i=1; i <=2; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>年
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-2 mb-3">
+	            <!-- 組 -->
+		        <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">組</label>
 	                <span class="text-danger">*</span>
-	                <select name="classNumber" class="form-control" required>
+	                <select name="classNumber" class="form-control select-center" required>
 	                    <option value="">-- 組 --</option>
-	                    <% for(int i=1; i <=4; i++){ %>
+	                    <% for(int i=1; i <=3; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>組
 	                        </option>
 	                    <% } %>
 	                </select>

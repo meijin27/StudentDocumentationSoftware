@@ -84,11 +84,6 @@ public class ChangeStudentInfoAction extends Action {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
-		if (className.length() > 32) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
-		}
-
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null
 				|| request.getAttribute("studentNumberError") != null) {

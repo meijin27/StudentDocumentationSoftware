@@ -35,43 +35,41 @@
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
 	            </div>
-	        </div>
-	        <div class="row">	        
-	            <!-- 名（ふりがな） -->
-	            <p>生年月日</p>
+       
+	            <!-- 生年月日 -->
 	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="birthYear">年</label>
+	                <label class="form-label invisible-text" for="birthYear">年</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthYear" class="form-control" required>
+	                <select name="birthYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <=currentYear;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>年
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="birthMonth">月</label>
+	                <label class="form-label" for="birthMonth">生年月日</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthMonth" class="form-control" required>
+	                <select name="birthMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="birthDay">日</label>
+	                <label class="form-label invisible-text" for="birthDay">日</label>
 	                <span class="text-danger">*</span>
-	                <select name="birthDay" class="form-control" required>
+	                <select name="birthDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>日
 	                        </option>
 	                    <% } %>
 	                </select>

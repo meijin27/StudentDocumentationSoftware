@@ -19,13 +19,13 @@
                 <div class="col-md-4 mb-5">
 	                <label class="form-label" for="birthYear">年</label>
                     <span class="text-danger">*</span>                    
-				    <select name="birthYear" class="form-control" required>
+				    <select name="birthYear" class="form-control select-center" required>
 				        <option value="">--- 年 ---</option>
 				        <% 
 				        int currentYear = java.time.Year.now().getValue();
 				        for(int i=currentYear-60; i <= currentYear - 14; i++){ 
 				        %>
-				            <option value="<%= i %>"><%= i %></option>
+				            <option value="<%= i %>"><%= i %>年</option>
 				        <% 
 				        } 
 				        %>
@@ -34,12 +34,12 @@
                 <div class="col-md-4 mb-5">				
   	                <label class="form-label" for="birthMonth">月</label>
                     <span class="text-danger">*</span>                        
-				    <select name="birthMonth" class="form-control" required>
+				    <select name="birthMonth" class="form-control select-center" required>
 				        <option value="">--- 月 ---</option>
 				        <% 
 				        for(int i=1; i <= 12; i++){ 
 				        %>
-				            <option value="<%= i %>"><%= i %></option>
+				            <option value="<%= i %>"><%= i %>月</option>
 				        <% 
 				        } 
 				        %>
@@ -48,12 +48,12 @@
                 <div class="col-md-4 mb-5">
                     <label class="form-label" for="birthDay">日</label>
                     <span class="text-danger">*</span>                 
-				    <select name="birthDay" class="form-control" required>
+				    <select name="birthDay" class="form-control select-center" required>
 				        <option value="">--- 日 ---</option>
 				        <% 
 				        for(int i=1; i <= 31; i++){ 
 				        %>
-				            <option value="<%= i %>"><%= i %></option>
+				            <option value="<%= i %>"><%= i %>日</option>
 				        <% 
 				        } 
 				        %>

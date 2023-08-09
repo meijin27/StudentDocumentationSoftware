@@ -130,7 +130,7 @@ public class FirstSettingAction extends Action {
 
 		// 文字数が多い場合はエラーを返す
 		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32 || className.length() > 32) {
+				|| firstNameRuby.length() > 32) {
 			request.setAttribute("valueLongError", "住所以外は32文字以下で入力してください。");
 		} else if (address.length() > 64) {
 			request.setAttribute("valueLongError", "住所は64文字以下で入力してください。");

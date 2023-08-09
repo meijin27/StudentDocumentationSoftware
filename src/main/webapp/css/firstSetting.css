@@ -42,6 +42,23 @@ main > .container {
   border-top-right-radius: 0;
 }
 
+/* プレースホルダーを中央揃えにする */
+::placeholder {
+    text-align: center;
+}
+
+/* 実際の入力値を左揃えにする */
+.form-control {
+    text-align: left; 
+}
+
+/* selectの選択肢と選択結果を中央揃えにする */
+.form-control.select-center {
+    text-align: center;
+    text-align-last: center; 
+    direction: ltr; /* directionを左から右にリセット */
+}
+
 .content {
   flex-grow: 1;
   width: 100%;

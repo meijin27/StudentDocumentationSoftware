@@ -21,8 +21,8 @@
 			<% for (int i = 1; i <= 31; i++) { %>
 			    <div class="col-md-2 mb-3">
 			        <label><%= i %>日: </label>
-			        <% String dayAttribute = session.getAttribute("day"+i) != null ? session.getAttribute("day"+i).toString() : ""; %>
-			        <select class="form-control" id="day<%= i %>" name="day<%= i %>">
+					<% String dayAttribute = request.getParameter("day"+i) != null ? request.getParameter("day"+i) : ""; %>
+			        <select class="form-control select-center" id="day<%= i %>" name="day<%= i %>">
 			            <option value="" <% if (dayAttribute.isEmpty()) { %> selected <% } %>>--無--</option>
 			            <option value="＝" <% if ("＝".equals(dayAttribute)) { %> selected <% } %>>＝</option>
 			            <option value="〇" <% if ("〇".equals(dayAttribute)) { %> selected <% } %>>〇</option>
@@ -39,12 +39,12 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="subjectYear">令和　年</label>
 	                <span class="text-danger">*</span>
-	                <select name="subjectYear" class="form-control" required>
+	                <select name="subjectYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            令和<%= i %>年（<%= i+2018 %>年）
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -52,11 +52,11 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="subjectMonth">月</label>
 	                <span class="text-danger">*</span>
-	                <select name="subjectMonth" class="form-control" required>
+	                <select name="subjectMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>

@@ -15,11 +15,11 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="firstMonth">就労した月</label>
 	                <span class="text-danger">*</span>
-	                <select name="firstMonth" class="form-control" required>
+	                <select name="firstMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>
@@ -37,11 +37,11 @@
   		    	<p style="margin-top: 50px; color: red;">一か月分を作成する場合は下記は選択しないでください</p>
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="secondMonth">就労した月（二か月目）</label>
-	                <select name="secondMonth" class="form-control">
+	                <select name="secondMonth" class="form-control select-center">
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>月
 	                        </option>
 	                    <% } %>
 	                </select>

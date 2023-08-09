@@ -228,7 +228,7 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-student-info.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-student-info.jsp">
                                 <span data-feather="settings" class="align-text-bottom"></span>
-                                学生種類・学籍番号・クラス・学年・組・入学年月日の変更
+                                入学年月日・学生種類・学籍番号・クラス・学年・組の変更
                             </a>
                         </li>
                         <li class="nav-item">

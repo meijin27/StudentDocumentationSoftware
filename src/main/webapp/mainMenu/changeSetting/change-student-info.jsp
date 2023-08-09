@@ -6,16 +6,54 @@
 
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
 	<div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1>学生種類・学籍番号・クラス・学年・組・入学年月日の変更</h1>
+        <h1>入学年月日・学生種類・学籍番号・クラス・学年・組の変更</h1>
     </div>
     <div class="container">
 		<form action="ChangeStudentInfo.action" method="post">
 	        <div class="row">
+  	            <!-- 入学年月日-->
+	            <div class="col-md-2 mb-5">
+	                <label class="form-label invisible-text" for="admissionYear">年</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionYear" class="form-control select-center" required>
+	                    <option value="">-- 年 --</option>
+	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2; i <=currentYear;
+	                        i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>年
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>
+	            <div class="col-md-2 mb-5">
+	                <label class="form-label" for="admissionMonth">入学日</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionMonth" class="form-control select-center" required>
+	                    <option value="">-- 月 --</option>
+	                    <% for(int i=1; i <=12; i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>月
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>
+	            <div class="col-md-2 mb-5">
+	                <label class="form-label invisible-text" for="admissionDay">日</label>
+	                <span class="text-danger">*</span>
+	                <select name="admissionDay" class="form-control select-center" required>
+	                    <option value="">-- 日 --</option>
+	                    <% for(int i=1; i <=31; i++){ %>
+	                        <option value="<%= i %>">
+	                            <%= i %>日
+	                        </option>
+	                    <% } %>
+	                </select>
+	            </div>	      
 	             <!-- 学生の種類 -->
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学生の種類</label>
 	                <span class="text-danger">*</span>
-	                <select name="studentType" class="form-control" required>
+	                <select name="studentType" class="form-control select-center" required>
 	                    <option value="">-- 学生の種類 --</option>
 	                    <option value="一般学生">一般学生</option>
 	                    <option value="留学生">留学生</option>
@@ -23,90 +61,56 @@
 	                </select>
 	            </div>
 	            <!-- 学籍番号 -->
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学籍番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
 	            </div>
 	            <!-- クラス名 -->
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">クラス名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="className" placeholder="IT・ゲームソフト科"value="${className}" required>
+	                <select name="className" class="form-control select-center" required>
+	                    <option value="">-- クラス名 --</option>
+	                    <option value="ＩＴ・ゲームソフト科">ＩＴ・ゲームソフト科</option>
+	                    <option value="ＡＩ・データサイエンス科">ＡＩ・データサイエンス科</option>
+	                    <option value="デジタルビジネスデザイン科">デジタルビジネスデザイン科</option>
+   	                    <option value="グローバルＩＴシステム科">グローバルＩＴシステム科</option>
+	                    <option value="グローバルＩＴビジネス科">グローバルＩＴビジネス科</option>
+	                    <option value="ロボット・ＩＯＴソフト科">ロボット・ＩＯＴソフト科</option>
+   	                    <option value="ＩＴライセンス科（通信制）">ＩＴライセンス科（通信制）</option>
+	                </select>
 	            </div>
 	            <!-- 学年 -->
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学年</label>
 	                <span class="text-danger">*</span>
-	                <select name="schoolYear" class="form-control" required>
+	                <select name="schoolYear" class="form-control select-center" required>
 	                    <option value="">-- 学年 --</option>
 	                    <% for(int i=1; i <=2; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>年
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">組</label>
 	                <span class="text-danger">*</span>
-	                <select name="classNumber" class="form-control" required>
+	                <select name="classNumber" class="form-control select-center" required>
 	                    <option value="">-- 組 --</option>
-	                    <% for(int i=1; i <=4; i++){ %>
+	                    <% for(int i=1; i <=3; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>
+	                            <%= i %>組
 	                        </option>
 	                    <% } %>
 	                </select>
-	            </div>
-   	            <!-- 入学年月日-->
-	            <p>入学年月日</p>
-	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="admissionYear">年</label>
-	                <span class="text-danger">*</span>
-	                <select name="admissionYear" class="form-control" required>
-	                    <option value="">-- 年 --</option>
-	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2; i <=currentYear;
-	                        i++){ %>
-	                        <option value="<%= i %>">
-	                            <%= i %>
-	                        </option>
-	                    <% } %>
-	                </select>
-	            </div>
-	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="admissionMonth">月</label>
-	                <span class="text-danger">*</span>
-	                <select name="admissionMonth" class="form-control" required>
-	                    <option value="">-- 月 --</option>
-	                    <% for(int i=1; i <=12; i++){ %>
-	                        <option value="<%= i %>">
-	                            <%= i %>
-	                        </option>
-	                    <% } %>
-	                </select>
-	            </div>
-	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="admissionDay">日</label>
-	                <span class="text-danger">*</span>
-	                <select name="admissionDay" class="form-control" required>
-	                    <option value="">-- 日 --</option>
-	                    <% for(int i=1; i <=31; i++){ %>
-	                        <option value="<%= i %>">
-	                            <%= i %>
-	                        </option>
-	                    <% } %>
-	                </select>
-	            </div>	        
-	        </div>
+   	            </div>
+                
+ 	        </div>
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
-	            </div>
-	        </c:if>
-	        <c:if test="${not empty  valueLongError}">
-	            <div class="alert alert-danger" role="alert">
-	                ${valueLongError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty studentNumberError}">

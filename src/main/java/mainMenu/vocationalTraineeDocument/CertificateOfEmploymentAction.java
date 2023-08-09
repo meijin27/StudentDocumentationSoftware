@@ -84,20 +84,26 @@ public class CertificateOfEmploymentAction extends Action {
 			}
 		}
 
-		month = Integer.parseInt(secondMonth);
-		lastDay = getLastDayOfMonth(month);
-
-		// 日付毎に入力された記号をMAPに格納する
 		Map<Integer, String> secondMonthCalendar = new HashMap<>();
-		for (int i = 1; i <= 31; i++) {
-			String day = "secondMonthDay" + i;
-			String marker = request.getParameter(day);
+		// 二月目が未入力であれば何もしない
+		if (secondMonth == null || secondMonth.isEmpty()) {
 
-			// 指定された月の最後の日以降の日付であれば強制的に空文字にする
-			if (i > lastDay) {
-				secondMonthCalendar.put(i, "");
-			} else if (marker != null) {
-				secondMonthCalendar.put(i, marker);
+		} else {
+			// 二月目が入力されていればカレンダーに入力する
+			month = Integer.parseInt(secondMonth);
+			lastDay = getLastDayOfMonth(month);
+
+			// 日付毎に入力された記号をMAPに格納する
+			for (int i = 1; i <= 31; i++) {
+				String day = "secondMonthDay" + i;
+				String marker = request.getParameter(day);
+
+				// 指定された月の最後の日以降の日付であれば強制的に空文字にする
+				if (i > lastDay) {
+					secondMonthCalendar.put(i, "");
+				} else if (marker != null) {
+					secondMonthCalendar.put(i, marker);
+				}
 			}
 		}
 
