@@ -4,7 +4,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,8 +45,6 @@ public class NotificationOfChangeAction extends Action {
 		String changetDay = request.getParameter("changeDay");
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
-		String lastNameRuby = request.getParameter("lastNameRuby");
-		String firstNameRuby = request.getParameter("firstNameRuby");
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 		String tel = request.getParameter("tel");
@@ -61,14 +58,17 @@ public class NotificationOfChangeAction extends Action {
 		request.setAttribute("changetDay", changetDay);
 		request.setAttribute("lastName", lastName);
 		request.setAttribute("firstName", firstName);
-		request.setAttribute("lastNameRuby", lastNameRuby);
-		request.setAttribute("firstNameRuby", firstNameRuby);
 		request.setAttribute("postCode", postCode);
 		request.setAttribute("address", address);
 		request.setAttribute("tel", tel);
 		request.setAttribute("requestYear", requestYear);
 		request.setAttribute("requestMonth", requestMonth);
 		request.setAttribute("requestDay", requestDay);
+
+		// 更新項目確認用変数
+		boolean changeName = false;
+		boolean changeAddress = false;
+		boolean changeTel = false;
 
 		// 未入力項目があればエラーを返す
 		if (changeYear == null || changeMonth == null || changetDay == null || requestYear == null
@@ -98,22 +98,16 @@ public class NotificationOfChangeAction extends Action {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 姓と名とふりがなのチェック
-		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
-		if ((lastName == null || lastName.isEmpty()) && (firstName == null || firstName.isEmpty())
-				&& (lastNameRuby == null || lastNameRuby.isEmpty())
-				&& (firstNameRuby == null || firstNameRuby.isEmpty())) {
+		// 姓と名のチェック
+		if ((lastName == null || lastName.isEmpty()) && (firstName == null || firstName.isEmpty())) {
 			// すべてが空の場合は問題なし
-		} else if (lastName == null || lastName.isEmpty() || firstName == null || firstName.isEmpty()
-				|| lastNameRuby == null || lastNameRuby.isEmpty() || firstNameRuby == null || firstNameRuby.isEmpty()) {
+		} else if (lastName == null || lastName.isEmpty() || firstName == null || firstName.isEmpty()) {
 			// 何か一つだけ入力されている場合
-			request.setAttribute("nameError", "姓と名とふりがなを全て入力してください。");
-		} else if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32) {
+			request.setAttribute("nameError", "姓と名を全て入力してください。");
+		} else if (lastName.length() > 32 || firstName.length() > 32) {
 			request.setAttribute("nameError", "名前は32文字以下で入力してください。");
-		} else if (pattern.matcher(lastNameRuby).matches() || pattern.matcher(firstNameRuby).matches()) {
-			// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
-			request.setAttribute("nameError", "「ふりがな」は「ひらがな」で入力してください。");
+		} else {
+			changeName = true;
 		}
 
 		// 郵便番号と住所のチェック
@@ -128,18 +122,20 @@ public class NotificationOfChangeAction extends Action {
 		} else if (!postCode.matches("^\\d{7}$")) {
 			// 郵便番号が半角7桁でなければエラーを返す
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
+		} else {
+			changeAddress = true;
 		}
 
 		// 電話番号が半角10~11桁でなければエラーを返す
 		if (tel != null && !tel.isEmpty() && !tel.matches("^\\d{10,11}$")) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
+		} else if (tel != null && !tel.isEmpty()) {
+			changeTel = true;
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
 		if ((lastName == null || lastName.isEmpty()) &&
 				(firstName == null || firstName.isEmpty()) &&
-				(lastNameRuby == null || lastNameRuby.isEmpty()) &&
-				(firstNameRuby == null || firstNameRuby.isEmpty()) &&
 				(postCode == null || postCode.isEmpty()) &&
 				(address == null || address.isEmpty()) &&
 				(tel == null || tel.isEmpty())) {
@@ -159,8 +155,6 @@ public class NotificationOfChangeAction extends Action {
 		request.removeAttribute("changetDay");
 		request.removeAttribute("lastName");
 		request.removeAttribute("firstName");
-		request.removeAttribute("lastNameRuby");
-		request.removeAttribute("firstNameRuby");
 		request.removeAttribute("postCode");
 		request.removeAttribute("address");
 		request.removeAttribute("tel");
@@ -198,7 +192,7 @@ public class NotificationOfChangeAction extends Action {
 			String oldFirstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
 			String name = oldLastName + " " + oldFirstName;
-			if (lastName != null && !lastName.isEmpty()) {
+			if (changeName) {
 				name = lastName + " " + firstName;
 			}
 
@@ -222,7 +216,7 @@ public class NotificationOfChangeAction extends Action {
 			}
 			oldTel = firstTel + "-" + secondTel + "-" + lastTel;
 
-			if (tel != null && !tel.isEmpty()) {
+			if (changeTel) {
 				if (tel.length() == 11) {
 					firstTel = tel.substring(0, 3);
 					secondTel = tel.substring(3, 7);
@@ -243,7 +237,7 @@ public class NotificationOfChangeAction extends Action {
 			String oldFirstPostCode = oldPostCode.substring(0, 3);
 			String oldLastPostCode = oldPostCode.substring(3, 7);
 			oldPostCode = oldFirstPostCode + "-" + oldLastPostCode;
-			if (postCode != null && !postCode.isEmpty()) {
+			if (changeAddress) {
 				String firstPostCode = postCode.substring(0, 3);
 				String lastPostCode = postCode.substring(3, 7);
 				postCode = firstPostCode + "-" + lastPostCode;
@@ -287,27 +281,47 @@ public class NotificationOfChangeAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩", 210f, 505f, 115f, "left", 12);
-			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩", 252f, 405f, 117f, "left", 12);
-			editor.writeText(font, "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮", 300f, 305f, 118f, "left", 12);
+			editor.writeText(font, changeYear, 305f, 667f, 70f, "left", 12);
+			editor.writeText(font, changeMonth, 348f, 667f, 70f, "left", 12);
+			editor.writeText(font, changetDay, 390f, 667f, 70f, "left", 12);
 
-			editor.writeText(font, changeYear, 320f, 640f, 70f, "left", 12);
-			editor.writeText(font, changetDay, 363f, 640f, 70f, "left", 12);
-			editor.writeText(font, changetDay, 393f, 640f, 70f, "left", 12);
+			if (changeName) {
+				editor.writeText(font, oldLastName, 185f, 540f, 77f, "center", 12);
+				editor.writeText(font, oldFirstName, 268f, 540f, 77f, "center", 12);
+				editor.writeText(font, lastName, 350f, 540f, 77f, "center", 12);
+				editor.writeText(font, firstName, 435f, 540f, 77f, "center", 12);
+			}
 
-			editor.writeText(font, requestYear, 105f, 262f, 40f, "left", 12);
-			editor.writeText(font, requestMonth, 155f, 262f, 40f, "left", 12);
-			editor.writeText(font, requestDay, 195f, 262f, 40f, "left", 12);
+			if (changeAddress) {
+				editor.writeText(font, oldPostCode, 200f, 512f, 115f, "left", 12);
+				editor.writeText(font, postCode, 366f, 512f, 117f, "left", 12);
 
-			/*
-			editor.writeText(font, className, 100f, 32f, 130f, "center", 12);
-			editor.writeText(font, name, 377f, 32f, 140f, "center", 12);
-			*/
-			request.removeAttribute("lastName");
-			request.removeAttribute("firstName");
-			request.removeAttribute("postCode");
-			request.removeAttribute("address");
-			request.removeAttribute("tel");
+				if (oldAddress.length() > 13) {
+					editor.writeText(font, oldAddress.substring(0, 13), 185f, 495f, 163f, "left", 12);
+					editor.writeText(font, oldAddress.substring(13, oldAddress.length()), 185f, 480f, 163f, "left", 12);
+				} else {
+					editor.writeText(font, oldAddress, 185f, 488f, 163f, "left", 12);
+				}
+
+				if (address.length() > 13) {
+					editor.writeText(font, address.substring(0, 13), 350f, 495f, 163f, "left", 12);
+					editor.writeText(font, address.substring(13, address.length()), 350f, 480f, 163f, "left", 12);
+				} else {
+					editor.writeText(font, address, 350f, 488f, 163f, "left", 12);
+				}
+			}
+
+			if (changeTel) {
+				editor.writeText(font, oldTel, 185f, 435f, 163f, "center", 12);
+				editor.writeText(font, tel, 350f, 435f, 160f, "center", 12);
+			}
+
+			editor.writeText(font, requestYear, 125f, 331f, 40f, "left", 12);
+			editor.writeText(font, requestMonth, 168f, 331f, 40f, "left", 12);
+			editor.writeText(font, requestDay, 210f, 331f, 40f, "left", 12);
+			editor.writeText(font, className, 310f, 264f, 200f, "center", 12);
+			editor.writeText(font, name, 310f, 230f, 200f, "center", 12);
+
 			// Close and save
 			editor.close("氏名・住所等変更届.pdf");
 			// 出力内容のデータベースへの登録

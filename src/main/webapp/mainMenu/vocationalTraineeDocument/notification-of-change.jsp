@@ -11,7 +11,7 @@
 		<form action="NotificationOfChange.action" method="post">
 	        <div class="row">
    	            <p class="left-align">変更した項目を入力してください。</p>
-   	            <p class="left-align">氏名変更した場合は姓・名・姓（ふりがな）・名（ふりがな）をすべて入力してください。</p>
+   	            <p class="left-align">氏名変更した場合は姓・名を全て入力してください。</p>
    	            <p class="left-align">住所変更した場合は郵便番号と住所を入力してください。</p>
    	            <p class="left-align margin-bottom-50">変更項目（旧）には現在登録されている情報を記載します。</p>
    	            <!-- 変更年月日 -->
@@ -55,25 +55,20 @@
 	                </select>
 	            </div>	      
 	            <!-- 姓 -->
-	            <div class="col-md-3 mb-5">
+	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">姓</label>
 	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}">
 	            </div>
 	            <!-- 名 -->
-	            <div class="col-md-3 mb-5">
+	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">名</label>
 	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}">
 	            </div>
-   	            <!-- 姓（ふりがな） -->
-	            <div class="col-md-3 mb-5">
-	                <label class="form-label" for="">姓（ふりがな）</label>
-	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}">
-	            </div>
-	            <!-- 名（ふりがな） -->
-	            <div class="col-md-3 mb-5">
-	                <label class="form-label" for="">名（ふりがな）</label>
-	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}">
-	            </div>
+   	            <!-- 電話番号 -->
+	            <div class="col-md-6 mb-5">
+	                <label class="form-label" for="">電話番号</label>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}">
+	            </div>  
   	            <!-- 郵便番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">郵便番号</label>
@@ -84,11 +79,6 @@
 	                <label class="form-label" for="">住所</label>
 	                <input class="form-control" type="text" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="${address}">
 	            </div>
-	            <!-- 電話番号 -->
-	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="">電話番号</label>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}">
-	            </div>  
   	            <!-- 申請年月日 -->
 	            <p>申請年月日</p>
 	            <div class="col-md-4 mb-5">
