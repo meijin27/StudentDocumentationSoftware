@@ -119,9 +119,32 @@
 				<div class="alert alert-danger" role="alert">${innerError}
 				</div>
 			</c:if>
+			<button type="button" id="addSetBtn">追加</button>
+			
 			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
 		</form>
 
 </main>
+<script>
+$(document).ready(function() {
+    $('#addSetBtn').click(function() {
+        // 非表示のセットを最初のものだけ取得
+        var nextSet = $(".additional-set.hidden").first();
+        
+        // セットが存在すれば表示
+        if (nextSet.length) {
+            nextSet.removeClass('hidden');
 
+            // required属性を追加
+            nextSet.find('select, input').attr('required', true);
+        }
+
+        // 全てのセットが表示された場合、追加ボタンを非表示
+        if (!$(".additional-set.hidden").length) {
+            $('#addSetBtn').hide();
+        }
+    });
+});
+
+</script>
 <c:import url="/footer/footer-main-menu.jsp" />

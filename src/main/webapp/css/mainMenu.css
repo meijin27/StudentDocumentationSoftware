@@ -52,6 +52,10 @@ main > .container {
     margin-right: 40px; /* こちらの値を適宜調整してください */
 }
 
+.hidden {
+    display: none;
+}
+
 .left-align {
     text-align: left;
 }
