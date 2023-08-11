@@ -8,7 +8,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
     </div>			  
-	<form action="PetitionForRelatives.action" method="post">
+	<form action="NotificationAbsenceOfTtraining.action" method="post">
         <div class="row">
   	            <!-- 対象年月 -->
             <div class="col-md-6 mb-5">
@@ -39,7 +39,7 @@
         </div>
         <% for(int set = 1; set <= 10; set++){ %>
 		    <div class="row set <% if (set != 1) { %> additional-set hidden <% } %>" data-set="<%= set %>">
-               <h3><%= set %>行目</h3>
+               <h3 class="border-bottom"><%= set %>行目</h3>
                <!-- 休業開始日 -->
 		       <div class="col-md-3 mb-5">
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
@@ -155,7 +155,7 @@
 				<% if (set != 1) { %>
 		            <!-- 削除ボタン -->
 		            <div class="col-md-12 mb-5">
-		                <button type="button" class="btn btn-danger removeSetBtn">削除</button>
+		                <button type="button" class="w-100 btn btn-lg btn-danger removeSetBtn border-bottom"><%= set %>行目の削除</button>
 		            </div>
 	       		<% } %>
 	        </div>  
@@ -174,18 +174,20 @@
             <div class="alert alert-danger text-center input-field" role="alert">
                 ${dayError}
             </div>
-        </c:if>	        
+        </c:if>
+        <c:if test="${not empty logicalError}">
+            <div class="alert alert-danger text-center input-field" role="alert">
+                ${logicalError}
+            </div>
+        </c:if>	   	        
 		<c:if test="${not empty innerError}">
 			<div class="alert alert-danger" role="alert">${innerError}
 			</div>
 		</c:if>
-					<button type="button" id="addSetBtn">追加</button>
-		
+		<button type="button" id="addSetBtn" class="w-100 btn btn-lg btn-success mb-3">行の追加（休業日が複数ある場合）</button>
 		<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
 	</form>
 
 </main>
 
-<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
-<script src="<%=request.getContextPath()%>/js/display.js"></script>
 <c:import url="/footer/footer-main-menu.jsp" />

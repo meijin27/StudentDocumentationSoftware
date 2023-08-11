@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,8 +23,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class AbsenceDueToInjuryOrIllnessAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(AbsenceDueToInjuryOrIllnessAction.class);
+public class NotificationAbsenceOfTtrainingAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(NotificationAbsenceOfTtrainingAction.class);
 
 	@Override
 	public String execute(
@@ -42,120 +43,101 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 		}
 
 		// 入力された値を変数に格納
-		String disease = request.getParameter("disease");
-		String reason = request.getParameter("reason");
-		String startYear = request.getParameter("startYear");
-		String startMonth = request.getParameter("startMonth");
-		String startDay = request.getParameter("startDay");
-		String endYear = request.getParameter("endYear");
-		String endMonth = request.getParameter("endMonth");
-		String endDay = request.getParameter("endDay");
-		String requestYear = request.getParameter("requestYear");
-		String requestMonth = request.getParameter("requestMonth");
-		String requestDay = request.getParameter("requestDay");
+		String subjectYear = request.getParameter("subjectYear");
+		String subjectMonth = request.getParameter("subjectMonth");
+		String restedDayStart1 = request.getParameter("restedDayStart1");
+		String restedDayEnd1 = request.getParameter("restedDayEnd1");
+		String reason1 = request.getParameter("reason1");
+		String allDayOff1 = request.getParameter("allDayOff1");
+		String deadTime1 = request.getParameter("deadTime1");
+		String latenessTime1 = request.getParameter("latenessTime1");
+		String leaveEarlyTime1 = request.getParameter("leaveEarlyTime1");
+		String AttachmentOfCertificate1 = request.getParameter("AttachmentOfCertificate1");
 
 		// 入力された値をリクエストに格納		
-		request.setAttribute("disease", disease);
-		request.setAttribute("reason", reason);
-		request.setAttribute("startYear", startYear);
-		request.setAttribute("startMonth", startMonth);
-		request.setAttribute("startDay", startDay);
-		request.setAttribute("endYear", endYear);
-		request.setAttribute("endMonth", endMonth);
-		request.setAttribute("endDay", endDay);
-		request.setAttribute("requestYear", requestYear);
-		request.setAttribute("requestMonth", requestMonth);
-		request.setAttribute("requestDay", requestDay);
+		request.setAttribute("subjectYear", subjectYear);
+		request.setAttribute("subjectMonth", subjectMonth);
+		request.setAttribute("restedDayStart1", restedDayStart1);
+		request.setAttribute("restedDayEnd1", restedDayEnd1);
+		request.setAttribute("reason1", reason1);
+		request.setAttribute("allDayOff1", allDayOff1);
+		request.setAttribute("deadTime1", deadTime1);
+		request.setAttribute("latenessTime1", latenessTime1);
+		request.setAttribute("leaveEarlyTime1", leaveEarlyTime1);
+		request.setAttribute("AttachmentOfCertificate1", AttachmentOfCertificate1);
 
 		// 未入力項目があればエラーを返す
-		if (disease == null || reason == null || requestYear == null
-				|| requestMonth == null || requestDay == null || startYear == null
-				|| startMonth == null || startDay == null || endYear == null || endMonth == null || endDay == null
-				|| disease.isEmpty() || reason.isEmpty()
-				|| requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
-				|| startDay.isEmpty()
-				|| endYear.isEmpty() || endMonth.isEmpty()
-				|| endDay.isEmpty()) {
+		if (subjectYear == null || subjectMonth == null
+				|| AttachmentOfCertificate1 == null || restedDayStart1 == null
+				|| restedDayEnd1 == null || reason1 == null || allDayOff1 == null
+				|| subjectYear.isEmpty() || subjectMonth.isEmpty()
+				|| AttachmentOfCertificate1.isEmpty()
+				|| restedDayStart1.isEmpty() || restedDayEnd1.isEmpty()
+				|| reason1.isEmpty()
+				|| allDayOff1.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "absence-due-to-injury-or-illness.jsp";
+			return "notification-absence-of-training.jsp";
+		}
+
+		// 休業時限数を適切に選択していない場合、エラーを返す
+		if (allDayOff1.equals("はい") && (deadTime1 == null || deadTime1.isEmpty())) {
+			request.setAttribute("nullError", "欠席期間時限数を入力してください。");
+			return "notification-absence-of-training.jsp";
+
+		} else if (allDayOff1.equals("いいえ") && ((latenessTime1 == null || latenessTime1.isEmpty())
+				&& (leaveEarlyTime1 == null || leaveEarlyTime1.isEmpty()))) {
+			request.setAttribute("nullError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
+			return "notification-absence-of-training.jsp";
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear);
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			int checkYear = Integer.parseInt(subjectYear);
+			int checkMonth = Integer.parseInt(subjectMonth);
 
-			checkYear = Integer.parseInt(startYear);
-			checkMonth = Integer.parseInt(startMonth);
-			checkDay = Integer.parseInt(startDay);
+			int checkStartDay = Integer.parseInt(restedDayStart1);
+			int checkEndDay = Integer.parseInt(restedDayEnd1);
 			// 日付の妥当性チェック
-			date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-			checkYear = Integer.parseInt(endYear);
-			checkMonth = Integer.parseInt(endMonth);
-			checkDay = Integer.parseInt(endDay);
-			// 日付の妥当性チェック
-			date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+			LocalDate date = LocalDate.of(checkYear, checkMonth, checkStartDay);
+			date = LocalDate.of(checkYear, checkMonth, checkEndDay);
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 開始時刻が終了時刻よりも前かどうかをチェックする
-		int checkStartYear = Integer.parseInt(startYear);
-		int checkStartMonth = Integer.parseInt(startMonth);
-		int checkStartDay = Integer.parseInt(startDay);
-
-		int checkEndYear = Integer.parseInt(endYear);
-		int checkEndMonth = Integer.parseInt(endMonth);
-		int checkEndDay = Integer.parseInt(endDay);
-
-		// 年度が整合とれるか確認する
-		if (checkStartYear > checkEndYear) {
-			request.setAttribute("logicalError", "開始年は終了年よりも前でなければなりません。");
-			// 月が整合取れるか確認する
-		} else if (checkStartYear == checkEndYear && checkStartMonth > checkEndMonth) {
-			request.setAttribute("logicalError", "開始月は終了月よりも前でなければなりません。");
-			// 日付が整合取れるか確認する
-		} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth && checkStartDay > checkEndDay) {
-			request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
+		// 休業開始日が休業終了日よりも前かどうかをチェックする
+		int checkStartDay = Integer.parseInt(restedDayStart1);
+		int checkEndDay = Integer.parseInt(restedDayEnd1);
+		// 日付が整合とれるか確認する
+		if (checkStartDay > checkEndDay) {
+			request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す
-		if (disease.length() > 32 || reason.length() > 32) {
+		if (reason1.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null) {
-			return "absence-due-to-injury-or-illness.jsp";
+			return "notification-absence-of-training.jsp";
 		}
 
 		// 日付フォーマットの定義
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
 		// 文字列からLocalDateに変換
-		LocalDate startDate = LocalDate.parse(startYear + "-" + startMonth + "-" + startDay, formatter);
-		LocalDate endDate = LocalDate.parse(endYear + "-" + endMonth + "-" + endDay, formatter);
+		LocalDate startDate = LocalDate.parse(restedDayStart1 + "-" + restedDayEnd1 + "-" + reason1, formatter);
+		LocalDate endDate = LocalDate.parse(allDayOff1 + "-" + deadTime1 + "-" + latenessTime1, formatter);
 		// 間の日数を計算
 		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
 
-		// リクエストのデータ削除
-		request.removeAttribute("disease");
-		request.removeAttribute("reason");
-		request.removeAttribute("startYear");
-		request.removeAttribute("startMonth");
-		request.removeAttribute("startDay");
-		request.removeAttribute("endYear");
-		request.removeAttribute("endMonth");
-		request.removeAttribute("endDay");
-		request.removeAttribute("requestYear");
-		request.removeAttribute("requestMonth");
-		request.removeAttribute("requestDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			System.out.println(attributeName);
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス
@@ -204,7 +186,7 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
-				return "absence-due-to-injury-or-illness.jsp";
+				return "notification-absence-of-training.jsp";
 			}
 
 			// 公共職業安定所名のデータベースからの取り出し
@@ -220,7 +202,7 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/vocationalTraineePDF/傷病による欠席理由申立書.pdf";
+			String pdfPath = "/pdf/vocationalTraineePDF/委託訓練欠席（遅刻・早退）届.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
@@ -229,33 +211,32 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 
 			// PDFへの記載
 			editor.writeText(font, name, 198f, 643f, 75f, "center", 12);
-			editor.writeText(font, disease, 357f, 643f, 95f, "center", 12);
-			editor.writeText(font, reason, 165f, 597f, 300f, "center", 12);
-			editor.writeText(font, startYear, 195f, 550f, 40f, "left", 12);
-			editor.writeText(font, startMonth, 263f, 550f, 40f, "left", 12);
-			editor.writeText(font, startDay, 310f, 550f, 40f, "left", 12);
-			editor.writeText(font, endYear, 195f, 513f, 40f, "left", 12);
-			editor.writeText(font, endMonth, 262f, 513f, 40f, "left", 12);
-			editor.writeText(font, endDay, 310f, 513f, 40f, "left", 12);
+			editor.writeText(font, subjectYear, 357f, 643f, 95f, "center", 12);
+			editor.writeText(font, subjectMonth, 165f, 597f, 300f, "center", 12);
+			editor.writeText(font, restedDayStart1, 195f, 550f, 40f, "left", 12);
+			editor.writeText(font, restedDayEnd1, 263f, 550f, 40f, "left", 12);
+			editor.writeText(font, reason1, 310f, 550f, 40f, "left", 12);
+			editor.writeText(font, allDayOff1, 195f, 513f, 40f, "left", 12);
+			editor.writeText(font, deadTime1, 262f, 513f, 40f, "left", 12);
+			editor.writeText(font, latenessTime1, 310f, 513f, 40f, "left", 12);
 			editor.writeText(font, daysBetween, 380f, 513f, 40f, "left", 12);
 			editor.writeText(font, namePESO, 322f, 309f, 50f, "center", 12);
-			editor.writeText(font, requestYear, 145f, 249f, 40f, "left", 12);
-			editor.writeText(font, requestMonth, 194f, 249f, 40f, "left", 12);
-			editor.writeText(font, requestDay, 227f, 249f, 40f, "left", 12);
+			editor.writeText(font, leaveEarlyTime1, 145f, 249f, 40f, "left", 12);
+			editor.writeText(font, AttachmentOfCertificate1, 194f, 249f, 40f, "left", 12);
 			editor.writeText(font, className, 145f, 220f, 110f, "center", 12);
 			editor.writeText(font, name, 382f, 218f, 105f, "center", 12);
 
 			// Close and save
-			editor.close("傷病による欠席理由申立書.pdf");
+			editor.close("委託訓練欠席（遅刻・早退）届.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Absence Due to Injury or Illness");
+			dao.addOperationLog(id, "Printing Notification Absence Of Ttraining");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「傷病による欠席理由申立書」を作成しました。");
+			request.setAttribute("createPDF", "「委託訓練欠席（遅刻・早退）届」を作成しました。");
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
-			return "absence-due-to-injury-or-illness.jsp";
+			return "notification-absence-of-training.jsp";
 		}
 	}
 }

@@ -68,6 +68,7 @@ public class CertificateIssuanceAction extends Action {
 			return "certificate-issuance.jsp";
 		}
 
+		// 証明書の必要部数を全て選択していない場合、エラーを返す
 		if (proofOfStudent.isEmpty() && certificateOfCompletion.isEmpty()
 				&& certificateOfExpectedCompletion.isEmpty()) {
 			request.setAttribute("nullError", "証明書は1種類以上発行する必要があります。");
