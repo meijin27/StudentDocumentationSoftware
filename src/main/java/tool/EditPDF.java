@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.util.Matrix;
 
 public class EditPDF {
 	private static final Logger logger = CustomLogger.getLogger(EditPDF.class);
@@ -83,7 +84,27 @@ public class EditPDF {
 		}
 	}
 
-	// 受講証明書のカレンダーへの描画用メソッド
+	public void writeTextRotated90(PDFont font, String text, float startX, float startY, float width, String align,
+			int initialFontSize) throws IOException {
+		try {
+			// 現在の状態を保存
+			contentStream.saveGraphicsState();
+
+			// 90度回転させるための変換を適用
+			contentStream.transform(Matrix.getRotateInstance(Math.PI / 2, startX, startY));
+
+			// 元のメソッドを呼び出してテキストを書き込む
+			writeText(font, text, startX, startY, width, align, initialFontSize);
+
+			// 保存した状態に戻す
+			contentStream.restoreGraphicsState();
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			throw new RuntimeException("Failed to write rotated text.");
+		}
+	}
+
+	// カレンダーへの描画用メソッド
 	public void writeSymbolsOnCalendar(PDFont font, Map<Integer, String> daySymbolMap, float startX, float startY,
 			float dayWidth, float dayHeight, int fontSize) throws IOException {
 		try {
@@ -155,5 +176,9 @@ public class EditPDF {
 
 	public PDDocument getDocument() {
 		return document;
+	}
+
+	public PDPage getPage() {
+		return document.getPage(0);
 	}
 }

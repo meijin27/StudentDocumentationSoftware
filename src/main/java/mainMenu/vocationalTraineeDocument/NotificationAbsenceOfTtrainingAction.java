@@ -1,10 +1,13 @@
 package mainMenu.vocationalTraineeDocument;
 
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,97 +48,152 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 		// 入力された値を変数に格納
 		String subjectYear = request.getParameter("subjectYear");
 		String subjectMonth = request.getParameter("subjectMonth");
-		String restedDayStart1 = request.getParameter("restedDayStart1");
-		String restedDayEnd1 = request.getParameter("restedDayEnd1");
-		String reason1 = request.getParameter("reason1");
-		String allDayOff1 = request.getParameter("allDayOff1");
-		String deadTime1 = request.getParameter("deadTime1");
-		String latenessTime1 = request.getParameter("latenessTime1");
-		String leaveEarlyTime1 = request.getParameter("leaveEarlyTime1");
-		String AttachmentOfCertificate1 = request.getParameter("AttachmentOfCertificate1");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("subjectYear", subjectYear);
-		request.setAttribute("subjectMonth", subjectMonth);
-		request.setAttribute("restedDayStart1", restedDayStart1);
-		request.setAttribute("restedDayEnd1", restedDayEnd1);
-		request.setAttribute("reason1", reason1);
-		request.setAttribute("allDayOff1", allDayOff1);
-		request.setAttribute("deadTime1", deadTime1);
-		request.setAttribute("latenessTime1", latenessTime1);
-		request.setAttribute("leaveEarlyTime1", leaveEarlyTime1);
-		request.setAttribute("AttachmentOfCertificate1", AttachmentOfCertificate1);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			System.out.println(paramName + ":" + paramValue);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (subjectYear == null || subjectMonth == null
-				|| AttachmentOfCertificate1 == null || restedDayStart1 == null
-				|| restedDayEnd1 == null || reason1 == null || allDayOff1 == null
-				|| subjectYear.isEmpty() || subjectMonth.isEmpty()
-				|| AttachmentOfCertificate1.isEmpty()
-				|| restedDayStart1.isEmpty() || restedDayEnd1.isEmpty()
-				|| reason1.isEmpty()
-				|| allDayOff1.isEmpty()) {
+				|| subjectYear.isEmpty() || subjectMonth.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "notification-absence-of-training.jsp";
 		}
 
-		// 休業時限数を適切に選択していない場合、エラーを返す
-		if (allDayOff1.equals("はい") && (deadTime1 == null || deadTime1.isEmpty())) {
-			request.setAttribute("nullError", "欠席期間時限数を入力してください。");
-			return "notification-absence-of-training.jsp";
+		// 入力値の数が不明なため、自動計算される値はMAPに格納する
+		Map<String, String> parameters = new HashMap<>();
 
-		} else if (allDayOff1.equals("いいえ") && ((latenessTime1 == null || latenessTime1.isEmpty())
-				&& (leaveEarlyTime1 == null || leaveEarlyTime1.isEmpty()))) {
-			request.setAttribute("nullError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
-			return "notification-absence-of-training.jsp";
+		// 作成する行数のカウント
+		int count = 0;
+
+		// 累計時限（欠席・遅刻・早退した時限数の合計）
+		int totalHours = 0;
+
+		// 作成する行ごとにデータを取り出す
+		for (int i = 1; i <= 10; i++) {
+
+			// 末尾に添付する番号のString
+			String num = String.valueOf(i);
+
+			// 入力された値を変数に格納
+			String restedDayStart = request.getParameter("restedDayStart" + num);
+			String restedDayEnd = request.getParameter("restedDayEnd" + num);
+			String reason = request.getParameter("reason" + num);
+			String allDayOff = request.getParameter("allDayOff" + num);
+			String deadTime = request.getParameter("deadTime" + num);
+			String latenessTime = request.getParameter("latenessTime" + num);
+			String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
+			String AttachmentOfCertificate = request.getParameter("AttachmentOfCertificate" + num);
+
+			// 未入力項目があればエラーを返す
+			if (AttachmentOfCertificate == null || restedDayStart == null
+					|| restedDayEnd == null || reason == null || allDayOff == null
+					|| AttachmentOfCertificate.isEmpty()
+					|| restedDayStart.isEmpty() || restedDayEnd.isEmpty()
+					|| reason.isEmpty()
+					|| allDayOff.isEmpty()) {
+				// 最初の行(1行目)が空ならばエラーを返す
+				if (i == 1) {
+					request.setAttribute("nullError", "未入力項目があります。");
+					return "notification-absence-of-training.jsp";
+				} else {
+					break;
+				}
+			}
+
+			// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
+			if (allDayOff.equals("はい") && (deadTime == null || deadTime.isEmpty())) {
+				request.setAttribute("nullError", "欠席期間時限数を入力してください。");
+			} else if (allDayOff.equals("いいえ") && ((latenessTime == null || latenessTime.isEmpty())
+					&& (leaveEarlyTime == null || leaveEarlyTime.isEmpty()))) {
+				request.setAttribute("nullError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
+				// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
+			} else if (allDayOff.equals("いいえ") && !restedDayStart.equals(restedDayEnd)) {
+				request.setAttribute("nullError", "複数の日付をまたぐ場合は終日休業になります。");
+				// 終日休業が「はい」ならば欠席時限数を累計時限に追加する
+			} else if (allDayOff.equals("はい")) {
+				totalHours += Integer.parseInt(deadTime);
+				// 終日休業が「いいえ」ならば遅刻時限及び早退時限の入力されている値を累計時限に追加する
+			} else if (allDayOff.equals("いいえ")) {
+				// 遅刻時限数が入力されていた場合
+				if (latenessTime != null && !latenessTime.isEmpty()) {
+					totalHours += Integer.parseInt(latenessTime);
+				}
+				// 早退時限数が入力されていた場合
+				if (leaveEarlyTime != null && !leaveEarlyTime.isEmpty()) {
+					totalHours += Integer.parseInt(leaveEarlyTime);
+				}
+			}
+
+			// 年月日が存在しない日付の場合はエラーにする
+			try {
+				int checkYear = Integer.parseInt(subjectYear) + 2018;
+				int checkMonth = Integer.parseInt(subjectMonth);
+
+				int checkStartDay = Integer.parseInt(restedDayStart);
+				int checkEndDay = Integer.parseInt(restedDayEnd);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkStartDay);
+				date = LocalDate.of(checkYear, checkMonth, checkEndDay);
+			} catch (DateTimeException e) {
+				request.setAttribute("dayError", "存在しない日付です。");
+			}
+
+			// 休業開始日が休業終了日よりも前かどうかをチェックする
+			int checkStartDay = Integer.parseInt(restedDayStart);
+			int checkEndDay = Integer.parseInt(restedDayEnd);
+			// 日付が整合とれるか確認する
+			if (checkStartDay > checkEndDay) {
+				request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
+			}
+
+			// 文字数が22文字より多い場合はエラーを返す
+			if (reason.length() > 22) {
+				request.setAttribute("valueLongError", "22文字以下で入力してください。");
+			}
+
+			// エラーが発生している場合は元のページに戻す
+			if (request.getAttribute("nullError") != null || request.getAttribute("logicalError") != null
+					|| request.getAttribute("dayError") != null
+					|| request.getAttribute("valueLongError") != null) {
+				return "notification-absence-of-training.jsp";
+			}
+
+			// 日付フォーマットの定義
+			String checkYear = String.valueOf(Integer.parseInt(subjectYear) + 2018);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+			// 文字列からLocalDateに変換
+			LocalDate startDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayStart, formatter);
+			LocalDate endDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayEnd, formatter);
+
+			// startDateおよびendDateの曜日を取得し、漢字一文字に変換
+			String startDayOfWeekKanji = convertToKanji(startDate.getDayOfWeek());
+			String endDayOfWeekKanji = convertToKanji(endDate.getDayOfWeek());
+
+			// 曜日をparametersのMAPに格納
+			parameters.put("startDayOfWeek" + num, startDayOfWeekKanji);
+			parameters.put("endDayOfWeek" + num, endDayOfWeekKanji);
+
+			// 間の日数を計算
+			String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
+			parameters.put("daysBetween" + num, daysBetween);
+
+			// 作成する行数カウントの追加
+			count++;
+
+			// 行ごとの累計時限をMAPに格納
+			parameters.put("totalHours" + num, String.valueOf(totalHours));
 		}
-
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			int checkYear = Integer.parseInt(subjectYear);
-			int checkMonth = Integer.parseInt(subjectMonth);
-
-			int checkStartDay = Integer.parseInt(restedDayStart1);
-			int checkEndDay = Integer.parseInt(restedDayEnd1);
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkStartDay);
-			date = LocalDate.of(checkYear, checkMonth, checkEndDay);
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
-		}
-
-		// 休業開始日が休業終了日よりも前かどうかをチェックする
-		int checkStartDay = Integer.parseInt(restedDayStart1);
-		int checkEndDay = Integer.parseInt(restedDayEnd1);
-		// 日付が整合とれるか確認する
-		if (checkStartDay > checkEndDay) {
-			request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
-		}
-
-		// 文字数が32文字より多い場合はエラーを返す
-		if (reason1.length() > 32) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
-		}
-
-		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
-			return "notification-absence-of-training.jsp";
-		}
-
-		// 日付フォーマットの定義
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
-		// 文字列からLocalDateに変換
-		LocalDate startDate = LocalDate.parse(restedDayStart1 + "-" + restedDayEnd1 + "-" + reason1, formatter);
-		LocalDate endDate = LocalDate.parse(allDayOff1 + "-" + deadTime1 + "-" + latenessTime1, formatter);
-		// 間の日数を計算
-		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
 
 		// リクエストのデータ全削除
 		Enumeration<String> attributeNames = request.getAttributeNames();
 		while (attributeNames.hasMoreElements()) {
 			String attributeName = attributeNames.nextElement();
-			System.out.println(attributeName);
 			request.removeAttribute(attributeName);
 		}
 
@@ -198,33 +256,101 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
+
+			// 出席番号のデータベースからの取り出し
+			String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
+			String encryptedAttendanceNumber = CipherUtil.commonDecrypt(reEncryptedAttendanceNumber);
+			String attendanceNumber = CipherUtil.decrypt(masterKey, iv, encryptedAttendanceNumber);
+
+			// 雇用保険のデータベースからの取り出し
+			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
+			String encryptedEmploymentInsurance = CipherUtil.commonDecrypt(reEncryptedEmploymentInsurance);
+			String employmentInsurance = CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance);
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/委託訓練欠席（遅刻・早退）届.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
+			// ページを90度回転
+			//			editor.getPage().setRotation(90);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-			editor.writeText(font, name, 198f, 643f, 75f, "center", 12);
-			editor.writeText(font, subjectYear, 357f, 643f, 95f, "center", 12);
-			editor.writeText(font, subjectMonth, 165f, 597f, 300f, "center", 12);
-			editor.writeText(font, restedDayStart1, 195f, 550f, 40f, "left", 12);
-			editor.writeText(font, restedDayEnd1, 263f, 550f, 40f, "left", 12);
-			editor.writeText(font, reason1, 310f, 550f, 40f, "left", 12);
-			editor.writeText(font, allDayOff1, 195f, 513f, 40f, "left", 12);
-			editor.writeText(font, deadTime1, 262f, 513f, 40f, "left", 12);
-			editor.writeText(font, latenessTime1, 310f, 513f, 40f, "left", 12);
-			editor.writeText(font, daysBetween, 380f, 513f, 40f, "left", 12);
-			editor.writeText(font, namePESO, 322f, 309f, 50f, "center", 12);
-			editor.writeText(font, leaveEarlyTime1, 145f, 249f, 40f, "left", 12);
-			editor.writeText(font, AttachmentOfCertificate1, 194f, 249f, 40f, "left", 12);
-			editor.writeText(font, className, 145f, 220f, 110f, "center", 12);
-			editor.writeText(font, name, 382f, 218f, 105f, "center", 12);
+
+			editor.writeText(font, className, 82f, 469f, 140f, "center", 12);
+			editor.writeText(font, attendanceNumber, 305, 469f, 75f, "center", 12);
+			editor.writeText(font, name, 460f, 469f, 145f, "center", 12);
+			if (employmentInsurance.equals("有")) {
+				editor.writeText(font, "〇", 731f, 467f, 75f, "left", 18);
+			} else {
+				editor.writeText(font, "〇", 761f, 467f, 75f, "left", 18);
+			}
+			editor.writeText(font, "令和" + subjectYear, 55f, 442f, 95f, "left", 12);
+			editor.writeText(font, subjectMonth, 115f, 442f, 40f, "left", 12);
+
+			float row = 0;
+			for (int i = 1; i <= count; i++) {
+				// 末尾に添付する番号のString
+				String num = String.valueOf(i);
+
+				// 入力された値を変数に格納
+				String restedDayStart = request.getParameter("restedDayStart" + num);
+				String restedDayEnd = request.getParameter("restedDayEnd" + num);
+				String reason = request.getParameter("reason" + num);
+				String allDayOff = request.getParameter("allDayOff" + num);
+				String deadTime = request.getParameter("deadTime" + num);
+				String latenessTime = request.getParameter("latenessTime" + num);
+				String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
+				String AttachmentOfCertificate = request.getParameter("AttachmentOfCertificate" + num);
+
+				editor.writeText(font, subjectMonth, 44f, 386f - row, 40f, "left", 12);
+
+				editor.writeText(font, restedDayStart, 73f, 386f - row, 40f, "left", 12);
+				editor.writeText(font, parameters.get("startDayOfWeek" + num), 112f, 386f - row, 40f, "left", 12);
+
+				// 休業日が複数にまたがる場合のみ下段を表示する
+				if (!restedDayStart.equals(restedDayEnd)) {
+					editor.writeText(font, subjectMonth, 44f, 370f - row, 40f, "left", 12);
+					editor.writeText(font, restedDayEnd, 73f, 370f - row, 40f, "left", 12);
+					editor.writeText(font, parameters.get("endDayOfWeek" + num), 112f, 370f - row, 40f, "left", 12);
+				}
+
+				// 休業理由の文字数によって表示する位置を変える
+				if (reason.length() < 12) {
+					editor.writeText(font, reason, 165f, 378f - row, 138f, "center", 12);
+				} else {
+					editor.writeText(font, reason.substring(0, 11), 165f, 386f - row, 138f, "left", 12);
+					editor.writeText(font, reason.substring(11, reason.length()), 165f, 370f - row, 138f, "left", 12);
+				}
+
+				// 休業が終日の場合は欠席日数とその下の時限を表示する。
+				if (allDayOff.equals("はい")) {
+					editor.writeText(font, parameters.get("daysBetween" + num), 330f, 386f - row, 40f, "left", 12);
+					editor.writeText(font, deadTime, 330f, 370f - row, 40f, "left", 12);
+					// 休業が終日でない場合は遅刻時限か早退時限を表示する。
+				} else {
+					// 遅刻時限数が入力されていた場合
+					if (latenessTime != null && !latenessTime.isEmpty()) {
+						editor.writeText(font, latenessTime, 384f, 378f - row, 70f, "center", 12);
+					}
+					// 早退時限数が入力されていた場合
+					if (leaveEarlyTime != null && !leaveEarlyTime.isEmpty()) {
+						editor.writeText(font, leaveEarlyTime, 459f, 378f - row, 70f, "center", 12);
+					}
+				}
+
+				editor.writeText(font, parameters.get("totalHours" + num), 535f, 378f - row, 70f, "center", 12);
+
+				// 雇用保険の有無に応じて〇の位置を変える
+				if (AttachmentOfCertificate.equals("有")) {
+					editor.writeText(font, "〇", 737f, 384f - row, 40f, "left", 16);
+				} else {
+					editor.writeText(font, "〇", 755f, 384f - row, 40f, "left", 16);
+				}
+				row += 33;
+			}
 
 			// Close and save
 			editor.close("委託訓練欠席（遅刻・早退）届.pdf");
@@ -237,6 +363,28 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "notification-absence-of-training.jsp";
+		}
+	}
+
+	// 曜日を漢字一文字に変換するヘルパーメソッド
+	private static String convertToKanji(DayOfWeek dayOfWeek) {
+		switch (dayOfWeek) {
+		case MONDAY:
+			return "月";
+		case TUESDAY:
+			return "火";
+		case WEDNESDAY:
+			return "水";
+		case THURSDAY:
+			return "木";
+		case FRIDAY:
+			return "金";
+		case SATURDAY:
+			return "土";
+		case SUNDAY:
+			return "日";
+		default:
+			throw new IllegalArgumentException("Unexpected day of the week: " + dayOfWeek);
 		}
 	}
 }

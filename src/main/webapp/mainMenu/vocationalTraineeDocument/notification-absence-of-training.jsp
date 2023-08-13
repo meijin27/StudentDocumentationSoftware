@@ -16,10 +16,10 @@
                 <span class="text-danger">*</span>
                 <select name="subjectYear" class="form-control select-center" required>
                     <option value="">-- 年 --</option>
-                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 1; i <= currentYear;
+                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear-2018;
                         i++){ %>
                         <option value="<%= i %>">
-                            <%= i %>年
+                            	令和<%= i %>年（<%= i+2018 %>年）
                         </option>
                     <% } %>
                 </select>
@@ -44,7 +44,7 @@
 		       <div class="col-md-3 mb-5">
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
 		            <span class="text-danger">*</span>
- 		            <select name="restedDayStart<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %>>
+ 		            <select name="restedDayStart<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
 		                <option value="">-- 日 --</option>
 		                <% for(int i = 1; i <= 31; i++){ %>
 		                    <option value="<%= i %>">
@@ -57,7 +57,7 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="restedDayEnd<%= set %>">休業終了日</label>
 	                <span class="text-danger">*</span>
-	                <select name="restedDayEnd<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %>>
+	                <select name="restedDayEnd<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -68,9 +68,9 @@
 	            </div>	         
 	  	            <!-- 理由 -->
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="">理由</label>
+	                <label class="form-label" for="">理由（22文字以下）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" value="${reason}" <%= (set == 1) ? "required" : "" %>>
+	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" value="${reason}" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>
 	            <!-- 終日休業有無 -->
 				<div class="col-md-12 mb-5">
@@ -79,14 +79,14 @@
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">
 				            <input class="form-check-input" type="radio" name="allDayOff<%= set %>" id="allDayOffYes<%= set %>" value="はい" 
-				                   <% if ("はい".equals(request.getParameter("allDayOff" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %>>
+				                   <% if ("はい".equals(request.getParameter("allDayOff" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
 				            <label class="form-check-label" for="allDayOffYes<%= set %>">
 				                はい
 				            </label>
 				        </div>
 				        <div class="form-check"> 
 				            <input class="form-check-input" type="radio" name="allDayOff<%= set %>" id="allDayOffNo<%= set %>" value="いいえ" 
-				                   <% if ("いいえ".equals(request.getParameter("allDayOff" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %>>
+				                   <% if ("いいえ".equals(request.getParameter("allDayOff" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
 				            <label class="form-check-label" for="allDayOffNo<%= set %>">
 				                いいえ
 				            </label>
@@ -94,7 +94,8 @@
 				    </div>
 				</div>
 				<p>終日休んだ場合は欠席期間時限数を入力してください</p>
-				<p>終日休んでない場合は遅刻時限数か早退時限数を入力してください</p>
+				<p>終日休んでいない場合は遅刻時限数か早退時限数を入力してください</p>
+				<p>朝と帰りは出席し、途中の授業のみ欠席する場合は早退欄に入力してください</p>
 	            <!-- 欠席期間時限数 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="deadTime<%= set %>">欠席期間時限数</label>
@@ -133,19 +134,19 @@
 	            </div>
 	            <!-- 証明添付有無 -->
 				<div class="col-md-12 mb-3">
-				    <label class="form-label">証明添付有無</label>
+				    <label class="form-label">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
 				    <span class="text-danger">*</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">
 				            <input class="form-check-input" type="radio" name="AttachmentOfCertificate<%= set %>" id="AttachmentOfCertificateYes<%= set %>" value="有" 
-				                   <% if ("有".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %>>
+				                   <% if ("有".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
 				            <label class="form-check-label" for="AttachmentOfCertificateYes<%= set %>">
 				                有
 				            </label>
 				        </div>
 				        <div class="form-check"> 
 				            <input class="form-check-input" type="radio" name="AttachmentOfCertificate<%= set %>" id="AttachmentOfCertificateNo<%= set %>" value="無" 
-				                   <% if ("無".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %>>
+				                   <% if ("無".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
 				            <label class="form-check-label" for="AttachmentOfCertificateNo<%= set %>">
 				                無
 				            </label>

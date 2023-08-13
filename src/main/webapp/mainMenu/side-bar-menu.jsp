@@ -47,12 +47,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                通学証明書
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 学割証
@@ -64,40 +58,10 @@
                                 推薦書発行願
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                推薦状発行願
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                アルバイト届
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                資格外活動届
-                            </a>
-                        </li>
                        <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 自転車通学許可願
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                受験、受講願
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
-                                <span data-feather="file-text" class="align-text-bottom"></span>
-                                追試験受験願
                             </a>
                         </li>
                         <li class="nav-item">
