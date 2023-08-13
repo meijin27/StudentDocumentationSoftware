@@ -54,7 +54,6 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 		while (parameterNames.hasMoreElements()) {
 			String paramName = parameterNames.nextElement();
 			String paramValue = request.getParameter(paramName);
-			System.out.println(paramName + ":" + paramValue);
 			request.setAttribute(paramName, paramValue);
 		}
 

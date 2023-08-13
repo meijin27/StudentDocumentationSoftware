@@ -1,10 +1,11 @@
 $(document).ready(function() {
 
-    $('#addSetBtn').click(function() {
+   $('#addSetBtn').click(function() {
         var nextSet = $(".additional-set.hidden").first();
 
         if (nextSet.length) {
             nextSet.removeClass('hidden');
+      	    // 元々requiredが設定されている入力フィールドにrequired属性を追加
             nextSet.find('select[data-required="true"], input[data-required="true"]').attr('required', true);
         }
 
@@ -12,27 +13,24 @@ $(document).ready(function() {
             $('#addSetBtn').hide();
         }
         renumberSets();
-            		console.log("現在の行数: " + $(".set:not(.hidden)").length);
 
         // 追加ボタンの表示・非表示のロジックを実行
     	updateAddButtonVisibility();
 
     });
 
-    $(document).on('click', '.removeSetBtn', function() {
-        var currentSet = $(this).closest('.set');
-        currentSet.remove();
-
-        // Add button to show again
-        $('#addSetBtn').show();
-
-        renumberSets();
-            		console.log("現在の行数: " + $(".set:not(.hidden)").length);
-
-        // 追加ボタンの表示・非表示のロジックを実行
-    	updateAddButtonVisibility();
-
-    });
+	$(document).on('click', '.removeSetBtn', function() {
+	    var currentSet = $(this).closest('.set');
+	    currentSet.addClass('hidden'); // この行を変更: 非表示にするためにhiddenクラスを追加
+	
+	    // 入力フィールドのrequired属性を削除
+	    currentSet.find('select[data-required="true"], input[data-required="true"]').removeAttr('required');
+	
+	    renumberSets();
+	
+	    // 追加ボタンの表示・非表示のロジックを実行
+	    updateAddButtonVisibility();
+	});
 
 	function renumberSets() {
 	    $(".set:not(.hidden)").each(function(index, el) {
@@ -54,18 +52,19 @@ $(document).ready(function() {
 	            }
 	        });
 	        $(el).find('h3').text(newIndex + "行目");
-	        $(el).find('.removeSetBtn').text(newIndex + "行目の削除"); // この行を追加
+	        $(el).find('.removeSetBtn').text(newIndex + "行目の削除");
 	    });
 	}
 
+    // 追加ボタンの表示・非表示のロジック
 	function updateAddButtonVisibility() {
 	    var currentSetCount = $(".set:not(.hidden)").length;
 	    var maxSets = 10;
 	
 	    if (currentSetCount < maxSets) {
-	        $("#addSetBtn").show(); // 追加ボタンのIDを'addSetBtn'に統一
+	        $("#addSetBtn").show();
 	    } else {
-	        $("#addSetBtn").hide(); // 追加ボタンのIDを'addSetBtn'に統一
+	        $("#addSetBtn").hide();
 	    }
 	}
 
