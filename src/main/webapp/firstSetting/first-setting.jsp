@@ -9,13 +9,13 @@
 	        <div class="row">
 	            <!-- 姓 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">姓</label>
+	                <label class="form-label" for="lastName">姓</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}" required>
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">名</label>
+	                <label class="form-label" for="firstName">名</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
 	            </div>
@@ -59,31 +59,31 @@
 	            </div>
 	            <!-- 姓（ふりがな） -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">姓（ふりがな）</label>
+	                <label class="form-label" for="lastNameRuby">姓（ふりがな）</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">名（ふりがな）</label>
+	                <label class="form-label" for="firstNameRuby">名（ふりがな）</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
 	            </div>
 	            <!-- 電話番号 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">電話番号</label>
+	                <label class="form-label" for="tel">電話番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}" required>
 	            </div>
 	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">郵便番号</label>
+	                <label class="form-label" for="postCode">郵便番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}" required>
 	            </div>
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-3">
-	                <label class="form-label" for="">住所</label>
+	                <label class="form-label" for="address">住所</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="${address}" required>
 	            </div>
@@ -129,7 +129,7 @@
 
 	            <!-- 学生の種類 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">学生の種類</label>
+	                <label class="form-label" for="studentType">学生の種類</label>
 	                <span class="text-danger">*</span>
 	                <select name="studentType" class="form-control select-center" required>
 	                    <option value="">- 学生の種類 -</option>
@@ -140,13 +140,13 @@
 	            </div>
 	            <!-- 学籍番号 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">学籍番号</label>
+	                <label class="form-label" for="studentNumber">学籍番号</label>
 	                <span class="text-danger">*</span>
 	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
 	            </div>
 	            <!-- クラス名 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">クラス名</label>
+	                <label class="form-label" for="className">クラス名</label>
 	                <span class="text-danger">*</span>
 	                <select name="className" class="form-control select-center" required>
 	                    <option value="">-- クラス名 --</option>
@@ -161,7 +161,7 @@
 	            </div>
 	            <!-- 学年 -->
 	            <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">学年</label>
+	                <label class="form-label" for="schoolYear">学年</label>
 	                <span class="text-danger">*</span>
 	                <select name="schoolYear" class="form-control select-center" required>
 	                    <option value="">- 学年 -</option>
@@ -174,7 +174,7 @@
 	            </div>
 	            <!-- 組 -->
 		        <div class="col-md-3 mb-3">
-	                <label class="form-label" for="">組</label>
+	                <label class="form-label" for="classNumber">組</label>
 	                <span class="text-danger">*</span>
 	                <select name="classNumber" class="form-control select-center" required>
 	                    <option value="">-- 組 --</option>

@@ -271,13 +271,10 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
-			// ページを90度回転
-			//			editor.getPage().setRotation(90);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
-
 			editor.writeText(font, className, 85f, 469f, 135f, "center", 12);
 			editor.writeText(font, attendanceNumber, 305, 469f, 75f, "center", 12);
 			editor.writeText(font, name, 460f, 469f, 145f, "center", 12);

@@ -47,7 +47,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/student-discount-coupon.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/student-discount-coupon.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 学割証
                             </a>
