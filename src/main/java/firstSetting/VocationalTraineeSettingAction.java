@@ -46,7 +46,7 @@ public class VocationalTraineeSettingAction extends Action {
 			supplyNumber = "支給番号は雇用保険有の方のみに付与されます。";
 		}
 
-		// 入力された値をリクエストに格納
+		// 入力された値をリクエストに格納	
 		request.setAttribute("namePESO", namePESO);
 		request.setAttribute("supplyNumber", supplyNumber);
 		request.setAttribute("attendanceNumber", attendanceNumber);

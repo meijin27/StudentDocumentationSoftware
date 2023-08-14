@@ -278,7 +278,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 
 			// PDFへの記載
 
-			editor.writeText(font, className, 82f, 469f, 140f, "center", 12);
+			editor.writeText(font, className, 85f, 469f, 135f, "center", 12);
 			editor.writeText(font, attendanceNumber, 305, 469f, 75f, "center", 12);
 			editor.writeText(font, name, 460f, 469f, 145f, "center", 12);
 			if (employmentInsurance.equals("有")) {

@@ -1,5 +1,6 @@
 package mainMenu.changeSetting;
 
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,9 +40,12 @@ public class ChangeAddressTelAction extends Action {
 		String address = request.getParameter("address");
 
 		// 入力された値をリクエストに格納	
-		request.setAttribute("tel", tel);
-		request.setAttribute("postCode", postCode);
-		request.setAttribute("address", address);
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (tel == null || postCode == null || address == null || tel.isEmpty() || postCode.isEmpty()
@@ -70,10 +74,12 @@ public class ChangeAddressTelAction extends Action {
 			return "change-address-tel.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("tel");
-		request.removeAttribute("postCode");
-		request.removeAttribute("address");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベースとの接続用

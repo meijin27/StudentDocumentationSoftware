@@ -2,6 +2,7 @@ package mainMenu.changeSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -45,14 +46,13 @@ public class ChangeNameDateofBirthAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("lastName", lastName);
-		request.setAttribute("firstName", firstName);
-		request.setAttribute("lastNameRuby", lastNameRuby);
-		request.setAttribute("firstNameRuby", firstNameRuby);
-		request.setAttribute("birthYear", birthYear);
-		request.setAttribute("birthMonth", birthMonth);
-		request.setAttribute("birthDay", birthDay);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || birthYear == null
@@ -94,14 +94,12 @@ public class ChangeNameDateofBirthAction extends Action {
 			return "change-name-date-of-birth.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("lastName");
-		request.removeAttribute("firstName");
-		request.removeAttribute("lastNameRuby");
-		request.removeAttribute("firstNameRuby");
-		request.removeAttribute("birthYear");
-		request.removeAttribute("birthMonth");
-		request.removeAttribute("birthDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベースとの接続用

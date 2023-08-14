@@ -2,6 +2,7 @@ package mainMenu.vocationalTraineeDocument;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,17 +54,12 @@ public class NotificationOfChangeAction extends Action {
 		String requestDay = request.getParameter("requestDay");
 
 		// 入力された値をリクエストに格納	
-		request.setAttribute("changeYear", changeYear);
-		request.setAttribute("changeMonth", changeMonth);
-		request.setAttribute("changetDay", changetDay);
-		request.setAttribute("lastName", lastName);
-		request.setAttribute("firstName", firstName);
-		request.setAttribute("postCode", postCode);
-		request.setAttribute("address", address);
-		request.setAttribute("tel", tel);
-		request.setAttribute("requestYear", requestYear);
-		request.setAttribute("requestMonth", requestMonth);
-		request.setAttribute("requestDay", requestDay);
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 更新項目確認用変数
 		boolean changeName = false;
@@ -149,18 +145,12 @@ public class NotificationOfChangeAction extends Action {
 			return "notification-of-change.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("changeYear");
-		request.removeAttribute("changeMonth");
-		request.removeAttribute("changetDay");
-		request.removeAttribute("lastName");
-		request.removeAttribute("firstName");
-		request.removeAttribute("postCode");
-		request.removeAttribute("address");
-		request.removeAttribute("tel");
-		request.removeAttribute("requestYear");
-		request.removeAttribute("requestMonth");
-		request.removeAttribute("requestDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス

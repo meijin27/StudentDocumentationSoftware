@@ -1,5 +1,6 @@
 package mainMenu.changeSetting;
 
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,11 +40,13 @@ public class ChangeVocationalTraineeAction extends Action {
 		String attendanceNumber = request.getParameter("attendanceNumber");
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
-		// 入力された値をリクエストに格納
-		request.setAttribute("namePESO", namePESO);
-		request.setAttribute("supplyNumber", supplyNumber);
-		request.setAttribute("attendanceNumber", attendanceNumber);
-		request.setAttribute("employmentInsurance", employmentInsurance);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
 		if (namePESO == null
@@ -77,11 +80,12 @@ public class ChangeVocationalTraineeAction extends Action {
 			return "change-vocational-trainee.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("className");
-		request.removeAttribute("studentNumber");
-		request.removeAttribute("schoolYear");
-		request.removeAttribute("classNumber");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベースとの接続用

@@ -1,6 +1,7 @@
 package mainMenu.vocationalTraineeDocument;
 
 import java.time.YearMonth;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -47,11 +48,13 @@ public class CertificateVocationalTrainingAction extends Action {
 		String problems = request.getParameter("problems");
 		String income = request.getParameter("income");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("subjectYear", subjectYear);
-		request.setAttribute("subjectMonth", subjectMonth);
-		request.setAttribute("problems", problems);
-		request.setAttribute("income", income);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (subjectYear == null || subjectMonth == null || problems == null
@@ -78,11 +81,12 @@ public class CertificateVocationalTrainingAction extends Action {
 			}
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("subjectYear");
-		request.removeAttribute("subjectMonth");
-		request.removeAttribute("problems");
-		request.removeAttribute("income");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス
@@ -166,7 +170,7 @@ public class CertificateVocationalTrainingAction extends Action {
 			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
 			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);
 			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
-			editor.writeSymbolsOnCalendar(font, calendar, 408f, 447f, 21f, 21.5f, 20);
+			editor.writeSymbolsOnCalendar(font, calendar, 408f, 446f, 21f, 21.2f, 22);
 			if (problems.equals("した")) {
 				editor.writeText(font, "〇", 445f, 255f, 50f, "left", 16);
 			} else {

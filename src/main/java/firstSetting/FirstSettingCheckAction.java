@@ -1,5 +1,6 @@
 package firstSetting;
 
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,48 +56,24 @@ public class FirstSettingCheckAction extends Action {
 		String goBack = request.getParameter("goBack");
 
 		// 入力された値をリクエストに格納
-		request.setAttribute("lastName", lastName);
-		request.setAttribute("firstName", firstName);
-		request.setAttribute("lastNameRuby", lastNameRuby);
-		request.setAttribute("firstNameRuby", firstNameRuby);
-		request.setAttribute("tel", tel);
-		request.setAttribute("postCode", postCode);
-		request.setAttribute("address", address);
-		request.setAttribute("birthYear", birthYear);
-		request.setAttribute("birthMonth", birthMonth);
-		request.setAttribute("birthDay", birthDay);
-		request.setAttribute("admissionYear", admissionYear);
-		request.setAttribute("admissionMonth", admissionMonth);
-		request.setAttribute("admissionDay", admissionDay);
-		request.setAttribute("studentType", studentType);
-		request.setAttribute("className", className);
-		request.setAttribute("studentNumber", studentNumber);
-		request.setAttribute("schoolYear", schoolYear);
-		request.setAttribute("classNumber", classNumber);
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 「戻る」ボタンが押された場合は入力フォームへ戻る
 		if (goBack != null) {
 			return "first-setting.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("lastName");
-		request.removeAttribute("firstName");
-		request.removeAttribute("lastNameRuby");
-		request.removeAttribute("tel");
-		request.removeAttribute("postCode");
-		request.removeAttribute("address");
-		request.removeAttribute("birthYear");
-		request.removeAttribute("birthMonth");
-		request.removeAttribute("birthDay");
-		request.removeAttribute("admissionYear");
-		request.removeAttribute("admissionMonth");
-		request.removeAttribute("admissionDay");
-		request.removeAttribute("studentType");
-		request.removeAttribute("className");
-		request.removeAttribute("studentNumber");
-		request.removeAttribute("schoolYear");
-		request.removeAttribute("classNumber");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベースとの接続用

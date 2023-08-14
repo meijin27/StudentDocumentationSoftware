@@ -2,6 +2,7 @@ package mainMenu.vocationalTraineeDocument;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,18 +53,13 @@ public class InterviewCertificateAction extends Action {
 		String endForenoonOrMidday = request.getParameter("endForenoonOrMidday");
 		String endHour = request.getParameter("endHour");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("jobSearch", jobSearch);
-		request.setAttribute("startYear", startYear);
-		request.setAttribute("startMonth", startMonth);
-		request.setAttribute("startDay", startDay);
-		request.setAttribute("startForenoonOrMidday", startForenoonOrMidday);
-		request.setAttribute("startHour", startHour);
-		request.setAttribute("endYear", endYear);
-		request.setAttribute("endMonth", endMonth);
-		request.setAttribute("endDay", endDay);
-		request.setAttribute("endForenoonOrMidday", endForenoonOrMidday);
-		request.setAttribute("endHour", endHour);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (jobSearch == null || startYear == null || startMonth == null || startDay == null
@@ -136,18 +132,12 @@ public class InterviewCertificateAction extends Action {
 			return "interview-certificate.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("jobSearch");
-		request.removeAttribute("startYear");
-		request.removeAttribute("startMonth");
-		request.removeAttribute("startDay");
-		request.removeAttribute("startForenoonOrMidday");
-		request.removeAttribute("startHour");
-		request.removeAttribute("endYear");
-		request.removeAttribute("endMonth");
-		request.removeAttribute("endDay");
-		request.removeAttribute("endForenoonOrMidday");
-		request.removeAttribute("endHour");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス

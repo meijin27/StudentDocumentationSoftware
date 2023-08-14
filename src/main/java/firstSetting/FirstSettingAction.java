@@ -2,6 +2,7 @@ package firstSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,28 +65,16 @@ public class FirstSettingAction extends Action {
 		}
 
 		// 入力された値をリクエストに格納
-		request.setAttribute("lastName", lastName);
-		request.setAttribute("firstName", firstName);
-		request.setAttribute("lastNameRuby", lastNameRuby);
-		request.setAttribute("firstNameRuby", firstNameRuby);
-		request.setAttribute("tel", tel);
-		request.setAttribute("postCode", postCode);
-		request.setAttribute("address", address);
-		request.setAttribute("birthYear", birthYear);
-		request.setAttribute("birthMonth", birthMonth);
-		request.setAttribute("birthDay", birthDay);
-		request.setAttribute("admissionYear", admissionYear);
-		request.setAttribute("admissionMonth", admissionMonth);
-		request.setAttribute("admissionDay", admissionDay);
-		request.setAttribute("studentType", studentType);
-		request.setAttribute("className", className);
-		request.setAttribute("studentNumber", studentNumber);
-		request.setAttribute("schoolYear", schoolYear);
-		request.setAttribute("classNumber", classNumber);
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
 		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
-		if (pattern.matcher(lastNameRuby).matches() || pattern.matcher(firstNameRuby).matches()) {
+		if (!pattern.matcher(lastNameRuby).matches() || !pattern.matcher(firstNameRuby).matches()) {
 			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
 		}
 

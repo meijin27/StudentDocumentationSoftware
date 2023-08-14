@@ -1,5 +1,6 @@
 package firstSetting;
 
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,15 +41,24 @@ public class VocationalTraineeSettingCheckAction extends Action {
 		String employmentInsurance = request.getParameter("employmentInsurance");
 		String goBack = request.getParameter("goBack");
 
-		// 入力された値をリクエストに格納
-		request.setAttribute("namePESO", namePESO);
-		request.setAttribute("supplyNumber", supplyNumber);
-		request.setAttribute("attendanceNumber", attendanceNumber);
-		request.setAttribute("employmentInsurance", employmentInsurance);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 「戻る」ボタンが押された場合は入力フォームへ戻る
 		if (goBack != null) {
 			return "vocational-trainee-setting.jsp";
+		}
+
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
 		}
 
 		try {

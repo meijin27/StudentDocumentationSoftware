@@ -1,4 +1,4 @@
-package mainMenu.vocationalTraineeDocument;
+package mainMenu.generalStudent;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

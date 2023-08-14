@@ -85,14 +85,31 @@
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                    <span>職業訓練用書類</span>
-                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse4"
-                        aria-expanded="false" aria-controls="collapse4">
+                    <span>留学生用書類</span>
+                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>
                     </a>
                 </h6>
-                <div id="collapse4" class="collapse">
+                <div id="collapse2" class="collapse">
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/rules/terms-of-use.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/rules/terms-of-use.jsp">
+                                    <span data-feather="book-open" class="align-text-bottom"></span>
+                                    在留期間更新許可申請書
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                    <span>職業訓練用書類</span>
+                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse3"
+                        aria-expanded="false" aria-controls="collapse3">
+                        <span class="expand-icon" data-feather="plus-circle"></span>
+                        <span class="collapse-icon d-none" data-feather="minus-circle"></span>
+                    </a>
+                </h6>
+                <div id="collapse3" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/vocationalTraineeDocument/certificate-vocational-training.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/vocationalTraineeDocument/certificate-vocational-training.jsp">
@@ -158,12 +175,12 @@
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
                     <span>各種設定</span>
-                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>
                     </a>
                 </h6>
-                <div id="collapse5" class="collapse">
+                <div id="collapse4" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/changeSetting/change-password.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/changeSetting/change-password.jsp">
@@ -211,12 +228,12 @@
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
                     <span>規約類</span>
-                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                    <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>
                     </a>
                 </h6>
-                <div id="collapse6" class="collapse">
+                <div id="collapse5" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/rules/terms-of-use.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/rules/terms-of-use.jsp">

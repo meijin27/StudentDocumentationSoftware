@@ -2,6 +2,7 @@ package mainMenu.vocationalTraineeDocument;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,15 +50,13 @@ public class CertificateIssuanceAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("reason", reason);
-		request.setAttribute("propose", propose);
-		request.setAttribute("proofOfStudent", proofOfStudent);
-		request.setAttribute("certificateOfCompletion", certificateOfCompletion);
-		request.setAttribute("certificateOfExpectedCompletion", certificateOfExpectedCompletion);
-		request.setAttribute("requestYear", requestYear);
-		request.setAttribute("requestMonth", requestMonth);
-		request.setAttribute("requestDay", requestDay);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (reason == null || propose == null || requestYear == null
@@ -98,15 +97,12 @@ public class CertificateIssuanceAction extends Action {
 			return "certificate-issuance.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("reason");
-		request.removeAttribute("propose");
-		request.removeAttribute("proofOfStudent");
-		request.removeAttribute("certificateOfCompletion");
-		request.removeAttribute("certificateOfExpectedCompletion");
-		request.removeAttribute("requestYear");
-		request.removeAttribute("requestMonth");
-		request.removeAttribute("requestDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス

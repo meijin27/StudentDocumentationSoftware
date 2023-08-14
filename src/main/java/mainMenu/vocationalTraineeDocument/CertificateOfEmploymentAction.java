@@ -1,5 +1,6 @@
 package mainMenu.vocationalTraineeDocument;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -58,9 +59,13 @@ public class CertificateOfEmploymentAction extends Action {
 		String firstMonth = request.getParameter("firstMonth");
 		String secondMonth = request.getParameter("secondMonth");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("firstMonth", firstMonth);
-		request.setAttribute("secondMonth", secondMonth);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (firstMonth == null || firstMonth.isEmpty()) {
@@ -107,9 +112,12 @@ public class CertificateOfEmploymentAction extends Action {
 			}
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("firstMonth");
-		request.removeAttribute("secondMonth");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス

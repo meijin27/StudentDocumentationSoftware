@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,18 +55,13 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納		
-		request.setAttribute("disease", disease);
-		request.setAttribute("reason", reason);
-		request.setAttribute("startYear", startYear);
-		request.setAttribute("startMonth", startMonth);
-		request.setAttribute("startDay", startDay);
-		request.setAttribute("endYear", endYear);
-		request.setAttribute("endMonth", endMonth);
-		request.setAttribute("endDay", endDay);
-		request.setAttribute("requestYear", requestYear);
-		request.setAttribute("requestMonth", requestMonth);
-		request.setAttribute("requestDay", requestDay);
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (disease == null || reason == null || requestYear == null
@@ -144,18 +140,12 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 		// 間の日数を計算
 		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
 
-		// リクエストのデータ削除
-		request.removeAttribute("disease");
-		request.removeAttribute("reason");
-		request.removeAttribute("startYear");
-		request.removeAttribute("startMonth");
-		request.removeAttribute("startDay");
-		request.removeAttribute("endYear");
-		request.removeAttribute("endMonth");
-		request.removeAttribute("endDay");
-		request.removeAttribute("requestYear");
-		request.removeAttribute("requestMonth");
-		request.removeAttribute("requestDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベース操作用クラス

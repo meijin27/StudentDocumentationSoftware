@@ -2,6 +2,7 @@ package mainMenu.changeSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,14 +47,12 @@ public class ChangeStudentInfoAction extends Action {
 		String admissionDay = request.getParameter("admissionDay");
 
 		// 入力された値をリクエストに格納	
-		request.setAttribute("studentType", studentType);
-		request.setAttribute("className", className);
-		request.setAttribute("studentNumber", studentNumber);
-		request.setAttribute("schoolYear", schoolYear);
-		request.setAttribute("classNumber", classNumber);
-		request.setAttribute("admissionYear", admissionYear);
-		request.setAttribute("admissionMonth", admissionMonth);
-		request.setAttribute("admissionDay", admissionDay);
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
 
 		// 未入力項目があればエラーを返す
 		if (studentType == null || className == null || studentNumber == null || schoolYear == null
@@ -90,15 +89,12 @@ public class ChangeStudentInfoAction extends Action {
 			return "change-student-info.jsp";
 		}
 
-		// リクエストのデータ削除
-		request.removeAttribute("studentType");
-		request.removeAttribute("className");
-		request.removeAttribute("studentNumber");
-		request.removeAttribute("schoolYear");
-		request.removeAttribute("classNumber");
-		request.removeAttribute("admissionYear");
-		request.removeAttribute("admissionMonth");
-		request.removeAttribute("admissionDay");
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
 
 		try {
 			// データベースとの接続用
