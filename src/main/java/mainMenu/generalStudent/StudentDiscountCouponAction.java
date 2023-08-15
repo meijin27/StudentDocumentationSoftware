@@ -262,6 +262,7 @@ public class StudentDiscountCouponAction extends Action {
 				String intendedUse = request.getParameter("intendedUse" + num);
 				String reason = request.getParameter("reason" + num);
 
+				// PDFへの記入
 				editor.writeText(font, requestYear, 173f, 666f - row, 40f, "left", 12);
 				editor.writeText(font, requestMonth, 230f, 666f - row, 40f, "left", 12);
 				editor.writeText(font, requestDay, 275f, 666f - row, 40f, "left", 12);

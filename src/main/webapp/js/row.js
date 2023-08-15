@@ -49,9 +49,10 @@ window.initializeFormSets = function(customOptions) {
 	updateAddButtonVisibility(options); 
 	console.log(options);
     $('#addSetBtn').click(function() {
-    var nextSet = $(".additional-set.hidden").first();
+    var nextSet = $(".additional-set.hidden").last();
 
     if (nextSet.length) {
+
         nextSet.removeClass('hidden');
   	    // 元々requiredが設定されている入力フィールドにrequired属性を追加
         nextSet.find('select[data-required="true"], input[data-required="true"]').attr('required', true);
@@ -68,10 +69,10 @@ window.initializeFormSets = function(customOptions) {
 	
 	$(document).on('click', '.removeSetBtn', function() {
 	    var currentSet = $(this).closest('.set');
-	    currentSet.addClass('hidden'); // この行を変更: 非表示にするためにhiddenクラスを追加
-	
-	    // このセットの入力内容をクリアする
-	    currentSet.find('input, select').val('');
+	    currentSet.addClass('hidden'); // 非表示にするためにhiddenクラスを追加
+
+		// 入力内容をクリアする（ラジオボタンは除外しないと常にラジオボタンの値を削除するようになる）
+		currentSet.find('input:not(:radio), select').val('');
 
 	    // 入力フィールドのrequired属性を削除
 	    currentSet.find('select[data-required="true"], input[data-required="true"]').removeAttr('required');
@@ -83,7 +84,7 @@ window.initializeFormSets = function(customOptions) {
 	    renumberSets(options);
 	
 	    // 追加ボタンの表示・非表示のロジックを実行
-            updateAddButtonVisibility(options);
+        updateAddButtonVisibility(options);
 	});
 }
 
