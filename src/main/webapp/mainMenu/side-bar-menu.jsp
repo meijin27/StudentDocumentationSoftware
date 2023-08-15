@@ -53,7 +53,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/recommended-delivery.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/recommended-delivery.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 推薦書発行願
                             </a>

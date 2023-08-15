@@ -68,14 +68,14 @@
 					<div class="d-flex align-items-center justify-content-center">
 				    <div class="form-check form-check-inline mr-lg-5">
 				        <input class="form-check-input" type="radio" name="problems" id="problemsYes" value="した" 
-				               <% if ("した".equals(session.getAttribute("problems"))) { %> checked <% } %> required>
+				               <% if ("した".equals(request.getParameter("problems"))) { %> checked <% } %> required>
 				        <label class="form-check-label" for="problemsYes">
 				            した
 				        </label>
 				    </div>
 				    <div class="form-check form-check-inline ml-lg-5">
 				        <input class="form-check-input" type="radio" name="problems" id="problemsNo" value="しない"
-				               <% if ("しない".equals(session.getAttribute("problems")) || session.getAttribute("problems") == null) { %> checked <% } %> required>
+				               <% if ("しない".equals(request.getParameter("problems")) || request.getParameter("problems") == null) { %> checked <% } %> required>
 				        <label class="form-check-label" for="problemsNo">
 				            しない
 				        </label>
@@ -89,14 +89,14 @@
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
 				            <input class="form-check-input" type="radio" name="income" id="incomeYes" value="得た" 
-				                   <% if ("得た".equals(session.getAttribute("income"))) { %> checked <% } %> required>
+				                   <% if ("得た".equals(request.getParameter("income"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="incomeYes">
 				                得た
 				            </label>
 				        </div>
 				        <div class="form-check form-check-inline ml-lg-5">
 				            <input class="form-check-input" type="radio" name="income" id="incomeNo" value="得ない"
-				                   <% if ("得ない".equals(session.getAttribute("income")) || session.getAttribute("income") == null) { %> checked <% } %> required>
+				                   <% if ("得ない".equals(request.getParameter("income")) || request.getParameter("income") == null) { %> checked <% } %> required>
 				            <label class="form-check-label" for="incomeNo">
 				                得ない
 				            </label>

@@ -121,7 +121,7 @@ public class InterviewCertificateAction extends Action {
 			}
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
+		// 文字数が32文字より多い場合はエラーを返す
 		if (jobSearch.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
