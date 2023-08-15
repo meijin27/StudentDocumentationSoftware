@@ -21,8 +21,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class RecommendedDeliveryAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(RecommendedDeliveryAction.class);
+public class PermissionBikeAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(PermissionBikeAction.class);
 
 	@Override
 	public String execute(
@@ -44,13 +44,17 @@ public class RecommendedDeliveryAction extends Action {
 		String requestYear = request.getParameter("requestYear");
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
-		String propose = request.getParameter("propose");
-		String subject = request.getParameter("subject");
-		String reason = request.getParameter("reason");
-		String deadlineYear = request.getParameter("deadlineYear");
-		String deadlineMonth = request.getParameter("deadlineMonth");
-		String deadlineDay = request.getParameter("deadlineDay");
-		String nominationForm = request.getParameter("nominationForm");
+		String patron = request.getParameter("patron");
+		String patronTel = request.getParameter("patronTel");
+		String classification = request.getParameter("classification");
+		String startYear = request.getParameter("startYear");
+		String startMonth = request.getParameter("startMonth");
+		String startDay = request.getParameter("startDay");
+		String endYear = request.getParameter("endYear");
+		String endMonth = request.getParameter("endMonth");
+		String endDay = request.getParameter("endDay");
+		String registrationNumber = request.getParameter("registrationNumber");
+		String modelAndColor = request.getParameter("modelAndColor");
 
 		// 入力された値をリクエストに格納	
 		Enumeration<String> parameterNames = request.getParameterNames();
@@ -62,14 +66,20 @@ public class RecommendedDeliveryAction extends Action {
 
 		// 未入力項目があればエラーを返す
 		if (requestYear == null || requestMonth == null || requestDay == null
-				|| propose == null || subject == null
-				|| deadlineYear == null || deadlineMonth == null || deadlineDay == null || nominationForm == null
+				|| patron == null || patronTel == null
+				|| startYear == null || startMonth == null || startDay == null || classification == null
+				|| endYear == null || endMonth == null || endDay == null || registrationNumber == null
+				|| modelAndColor == null
 				|| requestYear.isEmpty() || requestMonth.isEmpty()
 				|| requestDay.isEmpty()
-				|| propose.isEmpty() || subject.isEmpty() || deadlineYear.isEmpty() || deadlineMonth.isEmpty()
-				|| deadlineDay.isEmpty() || nominationForm.isEmpty()) {
+				|| patron.isEmpty() || patronTel.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
+				|| startDay.isEmpty() || classification.isEmpty()
+				|| endYear.isEmpty() || endMonth.isEmpty()
+				|| endDay.isEmpty() || registrationNumber.isEmpty() || modelAndColor.isEmpty()
+
+		) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "recommended-delivery.jsp";
+			return "permission-bike.jsp";
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
@@ -81,37 +91,42 @@ public class RecommendedDeliveryAction extends Action {
 			// 申請日の日付の妥当性チェック
 			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(deadlineYear) + 2018;
-			checkMonth = Integer.parseInt(deadlineMonth);
-			checkDay = Integer.parseInt(deadlineDay);
+			checkYear = Integer.parseInt(startYear) + 2018;
+			checkMonth = Integer.parseInt(startMonth);
+			checkDay = Integer.parseInt(startDay);
 			// 提出期限日の日付の妥当性チェック
-			LocalDate deadlineDate = LocalDate.of(checkYear, checkMonth, checkDay);
+			LocalDate startDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			// 申請日と提出期限日の比較
-			if (deadlineDate.isBefore(requestDate)) {
-				request.setAttribute("dayError", "提出期限は申請日より後の日付でなければなりません。");
+			checkYear = Integer.parseInt(endYear) + 2018;
+			checkMonth = Integer.parseInt(endMonth);
+			checkDay = Integer.parseInt(endDay);
+			// 提出期限日の日付の妥当性チェック
+			LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
+
+			// 申請日と申請期間の比較
+			if (startDate.isBefore(requestDate)) {
+				request.setAttribute("dayError", "申請期間開始日は申請日より後の日付でなければなりません。");
+			} else if (endDate.isBefore(startDate)) {
+				request.setAttribute("dayError", "申請期間開始日は申請期間終了日より前の日付でなければなりません。");
 			}
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 事由が「その他」の場合で理由が未記載の場合はエラーを返す
-		if (subject.equals("その他") && (reason == null || reason.isEmpty())) {
-			request.setAttribute("nullError", "事由が「その他」の場合は理由を入力してください。");
-			// 文字数が18文字より多い場合はエラーを返す
-		} else if (reason.length() > 18) {
-			request.setAttribute("valueLongError", "理由は18文字以下で入力してください。");
+		// 電話番号が半角10~11桁でなければエラーを返す
+		if (!patronTel.matches("^\\d{10,11}$")) {
+			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
-
 		// 文字数が32文字より多い場合はエラーを返す
-		if (propose.length() > 32) {
-			request.setAttribute("valueLongError", "提出先は32文字以下で入力してください。");
+		if (patron.length() > 32 || registrationNumber.length() > 32 || modelAndColor.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("dayError") != null
+		if (request.getAttribute("nullError") != null || request.getAttribute("telError") != null
+				|| request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null) {
-			return "recommended-delivery.jsp";
+			return "permission-bike.jsp";
 		}
 
 		// リクエストのデータ全削除
@@ -193,84 +208,89 @@ public class RecommendedDeliveryAction extends Action {
 			String reEncryptedStudentNumber = dao.getStudentNumber(id);
 			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
 			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
-			// 誕生年のデータベースからの取り出し
-			String reEncryptedBirthYear = dao.getBirthYear(id);
-			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
-			String birthYear = CipherUtil.decrypt(masterKey, iv, encryptedBirthYear);
-			// 誕生月のデータベースからの取り出し
-			String reEncryptedBirthMonth = dao.getBirthMonth(id);
-			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
-			String birthMonth = CipherUtil.decrypt(masterKey, iv, encryptedBirthMonth);
-			// 誕生日のデータベースからの取り出し
-			String reEncryptedBirthDay = dao.getBirthDay(id);
-			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
-			String birthDay = CipherUtil.decrypt(masterKey, iv, encryptedBirthDay);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/generalStudentPDF/推薦書交付願.pdf";
+			String pdfPath = "/pdf/generalStudentPDF/自転車等通学許可願.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
-			editor.writeText(font, requestYear, 415f, 735f, 70f, "left", 12);
-			editor.writeText(font, requestMonth, 455f, 735f, 70f, "left", 12);
-			editor.writeText(font, requestDay, 495f, 735f, 70f, "left", 12);
-			editor.writeText(font, className, 270f, 673f, 127f, "center", 12);
-			editor.writeText(font, studentNumber, 452f, 673f, 85f, "center", 12);
-			editor.writeText(font, name, 270f, 637f, 265f, "center", 12);
-			editor.writeText(font, birthYear, 323f, 606f, 230f, "left", 12);
-			editor.writeText(font, birthMonth, 378f, 606f, 230f, "left", 12);
-			editor.writeText(font, birthDay, 423f, 606f, 230f, "left", 12);
+			editor.writeText(font, requestYear, 430f, 733f, 70f, "left", 12);
+			editor.writeText(font, requestMonth, 470f, 733f, 70f, "left", 12);
+			editor.writeText(font, requestDay, 510f, 733f, 70f, "left", 12);
+			editor.writeText(font, className, 242f, 676f, 125f, "center", 12);
+			editor.writeText(font, studentNumber, 418f, 676f, 120f, "center", 12);
+			editor.writeText(font, name, 242f, 648f, 270f, "center", 12);
 
-			editor.writeText(font, FirstPostCode, 293f, 589f, 180f, "left", 10);
-			editor.writeText(font, LastPostCode, 335f, 589f, 180f, "left", 10);
+			editor.writeText(font, FirstPostCode, 262f, 622f, 180f, "left", 10);
+			editor.writeText(font, LastPostCode, 305f, 622f, 180f, "left", 10);
 
-			editor.writeText(font, firstTel, 330f, 534f, 40f, "left", 10);
-			editor.writeText(font, secondTel, 385f, 534f, 40f, "left", 10);
-			editor.writeText(font, lastTel, 440f, 534f, 40f, "left", 10);
+			editor.writeText(font, firstTel, 402f, 622f, 40f, "left", 10);
+			editor.writeText(font, secondTel, 447f, 622f, 40f, "left", 10);
+			editor.writeText(font, lastTel, 497f, 622f, 40f, "left", 10);
 
 			// 住所の文字数によって表示する位置を変える
-			if (address.length() < 23) {
-				editor.writeText(font, address, 270f, 560f, 267f, "left", 12);
+			if (address.length() < 25) {
+				editor.writeText(font, address, 242f, 603f, 295f, "left", 12);
 			} else {
-				editor.writeText(font, address.substring(0, 22), 270f, 570f, 267f, "left", 12);
-				editor.writeText(font, address.substring(22, address.length()), 270f, 550f, 267f, "left", 12);
+				editor.writeText(font, address.substring(0, 24), 242f, 610f, 295f, "left", 12);
+				editor.writeText(font, address.substring(24, address.length()), 242f, 595f, 295f, "left", 12);
 			}
 
-			editor.writeText(font, deadlineYear, 155f, 426f, 70f, "left", 12);
-			editor.writeText(font, deadlineMonth, 195f, 426f, 70f, "left", 12);
-			editor.writeText(font, deadlineDay, 240f, 426f, 70f, "left", 12);
+			editor.writeText(font, patron, 242f, 576f, 112f, "center", 12);
 
-			if (subject.equals("就職試験")) {
-				editor.writeText(font, "✓", 119f, 478f, 50f, "left", 12);
-			} else if (subject.equals("大学（編）入学試験")) {
-				editor.writeText(font, "✓", 204f, 478f, 50f, "left", 12);
+			if (patronTel.length() == 11) {
+				firstTel = patronTel.substring(0, 3);
+				secondTel = patronTel.substring(3, 7);
+				lastTel = patronTel.substring(7, 11);
+				patronTel = firstTel + "-" + secondTel + "-" + lastTel;
 			} else {
-				editor.writeText(font, "✓", 328f, 478f, 50f, "left", 12);
-				editor.writeText(font, reason, 382f, 479f, 125f, "center", 12);
+				firstTel = patronTel.substring(0, 3);
+				secondTel = patronTel.substring(3, 6);
+				lastTel = patronTel.substring(6, 10);
+				patronTel = firstTel + "-" + secondTel + "-" + lastTel;
 			}
+			editor.writeText(font, patronTel, 418f, 576f, 120f, "center", 12);
 
-			editor.writeText(font, propose, 115f, 452f, 420f, "left", 12);
+			editor.writeText(font, name, 68f, 290f, 103f, "center", 12);
+			editor.writeText(font, studentNumber, 240f, 290f, 68f, "center", 12);
 
-			if (nominationForm.equals("本校書式")) {
-				editor.writeText(font, "✓", 142f, 398f, 50f, "left", 12);
-			} else {
-				editor.writeText(font, "✓", 227f, 398f, 50f, "left", 12);
+			float num = 0;
+			for (int i = 0; i < 2; i++) {
+				if (classification.equals("自転車")) {
+					editor.writeText(font, "✓", 117f, 519f - num, 50f, "left", 12);
+				} else {
+					editor.writeText(font, "✓", 192f, 519f - num, 50f, "left", 12);
+				}
+
+				editor.writeText(font, startYear, 150f, 501f - num, 180f, "left", 12);
+				editor.writeText(font, startMonth, 190f, 501f - num, 180f, "left", 12);
+				editor.writeText(font, startDay, 235f, 501f - num, 180f, "left", 12);
+
+				editor.writeText(font, endYear, 330f, 501f - num, 180f, "left", 12);
+				editor.writeText(font, endMonth, 370f, 501f - num, 180f, "left", 12);
+				editor.writeText(font, endDay, 412f, 501f - num, 180f, "left", 12);
+
+				editor.writeText(font, registrationNumber, 108f, 482f - num, 160f, "center", 12);
+				editor.writeText(font, modelAndColor, 320f, 482f - num, 217f, "center", 12);
+
+				editor.writeText(font, startYear, 150f, 501f - num, 180f, "left", 12);
+
+				num += 392f;
 			}
-
 			// Close and save
-			editor.close("推薦書交付願.pdf");
+			editor.close("自転車等通学許可願.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Recommended Delivery");
+			dao.addOperationLog(id, "Printing Permission Bike");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「推薦書交付願」を作成しました。");
+			request.setAttribute("createPDF", "「自転車等通学許可願」を作成しました。当該書類は印刷後、氏名及び保護者欄に押印をお願いします。");
 			return "create-pdf-success.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
-			return "recommended-delivery.jsp";
+			return "permission-bike.jsp";
 		}
 	}
 }
