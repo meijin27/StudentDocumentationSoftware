@@ -88,26 +88,26 @@ public class PermissionBikeAction extends Action {
 			int checkMonth = Integer.parseInt(requestMonth);
 			int checkDay = Integer.parseInt(requestDay);
 
-			// 申請日の日付の妥当性チェック
+			// 願出年月日の日付の妥当性チェック
 			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			checkYear = Integer.parseInt(startYear) + 2018;
 			checkMonth = Integer.parseInt(startMonth);
 			checkDay = Integer.parseInt(startDay);
-			// 提出期限日の日付の妥当性チェック
+			// 期間年月日（自）の日付の妥当性チェック
 			LocalDate startDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			checkYear = Integer.parseInt(endYear) + 2018;
 			checkMonth = Integer.parseInt(endMonth);
 			checkDay = Integer.parseInt(endDay);
-			// 提出期限日の日付の妥当性チェック
+			// 期間年月日（至）の日付の妥当性チェック
 			LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			// 申請日と申請期間の比較
 			if (startDate.isBefore(requestDate)) {
-				request.setAttribute("dayError", "申請期間開始日は申請日より後の日付でなければなりません。");
+				request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
 			} else if (endDate.isBefore(startDate)) {
-				request.setAttribute("dayError", "申請期間開始日は申請期間終了日より前の日付でなければなりません。");
+				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
 			}
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");

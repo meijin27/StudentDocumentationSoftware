@@ -186,7 +186,7 @@ public class StudentDiscountCouponAction extends Action {
 			String reEncryptedPostCode = dao.getPostCode(id);
 			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
 			String postCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
-			// 郵便番号をに分割する
+			// 郵便番号を２つに分割する
 			String FirstPostCode = postCode.substring(0, 3);
 			String LastPostCode = postCode.substring(3, 7);
 

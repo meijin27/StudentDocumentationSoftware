@@ -29,6 +29,28 @@ import tool.EditPDF;
 public class NotificationAbsenceOfTtrainingAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(NotificationAbsenceOfTtrainingAction.class);
 
+	// 曜日を漢字一文字に変換するヘルパーメソッド
+	private static String convertToKanji(DayOfWeek dayOfWeek) {
+		switch (dayOfWeek) {
+		case MONDAY:
+			return "月";
+		case TUESDAY:
+			return "火";
+		case WEDNESDAY:
+			return "水";
+		case THURSDAY:
+			return "木";
+		case FRIDAY:
+			return "金";
+		case SATURDAY:
+			return "土";
+		case SUNDAY:
+			return "日";
+		default:
+			throw new IllegalArgumentException("Unexpected day of the week: " + dayOfWeek);
+		}
+	}
+
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -362,25 +384,4 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 		}
 	}
 
-	// 曜日を漢字一文字に変換するヘルパーメソッド
-	private static String convertToKanji(DayOfWeek dayOfWeek) {
-		switch (dayOfWeek) {
-		case MONDAY:
-			return "月";
-		case TUESDAY:
-			return "火";
-		case WEDNESDAY:
-			return "水";
-		case THURSDAY:
-			return "木";
-		case FRIDAY:
-			return "金";
-		case SATURDAY:
-			return "土";
-		case SUNDAY:
-			return "日";
-		default:
-			throw new IllegalArgumentException("Unexpected day of the week: " + dayOfWeek);
-		}
-	}
 }
