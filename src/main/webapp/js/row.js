@@ -49,13 +49,15 @@ window.initializeFormSets = function(customOptions) {
 	updateAddButtonVisibility(options); 
 	console.log(options);
     $('#addSetBtn').click(function() {
-    var nextSet = $(".additional-set.hidden").last();
+	var nextSet = $(".additional-set.hidden").first();
 
     if (nextSet.length) {
 
         nextSet.removeClass('hidden');
   	    // 元々requiredが設定されている入力フィールドにrequired属性を追加
         nextSet.find('select[data-required="true"], input[data-required="true"]').attr('required', true);
+        // 新規セットを最後のセットの後ろに挿入
+        nextSet.insertAfter($(".set:not(.hidden)").last());
     }
 
     if (!$(".additional-set.hidden").length) {

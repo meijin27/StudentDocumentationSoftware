@@ -64,6 +64,10 @@ main > .container {
     margin-bottom: 50px;
 }
 
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
 .invisible-text {
   color: transparent;
 }

@@ -21,8 +21,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class TakingReTestAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(TakingReTestAction.class);
+public class SupplementaryLessonsAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(SupplementaryLessonsAction.class);
 
 	@Override
 	public String execute(
@@ -71,7 +71,7 @@ public class TakingReTestAction extends Action {
 
 		) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "taking-re-test.jsp";
+			return "supplementary-lessons.jsp";
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
@@ -95,7 +95,7 @@ public class TakingReTestAction extends Action {
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("valueLongError") != null
 				|| request.getAttribute("dayError") != null) {
-			return "taking-re-test.jsp";
+			return "supplementary-lessons.jsp";
 		}
 
 		// リクエストのデータ全削除
@@ -159,7 +159,7 @@ public class TakingReTestAction extends Action {
 			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/generalStudentPDF/再試験受験申請書.pdf";
+			String pdfPath = "/pdf/generalStudentPDF/補習受講申請書.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
@@ -171,31 +171,31 @@ public class TakingReTestAction extends Action {
 			editor.writeText(font, requestMonth, 455f, 750f, 70f, "left", 12);
 			editor.writeText(font, requestDay, 490f, 750f, 70f, "left", 12);
 			// 名前・学籍番号・クラス・学年・組
-			editor.writeText(font, name, 193f, 649f, 187f, "center", 12);
-			editor.writeText(font, studentNumber, 433f, 649f, 90f, "center", 12);
-			editor.writeText(font, className, 193f, 627f, 192f, "center", 12);
-			editor.writeText(font, schoolYear, 465f, 627f, 132f, "left", 12);
-			editor.writeText(font, classNumber, 497f, 627f, 132f, "left", 12);
+			editor.writeText(font, name, 193f, 646f, 187f, "center", 12);
+			editor.writeText(font, studentNumber, 433f, 646f, 90f, "center", 12);
+			editor.writeText(font, className, 193f, 622f, 192f, "center", 12);
+			editor.writeText(font, schoolYear, 465f, 622f, 132f, "left", 12);
+			editor.writeText(font, classNumber, 497f, 622f, 132f, "left", 12);
 
-			editor.writeText(font, fiscalYear, 160f, 541.5f, 238f, "left", 10);
-			editor.writeText(font, semester, 205f, 541.5f, 238f, "left", 10);
-			editor.writeText(font, teacher, 393f, 541.5f, 67f, "center", 10);
-			editor.writeText(font, subjectName, 125f, 522f, 398f, "center", 12);
-			editor.writeText(font, reason, 125f, 483f, 398f, "center", 12);
+			editor.writeText(font, fiscalYear, 160f, 546f, 238f, "left", 10);
+			editor.writeText(font, semester, 205f, 546f, 238f, "left", 10);
+			editor.writeText(font, teacher, 375f, 546f, 84f, "center", 10);
+			editor.writeText(font, subjectName, 127f, 525f, 396f, "center", 12);
+			editor.writeText(font, reason, 127f, 486f, 396f, "center", 12);
 
 			// Close and save
-			editor.close("再試験受験申請書.pdf");
+			editor.close("補習受講申請書.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Taking Re Test");
+			dao.addOperationLog(id, "Printing Supplementary Lessons");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「再試験受験申請書」を作成しました。");
+			request.setAttribute("createPDF", "「補習受講申請書」を作成しました。");
 			return "create-pdf-success.jsp";
 		} catch (
 
 		Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
-			return "taking-re-test.jsp";
+			return "supplementary-lessons.jsp";
 		}
 	}
 }

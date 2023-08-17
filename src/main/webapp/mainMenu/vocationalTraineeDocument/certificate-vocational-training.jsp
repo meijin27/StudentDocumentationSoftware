@@ -66,21 +66,21 @@
 				    <label class="form-label">証明書対象期間中に就職、就労、内職又は手伝いをしましたか</label>
 				    <span class="text-danger">*</span>
 					<div class="d-flex align-items-center justify-content-center">
-				    <div class="form-check form-check-inline mr-lg-5">
-				        <input class="form-check-input" type="radio" name="problems" id="problemsYes" value="した" 
-				               <% if ("した".equals(request.getParameter("problems"))) { %> checked <% } %> required>
-				        <label class="form-check-label" for="problemsYes">
-				            した
-				        </label>
-				    </div>
-				    <div class="form-check form-check-inline ml-lg-5">
-				        <input class="form-check-input" type="radio" name="problems" id="problemsNo" value="しない"
-				               <% if ("しない".equals(request.getParameter("problems")) || request.getParameter("problems") == null) { %> checked <% } %> required>
-				        <label class="form-check-label" for="problemsNo">
-				            しない
-				        </label>
-				    </div>
-				</div>
+					    <div class="form-check form-check-inline mr-lg-5">
+					        <input class="form-check-input" type="radio" name="problems" id="problemsYes" value="した" 
+					               <% if ("した".equals(request.getParameter("problems"))) { %> checked <% } %> required>
+					        <label class="form-check-label" for="problemsYes">
+					            した
+					        </label>
+					    </div>
+					    <div class="form-check form-check-inline ml-lg-5">
+					        <input class="form-check-input" type="radio" name="problems" id="problemsNo" value="しない"
+					               <% if ("しない".equals(request.getParameter("problems")) || request.getParameter("problems") == null) { %> checked <% } %> required>
+					        <label class="form-check-label" for="problemsNo">
+					            しない
+					        </label>
+					    </div>
+					</div>
 				</div>
 				<!-- 収入 -->
 				<div class="col-md-12 mb-5">

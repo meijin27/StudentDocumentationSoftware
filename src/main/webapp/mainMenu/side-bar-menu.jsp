@@ -67,17 +67,17 @@
                         <li class="nav-item">
                             <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/taking-re-test.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/taking-re-test.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
-                                再試験受験願
+                                再試験受験申請書
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/supplementary-lessons.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/supplementary-lessons.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
-                                補習受講願
+                                補習受講申請書
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/yearEndSale.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/petition-for-deferred-payment.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/petition-for-deferred-payment.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 学費延納願
                             </a>
