@@ -205,8 +205,8 @@
 	            </div>
 	            <!-- 英語名 -->
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="englishFfirstName">名（英語）</label>
-	                <input class="form-control" type="text" name="englishFfirstName" placeholder="TARO" value="${englishFfirstName}">
+	                <label class="form-label" for="englishFirstName">名（英語）</label>
+	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="${englishFirstName}">
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishProofOfStudent">在学証明書（英語）</label>

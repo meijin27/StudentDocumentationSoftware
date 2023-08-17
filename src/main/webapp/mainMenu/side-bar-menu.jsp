@@ -35,13 +35,13 @@
                 <div id="collapse1" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/currentMonth.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/certificate-issuance.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/certificate-issuance.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 証明書交付願
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/lastQuarter.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/notification-of-change.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/notification-of-change.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 変更届
                             </a>
