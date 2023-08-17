@@ -1,4 +1,4 @@
-package mainMenu.vocationalTraineeDocument;
+package mainMenu.generalStudent;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -21,8 +21,8 @@ import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
 
-public class PetitionForRelativesAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(PetitionForRelativesAction.class);
+public class TakingReTestAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(TakingReTestAction.class);
 
 	@Override
 	public String execute(
@@ -41,14 +41,14 @@ public class PetitionForRelativesAction extends Action {
 		}
 
 		// 入力された値を変数に格納
-		String relativeName = request.getParameter("relativeName");
-		String birthYear = request.getParameter("birthYear");
-		String birthMonth = request.getParameter("birthMonth");
-		String birthDay = request.getParameter("birthDay");
-		String relativeAddress = request.getParameter("relativeAddress");
 		String requestYear = request.getParameter("requestYear");
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
+		String fiscalYear = request.getParameter("fiscalYear");
+		String semester = request.getParameter("semester");
+		String subjectName = request.getParameter("subjectName");
+		String teacher = request.getParameter("teacher");
+		String reason = request.getParameter("reason");
 
 		// 入力された値をリクエストに格納	
 		Enumeration<String> parameterNames = request.getParameterNames();
@@ -58,44 +58,44 @@ public class PetitionForRelativesAction extends Action {
 			request.setAttribute(paramName, paramValue);
 		}
 
-		// 未入力項目があればエラーを返す
-		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
-				|| relativeAddress == null || requestYear == null
-				|| requestMonth == null || requestDay == null || relativeName.isEmpty() || birthYear.isEmpty()
-				|| birthMonth.isEmpty() || birthDay.isEmpty()
-				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (requestYear == null || requestMonth == null || requestDay == null
+				|| fiscalYear == null || semester == null || subjectName == null
+				|| teacher == null || reason == null
+				|| requestYear.isEmpty() || requestMonth.isEmpty()
+				|| requestDay.isEmpty()
+				|| fiscalYear.isEmpty() || semester.isEmpty()
+				|| subjectName.isEmpty()
+				|| teacher.isEmpty()
+				|| reason.isEmpty()
+
+		) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "petition-for-relatives.jsp";
+			return "taking-re-test.jsp";
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(birthYear);
-			int checkMonth = Integer.parseInt(birthMonth);
-			int checkDay = Integer.parseInt(birthDay);
+			int checkYear = Integer.parseInt(requestYear);
+			int checkMonth = Integer.parseInt(requestMonth);
+			int checkDay = Integer.parseInt(requestDay);
 
-			// 日付の妥当性チェック
-			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-			checkYear = Integer.parseInt(requestYear);
-			checkMonth = Integer.parseInt(requestMonth);
-			checkDay = Integer.parseInt(requestDay);
-
-			Date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 届出年月日の日付の妥当性チェック
+			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が多い場合はエラーを返す
-		if (relativeName.length() > 32 || relativeAddress.length() > 64) {
-			request.setAttribute("valueLongError", "名前は32文字以下、住所は64文字以下で入力してください。");
+		// 文字数が32文字より多い場合はエラーを返す
+		if (subjectName.length() > 32 || teacher.length() > 32 || reason.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
-			return "petition-for-relatives.jsp";
+		if (request.getAttribute("valueLongError") != null
+				|| request.getAttribute("dayError") != null) {
+			return "taking-re-test.jsp";
 		}
 
 		// リクエストのデータ全削除
@@ -145,60 +145,57 @@ public class PetitionForRelativesAction extends Action {
 				className = className.substring(0, className.length() - 1);
 			}
 
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
-			// もし学生種類が職業訓練生でなければエラーを返す
-			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
-				return "petition-for-relatives.jsp";
-			}
-
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				String contextPath = request.getContextPath();
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
-			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
+			// 学年のデータベースからの取り出し
+			String reEncryptedSchoolYear = dao.getSchoolYear(id);
+			String encryptedSchoolYear = CipherUtil.commonDecrypt(reEncryptedSchoolYear);
+			String schoolYear = CipherUtil.decrypt(masterKey, iv, encryptedSchoolYear);
+			// クラス番号のデータベースからの取り出し
+			String reEncryptedClassNumber = dao.getClassNumber(id);
+			String encryptedClassNumber = CipherUtil.commonDecrypt(reEncryptedClassNumber);
+			String classNumber = CipherUtil.decrypt(masterKey, iv, encryptedClassNumber);
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
+			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/vocationalTraineePDF/親族続柄申立書.pdf";
+			String pdfPath = "/pdf/generalStudentPDF/再試験受験申請書.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
+			// PDFへの書き込み
+			// 申請年月日
+			editor.writeText(font, requestYear, 400f, 750f, 70f, "left", 12);
+			editor.writeText(font, requestMonth, 455f, 750f, 70f, "left", 12);
+			editor.writeText(font, requestDay, 490f, 750f, 70f, "left", 12);
+			// 名前・学籍番号・クラス・学年・組
+			editor.writeText(font, name, 193f, 649f, 187f, "center", 12);
+			editor.writeText(font, studentNumber, 433f, 649f, 90f, "center", 12);
+			editor.writeText(font, className, 193f, 627f, 192f, "center", 12);
+			editor.writeText(font, schoolYear, 465f, 627f, 132f, "left", 12);
+			editor.writeText(font, classNumber, 497f, 627f, 132f, "left", 12);
 
-			// PDFへの記載
-			editor.writeText(font, relativeName, 100f, 271f, 130f, "center", 12);
-			editor.writeText(font, relativeAddress, 265f, 271f, 220f, "left", 12);
-			editor.writeText(font, namePESO, 365f, 96f, 50f, "center", 12);
-			editor.writeText(font, birthYear, 120f, 240f, 70f, "left", 12);
-			editor.writeText(font, birthMonth, 163f, 240f, 70f, "left", 12);
-			editor.writeText(font, birthDay, 193f, 240f, 70f, "left", 12);
-			editor.writeText(font, requestYear, 105f, 62f, 40f, "left", 12);
-			editor.writeText(font, requestMonth, 155f, 62f, 40f, "left", 12);
-			editor.writeText(font, requestDay, 195f, 62f, 40f, "left", 12);
-			editor.writeText(font, className, 100f, 32f, 130f, "center", 12);
-			editor.writeText(font, name, 377f, 32f, 140f, "center", 12);
+			editor.writeText(font, fiscalYear, 160f, 541.5f, 238f, "left", 10);
+			editor.writeText(font, semester, 205f, 541.5f, 238f, "left", 10);
+			editor.writeText(font, teacher, 393f, 541.5f, 67f, "center", 10);
+			editor.writeText(font, subjectName, 125f, 522f, 398f, "center", 12);
+			editor.writeText(font, reason, 125f, 483f, 400f, "center", 12);
 
 			// Close and save
-			editor.close("親族続柄申立書.pdf");
+			editor.close("再試験受験申請書.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Petition For Relatives");
+			dao.addOperationLog(id, "Printing Taking Re Test");
 			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「親族続柄申立書」を作成しました。当該書類は印刷後に手書きで親族該当箇所に〇を付けてください");
+			request.setAttribute("createPDF", "「再試験受験申請書」を作成しました。");
 			return "create-pdf-success.jsp";
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
-			return "petition-for-relatives.jsp";
+			return "taking-re-test.jsp";
 		}
 	}
 }

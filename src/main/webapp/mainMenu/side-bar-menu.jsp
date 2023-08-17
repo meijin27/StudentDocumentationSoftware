@@ -65,7 +65,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/socialEngagement.jsp") ? " active" : "" %>" href="#">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/generalStudent/taking-re-test.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/generalStudent/taking-re-test.jsp">
                                 <span data-feather="file-text" class="align-text-bottom"></span>
                                 再試験受験願
                             </a>

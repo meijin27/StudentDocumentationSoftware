@@ -49,7 +49,6 @@ public class NotificationOfChangeAction extends Action {
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 		String residentCard = request.getParameter("residentCard");
-		String startDay = request.getParameter("startDay");
 		String endYear = request.getParameter("endYear");
 		String endMonth = request.getParameter("endMonth");
 		String endDay = request.getParameter("endDay");
