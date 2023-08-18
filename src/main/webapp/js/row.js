@@ -1,8 +1,8 @@
 var defaultOptions = {
     maxSets: 10,
     renameEnabled: true,
-    labelSuffix: "行目",
-    buttonSuffix: "行目の削除"
+    labelSuffix: "番目の期間",
+    buttonSuffix: "番目の期間の削除"
 };
 
 function renumberSets(options) {
@@ -47,7 +47,6 @@ function updateAddButtonVisibility(options) {
 window.initializeFormSets = function(customOptions) {
     var options = $.extend({}, defaultOptions, customOptions);
 	updateAddButtonVisibility(options); 
-	console.log(options);
     $('#addSetBtn').click(function() {
 	var nextSet = $(".additional-set.hidden").first();
 

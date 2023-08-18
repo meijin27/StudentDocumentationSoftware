@@ -65,16 +65,16 @@
 				    <label class="form-label">母国からの送金の有無（留学生のみ要選択）</label>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
-					        <input class="form-check-input" type="radio" name="RemittanceFromCountry" id="RemittanceFromCountryYes" value="有" 
-					               <% if ("有".equals(request.getParameter("RemittanceFromCountry"))) { %> checked <% } %>>
-					        <label class="form-check-label" for="RemittanceFromCountryYes">
+					        <input class="form-check-input" type="radio" name="remittanceFromCountry" id="remittanceFromCountryYes" value="有" 
+					               <% if ("有".equals(request.getParameter("remittanceFromCountry"))) { %> checked <% } %>>
+					        <label class="form-check-label" for="remittanceFromCountryYes">
 					            有
 					        </label>
 					    </div>
 					    <div class="form-check form-check-inline ml-lg-5">
-					        <input class="form-check-input" type="radio" name="RemittanceFromCountry" id="RemittanceFromCountryNo" value="無"
-					               <% if ("無".equals(request.getParameter("RemittanceFromCountry")) || request.getParameter("RemittanceFromCountry") == null) { %> checked <% } %> >
-					        <label class="form-check-label" for="RemittanceFromCountryNo">
+					        <input class="form-check-input" type="radio" name="remittanceFromCountry" id="remittanceFromCountryNo" value="無"
+					               <% if ("無".equals(request.getParameter("remittanceFromCountry")) || request.getParameter("remittanceFromCountry") == null) { %> checked <% } %> >
+					        <label class="form-check-label" for="remittanceFromCountryNo">
 					            無
 					        </label>
 					    </div>
@@ -86,7 +86,7 @@
 	                <input class="form-control" type="text" name="reasonNoRemittance" placeholder="母国の家族も生計に余裕がなく、送金できる状態ではない。" value="${reasonNoRemittance}">
 	            </div>
   	            <!-- 海外送金依頼書INVOICE交付申請年月日 -->
-  	            <p>海外送金依頼書INVOICE交付申請年月日（留学生のみ要選択）</p>
+  	            <p>海外送金依頼書INVOICE交付申請年月日（留学生のみ要選択、母国からの送金がある場合に記入）</p>
 	            <div class="col-md-4 mb-5">
 	                <select name="invoiceYear" class="form-control select-center">
 	                    <option value="">-- 年 --</option>
@@ -121,7 +121,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="amountPayable">納付すべき金額（学費、教材費、積立金等）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="amountPayable" placeholder="1000000" value="${amountPayable}">
+	                <input class="form-control" type="text" name="amountPayable" placeholder="1000000" value="${amountPayable}" required>
 	            </div>
 	            <!-- 通常納期内納付学費等（教材費・積立金等を含む） -->
 	            <div class="col-md-4 mb-5">
@@ -222,10 +222,7 @@
 		       		<% } %>
 		        </div>  
         	<% } %>		            
-		
 		            
-		            
-		                       
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
@@ -241,6 +238,16 @@
                 	${valueLongError}
             	</div>
         	</c:if>
+	        <c:if test="${not empty numberError}">
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${numberError}
+	            </div>
+	        </c:if>	        
+            <c:if test="${not empty  exchangeStudentError}">
+            	<div class="alert alert-danger" role="alert">
+                	${exchangeStudentError}
+            	</div>
+        	</c:if>        	
 			<c:if test="${not empty innerError}">
 				<div class="alert alert-danger" role="alert">${innerError}
 				</div>

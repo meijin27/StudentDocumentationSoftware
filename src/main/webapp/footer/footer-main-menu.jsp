@@ -26,7 +26,9 @@
     <script>
     	var customOptions = {
             maxSets: 4,
-            renameEnabled: false
+            renameEnabled: true,
+            labelSuffix: "個目の納期と金額",
+            buttonSuffix: "個目の納期と金額の削除"
         };
 	</script>
 <% } %>

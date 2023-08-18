@@ -185,7 +185,7 @@
 			<div class="alert alert-danger" role="alert">${innerError}
 			</div>
 		</c:if>
-		<button type="button" id="addSetBtn" class="w-100 btn btn-lg btn-success mb-3">行の追加（休業日が複数ある場合）</button>
+		<button type="button" id="addSetBtn" class="w-100 btn btn-lg btn-success mb-3">行の追加（休業期間が複数ある場合）</button>
 		<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
 	</form>
 
