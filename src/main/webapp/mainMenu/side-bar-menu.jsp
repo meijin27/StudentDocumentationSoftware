@@ -19,8 +19,8 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/monitor.jsp") ? " active" : "" %>" aria-current="page" href="<%=request.getContextPath()%>/mainMenu/monitor.jsp">
-                                <span data-feather="file" class="align-text-bottom"></span>
-                                monitor
+                                <span data-feather="user-check" class="align-text-bottom"></span>
+                                登録情報の確認
                         </a>
                     </li>
                 </ul>                
@@ -94,7 +94,7 @@
                 <div id="collapse2" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/rules/terms-of-use.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/rules/terms-of-use.jsp">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/internationalStudent/period-update.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update.jsp">
                                     <span data-feather="book-open" class="align-text-bottom"></span>
                                     在留期間更新許可申請書
                             </a>

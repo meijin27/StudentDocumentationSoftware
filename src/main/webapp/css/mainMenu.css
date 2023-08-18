@@ -97,20 +97,31 @@ footer.footer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .data-label {
-  width: 120px; /* 固定されている表示内容の幅を指定。必要に応じて調整してください。 */
+  width: 100px; /* 固定されている表示内容の幅を指定。 */
   text-align: left;
-  margin-left: 50px;
+  margin-left: 30px;
+}
+
+.data-label-second {
+  width: 100px; /* 固定されている表示内容の幅を指定。 */
+  text-align: left;
+  margin-left: 60px;
 }
 
 .data-value {
-  margin-left: 20px; /* 固定されている表示内容と変化する表示内容の間隔を指定。必要に応じて調整してください。 */
+  width: 100px; /* 固定されている表示内容の幅を指定。 */
+  margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
+  text-align: left;
 }
 
-
+.data-value-0px {
+  margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
+  text-align: left;
+}
 /*
  * Sidebar
  */
