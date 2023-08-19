@@ -1,0 +1,396 @@
+package mainMenu.internationalStudent;
+
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+
+import dao.UserDAO;
+import tool.Action;
+import tool.CipherUtil;
+import tool.CustomLogger;
+import tool.Decrypt;
+import tool.DecryptionResult;
+import tool.EditPDF;
+
+public class PeriodUpdateFirstAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(PeriodUpdateFirstAction.class);
+
+	@Override
+	public String execute(
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// セッションの作成
+		HttpSession session = request.getSession();
+
+		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+			// ログインページにリダイレクト
+			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath + "/login/login.jsp");
+			return null;
+		}
+
+		// 入力された値を変数に格納
+
+		String nationalityRegion = request.getParameter("nationalityRegion");
+		String homeTown = request.getParameter("homeTown");
+		String sex = request.getParameter("sex");
+		String maritalStatus = request.getParameter("maritalStatus");
+		String passportNumber = request.getParameter("passportNumber");
+		String effectiveYear = request.getParameter("effectiveYear");
+		String effectiveMonth = request.getParameter("effectiveMonth");
+		String effectiveDay = request.getParameter("effectiveDay");
+		String statusOfResidence = request.getParameter("statusOfResidence");
+		String periodOfStay = request.getParameter("periodOfStay");
+		String periodYear = request.getParameter("periodYear");
+		String periodMonth = request.getParameter("periodMonth");
+		String periodDay = request.getParameter("periodDay");
+		String residentCard = request.getParameter("residentCard");
+		String reason = request.getParameter("reason");
+		String criminalRecord = request.getParameter("criminalRecord");
+		String reasonForTheCrime = request.getParameter("reasonForTheCrime");
+		String familyInJapan = request.getParameter("familyInJapan");
+
+		// 入力された値をリクエストに格納	
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
+
+		// 未入力項目があればエラーを返す
+		if (nationalityRegion == null || nationalityRegion.isEmpty()
+				|| homeTown == null || homeTown.isEmpty()
+				|| sex == null || sex.isEmpty()
+				|| maritalStatus == null || maritalStatus.isEmpty()
+				|| passportNumber == null || passportNumber.isEmpty()
+				|| effectiveYear == null || effectiveYear.isEmpty()
+				|| effectiveMonth == null || effectiveMonth.isEmpty()
+				|| effectiveDay == null || effectiveDay.isEmpty()
+				|| statusOfResidence == null || statusOfResidence.isEmpty()
+				|| periodOfStay == null || periodOfStay.isEmpty()
+				|| periodYear == null || periodYear.isEmpty()
+				|| periodMonth == null || periodMonth.isEmpty()
+				|| periodDay == null || periodDay.isEmpty()
+				|| residentCard == null || residentCard.isEmpty()
+				|| reason == null || reason.isEmpty()
+				|| criminalRecord == null || criminalRecord.isEmpty()
+				|| familyInJapan == null || familyInJapan.isEmpty()) {
+
+			request.setAttribute("nullError", "未入力項目があります。");
+			return "period-update-first.jsp";
+		}
+
+		// 年月日が存在しない日付の場合はエラーにする
+		try {
+			int checkYear = Integer.parseInt(effectiveYear);
+			int checkMonth = Integer.parseInt(effectiveMonth);
+			int checkDay = Integer.parseInt(effectiveDay);
+			// 日付の妥当性チェック
+			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+
+			checkYear = Integer.parseInt(periodYear);
+			checkMonth = Integer.parseInt(periodMonth);
+			checkDay = Integer.parseInt(periodDay);
+			// 日付の妥当性チェック
+			date = LocalDate.of(checkYear, checkMonth, checkDay);
+
+		} catch (DateTimeException e) {
+			request.setAttribute("dayError", "存在しない日付です。");
+		}
+
+		// 文字数が32文字より多い場合はエラーを返す
+		if (nationalityRegion.length() > 32 || homeTown.length() > 32 || passportNumber.length() > 32
+				|| statusOfResidence.length() > 32 || periodOfStay.length() > 32 || reason.length() > 32) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		}
+
+		// 在留カードの記号番号のチェック
+		if (residentCard.length() != 12) {
+			// 文字数が12文字でない場合はエラーを返す
+			request.setAttribute("residentCardError", "在留カード番号は12文字で入力してください。");
+		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
+			// 在留カード番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
+			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
+		}
+
+		if (criminalRecord.equals("有") && (reasonForTheCrime == null || reasonForTheCrime.isEmpty())) {
+			request.setAttribute("criminalError", "犯罪の具体的な理由を入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (request.getAttribute("numberError") != null
+				|| request.getAttribute("dayError") != null
+				|| request.getAttribute("valueLongError") != null
+				|| request.getAttribute("residentCardError") != null || request.getAttribute("criminalError") != null) {
+			return "period-update-first.jsp";
+		}
+		// 作成する行数のカウント
+		int count = 0;
+
+		// 作成する行ごとにデータを取り出す
+		for (int i = 1; i <= 6; i++) {
+
+			// 末尾に添付する番号のString
+			String num = String.valueOf(i);
+
+			// 入力された値を変数に格納
+			String relationship = request.getParameter("relationship" + num);
+			String relativeName = request.getParameter("relativeName" + num);
+			String birthYear = request.getParameter("birthYear" + num);
+			String birthMonth = request.getParameter("birthMonth" + num);
+			String birthDay = request.getParameter("birthDay" + num);
+			String relativeNationalityRegion = request.getParameter("relativeNationalityRegion" + num);
+			String livingTogether = request.getParameter("livingTogether" + num);
+			String placeOfEmployment = request.getParameter("placeOfEmployment" + num);
+			String cardNumber = request.getParameter("cardNumber" + num);
+
+			// 在日親族及び同居者が「無」の場合はbreakする
+			if (familyInJapan.equals("無")) {
+				break;
+				// 未入力項目があればbreakする			    
+			} else if (relationship == null || relationship.isEmpty()
+					|| relativeName == null || relativeName.isEmpty()
+					|| birthYear == null || birthYear.isEmpty()
+					|| birthMonth == null || birthMonth.isEmpty()
+					|| birthDay == null || birthDay.isEmpty()
+					|| relativeNationalityRegion == null || relativeNationalityRegion.isEmpty()
+					|| livingTogether == null || livingTogether.isEmpty()
+					|| placeOfEmployment == null || placeOfEmployment.isEmpty()
+					|| cardNumber == null || cardNumber.isEmpty()) {
+				// 在日親族及び同居者が「有」かつ１人目の入力がない場合はエラーを返す
+				if (i == 1) {
+					request.setAttribute("nullError", "未入力項目があります。");
+					return "period-update-first.jsp";
+				}
+				// 入力がない場合はその行で終わる
+				break;
+			}
+
+			// 年月日が存在しない日付の場合はエラーにする
+			try {
+				int checkYear = Integer.parseInt(birthYear);
+				int checkMonth = Integer.parseInt(birthMonth);
+				int checkDay = Integer.parseInt(birthDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			} catch (DateTimeException e) {
+				request.setAttribute("dayError", "存在しない日付です。");
+			}
+
+			// 文字数が32文字より多い場合はエラーを返す
+			if (relationship.length() > 32 || relativeName.length() > 32 || relativeNationalityRegion.length() > 32
+					|| livingTogether.length() > 32 || placeOfEmployment.length() > 32 || cardNumber.length() > 32) {
+				request.setAttribute("valueLongError", "32文字以下で入力してください。");
+			}
+
+			// エラーが発生している場合は元のページに戻す
+			if (request.getAttribute("dayError") != null
+					|| request.getAttribute("valueLongError") != null) {
+				return "period-update-first.jsp";
+			}
+
+			// 作成する行数カウントの追加
+			count++;
+		}
+
+		// リクエストのデータ全削除
+		Enumeration<String> attributeNames = request.getAttributeNames();
+		while (attributeNames.hasMoreElements()) {
+			String attributeName = attributeNames.nextElement();
+			request.removeAttribute(attributeName);
+		}
+
+		try {
+			// データベース操作用クラス
+			UserDAO dao = new UserDAO();
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
+			// マスターキーの取り出し			
+			String masterKey = result.getMasterKey();
+			// ivの取り出し
+			String iv = result.getIv();
+
+			// 姓のデータベース空の取り出し
+			String reEncryptedLastName = dao.getLastName(id);
+			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedLastName == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
+			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
+			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
+			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
+
+			String name = lastName + " " + firstName;
+
+			// 電話番号のデータベースからの取り出し
+			String reEncryptedTel = dao.getTel(id);
+			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
+			String tel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
+			// 住所のデータベースからの取り出し
+			String reEncryptedAddress = dao.getAddress(id);
+			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
+			String address = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
+			// 誕生年のデータベースからの取り出し
+			String reEncryptedBirthYear = dao.getBirthYear(id);
+			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
+			String birthYear = CipherUtil.decrypt(masterKey, iv, encryptedBirthYear);
+			// 誕生月のデータベースからの取り出し
+			String reEncryptedBirthMonth = dao.getBirthMonth(id);
+			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
+			String birthMonth = CipherUtil.decrypt(masterKey, iv, encryptedBirthMonth);
+			// 誕生日のデータベースからの取り出し
+			String reEncryptedBirthDay = dao.getBirthDay(id);
+			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
+			String birthDay = CipherUtil.decrypt(masterKey, iv, encryptedBirthDay);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
+			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+			// もし学生種類が留学生でなければエラーを返す
+			if (!studentType.equals("留学生")) {
+				request.setAttribute("exchangeStudentError", "当該書類は留学生のみが発行可能です。");
+				return "period-update-first.jsp";
+			}
+
+			// PDFとフォントのパス作成
+			String pdfPath = "/pdf/generalStudentPDF/在留期間更新許可申請書1枚目.pdf";
+			String fontPath = "/font/MS-Mincho-01.ttf";
+			// EditPDFのオブジェクト作成
+			EditPDF editor = new EditPDF(pdfPath);
+			// フォントの作成
+			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
+			// PDFへの書き込み
+			// 国籍・地域
+			editor.writeText(font, nationalityRegion, 143f, 637f, 225f, "left", 12);
+
+			// 生年月日
+			editor.writeText(font, birthYear, 415f, 733f, 70f, "left", 12);
+			editor.writeText(font, birthMonth, 460f, 733f, 70f, "left", 12);
+			editor.writeText(font, birthDay, 505f, 733f, 70f, "left", 12);
+			// 名前
+			editor.writeText(font, name, 150f, 700f, 306f, "left", 10);
+			// 性別
+			if (sex.equals("男")) {
+				// 使用目的に応じて〇の位置を変える
+				editor.writeText(font, "〇", 140f, 600f, 40f, "left", 16);
+			} else {
+				editor.writeText(font, "〇", 170f, 600f, 40f, "left", 16);
+			}
+			// 配偶者の有無
+			if (maritalStatus.equals("有")) {
+				// 使用目的に応じて〇の位置を変える
+				editor.writeText(font, "〇", 340f, 600f, 40f, "left", 16);
+			} else {
+				editor.writeText(font, "〇", 370f, 600f, 40f, "left", 16);
+			}
+			// 職業	
+			editor.writeText(font, "学生", 130f, 580f, 70f, "left", 12);
+			// 本国における居住地
+			editor.writeText(font, homeTown, 430f, 523f, 306f, "left", 10);
+			// 住所
+			editor.writeText(font, address, 200f, 553f, 306f, "left", 10);
+			// 電話番号
+			if (tel.length() == 11) {
+				tel = tel.substring(0, 3) + "-" + tel.substring(3, 7) + "-" + tel.substring(7, 11);
+				editor.writeText(font, tel, 415f, 500f, 70f, "left", 12);
+			} else {
+				tel = tel.substring(0, 3) + "-" + tel.substring(3, 6) + "-" + tel.substring(6, 10);
+				editor.writeText(font, tel, 115f, 500f, 70f, "left", 12);
+			}
+
+			// パスポート有効期限
+			editor.writeText(font, effectiveYear, 415f, 533f, 70f, "left", 12);
+			editor.writeText(font, effectiveMonth, 460f, 533f, 70f, "left", 12);
+			editor.writeText(font, effectiveDay, 505f, 533f, 70f, "left", 12);
+			/*
+						// 学費の捻出方法
+						if (homeTown.length() < 30) {
+							editor.writeText(font, homeTown, 230f, 423f, 306f, "left", 10);
+						} else {
+							editor.writeText(font, homeTown.substring(0, 30), 230f, 423f, 306f, "left", 10);
+							editor.writeText(font, homeTown.substring(30, homeTown.length()), 166f, 400f, 370f,
+									"left", 10);
+						}
+						// 納付すべき金額
+						editor.writeText(font, sex, 345f, 354f, 170f, "right", 12);
+						// 通常納期内納付学費等
+						editor.writeText(font, periodYear, 213f, 327, 40f, "left", 12);
+						editor.writeText(font, periodMonth, 250f, 327f, 40f, "left", 12);
+						editor.writeText(font, periodDay, 295f, 327f, 40f, "left", 12);
+						editor.writeText(font, maritalStatus, 345f, 327f, 170f, "right", 12);
+			
+						if (studentType.equals("留学生")) {
+							// 使用目的に応じて〇の位置を変える
+							if (passportNumber.equals("有")) {
+								editor.writeText(font, "〇", 259f, 468f, 40f, "left", 16);
+								editor.writeText(font, periodOfStay, 410f, 377f, 70f, "left", 12);
+								editor.writeText(font, residentCard, 455f, 377f, 70f, "left", 12);
+								editor.writeText(font, reason, 498f, 377f, 70f, "left", 12);
+							} else {
+								editor.writeText(font, "〇", 282.5f, 468f, 40f, "left", 16);
+								if (statusOfResidence.length() < 16) {
+									editor.writeText(font, statusOfResidence, 380f, 471f, 157f, "left", 10);
+								} else {
+									editor.writeText(font, statusOfResidence.substring(0, 15), 380f, 471f, 157f, "left", 10);
+									editor.writeText(font, statusOfResidence.substring(15, statusOfResidence.length()), 166f,
+											448f, 370f, "left", 10);
+								}
+							}
+						}
+			
+						float row = 0;
+						for (int i = 1; i <= count; i++) {
+							// 末尾に添付する番号のString
+							String num = String.valueOf(i);
+			
+							// 入力された値を変数に格納
+							String birthYear = request.getParameter("birthYear" + num);
+							String birthMonth = request.getParameter("birthMonth" + num);
+							String birthDay = request.getParameter("birthDay" + num);
+							String deferredPaymentAmount = request.getParameter("deferredPaymentAmount" + num);
+							// PDFへの記入
+							editor.writeText(font, birthYear, 213f, 300f - row, 40f, "left", 12);
+							editor.writeText(font, birthMonth, 250f, 300f - row, 40f, "left", 12);
+							editor.writeText(font, birthDay, 295f, 300f - row, 40f, "left", 12);
+							editor.writeText(font, deferredPaymentAmount, 345f, 300f - row, 170f, "right", 12);
+			
+							row += 26;
+						}*/
+
+			// Close and save
+			editor.close("在留期間更新許可申請書1枚目.pdf");
+			// 出力内容のデータベースへの登録
+			dao.addOperationLog(id, "Printing Period Update First.jsp");
+			// PDF作成成功画面に遷移
+			request.setAttribute("createPDF",
+					"「在留期間更新許可申請書１枚目」を作成しました。在留期間更新許可申請書は３枚組で、当該書類は１枚目です。(The application form for permission to extend the period of stay is in triplicate, and the said document is the first one.)");
+			return "create-pdf-success.jsp";
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
+			return "period-update-first.jsp";
+		}
+	}
+}

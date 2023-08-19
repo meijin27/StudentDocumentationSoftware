@@ -73,7 +73,7 @@
 					    </div>
 					    <div class="form-check form-check-inline ml-lg-5">
 					        <input class="form-check-input" type="radio" name="remittanceFromCountry" id="remittanceFromCountryNo" value="無"
-					               <% if ("無".equals(request.getParameter("remittanceFromCountry")) || request.getParameter("remittanceFromCountry") == null) { %> checked <% } %> >
+					               <% if ("無".equals(request.getParameter("remittanceFromCountry"))) { %> checked <% } %> >
 					        <label class="form-check-label" for="remittanceFromCountryNo">
 					            無
 					        </label>
@@ -212,7 +212,7 @@
 		            <div class="col-md-4 mb-5">
 		                <label class="form-label" for="deferredPaymentAmount<%= set %>">延納金額</label>
 		                <span class="text-danger">*</span>
-		                <input class="form-control" type="text" name="deferredPaymentAmount<%= set %>" placeholder="750000" value="${deferredPaymentAmount[set]}" <%= (set == 1) ? "required" : "" %> data-required="true">
+		                <input class="form-control" type="text" name="deferredPaymentAmount<%= set %>" placeholder="750000" <%= (set == 1) ? "required" : "" %> data-required="true">
 		            </div>	 
 					<% if (set != 1) { %>
 			            <!-- 削除ボタン -->

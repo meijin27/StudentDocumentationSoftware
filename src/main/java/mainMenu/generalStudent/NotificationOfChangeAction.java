@@ -125,7 +125,6 @@ public class NotificationOfChangeAction extends Action {
 			// どちらかだけ入力されている場合
 			request.setAttribute("residentCardError", "記号・番号と期間満了年月日は全て入力してください。");
 		} else if (residentCard.length() != 12) {
-			System.out.println(residentCard.length());
 			// 文字数が12文字でない場合はエラーを返す
 			request.setAttribute("residentCardError", "記号・番号は12文字で入力してください。");
 		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {

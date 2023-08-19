@@ -94,11 +94,23 @@
                 <div id="collapse2" class="collapse">
                     <ul class="nav flex-column mb-2">
                         <li class="nav-item">
-                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/internationalStudent/period-update.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update.jsp">
-                                    <span data-feather="book-open" class="align-text-bottom"></span>
-                                    在留期間更新許可申請書
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/internationalStudent/period-update-first.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update-first.jsp">
+                                    <span data-feather="pen-tool" class="align-text-bottom"></span>
+                                    在留期間更新許可申請書　１枚目
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/internationalStudent/period-update-second.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update-second.jsp">
+                                    <span data-feather="pen-tool" class="align-text-bottom"></span>
+                                    在留期間更新許可申請書　２枚目
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link<%= currentURL.equals(request.getContextPath() + "/mainMenu/internationalStudent/period-update-third.jsp") ? " active" : "" %>" href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update-third.jsp">
+                                    <span data-feather="pen-tool" class="align-text-bottom"></span>
+                                    在留期間更新許可申請書　３枚目
+                            </a>
+                        </li>                        
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
