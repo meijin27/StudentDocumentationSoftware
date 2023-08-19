@@ -56,6 +56,7 @@ public class PeriodUpdateFirstAction extends Action {
 		String periodMonth = request.getParameter("periodMonth");
 		String periodDay = request.getParameter("periodDay");
 		String residentCard = request.getParameter("residentCard");
+		String desiredPeriodOfStay = request.getParameter("desiredPeriodOfStay");
 		String reason = request.getParameter("reason");
 		String criminalRecord = request.getParameter("criminalRecord");
 		String reasonForTheCrime = request.getParameter("reasonForTheCrime");
@@ -84,6 +85,7 @@ public class PeriodUpdateFirstAction extends Action {
 				|| periodMonth == null || periodMonth.isEmpty()
 				|| periodDay == null || periodDay.isEmpty()
 				|| residentCard == null || residentCard.isEmpty()
+				|| desiredPeriodOfStay == null || desiredPeriodOfStay.isEmpty()
 				|| reason == null || reason.isEmpty()
 				|| criminalRecord == null || criminalRecord.isEmpty()
 				|| familyInJapan == null || familyInJapan.isEmpty()) {
@@ -112,7 +114,8 @@ public class PeriodUpdateFirstAction extends Action {
 
 		// 文字数が32文字より多い場合はエラーを返す
 		if (nationalityRegion.length() > 32 || homeTown.length() > 32 || passportNumber.length() > 32
-				|| statusOfResidence.length() > 32 || periodOfStay.length() > 32 || reason.length() > 32) {
+				|| statusOfResidence.length() > 32 || periodOfStay.length() > 32 || desiredPeriodOfStay.length() > 32
+				|| reason.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
@@ -171,7 +174,7 @@ public class PeriodUpdateFirstAction extends Action {
 					|| cardNumber == null || cardNumber.isEmpty()) {
 				// 在日親族及び同居者が「有」かつ１人目の入力がない場合はエラーを返す
 				if (i == 1) {
-					request.setAttribute("nullError", "未入力項目があります。");
+					request.setAttribute("nullError", "在日親族及び同居者情報に未入力項目があります。");
 					return "period-update-first.jsp";
 				}
 				// 入力がない場合はその行で終わる
@@ -275,7 +278,7 @@ public class PeriodUpdateFirstAction extends Action {
 			}
 
 			// PDFとフォントのパス作成
-			String pdfPath = "/pdf/generalStudentPDF/在留期間更新許可申請書1枚目.pdf";
+			String pdfPath = "/pdf/internationalStudentPDF/在留期間更新許可申請書1枚目.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";
 			// EditPDFのオブジェクト作成
 			EditPDF editor = new EditPDF(pdfPath);
@@ -283,83 +286,59 @@ public class PeriodUpdateFirstAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 			// PDFへの書き込み
 			// 国籍・地域
-			editor.writeText(font, nationalityRegion, 143f, 637f, 225f, "left", 12);
+			editor.writeText(font, nationalityRegion, 130f, 653f, 125f, "left", 12);
 
 			// 生年月日
-			editor.writeText(font, birthYear, 415f, 733f, 70f, "left", 12);
-			editor.writeText(font, birthMonth, 460f, 733f, 70f, "left", 12);
-			editor.writeText(font, birthDay, 505f, 733f, 70f, "left", 12);
+			editor.writeText(font, birthYear, 355f, 653f, 70f, "left", 12);
+			editor.writeText(font, birthMonth, 420f, 653f, 70f, "left", 12);
+			editor.writeText(font, birthDay, 475f, 653f, 70f, "left", 12);
 			// 名前
-			editor.writeText(font, name, 150f, 700f, 306f, "left", 10);
+			editor.writeText(font, name, 130f, 630f, 390f, "left", 12);
 			// 性別
 			if (sex.equals("男")) {
 				// 使用目的に応じて〇の位置を変える
-				editor.writeText(font, "〇", 140f, 600f, 40f, "left", 16);
+				editor.writeText(font, "〇", 101f, 604f, 40f, "left", 18);
 			} else {
-				editor.writeText(font, "〇", 170f, 600f, 40f, "left", 16);
+				editor.writeText(font, "〇", 127f, 604f, 40f, "left", 18);
 			}
 			// 配偶者の有無
 			if (maritalStatus.equals("有")) {
 				// 使用目的に応じて〇の位置を変える
-				editor.writeText(font, "〇", 340f, 600f, 40f, "left", 16);
+				editor.writeText(font, "〇", 361.5f, 605f, 40f, "left", 18);
 			} else {
-				editor.writeText(font, "〇", 370f, 600f, 40f, "left", 16);
+				editor.writeText(font, "〇", 387.5f, 604f, 40f, "left", 18);
 			}
 			// 職業	
-			editor.writeText(font, "学生", 130f, 580f, 70f, "left", 12);
+			editor.writeText(font, "学生", 105f, 577f, 100f, "left", 12);
 			// 本国における居住地
-			editor.writeText(font, homeTown, 430f, 523f, 306f, "left", 10);
+			editor.writeText(font, homeTown, 310f, 577f, 210f, "left", 12);
 			// 住所
-			editor.writeText(font, address, 200f, 553f, 306f, "left", 10);
+			editor.writeText(font, address, 130f, 557f, 390f, "left", 12);
 			// 電話番号
 			if (tel.length() == 11) {
 				tel = tel.substring(0, 3) + "-" + tel.substring(3, 7) + "-" + tel.substring(7, 11);
-				editor.writeText(font, tel, 415f, 500f, 70f, "left", 12);
+				editor.writeText(font, tel, 360f, 532f, 160f, "left", 12);
 			} else {
 				tel = tel.substring(0, 3) + "-" + tel.substring(3, 6) + "-" + tel.substring(6, 10);
-				editor.writeText(font, tel, 115f, 500f, 70f, "left", 12);
+				editor.writeText(font, tel, 130f, 532f, 100f, "left", 12);
 			}
 
-			// パスポート有効期限
-			editor.writeText(font, effectiveYear, 415f, 533f, 70f, "left", 12);
-			editor.writeText(font, effectiveMonth, 460f, 533f, 70f, "left", 12);
-			editor.writeText(font, effectiveDay, 505f, 533f, 70f, "left", 12);
+			// パスポート・有効期限
+			editor.writeText(font, passportNumber, 155f, 510f, 112f, "left", 12);
+			editor.writeText(font, effectiveYear, 370f, 510f, 70f, "left", 12);
+			editor.writeText(font, effectiveMonth, 430f, 510f, 70f, "left", 12);
+			editor.writeText(font, effectiveDay, 485f, 510f, 70f, "left", 12);
+
+			// 在留資格等
+			editor.writeText(font, statusOfResidence, 155f, 485f, 138f, "left", 12);
+			editor.writeText(font, periodOfStay, 371f, 485f, 150f, "left", 12);
+			editor.writeText(font, periodYear, 180f, 462, 40f, "left", 12);
+			editor.writeText(font, periodMonth, 240f, 462f, 40f, "left", 12);
+			editor.writeText(font, periodDay, 290f, 462f, 40f, "left", 12);
+			editor.writeText(font, residentCard, 155f, 439f, 175f, "left", 12);
+			editor.writeText(font, desiredPeriodOfStay, 155f, 416f, 113f, "left", 12);
+			editor.writeText(font, reason, 155f, 393f, 366f, "left", 12);
 			/*
-						// 学費の捻出方法
-						if (homeTown.length() < 30) {
-							editor.writeText(font, homeTown, 230f, 423f, 306f, "left", 10);
-						} else {
-							editor.writeText(font, homeTown.substring(0, 30), 230f, 423f, 306f, "left", 10);
-							editor.writeText(font, homeTown.substring(30, homeTown.length()), 166f, 400f, 370f,
-									"left", 10);
-						}
-						// 納付すべき金額
-						editor.writeText(font, sex, 345f, 354f, 170f, "right", 12);
-						// 通常納期内納付学費等
-						editor.writeText(font, periodYear, 213f, 327, 40f, "left", 12);
-						editor.writeText(font, periodMonth, 250f, 327f, 40f, "left", 12);
-						editor.writeText(font, periodDay, 295f, 327f, 40f, "left", 12);
-						editor.writeText(font, maritalStatus, 345f, 327f, 170f, "right", 12);
-			
-						if (studentType.equals("留学生")) {
-							// 使用目的に応じて〇の位置を変える
-							if (passportNumber.equals("有")) {
-								editor.writeText(font, "〇", 259f, 468f, 40f, "left", 16);
-								editor.writeText(font, periodOfStay, 410f, 377f, 70f, "left", 12);
-								editor.writeText(font, residentCard, 455f, 377f, 70f, "left", 12);
-								editor.writeText(font, reason, 498f, 377f, 70f, "left", 12);
-							} else {
-								editor.writeText(font, "〇", 282.5f, 468f, 40f, "left", 16);
-								if (statusOfResidence.length() < 16) {
-									editor.writeText(font, statusOfResidence, 380f, 471f, 157f, "left", 10);
-								} else {
-									editor.writeText(font, statusOfResidence.substring(0, 15), 380f, 471f, 157f, "left", 10);
-									editor.writeText(font, statusOfResidence.substring(15, statusOfResidence.length()), 166f,
-											448f, 370f, "left", 10);
-								}
-							}
-						}
-			
 						float row = 0;
 						for (int i = 1; i <= count; i++) {
 							// 末尾に添付する番号のString

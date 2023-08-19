@@ -24,7 +24,7 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="homeTown">本国における居住地（Home town/city）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar 14241" value="${homeTown}" required>
+	                <input class="form-control" type="text" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar" value="${homeTown}" required>
 	            </div>
   	            <!-- 性別 -->
   				<div class="col-md-6 mb-5">
