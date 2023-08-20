@@ -12,7 +12,7 @@
    			<p class="text-start">・在留期間更新許可申請書は３枚組で、当該書類は１枚目です。</p>
   			<p class="text-start">(The application form for permission to extend the period of stay is in triplicate, and the said document is the first one.)</p>
   			<p class="text-start">・当該書類は印刷後、顔写真の貼り付けをお願いします。</p>
-   			<p class="text-start margin-bottom-50">(Please print out the relevant documents and paste your photo on them.)</p>
+   			<p class="text-start margin-bottom-50 border-bottom">(Please print out the relevant documents and paste your photo on them.)</p>
 	        <div class="row">
   	            <!-- 国籍・地域 -->
 	            <div class="col-md-6 mb-5">
