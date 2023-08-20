@@ -7,7 +7,7 @@
 	<div class="container">
 		<h3 class="pt-1 pb-5 pl-5 pr-5"><strong>${createPDF}</strong></h3>
 		<p class="md-5">ＰＤＦ保存先はダウンロードフォルダです。(The PDF is saved in the download folder.)</p>
-		<a href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update-second.jsp" class="w-100 btn btn-lg btn-success mb-3">２枚目作成画面へ移行（Move to the screen for creating the second sheet）</a>
+		<a href="<%=request.getContextPath()%>/mainMenu/internationalStudent/period-update-third.jsp" class="w-100 btn btn-lg btn-success mb-3">３枚目作成画面へ移行（Move to the screen for creating the third sheet）</a>
 		<a href="<%=request.getContextPath()%>/mainMenu/main-menu.jsp" class="w-100 btn btn-lg btn-primary mb-3">HOME</a>
 	</div>
 </main>
