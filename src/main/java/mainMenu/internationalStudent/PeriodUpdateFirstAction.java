@@ -125,7 +125,7 @@ public class PeriodUpdateFirstAction extends Action {
 			request.setAttribute("residentCardError", "在留カード番号は12文字で入力してください。");
 		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
 			// 在留カード番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
-			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
+			request.setAttribute("residentCardError", "在留カード番号は記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
 		}
 
 		if (criminalRecord.equals("有") && (reasonForTheCrime == null || reasonForTheCrime.isEmpty())) {
@@ -151,9 +151,9 @@ public class PeriodUpdateFirstAction extends Action {
 			// 入力された値を変数に格納
 			String relationship = request.getParameter("relationship" + num);
 			String relativeName = request.getParameter("relativeName" + num);
-			String birthYear = request.getParameter("birthYear" + num);
-			String birthMonth = request.getParameter("birthMonth" + num);
-			String birthDay = request.getParameter("birthDay" + num);
+			String relativeBirthYear = request.getParameter("relativeBirthYear" + num);
+			String relativeBirthMonth = request.getParameter("relativeBirthMonth" + num);
+			String relativeBirthDay = request.getParameter("relativeBirthDay" + num);
 			String relativeNationalityRegion = request.getParameter("relativeNationalityRegion" + num);
 			String livingTogether = request.getParameter("livingTogether" + num);
 			String placeOfEmployment = request.getParameter("placeOfEmployment" + num);
@@ -165,9 +165,9 @@ public class PeriodUpdateFirstAction extends Action {
 				// 未入力項目があればbreakする			    
 			} else if (relationship == null || relationship.isEmpty()
 					|| relativeName == null || relativeName.isEmpty()
-					|| birthYear == null || birthYear.isEmpty()
-					|| birthMonth == null || birthMonth.isEmpty()
-					|| birthDay == null || birthDay.isEmpty()
+					|| relativeBirthYear == null || relativeBirthYear.isEmpty()
+					|| relativeBirthMonth == null || relativeBirthMonth.isEmpty()
+					|| relativeBirthDay == null || relativeBirthDay.isEmpty()
 					|| relativeNationalityRegion == null || relativeNationalityRegion.isEmpty()
 					|| livingTogether == null || livingTogether.isEmpty()
 					|| placeOfEmployment == null || placeOfEmployment.isEmpty()
@@ -183,9 +183,9 @@ public class PeriodUpdateFirstAction extends Action {
 
 			// 年月日が存在しない日付の場合はエラーにする
 			try {
-				int checkYear = Integer.parseInt(birthYear);
-				int checkMonth = Integer.parseInt(birthMonth);
-				int checkDay = Integer.parseInt(birthDay);
+				int checkYear = Integer.parseInt(relativeBirthYear);
+				int checkMonth = Integer.parseInt(relativeBirthMonth);
+				int checkDay = Integer.parseInt(relativeBirthDay);
 				// 日付の妥当性チェック
 				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 			} catch (DateTimeException e) {
@@ -198,9 +198,19 @@ public class PeriodUpdateFirstAction extends Action {
 				request.setAttribute("valueLongError", "32文字以下で入力してください。");
 			}
 
+			// 在留カードの記号番号のチェック
+			if (cardNumber.length() != 12) {
+				// 文字数が12文字でない場合はエラーを返す
+				request.setAttribute("residentCardError", "在留カード番号は12文字で入力してください。");
+			} else if (!cardNumber.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
+				// 在留カード番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
+				request.setAttribute("residentCardError", "在留カード番号は記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
+			}
+
 			// エラーが発生している場合は元のページに戻す
 			if (request.getAttribute("dayError") != null
-					|| request.getAttribute("valueLongError") != null) {
+					|| request.getAttribute("valueLongError") != null
+					|| request.getAttribute("residentCardError") != null) {
 				return "period-update-first.jsp";
 			}
 
@@ -338,25 +348,55 @@ public class PeriodUpdateFirstAction extends Action {
 			editor.writeText(font, residentCard, 155f, 439f, 175f, "left", 12);
 			editor.writeText(font, desiredPeriodOfStay, 155f, 416f, 113f, "left", 12);
 			editor.writeText(font, reason, 155f, 393f, 366f, "left", 12);
-			/*
-						float row = 0;
-						for (int i = 1; i <= count; i++) {
-							// 末尾に添付する番号のString
-							String num = String.valueOf(i);
-			
-							// 入力された値を変数に格納
-							String birthYear = request.getParameter("birthYear" + num);
-							String birthMonth = request.getParameter("birthMonth" + num);
-							String birthDay = request.getParameter("birthDay" + num);
-							String deferredPaymentAmount = request.getParameter("deferredPaymentAmount" + num);
-							// PDFへの記入
-							editor.writeText(font, birthYear, 213f, 300f - row, 40f, "left", 12);
-							editor.writeText(font, birthMonth, 250f, 300f - row, 40f, "left", 12);
-							editor.writeText(font, birthDay, 295f, 300f - row, 40f, "left", 12);
-							editor.writeText(font, deferredPaymentAmount, 345f, 300f - row, 170f, "right", 12);
-			
-							row += 26;
-						}*/
+
+			// 犯罪歴の有無
+			if (criminalRecord.equals("有")) {
+				editor.writeText(font, "〇", 75f, 353.5f, 40f, "left", 18);
+				editor.writeText(font, reasonForTheCrime, 155f, 353.5f, 313f, "left", 12);
+			} else {
+				editor.writeText(font, "〇", 491f, 353.5f, 40f, "left", 18);
+			}
+
+			// 在日親族及び同居者の有無
+			if (familyInJapan.equals("有")) {
+				editor.writeText(font, "〇", 75f, 308f, 40f, "left", 18);
+			} else {
+				editor.writeText(font, "〇", 398f, 308f, 40f, "left", 18);
+			}
+
+			float row = 0;
+			for (int i = 1; i <= count; i++) {
+				// 末尾に添付する番号のString
+				String num = String.valueOf(i);
+
+				// 入力された値を変数に格納
+				String relationship = request.getParameter("relationship" + num);
+				String relativeName = request.getParameter("relativeName" + num);
+				String relativeBirthYear = request.getParameter("relativeBirthYear" + num);
+				String relativeBirthMonth = request.getParameter("relativeBirthMonth" + num);
+				String relativeBirthDay = request.getParameter("relativeBirthDay" + num);
+				String relativeNationalityRegion = request.getParameter("relativeNationalityRegion" + num);
+				String livingTogether = request.getParameter("livingTogether" + num);
+				String placeOfEmployment = request.getParameter("placeOfEmployment" + num);
+				String cardNumber = request.getParameter("cardNumber" + num);
+				// PDFへの記入
+
+				editor.writeText(font, relationship, 52f, 248f - row, 39f, "center", 12);
+				editor.writeText(font, relativeName, 92f, 248f - row, 113f, "center", 12);
+				editor.writeText(font, relativeBirthYear + "年" + relativeBirthMonth + "月" + relativeBirthDay + "日",
+						206f, 248f - row, 53f, "left", 12);
+				// 在日親族及び同居者の有無
+				if (livingTogether.equals("有")) {
+					editor.writeText(font, "〇", 308f, 253f - row, 40f, "left", 12);
+				} else {
+					editor.writeText(font, "〇", 320.5f, 253f - row, 40f, "left", 12);
+				}
+				editor.writeText(font, relativeNationalityRegion, 257f, 248f - row, 37f, "center", 12);
+				editor.writeText(font, placeOfEmployment, 346f, 248f - row, 87f, "center", 12);
+				editor.writeText(font, cardNumber, 435f, 248f - row, 100f, "center", 12);
+
+				row += 20;
+			}
 
 			// Close and save
 			editor.close("在留期間更新許可申請書1枚目.pdf");
@@ -365,7 +405,7 @@ public class PeriodUpdateFirstAction extends Action {
 			// PDF作成成功画面に遷移
 			request.setAttribute("createPDF",
 					"「在留期間更新許可申請書１枚目」を作成しました。在留期間更新許可申請書は３枚組で、当該書類は１枚目です。(The application form for permission to extend the period of stay is in triplicate, and the said document is the first one.)");
-			return "create-pdf-success.jsp";
+			return "create-pdf-success-first.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

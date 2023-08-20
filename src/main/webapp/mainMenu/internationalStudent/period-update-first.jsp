@@ -176,7 +176,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reason">更新の理由（Reason for extension）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="専門学校卒業へ留学中のため" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="専門学校へ留学中のため" value="${reason}" required>
 	            </div>	            
  	            <!-- 犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）※交通違反等による処分を含む。 -->
   				<div class="col-md-12 mb-3">
@@ -249,9 +249,9 @@
 		            </div>
 	   	            <!-- 生年月日 -->
 		            <div class="col-md-4 mb-5">
-		                <label class="form-label invisible-text" for="birthYear<%= set %>">年</label>
+		                <label class="form-label invisible-text" for="relativeBirthYear<%= set %>">年</label>
 		                <span class="text-danger">*</span>
-		                <select name=" set %>" class="form-control select-center" data-required="true">
+		                <select name="relativeBirthYear<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="">-- 年 --</option>
 		                    <% for(int i=currentYear-110; i <=currentYear;
 		                        i++){ %>
@@ -262,9 +262,9 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-5">
-		                <label class="form-label" for="birthMonth<%= set %>">生年月日（Date of birth）</label>
+		                <label class="form-label" for="relativeBirthMonth<%= set %>">生年月日（Date of birth）</label>
 		                <span class="text-danger">*</span>
-		                <select name="birthMonth<%= set %>" class="form-control select-center" data-required="true">
+		                <select name="relativeBirthMonth<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="">-- 月 --</option>
 		                    <% for(int i=1; i <=12; i++){ %>
 		                        <option value="<%= i %>">
@@ -274,9 +274,9 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-5">
-		                <label class="form-label invisible-text" for="birthDay<%= set %>">日</label>
+		                <label class="form-label invisible-text" for="relativeBirthDay<%= set %>">日</label>
 		                <span class="text-danger">*</span>
-		                <select name="birthDay<%= set %>" class="form-control select-center" data-required="true">
+		                <select name="relativeBirthDay<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="">-- 日 --</option>
 		                    <% for(int i=1; i <=31; i++){ %>
 		                        <option value="<%= i %>">

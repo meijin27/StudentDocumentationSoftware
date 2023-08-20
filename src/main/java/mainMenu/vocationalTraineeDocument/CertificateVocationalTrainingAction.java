@@ -170,17 +170,17 @@ public class CertificateVocationalTrainingAction extends Action {
 			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
 			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);
 			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
-			editor.writeSymbolsOnCalendar(font, calendar, 408f, 446f, 21f, 21.2f, 22);
+			editor.writeSymbolsOnCalendar(font, calendar, 407f, 446f, 21f, 21.2f, 22);
 			if (problems.equals("した")) {
-				editor.writeText(font, "〇", 445f, 255f, 50f, "left", 16);
+				editor.writeText(font, "〇", 445f, 255.5f, 50f, "left", 16);
 			} else {
-				editor.writeText(font, "〇", 484f, 255f, 50f, "left", 16);
+				editor.writeText(font, "〇", 483.5f, 255.5f, 50f, "left", 16);
 			}
 
 			if (income.equals("得た")) {
-				editor.writeText(font, "〇", 445f, 233f, 50f, "left", 16);
+				editor.writeText(font, "〇", 445f, 233.5f, 50f, "left", 16);
 			} else {
-				editor.writeText(font, "〇", 484f, 233f, 50f, "left", 16);
+				editor.writeText(font, "〇", 483.5f, 233.5f, 50f, "left", 16);
 			}
 
 			editor.writeText(font, namePESO, 30f, 150f, 40f, "left", 16);

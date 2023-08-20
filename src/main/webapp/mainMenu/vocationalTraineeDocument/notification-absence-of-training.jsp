@@ -70,7 +70,7 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">理由（22文字以下）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" value="${reason}" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>
 	            <!-- 終日休業有無 -->
 				<div class="col-md-12 mb-5">
