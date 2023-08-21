@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 public class CustomLogger {
 	private static Logger logger;
 
+	// エラー発生時にログを記載する。ユーザーのHome画面に「StudentDocumentationSoftwareLog」というフォルダを作成し、その中にログを作成する
 	public static synchronized Logger getLogger(Class<?> className) {
 		if (logger == null) {
 			logger = Logger.getLogger(className.getName());

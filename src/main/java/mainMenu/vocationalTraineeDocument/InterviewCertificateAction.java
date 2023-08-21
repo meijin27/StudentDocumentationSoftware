@@ -204,15 +204,18 @@ public class InterviewCertificateAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
+			// PDFへの書き込み
+			// クラス名・名前
 			editor.writeText(font, className, 230f, 645f, 230f, "center", 12);
 			editor.writeText(font, name, 230f, 600f, 230f, "center", 12);
+			// 求人職種
 			editor.writeText(font, jobSearch, 230f, 560f, 230f, "center", 12);
+			// 期間（自）
 			editor.writeText(font, startYear, 290f, 508f, 70f, "left", 12);
 			editor.writeText(font, startMonth, 323f, 508f, 70f, "left", 12);
 			editor.writeText(font, startDay, 355f, 508f, 70f, "left", 12);
 			editor.writeText(font, startHour, 430f, 508f, 70f, "left", 12);
-
+			// 期間（至）
 			editor.writeText(font, endYear, 290f, 436f, 70f, "left", 12);
 			editor.writeText(font, endMonth, 323f, 436f, 70f, "left", 12);
 			editor.writeText(font, endDay, 355f, 436f, 70f, "left", 12);
@@ -229,7 +232,7 @@ public class InterviewCertificateAction extends Action {
 			} else {
 				editor.writeText(font, "〇", 396f, 410f, 50f, "left", 32);
 			}
-
+			// 公共職業安定所名
 			editor.writeText(font, namePESO, 150f, 285f, 70f, "center", 12);
 
 			// Close and save

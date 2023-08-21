@@ -1,5 +1,6 @@
 package tool;
 
+// Decryptクラスで復号化したデータを格納するためのクラス
 public class DecryptionResult {
 	private String id;
 	private String account;

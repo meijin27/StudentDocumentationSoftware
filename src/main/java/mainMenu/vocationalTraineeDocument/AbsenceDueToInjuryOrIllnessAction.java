@@ -218,17 +218,24 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
+			// 名前
 			editor.writeText(font, name, 198f, 643f, 75f, "center", 12);
+			// 病状
 			editor.writeText(font, disease, 357f, 643f, 95f, "center", 12);
+			// 理由
 			editor.writeText(font, reason, 165f, 597f, 300f, "center", 12);
+			// 期間（自）
 			editor.writeText(font, startYear, 195f, 551f, 40f, "left", 16);
 			editor.writeText(font, startMonth, 263f, 551f, 40f, "left", 16);
 			editor.writeText(font, startDay, 310f, 551f, 40f, "left", 16);
+			// 期間（至）
 			editor.writeText(font, endYear, 195f, 514f, 40f, "left", 16);
 			editor.writeText(font, endMonth, 262f, 514f, 40f, "left", 16);
 			editor.writeText(font, endDay, 310f, 514f, 40f, "left", 16);
 			editor.writeText(font, daysBetween, 380f, 514f, 40f, "left", 16);
+			// 公共職業安定所名
 			editor.writeText(font, namePESO, 322f, 309f, 50f, "center", 12);
+			// 申請日・クラス名・名前
 			editor.writeText(font, requestYear, 145f, 249f, 40f, "left", 12);
 			editor.writeText(font, requestMonth, 194f, 249f, 40f, "left", 12);
 			editor.writeText(font, requestDay, 227f, 249f, 40f, "left", 12);

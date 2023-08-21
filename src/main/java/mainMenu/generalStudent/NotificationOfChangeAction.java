@@ -236,10 +236,12 @@ public class NotificationOfChangeAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
+			// PDFへの書き込み
+			// 申請年月日
 			editor.writeText(font, requestYear, 420f, 645f, 70f, "left", 12);
 			editor.writeText(font, requestMonth, 480f, 645f, 70f, "left", 12);
 			editor.writeText(font, requestDay, 523f, 645f, 70f, "left", 12);
+			// 学籍番号・名前・クラス名			
 			editor.writeText(font, studentNumber, 187f, 645f, 132f, "center", 12);
 			editor.writeText(font, name, 187f, 609f, 363f, "center", 12);
 			if (className.equals("ＩＴ・ゲームソフト科")) {
@@ -272,6 +274,7 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, "✓", 443f, 539f, 125f, "left", 12);
 			}
 
+			// 申請者の種類
 			if (ChangeSubject.equals("本人")) {
 				editor.writeText(font, "✓", 157f, 500f, 50f, "left", 12);
 			} else if (ChangeSubject.equals("保護者")) {
@@ -280,6 +283,7 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, "✓", 299f, 500f, 50f, "left", 12);
 			}
 
+			// 変更後の住所
 			if (changeAddress) {
 				editor.writeText(font, "✓", 63f, 446f, 50f, "left", 12);
 				float num = 0;
@@ -302,6 +306,7 @@ public class NotificationOfChangeAction extends Action {
 				}
 			}
 
+			// 変更後の電話番号
 			if (changeTel) {
 				editor.writeText(font, "✓", 63f, 383f, 50f, "left", 12);
 				// 電話番号を3分割する
@@ -322,6 +327,7 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, lastTel, 360f, 383f, 40f, "left", 16);
 			}
 
+			// 変更後の在留カード
 			if (changeResidentCard) {
 				editor.writeText(font, "✓", 63f, 322f, 50f, "left", 12);
 
@@ -336,6 +342,7 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, endDay, 395f, 303f, 180f, "left", 12);
 			}
 
+			// 変更後の名前
 			if (changeName) {
 				editor.writeText(font, "✓", 63f, 265f, 50f, "left", 12);
 				String newName = lastName + " " + firstName;

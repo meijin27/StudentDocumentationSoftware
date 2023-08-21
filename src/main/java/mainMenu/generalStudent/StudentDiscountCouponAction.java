@@ -263,22 +263,26 @@ public class StudentDiscountCouponAction extends Action {
 				String reason = request.getParameter("reason" + num);
 
 				// PDFへの記入
+				// 申請年月日
 				editor.writeText(font, requestYear, 173f, 666f - row, 40f, "left", 12);
 				editor.writeText(font, requestMonth, 230f, 666f - row, 40f, "left", 12);
 				editor.writeText(font, requestDay, 275f, 666f - row, 40f, "left", 12);
+				// 必要枚数
 				editor.writeText(font, sheetsRequired, 350f, 666f - row, 40f, "left", 12);
+				// 乗車線区間
 				editor.writeText(font, startingStation, 138f, 632f - row, 97f, "center", 12);
 				editor.writeText(font, arrivalStation, 262f, 632f - row, 84f, "center", 12);
+				// クラス名・学年・組・学籍番号・名前・年齢
 				editor.writeText(font, className, 138f, 597f - row, 135f, "center", 12);
 				editor.writeText(font, schoolYear, 305f, 597f - row, 40f, "left", 12);
 				editor.writeText(font, classNumber, 352f, 597f - row, 40f, "left", 12);
 				editor.writeText(font, studentNumber, 138f, 562f - row, 242f, "center", 12);
 				editor.writeText(font, name, 138f, 528f - row, 180f, "center", 12);
 				editor.writeText(font, String.valueOf(age), 340f, 528f - row, 40f, "left", 12);
-
+				// 郵便番号
 				editor.writeText(font, FirstPostCode, 158f, 502f - row, 180f, "left", 10);
 				editor.writeText(font, LastPostCode, 205f, 502f - row, 180f, "left", 10);
-
+				// 電話番号
 				editor.writeText(font, firstTel, 305f, 502f - row, 40f, "left", 10);
 				editor.writeText(font, secondTel, 355f, 502f - row, 40f, "left", 10);
 				editor.writeText(font, lastTel, 410f, 502f - row, 40f, "left", 10);

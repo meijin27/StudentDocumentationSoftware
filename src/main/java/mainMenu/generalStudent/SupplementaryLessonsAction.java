@@ -176,7 +176,7 @@ public class SupplementaryLessonsAction extends Action {
 			editor.writeText(font, className, 193f, 622f, 192f, "center", 12);
 			editor.writeText(font, schoolYear, 465f, 622f, 132f, "left", 12);
 			editor.writeText(font, classNumber, 497f, 622f, 132f, "left", 12);
-
+			// 受講する年度・学期・先生名・教科名・理由
 			editor.writeText(font, fiscalYear, 160f, 546f, 238f, "left", 10);
 			editor.writeText(font, semester, 205f, 546f, 238f, "left", 10);
 			editor.writeText(font, teacher, 375f, 546f, 84f, "center", 10);

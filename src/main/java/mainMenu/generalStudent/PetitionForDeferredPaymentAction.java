@@ -115,8 +115,8 @@ public class PetitionForDeferredPaymentAction extends Action {
 		if (!amountPayable.matches("\\d+") || !tuitionFeePaid.matches("\\d+") || amountPayable.length() > 7
 				|| tuitionFeePaid.length() > 7) {
 			request.setAttribute("numberError", "金額は数字のみ7桁以下で入力してください。");
-			// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
 		} else {
+			// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
 			totalPayment += Integer.parseInt(amountPayable) - Integer.parseInt(tuitionFeePaid);
 			// 文字列の数値をカンマ付きに変更する
 			amountPayable = numberFormat.format(Integer.parseInt(amountPayable));

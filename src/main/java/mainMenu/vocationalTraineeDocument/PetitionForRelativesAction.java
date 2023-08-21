@@ -176,12 +176,15 @@ public class PetitionForRelativesAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
+			// 親族氏名・親族住所・親族生年月日
 			editor.writeText(font, relativeName, 100f, 271f, 130f, "center", 12);
 			editor.writeText(font, relativeAddress, 265f, 271f, 220f, "left", 12);
-			editor.writeText(font, namePESO, 365f, 96f, 50f, "center", 12);
 			editor.writeText(font, birthYear, 120f, 240f, 70f, "left", 12);
 			editor.writeText(font, birthMonth, 163f, 240f, 70f, "left", 12);
 			editor.writeText(font, birthDay, 193f, 240f, 70f, "left", 12);
+			// 公共職業安定所名
+			editor.writeText(font, namePESO, 365f, 96f, 50f, "center", 12);
+			// 申請年月日・クラス名・名前
 			editor.writeText(font, requestYear, 105f, 62f, 40f, "left", 12);
 			editor.writeText(font, requestMonth, 155f, 62f, 40f, "left", 12);
 			editor.writeText(font, requestDay, 195f, 62f, 40f, "left", 12);

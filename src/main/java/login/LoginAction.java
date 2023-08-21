@@ -82,12 +82,12 @@ public class LoginAction extends Action {
 						String contextPath = request.getContextPath();
 						response.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
 						return null;
-						// ユーザーのデータベースに名前等が登録されていなければ初期登録ページに移動
+						// ユーザーのデータベースに学生種別が登録されていなければ初期登録ページに移動
 					} else if (studentType == null) {
 						String contextPath = request.getContextPath();
 						response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 						return null;
-						// ユーザーのデータベースにハローワーク名等が登録されていなければ職業訓練生登録ページに移動
+						// ユーザーのデータベースにハローワーク名が登録されていなければ職業訓練生登録ページに移動
 					} else if (studentType.equals("職業訓練生") && user.getNamePESO() == null) {
 						String contextPath = request.getContextPath();
 						response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");

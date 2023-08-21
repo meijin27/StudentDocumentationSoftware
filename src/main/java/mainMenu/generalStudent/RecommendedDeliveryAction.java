@@ -213,20 +213,22 @@ public class RecommendedDeliveryAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
+			// PDFへの書き込み
+			// 申請年月日
 			editor.writeText(font, requestYear, 415f, 735f, 70f, "left", 12);
 			editor.writeText(font, requestMonth, 455f, 735f, 70f, "left", 12);
 			editor.writeText(font, requestDay, 495f, 735f, 70f, "left", 12);
+			// クラス名・学籍番号・名前・生年月日
 			editor.writeText(font, className, 270f, 673f, 127f, "center", 12);
 			editor.writeText(font, studentNumber, 452f, 673f, 85f, "center", 12);
 			editor.writeText(font, name, 270f, 637f, 265f, "center", 12);
 			editor.writeText(font, birthYear, 323f, 606f, 230f, "left", 12);
 			editor.writeText(font, birthMonth, 378f, 606f, 230f, "left", 12);
 			editor.writeText(font, birthDay, 423f, 606f, 230f, "left", 12);
-
+			// 郵便番号
 			editor.writeText(font, FirstPostCode, 293f, 589f, 180f, "left", 10);
 			editor.writeText(font, LastPostCode, 335f, 589f, 180f, "left", 10);
-
+			// 電話番号
 			editor.writeText(font, firstTel, 330f, 534f, 40f, "left", 10);
 			editor.writeText(font, secondTel, 385f, 534f, 40f, "left", 10);
 			editor.writeText(font, lastTel, 440f, 534f, 40f, "left", 10);
@@ -238,11 +240,11 @@ public class RecommendedDeliveryAction extends Action {
 				editor.writeText(font, address.substring(0, 22), 270f, 570f, 267f, "left", 12);
 				editor.writeText(font, address.substring(22, address.length()), 270f, 550f, 267f, "left", 12);
 			}
-
+			// 提出期限
 			editor.writeText(font, deadlineYear, 155f, 426f, 70f, "left", 12);
 			editor.writeText(font, deadlineMonth, 195f, 426f, 70f, "left", 12);
 			editor.writeText(font, deadlineDay, 240f, 426f, 70f, "left", 12);
-
+			// 使用目的
 			if (subject.equals("就職試験")) {
 				editor.writeText(font, "✓", 119f, 478f, 50f, "left", 12);
 			} else if (subject.equals("大学（編）入学試験")) {
@@ -251,9 +253,9 @@ public class RecommendedDeliveryAction extends Action {
 				editor.writeText(font, "✓", 328f, 478f, 50f, "left", 12);
 				editor.writeText(font, reason, 382f, 479f, 125f, "center", 12);
 			}
-
+			// 提出先
 			editor.writeText(font, propose, 115f, 452f, 420f, "left", 12);
-
+			// 書式
 			if (nominationForm.equals("本校書式")) {
 				editor.writeText(font, "✓", 142f, 398f, 50f, "left", 12);
 			} else {

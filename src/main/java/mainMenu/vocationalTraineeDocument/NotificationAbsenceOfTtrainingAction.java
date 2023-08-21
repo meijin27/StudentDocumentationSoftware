@@ -297,6 +297,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
+			// クラス名・出席番号・名前・雇用保険区分
 			editor.writeText(font, className, 85f, 469f, 135f, "center", 12);
 			editor.writeText(font, attendanceNumber, 305, 469f, 75f, "center", 12);
 			editor.writeText(font, name, 460f, 469f, 145f, "center", 12);
@@ -305,6 +306,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			} else {
 				editor.writeText(font, "〇", 761f, 467f, 75f, "left", 18);
 			}
+			// 申請年月
 			editor.writeText(font, "令和" + subjectYear, 55f, 442f, 95f, "left", 12);
 			editor.writeText(font, subjectMonth, 115f, 442f, 40f, "left", 12);
 
@@ -322,9 +324,8 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				String latenessTime = request.getParameter("latenessTime" + num);
 				String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
 				String AttachmentOfCertificate = request.getParameter("AttachmentOfCertificate" + num);
-
+				// 月日・欠席日数
 				editor.writeText(font, subjectMonth, 44f, 386f - row, 40f, "left", 12);
-
 				editor.writeText(font, restedDayStart, 73f, 386f - row, 40f, "left", 12);
 				editor.writeText(font, parameters.get("startDayOfWeek" + num), 112f, 386f - row, 40f, "left", 12);
 
@@ -358,7 +359,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 						editor.writeText(font, leaveEarlyTime, 459f, 378f - row, 70f, "center", 12);
 					}
 				}
-
+				// 累計時限
 				editor.writeText(font, parameters.get("totalHours" + num), 535f, 378f - row, 70f, "center", 12);
 
 				// 雇用保険の有無に応じて〇の位置を変える

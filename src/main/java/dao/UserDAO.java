@@ -19,6 +19,7 @@ public class UserDAO extends DAO {
 		void accept(T t) throws SQLException;
 	}
 
+	// エラー処理用メソッド
 	public void executeSqlOperation(SqlConsumer<Connection> operation) {
 		Connection con = null;
 		try {
@@ -56,6 +57,7 @@ public class UserDAO extends DAO {
 		}
 	}
 
+	// ログイン用メソッド、入力されたアカウント名をデータベースから探して必要な情報を渡す
 	public User loginSearch(String account) {
 		AtomicReference<User> userRef = new AtomicReference<>();
 		executeSqlOperation(con -> {
@@ -81,6 +83,7 @@ public class UserDAO extends DAO {
 		return userRef.get();
 	}
 
+	// アカウント作成用メソッド、削除されたアカウント名を含めてデータベースから同一アカウントがないか探す
 	public User createSearch(String account) throws Exception {
 		AtomicReference<User> userRef = new AtomicReference<>();
 		executeSqlOperation(con -> {
@@ -99,6 +102,7 @@ public class UserDAO extends DAO {
 		return userRef.get();
 	}
 
+	// 各ゲッターに対応するメソッド、ゲッターに入力されたフィールドをデータベースから抽出する
 	private String getField(String field, String id) {
 		AtomicReference<String> ref = new AtomicReference<>();
 		executeSqlOperation(con -> {
@@ -115,6 +119,7 @@ public class UserDAO extends DAO {
 		return ref.get();
 	}
 
+	// 新規アカウント作成用メソッド、アカウント名・パスワード・マスターキー・IVをデータベースに登録する
 	public int accountInsert(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -132,6 +137,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// 秘密の質問と答え登録用メソッド
 	public int updateSecret(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -149,6 +155,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// 初期登録用メソッド
 	public int updateFirstSetting(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -181,6 +188,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// 職業訓練生初期登録用メソッド
 	public int updateVocationalTraineeSetting(User user) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -199,6 +207,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// 各セッターに対応するメソッド、セッターに入力されたフィールドをデータベースに登録し更新する
 	private int updateField(String field, String value, String id) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -214,6 +223,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// アカウント削除用メソッド
 	public int accountDeleted(String userId) throws Exception {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
@@ -227,6 +237,7 @@ public class UserDAO extends DAO {
 		return line[0];
 	}
 
+	// ログイン情報登録用メソッド
 	public void addLoginLog(String userId, String ipAddress) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
@@ -238,6 +249,7 @@ public class UserDAO extends DAO {
 		});
 	}
 
+	// 何かしらの操作をした際に記録するログ用メソッド
 	public void addOperationLog(String userId, String operation) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
@@ -249,8 +261,7 @@ public class UserDAO extends DAO {
 		});
 	}
 
-	// Getter methods
-
+	// 以下ゲッター
 	public String getAccount(String id) {
 		return getField("account", id);
 	}
@@ -367,7 +378,7 @@ public class UserDAO extends DAO {
 		return getField("supply_number", id);
 	}
 
-	// Setter methods
+	// 以下セッター
 	public int updatePassword(User user) throws Exception {
 		return updateField("password", user.getPassword(), user.getId());
 	}

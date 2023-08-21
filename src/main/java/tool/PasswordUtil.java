@@ -12,6 +12,7 @@ public class PasswordUtil {
 	private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final int MASTER_KEY_SIZE = 16;
 
+	// パスワードをハッシュ化させるメソッド
 	public static String getHashedPassword(String password) {
 		try {
 			return BCrypt.hashpw(password, BCrypt.gensalt());
@@ -21,6 +22,7 @@ public class PasswordUtil {
 		}
 	}
 
+	// マスターキー作成メソッド
 	private static String generateEncryptionKey() {
 		try {
 			SecureRandom random = new SecureRandom();
@@ -33,6 +35,7 @@ public class PasswordUtil {
 		}
 	}
 
+	// IV作成用メソッド
 	private static String generateIV() {
 		try {
 			SecureRandom random = new SecureRandom();
@@ -46,6 +49,7 @@ public class PasswordUtil {
 		}
 	}
 
+	// アカウント作成時にパスワードのハッシュ化・マスターキー及びIV作成と暗号化を行うメソッド
 	public static User register(String account, String password) {
 		try {
 			String hashedPassword = getHashedPassword(password);
@@ -68,6 +72,7 @@ public class PasswordUtil {
 		}
 	}
 
+	// ハッシュ化されたパスワードと入力されたパスワードが一致するか確認するメソッド
 	public static boolean isPasswordMatch(String candidatePassword, String hashedPassword) {
 		try {
 			return BCrypt.checkpw(candidatePassword, hashedPassword);
@@ -77,6 +82,7 @@ public class PasswordUtil {
 		}
 	}
 
+	// マスターキーを用いて暗号化するメソッド
 	private static String encryptWithAES(String key, String iv, String value) {
 		try {
 			return CipherUtil.encrypt(key, iv, value);

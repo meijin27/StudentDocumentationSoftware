@@ -165,24 +165,27 @@ public class CertificateVocationalTrainingAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
+			// PDFへの書き込み
+			// 名前・申請年月・クラス名
 			editor.writeText(font, name, 135f, 493f, 200f, "left", 12);
 			editor.writeText(font, subjectYear, 485f, 493f, 30f, "left", 12);
 			editor.writeText(font, subjectMonth, 518f, 493f, 30f, "left", 12);
 			editor.writeText(font, className, 135f, 470f, 200f, "left", 12);
+			// 日毎の書き込み
 			editor.writeSymbolsOnCalendar(font, calendar, 407f, 446f, 21f, 21.2f, 22);
+			// 就労有無
 			if (problems.equals("した")) {
 				editor.writeText(font, "〇", 445f, 255.5f, 50f, "left", 16);
 			} else {
 				editor.writeText(font, "〇", 483.5f, 255.5f, 50f, "left", 16);
 			}
-
+			// 収入有無
 			if (income.equals("得た")) {
 				editor.writeText(font, "〇", 445f, 233.5f, 50f, "left", 16);
 			} else {
 				editor.writeText(font, "〇", 483.5f, 233.5f, 50f, "left", 16);
 			}
-
+			// 公共職業安定所名・名前・クラス名
 			editor.writeText(font, namePESO, 30f, 150f, 40f, "left", 16);
 			editor.writeText(font, name, 310f, 165f, 200f, "left", 12);
 			editor.writeText(font, supplyNumber, 310f, 147f, 200f, "left", 12);

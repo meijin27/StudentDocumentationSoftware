@@ -25,6 +25,7 @@ public class CertificateOfEmploymentAction extends Action {
 
 	private static final Logger logger = CustomLogger.getLogger(CertificateOfEmploymentAction.class);
 
+	// 月ごとの末日を判定するためのメソッド
 	private int getLastDayOfMonth(int month) {
 		switch (month) {
 		case 2:
@@ -194,20 +195,26 @@ public class CertificateOfEmploymentAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
+			// PDFへの書き込み
+			// 学校名
 			editor.writeText(font, "横浜システム工学院専門学校", 415f, 735f, 147f, "left", 11);
-
+			// 生年月日
 			editor.writeText(font, birthYear, 415f, 644f, 30f, "left", 12);
 			editor.writeText(font, birthMonth, 470f, 644f, 30f, "left", 12);
 			editor.writeText(font, birthDay, 513f, 644f, 30f, "left", 12);
-
+			// 名前
 			editor.writeText(font, name, 415f, 663f, 147f, "left", 12);
+			// 就労した月
 			editor.writeText(font, firstMonth, 110f, 608f, 30f, "left", 12);
 			editor.writeText(font, secondMonth, 400f, 608f, 30f, "left", 12);
+			// クラス名
 			editor.writeText(font, className, 415f, 698f, 147f, "left", 12);
+			// 就労した日
 			editor.writeSymbolsOnCalendar(font, firstMonthCalendar, 62f, 581.5f, 31.2f, 23.3f, 20);
 			if (secondMonth != null && !secondMonth.isEmpty()) {
 				editor.writeSymbolsOnCalendar(font, secondMonthCalendar, 352.5f, 581.5f, 30.6f, 23.3f, 20);
 			}
+			// 公共職業安定所名
 			editor.writeText(font, namePESO, 90f, 428f, 55f, "center", 12);
 
 			// Close and save

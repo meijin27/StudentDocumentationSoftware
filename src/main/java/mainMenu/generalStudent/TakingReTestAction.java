@@ -176,7 +176,7 @@ public class TakingReTestAction extends Action {
 			editor.writeText(font, className, 193f, 627f, 192f, "center", 12);
 			editor.writeText(font, schoolYear, 465f, 627f, 132f, "left", 12);
 			editor.writeText(font, classNumber, 497f, 627f, 132f, "left", 12);
-
+			// 受講する年度・学期・先生名・教科名・理由
 			editor.writeText(font, fiscalYear, 160f, 541.5f, 238f, "left", 10);
 			editor.writeText(font, semester, 205f, 541.5f, 238f, "left", 10);
 			editor.writeText(font, teacher, 393f, 541.5f, 67f, "center", 10);

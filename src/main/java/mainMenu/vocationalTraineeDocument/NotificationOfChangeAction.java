@@ -271,28 +271,29 @@ public class NotificationOfChangeAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
+			// 変更年月日
 			editor.writeText(font, changeYear, 305f, 667f, 70f, "left", 12);
 			editor.writeText(font, changeMonth, 348f, 667f, 70f, "left", 12);
 			editor.writeText(font, changetDay, 390f, 667f, 70f, "left", 12);
-
+			// 変更前後の名前
 			if (changeName) {
 				editor.writeText(font, oldLastName, 185f, 540f, 77f, "center", 12);
 				editor.writeText(font, oldFirstName, 268f, 540f, 77f, "center", 12);
 				editor.writeText(font, lastName, 350f, 540f, 77f, "center", 12);
 				editor.writeText(font, firstName, 435f, 540f, 77f, "center", 12);
 			}
-
+			// 変更前後の住所	
 			if (changeAddress) {
 				editor.writeText(font, oldPostCode, 200f, 512f, 115f, "left", 12);
 				editor.writeText(font, postCode, 366f, 512f, 117f, "left", 12);
-
+				// 住所の長さによって記載個所を変更
 				if (oldAddress.length() > 13) {
 					editor.writeText(font, oldAddress.substring(0, 13), 185f, 495f, 163f, "left", 12);
 					editor.writeText(font, oldAddress.substring(13, oldAddress.length()), 185f, 480f, 163f, "left", 12);
 				} else {
 					editor.writeText(font, oldAddress, 185f, 488f, 163f, "left", 12);
 				}
-
+				// 住所の長さによって記載個所を変更
 				if (address.length() > 13) {
 					editor.writeText(font, address.substring(0, 13), 350f, 495f, 163f, "left", 12);
 					editor.writeText(font, address.substring(13, address.length()), 350f, 480f, 163f, "left", 12);
@@ -300,12 +301,12 @@ public class NotificationOfChangeAction extends Action {
 					editor.writeText(font, address, 350f, 488f, 163f, "left", 12);
 				}
 			}
-
+			// 変更前後の電話番号
 			if (changeTel) {
 				editor.writeText(font, oldTel, 185f, 435f, 163f, "center", 12);
 				editor.writeText(font, tel, 350f, 435f, 160f, "center", 12);
 			}
-
+			// 申請年月日・クラス名・名前
 			editor.writeText(font, requestYear, 125f, 331f, 40f, "left", 12);
 			editor.writeText(font, requestMonth, 168f, 331f, 40f, "left", 12);
 			editor.writeText(font, requestDay, 210f, 331f, 40f, "left", 12);
@@ -315,7 +316,7 @@ public class NotificationOfChangeAction extends Action {
 			// Close and save
 			editor.close("氏名・住所等変更届.pdf");
 			// 出力内容のデータベースへの登録
-			dao.addOperationLog(id, "Printing Notification Of Change");
+			dao.addOperationLog(id, "Printing Vocational Trainee Notification Of Change");
 			// PDF作成成功画面に遷移
 			request.setAttribute("createPDF", "「氏名・住所等変更届」を作成しました。");
 			return "create-pdf-success.jsp";

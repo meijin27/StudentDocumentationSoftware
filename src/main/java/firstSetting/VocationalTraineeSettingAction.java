@@ -1,5 +1,7 @@
 package firstSetting;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -29,6 +31,14 @@ public class VocationalTraineeSettingAction extends Action {
 		String attendanceNumber = request.getParameter("attendanceNumber");
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
+		// 入力された値をリクエストに格納
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			String paramValue = request.getParameter(paramName);
+			request.setAttribute(paramName, paramValue);
+		}
+
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
 		if (namePESO == null
 				|| supplyNumber == null || attendanceNumber == null || employmentInsurance == null || namePESO.isEmpty()
@@ -36,21 +46,15 @@ public class VocationalTraineeSettingAction extends Action {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "vocational-trainee-setting.jsp";
 		}
-		// 未入力項目があればエラーを返す(雇用保険「有」の場合は支給番号を記載する必要あり)
+		// 雇用保険「有」の場合は支給番号を記載する必要あり
 		else if (employmentInsurance.equals("有") && supplyNumber.isEmpty()) {
 			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
 			return "vocational-trainee-setting.jsp";
 		}
 		// 雇用保険「無」の場合で支給番号を記載している場合は支給番号を強制的に下記文字列にする。
 		else if (employmentInsurance.equals("無")) {
-			supplyNumber = "支給番号は雇用保険有の方のみに付与されます。";
+			supplyNumber = "支給番号無し";
 		}
-
-		// 入力された値をリクエストに格納	
-		request.setAttribute("namePESO", namePESO);
-		request.setAttribute("supplyNumber", supplyNumber);
-		request.setAttribute("attendanceNumber", attendanceNumber);
-		request.setAttribute("employmentInsurance", employmentInsurance);
 
 		// 出席番号が半角2桁以下でなければエラーを返す
 		if (!attendanceNumber.matches("^\\d{1,2}$")) {

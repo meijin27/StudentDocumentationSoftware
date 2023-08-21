@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// サーブレットのファイル名末尾がActionだった場合にページ遷移するためのクラス
+// ｊｓｐのform内に***.actionと記載されていた場合、***Action.javaのファイルに遷移するためのクラス
 @WebServlet(urlPatterns = { "*.action" })
 public class FrontController extends HttpServlet {
 	private static final Logger logger = CustomLogger.getLogger(FrontController.class);

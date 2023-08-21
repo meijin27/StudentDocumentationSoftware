@@ -216,17 +216,19 @@ public class PermissionBikeAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
+			// PDFへの書き込み
+			// 申請年月日
 			editor.writeText(font, requestYear, 430f, 733f, 70f, "left", 12);
 			editor.writeText(font, requestMonth, 470f, 733f, 70f, "left", 12);
 			editor.writeText(font, requestDay, 510f, 733f, 70f, "left", 12);
+			// クラス名・学籍番号・名前
 			editor.writeText(font, className, 242f, 676f, 125f, "center", 12);
 			editor.writeText(font, studentNumber, 418f, 676f, 120f, "center", 12);
 			editor.writeText(font, name, 242f, 648f, 270f, "center", 12);
-
+			// 郵便番号
 			editor.writeText(font, FirstPostCode, 262f, 622f, 180f, "left", 10);
 			editor.writeText(font, LastPostCode, 305f, 622f, 180f, "left", 10);
-
+			// 電話番号
 			editor.writeText(font, firstTel, 402f, 622f, 40f, "left", 10);
 			editor.writeText(font, secondTel, 447f, 622f, 40f, "left", 10);
 			editor.writeText(font, lastTel, 497f, 622f, 40f, "left", 10);
@@ -238,9 +240,9 @@ public class PermissionBikeAction extends Action {
 				editor.writeText(font, address.substring(0, 24), 242f, 610f, 295f, "left", 12);
 				editor.writeText(font, address.substring(24, address.length()), 242f, 595f, 295f, "left", 12);
 			}
-
+			// 保護者
 			editor.writeText(font, patron, 242f, 576f, 112f, "center", 12);
-
+			// 保護者電話番号
 			if (patronTel.length() == 11) {
 				firstTel = patronTel.substring(0, 3);
 				secondTel = patronTel.substring(3, 7);
@@ -253,30 +255,30 @@ public class PermissionBikeAction extends Action {
 				patronTel = firstTel + "-" + secondTel + "-" + lastTel;
 			}
 			editor.writeText(font, patronTel, 418f, 576f, 120f, "center", 12);
-
+			// 名前・学籍番号
 			editor.writeText(font, name, 68f, 290f, 103f, "center", 12);
 			editor.writeText(font, studentNumber, 240f, 290f, 68f, "center", 12);
 
 			float num = 0;
 			for (int i = 0; i < 2; i++) {
+				// 自転車か原動機付自転車か選択
 				if (classification.equals("自転車")) {
 					editor.writeText(font, "✓", 117f, 519f - num, 50f, "left", 12);
 				} else {
 					editor.writeText(font, "✓", 192f, 519f - num, 50f, "left", 12);
 				}
-
+				// 期間（自）
 				editor.writeText(font, startYear, 150f, 501f - num, 180f, "left", 12);
 				editor.writeText(font, startMonth, 190f, 501f - num, 180f, "left", 12);
 				editor.writeText(font, startDay, 235f, 501f - num, 180f, "left", 12);
-
+				// 期間（至）
 				editor.writeText(font, endYear, 330f, 501f - num, 180f, "left", 12);
 				editor.writeText(font, endMonth, 370f, 501f - num, 180f, "left", 12);
 				editor.writeText(font, endDay, 412f, 501f - num, 180f, "left", 12);
-
+				// 原動機付自転車はナンバー、自転車は防犯登録番号
 				editor.writeText(font, registrationNumber, 108f, 482f - num, 160f, "center", 12);
+				// 車種・色
 				editor.writeText(font, modelAndColor, 320f, 482f - num, 217f, "center", 12);
-
-				editor.writeText(font, startYear, 150f, 501f - num, 180f, "left", 12);
 
 				num += 392f;
 			}

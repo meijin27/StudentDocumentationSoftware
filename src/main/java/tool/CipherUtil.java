@@ -14,6 +14,7 @@ public class CipherUtil {
 	private static String myKey = System.getenv("MY_ENCRYPTION_KEY");
 	private static String myIv = System.getenv("MY_IV");
 
+	// 環境変数が設定されていない場合にエラーを返す
 	static {
 		if (myKey == null) {
 			throw new RuntimeException("環境変数MY_ENCRYPTION_KEYが設定されていません");
@@ -23,6 +24,7 @@ public class CipherUtil {
 		}
 	}
 
+	// マスターキーを用いた暗号化
 	public static String encrypt(String key, String iv, String value) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
@@ -42,6 +44,7 @@ public class CipherUtil {
 		}
 	}
 
+	// マスターキーを用いた復号化
 	public static String decrypt(String key, String iv, String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
@@ -61,6 +64,7 @@ public class CipherUtil {
 		}
 	}
 
+	// 環境変数を用いた暗号化	
 	public static String commonEncrypt(String value) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);
@@ -80,6 +84,7 @@ public class CipherUtil {
 		}
 	}
 
+	// 環境変数を用いた復号化	
 	public static String commonDecrypt(String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);

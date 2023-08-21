@@ -55,14 +55,14 @@ public class ChangeVocationalTraineeAction extends Action {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "change-vocational-trainee.jsp";
 		}
-		// 未入力項目があればエラーを返す(雇用保険「有」の場合は支給番号を記載する必要あり)
+		// 雇用保険「有」の場合は支給番号を記載する必要あり
 		else if (employmentInsurance.equals("有") && supplyNumber.isEmpty()) {
 			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
 			return "change-vocational-trainee.jsp";
 		}
 		// 雇用保険「無」の場合で支給番号を記載している場合は支給番号を強制的に下記文字列にする。
 		else if (employmentInsurance.equals("無")) {
-			supplyNumber = "支給番号は雇用保険有の方のみに付与されます。";
+			supplyNumber = "支給番号無し";
 		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す

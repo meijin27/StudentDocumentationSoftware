@@ -48,7 +48,7 @@ public class CreateAccountAction extends Action {
 				request.setAttribute("accountError", "内部エラーが発生しました。");
 				return "create-account.jsp";
 			}
-
+			// エラーがあれば元のページに戻る
 			if (request.getAttribute("accountError") != null) {
 				return "create-account.jsp";
 			}

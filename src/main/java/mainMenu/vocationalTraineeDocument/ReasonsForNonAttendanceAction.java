@@ -235,25 +235,30 @@ public class ReasonsForNonAttendanceAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 
 			// PDFへの記載
+			// 親族氏名・親族住所・親族生年月日			
 			editor.writeText(font, relativeName, 95f, 656f, 130f, "center", 12);
 			editor.writeText(font, relativeAddress, 270f, 658f, 220f, "left", 12);
 			editor.writeText(font, birthYear, 135f, 620f, 40f, "left", 12);
 			editor.writeText(font, birthMonth, 180f, 620f, 40f, "left", 12);
 			editor.writeText(font, birthDay, 215f, 620f, 40f, "left", 12);
+			// 期間（自）
 			editor.writeText(font, startYear, 130f, 477f, 40f, "left", 12);
 			editor.writeText(font, startMonth, 190f, 477f, 40f, "left", 12);
 			editor.writeText(font, startDay, 237f, 477f, 40f, "left", 12);
+			// 期間（至）
 			editor.writeText(font, endYear, 130f, 440f, 40f, "left", 12);
 			editor.writeText(font, endMonth, 190f, 440f, 40f, "left", 12);
 			editor.writeText(font, endDay, 237f, 440f, 40f, "left", 12);
 			editor.writeText(font, daysBetween, 310f, 440f, 40f, "left", 12);
+			// 公共職業安定所名
 			editor.writeText(font, namePESO, 362f, 257f, 50f, "center", 12);
+			// 申請年月日・クラス名・名前
 			editor.writeText(font, requestYear, 100f, 207f, 40f, "left", 12);
 			editor.writeText(font, requestMonth, 155f, 207f, 40f, "left", 12);
 			editor.writeText(font, requestDay, 192f, 207f, 40f, "left", 12);
 			editor.writeText(font, className, 110f, 169f, 130f, "center", 12);
 			editor.writeText(font, name, 377f, 169f, 140f, "center", 12);
-
+			// 欠席理由
 			switch (nonAttendanceReason) {
 			case "看護":
 				editor.drawEllipse(125f, 543f, 40f, 20f);

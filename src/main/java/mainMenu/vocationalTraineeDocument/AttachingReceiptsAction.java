@@ -100,8 +100,8 @@ public class AttachingReceiptsAction extends Action {
 			EditPDF editor = new EditPDF(pdfPath);
 			// フォントの作成
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
-
-			// 	public void writeText(PDFont font, String text, float startX, float startY, float width, String align, int initialFontSize)
+			// PDFへの書き込み
+			// クラス名・名前
 			editor.writeText(font, className, 150f, 105f, 115f, "center", 12);
 			editor.writeText(font, name, 382f, 105f, 117f, "center", 12);
 
