@@ -119,7 +119,7 @@ public class PeriodUpdateThirdAction extends Action {
 			} else if (work.length() > 32 || employment.length() > 32) {
 				// 文字数が32文字より多い場合はエラーを返す
 				request.setAttribute("otherActivityError", "32文字以下で入力してください。");
-			} else if (workPhone.matches("^\\d{10,11}$")) {
+			} else if (!workPhone.matches("^\\d{10,11}$")) {
 				// 電話番号が半角10~11桁でなければエラーを返す
 				request.setAttribute("otherActivityError", "電話番号は半角数字10桁～11桁で入力してください。");
 			} else if (!workTimePerWeek.matches("\\d+") || workTimePerWeek.length() > 3 || !salary.matches("\\d+")
@@ -127,7 +127,6 @@ public class PeriodUpdateThirdAction extends Action {
 				// 稼働時間及び入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
 				request.setAttribute("otherActivityError", "稼働時間は数字のみ3桁以下、報酬は数字のみ7桁以下で入力してください。");
 			} else {
-				/*
 				// 電話番号に「-」をつける
 				if (workPhone.length() == 11) {
 					workPhone = workPhone.substring(0, 3) + "-" + workPhone.substring(3, 7) + "-"
@@ -135,7 +134,7 @@ public class PeriodUpdateThirdAction extends Action {
 				} else {
 					workPhone = workPhone.substring(0, 3) + "-" + workPhone.substring(3, 6) + "-"
 							+ workPhone.substring(6, 10);
-				}*/
+				}
 				// 文字列の数値をカンマ付きに変更する
 				salary = numberFormat.format(Integer.parseInt(salary));
 				checkOtherActivity = true;
@@ -299,7 +298,7 @@ public class PeriodUpdateThirdAction extends Action {
 					if (monthlyOrDaily.equals("月額")) {
 						editor.writeText(font, "✓", 404f, 495f, 40f, "left", 8);
 					} else {
-						editor.writeText(font, "✓", 450f, 495f, 40f, "left", 8);
+						editor.writeText(font, "✓", 443f, 495f, 40f, "left", 8);
 					}
 				}
 			} else {
@@ -332,7 +331,7 @@ public class PeriodUpdateThirdAction extends Action {
 			// PDF作成成功画面に遷移
 			request.setAttribute("createPDF",
 					"「在留期間更新許可申請書３枚目」を作成しました。在留期間更新許可申請書は３枚組で、当該書類は３枚目です。(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)");
-			return "create-pdf-success-second.jsp";
+			return "create-pdf-success-third.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
