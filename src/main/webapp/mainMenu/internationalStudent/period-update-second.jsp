@@ -131,17 +131,17 @@
      			<p class="text-start">下記３つの選択肢のうち、一つ以上を入力してください。</p>
 	  			<p class="text-start">(Please enter one or more of the three options below.)</p>	  
  	            <!-- 外国からの携行 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingAbroad">①外国からの携行（Carrying from abroad）</label>
 	                <input class="form-control" type="text" name="carryingAbroad" placeholder="2,350,000/年" value="${carryingAbroad}">
 	            </div>	  			
 	            <!-- 携行者 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingName">携行者（Name of the individual carrying cash）</label>
 	                <input class="form-control" type="text" name="carryingName" placeholder="ジョン・スミス" value="${carryingName}">
 	            </div>	  	
 	            <!-- 携行時期 -->	  			
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingTime">携行時期（Date and time of carrying cash）</label>
 	                <input class="form-control" type="text" name="carryingTime" placeholder="2020年頃" value="${carryingTime}">
 	            </div>	  	

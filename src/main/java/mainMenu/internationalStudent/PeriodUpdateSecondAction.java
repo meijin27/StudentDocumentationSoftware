@@ -100,7 +100,7 @@ public class PeriodUpdateSecondAction extends Action {
 				|| startYear == null || startYear.isEmpty() || startMonth == null || startMonth.isEmpty()
 				|| endYear == null || endYear.isEmpty() || endMonth == null || endMonth.isEmpty()) {
 			// どれかだけ入力されている場合
-			request.setAttribute("organizationError", "試験名と級又は点数は両方とも入力してください。");
+			request.setAttribute("organizationError", "日本語教育を受けた機関と期間は全て入力してください。");
 		} else if (organization.length() > 32) {
 			// 文字数が32文字より多い場合はエラーを返す
 			request.setAttribute("organizationError", "32文字以下で入力してください。");
@@ -311,39 +311,103 @@ public class PeriodUpdateSecondAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 			// PDFへの書き込み
 
-			// 性別
-			if (organization.equals("男")) {
-				// 使用目的に応じて〇の位置を変える
-				editor.writeText(font, "〇", 101f, 604f, 40f, "left", 18);
-			} else {
-				editor.writeText(font, "〇", 127f, 604f, 40f, "left", 18);
-			}
-			// 配偶者の有無
-			if (startYear.equals("有")) {
-				// 使用目的に応じて〇の位置を変える
-				editor.writeText(font, "〇", 361.5f, 605f, 40f, "left", 18);
-			} else {
-				editor.writeText(font, "〇", 387.5f, 604f, 40f, "left", 18);
-			}
-			// 職業	
-			editor.writeText(font, "学生", 105f, 577f, 100f, "left", 12);
-			// 本国における居住地
-			editor.writeText(font, attainedLevelOrScore, 310f, 577f, 210f, "left", 12);
+			// 学校名	
+			editor.writeText(font, "横浜システム工学院専門学校", 145f, 771f, 375f, "center", 12);
+			// 学校住所
+			editor.writeText(font, "神奈川県横浜市旭区東希望が丘128-4", 128f, 746f, 180f, "center", 10);
+			// 学校電話番号
+			editor.writeText(font, "045-367-1881", 400f, 746f, 120f, "center", 12);
 
-			// パスポート・有効期限
-			editor.writeText(font, startMonth, 155f, 510f, 112f, "left", 12);
-			editor.writeText(font, endYear, 370f, 510f, 70f, "left", 12);
-			editor.writeText(font, endMonth, 430f, 510f, 70f, "left", 12);
-			editor.writeText(font, others, 485f, 510f, 70f, "left", 12);
+			// 日本語能力
+			// 試験名と点数
+			if (checkTestName) {
+				editor.writeText(font, "✓", 77f, 557f, 40f, "left", 8);
+				editor.writeText(font, testName, 115f, 523f, 195f, "center", 12);
+				editor.writeText(font, attainedLevelOrScore, 355f, 523f, 165f, "center", 12);
+			}
 
-			// 在留資格等
-			editor.writeText(font, self, 155f, 485f, 138f, "left", 12);
-			editor.writeText(font, supporterLivingAbroad, 371f, 485f, 150f, "left", 12);
-			editor.writeText(font, supporterInJapan, 180f, 462, 40f, "left", 12);
-			editor.writeText(font, scholarship, 240f, 462f, 40f, "left", 12);
-			editor.writeText(font, otherDisbursement, 290f, 462f, 40f, "left", 12);
-			editor.writeText(font, carryingAbroad, 155f, 439f, 175f, "left", 12);
-			editor.writeText(font, carryingName, 155f, 416f, 113f, "left", 12);
+			// 日本語教育を受けた機関と期間
+			if (checkOrganization) {
+				editor.writeText(font, "✓", 77f, 512f, 40f, "left", 8);
+				editor.writeText(font, organization, 145f, 488f, 193f, "center", 12);
+				editor.writeText(font, startYear, 170f, 463f, 40f, "left", 12);
+				editor.writeText(font, startMonth, 240f, 463f, 112f, "left", 12);
+				editor.writeText(font, endYear, 340f, 463f, 70f, "left", 12);
+				editor.writeText(font, endMonth, 405f, 463f, 70f, "left", 12);
+			}
+
+			// その他
+			if (checkOthers) {
+				editor.writeText(font, "✓", 77f, 452f, 40f, "left", 8);
+				if (others.length() < 33) {
+					editor.writeText(font, others, 130f, 440f, 390f, "left", 12);
+				} else {
+					editor.writeText(font, others.substring(0, 32), 130f, 440f, 390f, "left", 12);
+					editor.writeText(font, others.substring(32, others.length()), 130f, 417f, 390f, "left", 12);
+				}
+			}
+
+			// 支弁方法及び月平均支弁額
+			// 本人負担
+			if (checkSelf) {
+				editor.writeText(font, "✓", 77f, 273f, 40f, "left", 8);
+				editor.writeText(font, self, 142f, 261f, 112f, "center", 12);
+			}
+
+			// 在外経費支弁者負担
+			if (checkSupporterLivingAbroad) {
+				editor.writeText(font, "✓", 315f, 273f, 40f, "left", 8);
+				editor.writeText(font, supporterLivingAbroad, 425f, 261f, 80f, "center", 12);
+			}
+
+			// 在日経費支弁者負担
+			if (checkSupporterInJapan) {
+				editor.writeText(font, "✓", 77f, 247f, 40f, "left", 8);
+				editor.writeText(font, supporterInJapan, 185f, 235f, 110f, "center", 12);
+			}
+
+			// 奨学金
+			if (checkScholarship) {
+				editor.writeText(font, "✓", 357f, 247f, 40f, "left", 8);
+				editor.writeText(font, scholarship, 425f, 235f, 81f, "center", 12);
+			}
+
+			// その他
+			if (checkOtherDisbursement) {
+				editor.writeText(font, "✓", 77f, 222f, 40f, "left", 8);
+				editor.writeText(font, otherDisbursement, 130f, 210f, 110f, "center", 12);
+			}
+
+			// 送金・携行等の別
+			// 外国からの携行
+			if (checkCarryingAbroad) {
+				editor.writeText(font, "✓", 77f, 185f, 40f, "left", 8);
+				editor.writeText(font, carryingAbroad, 170f, 173f, 112f, "center", 12);
+				editor.writeText(font, carryingName, 145f, 148f, 82f, "center", 12);
+				editor.writeText(font, carryingTime, 298f, 148f, 55f, "center", 12);
+			}
+
+			// 外国からの送金
+			if (checkRemittancesAbroad) {
+				editor.writeText(font, "✓", 315f, 185f, 40f, "left", 8);
+				editor.writeText(font, remittancesAbroad, 425f, 172f, 81f, "center", 12);
+			}
+
+			// その他
+			if (checkOtherRemittances) {
+				editor.writeText(font, "✓", 371f, 160f, 40f, "left", 8);
+				editor.writeText(font, otherRemittances, 425f, 148f, 81f, "center", 12);
+			}
+
+			// 経費支弁者
+			if (checkSupporter) {
+				editor.writeText(font, supporterName, 130f, 92f, 237f, "center", 12);
+				editor.writeText(font, supporterAddress, 130f, 67f, 237f, "center", 12);
+				editor.writeText(font, supporterTel, 425f, 67f, 96f, "center", 12);
+				editor.writeText(font, supporterEmployment, 215f, 42f, 137f, "center", 12);
+				editor.writeText(font, supporterWorkTel, 425f, 42f, 96f, "center", 12);
+				editor.writeText(font, supporterIncome, 157f, 18f, 68f, "center", 12);
+			}
 
 			// Close and save
 			editor.close("在留期間更新許可申請書2枚目.pdf");
@@ -352,7 +416,7 @@ public class PeriodUpdateSecondAction extends Action {
 			// PDF作成成功画面に遷移
 			request.setAttribute("createPDF",
 					"「在留期間更新許可申請書２枚目」を作成しました。在留期間更新許可申請書は３枚組で、当該書類は２枚目です。(The application form for permission to extend the period of stay is in triplicate, and the said document is the second one.)");
-			return "create-pdf-success-first.jsp";
+			return "create-pdf-success-second.jsp";
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
