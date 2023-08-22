@@ -1,9 +1,9 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-mainMenu.jsp" />
-
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 
+<!-- 「委託訓練欠席（遅刻・早退）届」作成用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
@@ -161,6 +161,7 @@
 	       		<% } %>
 	        </div>  
         <% } %>
+        <!-- エラー表示  -->
         <c:if test="${not empty nullError}">
             <div class="alert alert-danger text-center input-field" role="alert">
                 ${nullError}
@@ -185,7 +186,9 @@
 			<div class="alert alert-danger" role="alert">${innerError}
 			</div>
 		</c:if>
+		<!-- 追加ボタン  -->
 		<button type="button" id="addSetBtn" class="w-100 btn btn-lg btn-success mb-3">行の追加（休業期間が複数ある場合）</button>
+		<!-- サブミットボタン -->
 		<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
 	</form>
 

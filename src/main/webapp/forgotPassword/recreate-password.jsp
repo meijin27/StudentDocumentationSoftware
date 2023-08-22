@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-forgotPassword.jsp" />
 
+<!-- パスワード忘却時パスワード再設定用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="RecreatePassword.action" method="post">
@@ -17,12 +18,14 @@
 				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" placeholder="Retype Password" required> 
 				<label for="passwordCheck">Retype Password</label>
 			</div>
+			<!-- エラー表示  -->
 			<c:if test="${not empty passwordError}">
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>
 			</c:if>
 		    <input type="hidden" name="encryptedId" value="${encryptedId}">
 		    <input type="hidden" name="master_key" value="${master_key}">     
+			<!-- サブミットボタン  -->
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">再登録</button>
 		</form>
 	</div>

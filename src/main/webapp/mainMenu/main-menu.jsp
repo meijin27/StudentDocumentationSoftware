@@ -1,9 +1,9 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-mainMenu.jsp" />
-
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 
+<!-- ホーム画面JSP、運営からのお知らせをnotice.txtから読み込んで表示している  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>運営からのお知らせ</h1>

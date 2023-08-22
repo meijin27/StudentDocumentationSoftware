@@ -296,14 +296,14 @@ public class PeriodUpdateFirstAction extends Action {
 			PDFont font = PDType0Font.load(editor.getDocument(), this.getClass().getResourceAsStream(fontPath));
 			// PDFへの書き込み
 			// 国籍・地域
-			editor.writeText(font, nationalityRegion, 130f, 653f, 125f, "left", 12);
+			editor.writeText(font, nationalityRegion, 130f, 653f, 125f, "center", 12);
 
 			// 生年月日
 			editor.writeText(font, birthYear, 355f, 653f, 70f, "left", 12);
 			editor.writeText(font, birthMonth, 420f, 653f, 70f, "left", 12);
 			editor.writeText(font, birthDay, 475f, 653f, 70f, "left", 12);
 			// 名前
-			editor.writeText(font, name, 130f, 630f, 390f, "left", 12);
+			editor.writeText(font, name, 130f, 630f, 390f, "center", 12);
 			// 性別
 			if (sex.equals("男")) {
 				// 使用目的に応じて〇の位置を変える
@@ -319,40 +319,40 @@ public class PeriodUpdateFirstAction extends Action {
 				editor.writeText(font, "〇", 387.5f, 604f, 40f, "left", 18);
 			}
 			// 職業	
-			editor.writeText(font, "学生", 105f, 577f, 100f, "left", 12);
+			editor.writeText(font, "学生", 105f, 577f, 100f, "center", 12);
 			// 本国における居住地
-			editor.writeText(font, homeTown, 310f, 577f, 210f, "left", 12);
+			editor.writeText(font, homeTown, 310f, 577f, 210f, "center", 12);
 			// 住所
 			editor.writeText(font, address, 130f, 557f, 390f, "left", 12);
 			// 電話番号
 			if (tel.length() == 11) {
 				tel = tel.substring(0, 3) + "-" + tel.substring(3, 7) + "-" + tel.substring(7, 11);
-				editor.writeText(font, tel, 360f, 532f, 160f, "left", 12);
+				editor.writeText(font, tel, 360f, 532f, 160f, "center", 12);
 			} else {
 				tel = tel.substring(0, 3) + "-" + tel.substring(3, 6) + "-" + tel.substring(6, 10);
-				editor.writeText(font, tel, 130f, 532f, 100f, "left", 12);
+				editor.writeText(font, tel, 130f, 532f, 100f, "center", 12);
 			}
 
 			// パスポート・有効期限
-			editor.writeText(font, passportNumber, 155f, 510f, 112f, "left", 12);
+			editor.writeText(font, passportNumber, 155f, 510f, 112f, "center", 12);
 			editor.writeText(font, effectiveYear, 370f, 510f, 70f, "left", 12);
 			editor.writeText(font, effectiveMonth, 430f, 510f, 70f, "left", 12);
 			editor.writeText(font, effectiveDay, 485f, 510f, 70f, "left", 12);
 
 			// 在留資格等
-			editor.writeText(font, statusOfResidence, 155f, 485f, 138f, "left", 12);
-			editor.writeText(font, periodOfStay, 371f, 485f, 150f, "left", 12);
+			editor.writeText(font, statusOfResidence, 155f, 485f, 138f, "center", 12);
+			editor.writeText(font, periodOfStay, 371f, 485f, 150f, "center", 12);
 			editor.writeText(font, periodYear, 180f, 462, 40f, "left", 12);
 			editor.writeText(font, periodMonth, 240f, 462f, 40f, "left", 12);
 			editor.writeText(font, periodDay, 290f, 462f, 40f, "left", 12);
-			editor.writeText(font, residentCard, 155f, 439f, 175f, "left", 12);
-			editor.writeText(font, desiredPeriodOfStay, 155f, 416f, 113f, "left", 12);
-			editor.writeText(font, reason, 155f, 393f, 366f, "left", 12);
+			editor.writeText(font, residentCard, 155f, 439f, 175f, "center", 12);
+			editor.writeText(font, desiredPeriodOfStay, 155f, 416f, 113f, "center", 12);
+			editor.writeText(font, reason, 155f, 393f, 366f, "center", 12);
 
 			// 犯罪歴の有無
 			if (criminalRecord.equals("有")) {
 				editor.writeText(font, "〇", 75f, 353.5f, 40f, "left", 18);
-				editor.writeText(font, reasonForTheCrime, 155f, 353.5f, 313f, "left", 12);
+				editor.writeText(font, reasonForTheCrime, 155f, 353.5f, 313f, "center", 12);
 			} else {
 				editor.writeText(font, "〇", 491f, 353.5f, 40f, "left", 18);
 			}

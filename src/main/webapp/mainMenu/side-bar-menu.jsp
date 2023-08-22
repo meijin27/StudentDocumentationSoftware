@@ -6,6 +6,9 @@
   String currentURL = request.getRequestURI();
 %>
 
+<!-- サイドバー表示用JSP  -->
+<!-- 当該JSPは単独で使用しておらず、他のメインメニューのＪＳＰに組み込んで使用している -->
+
 <div class="container-fluid">
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">

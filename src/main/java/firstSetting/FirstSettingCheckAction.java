@@ -87,6 +87,7 @@ public class FirstSettingCheckAction extends Action {
 			String masterKey = result.getMasterKey();
 			// ivの取り出し
 			String iv = result.getIv();
+			System.out.println(1);
 
 			// 登録するデータの暗号化
 			String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);

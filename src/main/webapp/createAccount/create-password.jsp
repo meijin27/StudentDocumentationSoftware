@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-createAccount.jsp" />
 
+<!-- 新規アカウント用パスワード作成用JSP  -->
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="CreatePassword.action" method="post">

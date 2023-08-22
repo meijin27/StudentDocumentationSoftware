@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
 
+<!-- 秘密の質問と答え登録用JSP  -->
 <main class="form-firstSetting w-100 m-auto text-center flex-shrink-0">
 	<div class="container">
         <form action="SecretSetting.action" method="post">
@@ -27,13 +28,15 @@
                 <label class="form-label" for="">秘密の質問の答えを入力してください</label>
                 <span class="text-danger">*</span>
                 <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
-            </div>      
-            <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
+            </div>
+		    <!-- エラー表示  -->
   	        <c:if test="${not empty secretError}">
               <div class="alert alert-danger text-center input-field" role="alert">
                   ${secretError}
               </div>
-            </c:if>
+            </c:if>            
+            <!-- サブミットボタン  -->
+            <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>
      </div>
 </main>

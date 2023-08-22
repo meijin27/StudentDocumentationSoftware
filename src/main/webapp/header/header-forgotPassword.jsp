@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 
+<!-- パスワード再作成JSP用のヘッダー  -->
 <!DOCTYPE html>
 <html>
 <head class="h-100">

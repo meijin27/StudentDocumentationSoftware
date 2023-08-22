@@ -1,3 +1,5 @@
+/* 初期設定画面において利用規約及びプライバシーポリシーを新規ウィンドウで表示するためのjavascript */
+
 window.onload = function() {
     var termsUrl = document.querySelector('#termsModal .modal-body').getAttribute('data-terms-url');
     var privacyUrl = document.querySelector('#privacyModal .modal-body').getAttribute('data-terms-url');

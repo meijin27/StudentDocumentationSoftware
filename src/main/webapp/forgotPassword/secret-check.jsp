@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-forgotPassword.jsp" />
 
+<!-- パスワード忘却時秘密の質問の答えと生年月日確認用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
 	<h2 class="p-1">秘密の質問:</h2>
@@ -59,7 +60,8 @@
 				        %>
 				    </select>
                 </div>     
-            </div>               
+            </div>     
+            <!-- エラー表示  -->
             <c:if test="${not empty secretError}">
               <div class="alert alert-danger text-center input-field" role="alert">
                   ${secretError}
@@ -67,6 +69,7 @@
             </c:if>
 		    <input type="hidden" name="encryptedId" value="${encryptedId}">
 		    <input type="hidden" name="secretQuestion" value="${secretQuestion}">           
+			<!-- サブミットボタン  -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>
     </main>

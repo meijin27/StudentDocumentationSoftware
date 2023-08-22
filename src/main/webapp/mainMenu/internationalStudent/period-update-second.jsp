@@ -1,9 +1,9 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-mainMenu.jsp" />
-
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 
+<!-- 「在留期間更新許可申請書　２枚目」作成用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「在留期間更新許可申請書　２枚目」作成</h1><br>
@@ -191,7 +191,7 @@
 	                <label class="form-label" for="supporterWorkTel">経費支弁者勤務先電話番号(Supporter Work Phone Number)</label>
 	                <input class="form-control" type="text" name="supporterWorkTel" placeholder="0120-55-9876" value="${supporterWorkTel}">
 	            </div>	 
-
+            <!-- エラー表示 -->
 	        <c:if test="${not empty inputError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${inputError}
@@ -246,6 +246,7 @@
 				<div class="alert alert-danger" role="alert">${innerError}
 				</div>
 			</c:if>
+			<!-- サブミットボタン -->
 			<button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">作成</button>
 		</form>
 

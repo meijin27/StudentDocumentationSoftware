@@ -1,3 +1,5 @@
+/* 動的に入力フォームを増やしたり減らしたりするためのjavascript */
+
 var defaultOptions = {
     maxSets: 10,
     renameEnabled: true,

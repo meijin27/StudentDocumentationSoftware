@@ -295,15 +295,15 @@ public class CertificateIssuanceAction extends Action {
 			editor.writeText(font, propose, 160f, 417f, 350f, "center", 12);
 			// 交付区分
 			if (!proofOfStudent.isEmpty()) {
-				editor.writeText(font, "レ", 195f, 372f, 40f, "left", 12);
+				editor.writeText(font, "レ", 193f, 372f, 40f, "left", 12);
 				editor.writeText(font, proofOfStudent, 443f, 372f, 40f, "left", 12);
 			}
 			if (!certificateOfCompletion.isEmpty()) {
-				editor.writeText(font, "レ", 195f, 351f, 40f, "left", 12);
+				editor.writeText(font, "レ", 193f, 351f, 40f, "left", 12);
 				editor.writeText(font, certificateOfCompletion, 443f, 351f, 40f, "left", 12);
 			}
 			if (!certificateOfExpectedCompletion.isEmpty()) {
-				editor.writeText(font, "レ", 195f, 330f, 40f, "left", 12);
+				editor.writeText(font, "レ", 193f, 330f, 40f, "left", 12);
 				editor.writeText(font, certificateOfExpectedCompletion, 443f, 330f, 40f, "left", 12);
 			}
 			// 申請年月日

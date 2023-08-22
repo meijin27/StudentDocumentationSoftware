@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 
+<!-- 初期設定JSP用のヘッダー  -->
 <!DOCTYPE html>
 <html>
 <head class="h-100">

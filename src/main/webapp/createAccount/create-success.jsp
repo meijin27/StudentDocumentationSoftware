@@ -2,7 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-createAccount.jsp" />
 
-
+<!-- 新規アカウント作成成功JSP  -->
 <main class="form-createAccount w-100 m-auto text-center flex-shrink-0">
 	<div class="container">
 		<h3 class="p-1">アカウントが作成されました</h3>

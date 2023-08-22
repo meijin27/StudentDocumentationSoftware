@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
 
+<!-- 初期登録用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
     <h2 class="p-5">初期設定</h2>
     <div class="content">
@@ -187,6 +188,7 @@
 	            </div>
 	
 	        </div>
+	        <!-- エラー表示  -->
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
@@ -232,6 +234,7 @@
 	                ${innerError}
 	            </div>
 	        </c:if>
+	        <!-- 利用規約確認ボタン  -->
 	        <button type="button" class="w-100 btn btn-warning btn-primary mb-3" data-bs-toggle="modal"
 	            data-bs-target="#termsModal" id="termsLink">
 	            利用規約を確認する
@@ -253,6 +256,7 @@
 	                </div>
 	            </div>
 	        </div>
+	        <!-- プライバシーポリシー確認ボタン  -->
 	        <button type="button" class="w-100 btn btn-warning btn-primary mb-3" data-bs-toggle="modal"
 	            data-bs-target="#privacyModal" id="privacyLink">
 	            プライバシーポリシーを確認する
@@ -275,13 +279,13 @@
 	                </div>
 	            </div>
 	        </div>
-	
-	        <div class="mb-3">
+			<!-- 同意チェックボックス  -->
+		        <div class="mb-3">
 	            <input class="form-check-input" id="agreeCheckbox" type="checkbox" name="agree" value="1">
 	            <label class="form-check-label" for="">利用規約及びプライバシーポリシーに同意する</label>
 	        </div>
-	
-	        <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
+			<!-- サブミットボタン  -->
+		    <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
 	    </form>
     </div>
 </main>

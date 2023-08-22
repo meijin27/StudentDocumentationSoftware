@@ -1,3 +1,5 @@
+/* 「同意する」にチェックを入れないと初期設定登録ボタンを押せなくするためのjavascript */
+
 // app.js
 document.addEventListener('DOMContentLoaded', function(){
     var submitButton = document.getElementById('submitButton');

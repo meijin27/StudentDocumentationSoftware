@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 
+<!-- ログインJSP用のヘッダー  -->
 <!DOCTYPE html>
 <html>
 <head class="h-100">

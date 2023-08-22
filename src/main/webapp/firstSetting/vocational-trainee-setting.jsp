@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
 
+<!-- 職業訓練生の初期設定用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
     <h2 class="p-5">職業訓練生の設定</h2>
     <div class="content">
@@ -50,7 +51,7 @@
 				</div>
 
 	        </div>
-	        
+			<!-- エラー表示  -->
 	        <c:if test="${not empty nullError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
@@ -71,6 +72,7 @@
 	                ${innerError}
 	            </div>
 	        </c:if>	
+	        <!-- サブミットボタン  -->
 	        <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
 
 	    </form>
