@@ -183,13 +183,12 @@ public class TakingReTestAction extends Action {
 			editor.writeText(font, subjectName, 125f, 522f, 398f, "center", 12);
 			editor.writeText(font, reason, 125f, 483f, 398f, "center", 12);
 
-			// Close and save
-			editor.close("再試験受験申請書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Taking Re Test");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「再試験受験申請書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Taking_Re_Test.pdf", response);
+
+			return null;
 		} catch (
 
 		Exception e) {

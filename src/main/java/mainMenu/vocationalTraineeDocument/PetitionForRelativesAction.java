@@ -191,13 +191,12 @@ public class PetitionForRelativesAction extends Action {
 			editor.writeText(font, className, 100f, 32f, 130f, "center", 12);
 			editor.writeText(font, name, 377f, 32f, 140f, "center", 12);
 
-			// Close and save
-			editor.close("親族続柄申立書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Petition For Relatives");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「親族続柄申立書」を作成しました。当該書類は印刷後に手書きで親族該当箇所に〇を付けてください");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Petition_For_Relatives.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

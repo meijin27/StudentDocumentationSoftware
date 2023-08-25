@@ -62,7 +62,7 @@ public class UserDAO extends DAO {
 		AtomicReference<User> userRef = new AtomicReference<>();
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"select * from Users where account=? and is_deleted=FALSE")) {
+					"select * from users where account=? and is_deleted=FALSE")) {
 				st.setString(1, account);
 				try (ResultSet rs = st.executeQuery()) {
 					if (rs.next()) {
@@ -87,7 +87,7 @@ public class UserDAO extends DAO {
 	public User createSearch(String account) throws Exception {
 		AtomicReference<User> userRef = new AtomicReference<>();
 		executeSqlOperation(con -> {
-			try (PreparedStatement st = con.prepareStatement("select * from Users where account = ?")) {
+			try (PreparedStatement st = con.prepareStatement("select * from users where account = ?")) {
 				st.setString(1, account);
 				try (ResultSet rs = st.executeQuery()) {
 					if (rs.next()) {
@@ -107,7 +107,7 @@ public class UserDAO extends DAO {
 		AtomicReference<String> ref = new AtomicReference<>();
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"select " + field + " from Users where id=? and is_deleted=FALSE")) {
+					"select " + field + " from users where id=? and is_deleted=FALSE")) {
 				st.setString(1, id);
 				try (ResultSet rs = st.executeQuery()) {
 					if (rs.next()) {
@@ -228,7 +228,7 @@ public class UserDAO extends DAO {
 		final int[] line = { 0 };
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"UPDATE Users SET is_deleted = TRUE WHERE id = ?")) {
+					"UPDATE users SET is_deleted = TRUE WHERE id = ?")) {
 				st.setString(1, userId);
 				line[0] = st.executeUpdate();
 			}

@@ -183,13 +183,12 @@ public class SupplementaryLessonsAction extends Action {
 			editor.writeText(font, subjectName, 127f, 525f, 396f, "center", 12);
 			editor.writeText(font, reason, 127f, 486f, 396f, "center", 12);
 
-			// Close and save
-			editor.close("補習受講申請書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Supplementary Lessons");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「補習受講申請書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Supplementary_Lessons.pdf", response);
+
+			return null;
 		} catch (
 
 		Exception e) {

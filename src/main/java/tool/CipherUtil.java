@@ -11,8 +11,14 @@ import javax.crypto.spec.SecretKeySpec;
 public class CipherUtil {
 	private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
 
+	// TomcatでJavaのシステムプロパティを設定する場合のコード
+	private static String myKey = System.getProperty("MY_ENCRYPTION_KEY");
+	private static String myIv = System.getProperty("MY_IV");
+
+	/* Windowsの環境変数を用いる場合のコード
 	private static String myKey = System.getenv("MY_ENCRYPTION_KEY");
 	private static String myIv = System.getenv("MY_IV");
+	*/
 
 	// 環境変数が設定されていない場合にエラーを返す
 	static {

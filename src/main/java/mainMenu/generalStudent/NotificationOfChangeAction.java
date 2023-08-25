@@ -349,13 +349,12 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, newName, 152f, 265f, 330f, "center", 12);
 			}
 
-			// Close and save
-			editor.close("変更届.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Notification Of Change");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「変更届」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Notification_Of_Change.pdf", response);
+
+			return null;
 		} catch (
 
 		Exception e) {

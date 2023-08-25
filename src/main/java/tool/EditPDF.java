@@ -1,6 +1,5 @@
 package tool;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,18 +7,23 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.util.Matrix;
 
+// このクラスは、PDFの編集操作をサポートするメソッドを提供するユーティリティクラスです。
+// 既存のPDFドキュメントを読み込んで操作することができます。
 public class EditPDF {
 	private static final Logger logger = CustomLogger.getLogger(EditPDF.class);
 
 	private PDDocument document;
 	private PDPageContentStream contentStream;
 
+	// コンストラクタ:
+	// PDFドキュメントを読み込み、PDPageContentStreamオブジェクトを初期化して、そのドキュメント上にテキストや図形を描画する準備をします。
 	public EditPDF(String pdfPath) {
 		try {
 			// PDFファイルの読み込み
@@ -37,7 +41,12 @@ public class EditPDF {
 		}
 	}
 
-	// "left"、"center"、または "right" を align パラメータとして渡すことで、テキストの配置を左揃え、中央揃え、または右揃えにすることができます。
+	/*このメソッドは、PDF上の指定された位置にテキストを描画するためのものです。
+	alignパラメータを使用してテキストを左寄せ、中央寄せ、または右寄せにすることができます。
+	もしテキストの幅が指定された範囲より大きい場合、フォントサイズを徐々に小さくして適合させようとします。
+	適合しない場合は例外が発生します。
+	 "left"、"center"、または "right" を align パラメータとして渡すことで、テキストの配置を左揃え、中央揃え、または右揃えにすることができます。
+	*/
 	public void writeText(PDFont font, String text, float startX, float startY, float width, String align,
 			int initialFontSize)
 			throws IOException {
@@ -84,26 +93,6 @@ public class EditPDF {
 		}
 	}
 
-	public void writeTextRotated90(PDFont font, String text, float startX, float startY, float width, String align,
-			int initialFontSize) throws IOException {
-		try {
-			// 現在の状態を保存
-			contentStream.saveGraphicsState();
-
-			// 90度回転させるための変換を適用
-			contentStream.transform(Matrix.getRotateInstance(Math.PI / 2, startX, startY));
-
-			// 元のメソッドを呼び出してテキストを書き込む
-			writeText(font, text, startX, startY, width, align, initialFontSize);
-
-			// 保存した状態に戻す
-			contentStream.restoreGraphicsState();
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-			throw new RuntimeException("Failed to write rotated text.");
-		}
-	}
-
 	// カレンダーへの描画用メソッド
 	public void writeSymbolsOnCalendar(PDFont font, Map<Integer, String> daySymbolMap, float startX, float startY,
 			float dayWidth, float dayHeight, int fontSize) throws IOException {
@@ -146,7 +135,9 @@ public class EditPDF {
 		contentStream.closeAndStroke();
 	}
 
-	public void close(String filename) {
+	// このメソッドは、PDFの編集を終了し、その内容をHTTPレスポンスの出力ストリームに保存します。
+	// これにより、クライアントにダウンロードするPDFファイルが提供されます。
+	public void close(String filename, HttpServletResponse response) {
 		try {
 			contentStream.close();
 
@@ -158,10 +149,12 @@ public class EditPDF {
 			filename = filename.substring(0, filename.length() - 4);
 			String newFilename = filename + formatter.format(now) + ".pdf";
 
-			// ダウンロードフォルダに保管する
-			String home = System.getProperty("user.home");
-			String downloadPath = home + File.separator + "Downloads" + File.separator + newFilename;
-			document.save(downloadPath);
+			// Set the content type and download name
+			response.setContentType("application/pdf");
+			response.setHeader("Content-Disposition", "attachment; filename=" + newFilename);
+
+			// Write the PDF to the HttpServletResponse output stream
+			document.save(response.getOutputStream());
 
 			document.close();
 		} catch (IOException e) {

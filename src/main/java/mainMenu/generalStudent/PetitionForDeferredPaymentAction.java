@@ -373,13 +373,12 @@ public class PetitionForDeferredPaymentAction extends Action {
 				row += 26;
 			}
 
-			// Close and save
-			editor.close("学費延納願.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Petition For Deferred-payment");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「学費延納願」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Petition_For_Deferred-payment.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

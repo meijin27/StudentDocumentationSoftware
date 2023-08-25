@@ -308,13 +308,12 @@ public class StudentDiscountCouponAction extends Action {
 				row += 364;
 			}
 
-			// Close and save
-			editor.close("学割証発行願.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Student Discount Coupon");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「学割証発行願」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Student_Discount_Coupon.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

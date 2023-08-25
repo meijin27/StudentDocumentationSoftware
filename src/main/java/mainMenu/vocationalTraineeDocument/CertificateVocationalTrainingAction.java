@@ -190,13 +190,12 @@ public class CertificateVocationalTrainingAction extends Action {
 			editor.writeText(font, name, 310f, 165f, 200f, "left", 12);
 			editor.writeText(font, supplyNumber, 310f, 147f, 200f, "left", 12);
 
-			// Close and save
-			editor.close("公共職業訓練等受講証明書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Certificate Vocational Training");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「公共職業訓練等受講証明書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Certificate_Vocational_Training.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

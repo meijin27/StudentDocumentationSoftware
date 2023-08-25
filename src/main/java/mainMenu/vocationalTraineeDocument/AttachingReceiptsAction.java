@@ -105,13 +105,13 @@ public class AttachingReceiptsAction extends Action {
 			editor.writeText(font, className, 150f, 105f, 115f, "center", 12);
 			editor.writeText(font, name, 382f, 105f, 117f, "center", 12);
 
-			// Close and save
-			editor.close("別紙　領収書添付用.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Attaching Receipts");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「別紙　領収書添付用」を作成しました。");
-			return "create-pdf-success.jsp";
+
+			// Close and save
+			editor.close("Attaching_Receipts.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

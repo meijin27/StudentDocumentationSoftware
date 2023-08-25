@@ -1,7 +1,6 @@
 package tool;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,12 +20,31 @@ public class FrontController extends HttpServlet {
 	public void doPost(
 			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		PrintWriter out = response.getWriter();
 		try {
-			String path = request.getServletPath().substring(1);
-			String name = path.replace(".a", "A").replace('/', '.');
+			String path = request.getServletPath();
+			if (path == null) {
+				logger.log(Level.WARNING, "Servlet path is null.");
+				return;
+			}
+
+			String name = path.substring(1).replace(".a", "A").replace('/', '.');
+			if (name == null) {
+				logger.log(Level.WARNING, "Class name derived from path is null.");
+				return;
+			}
+
 			Action action = (Action) Class.forName(name).getDeclaredConstructor().newInstance();
+			if (action == null) {
+				logger.log(Level.WARNING, "Failed to create an instance of Action class.");
+				return;
+			}
+
 			String url = action.execute(request, response);
+			if (url == null) {
+				logger.log(Level.WARNING, "URL returned by action is null.");
+				return;
+			}
+
 			request.getRequestDispatcher(url).forward(request, response);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Page transition failed", e);

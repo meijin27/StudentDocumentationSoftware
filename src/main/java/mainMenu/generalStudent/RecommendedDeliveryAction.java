@@ -262,13 +262,12 @@ public class RecommendedDeliveryAction extends Action {
 				editor.writeText(font, "✓", 227f, 398f, 50f, "left", 12);
 			}
 
-			// Close and save
-			editor.close("推薦書交付願.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Recommended Delivery");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「推薦書交付願」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Recommended_Delivery.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

@@ -398,14 +398,12 @@ public class PeriodUpdateFirstAction extends Action {
 				row += 20;
 			}
 
-			// Close and save
-			editor.close("在留期間更新許可申請書1枚目.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Period Update First.jsp");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF",
-					"「在留期間更新許可申請書１枚目」を作成しました。在留期間更新許可申請書は３枚組で、当該書類は１枚目です。(The application form for permission to extend the period of stay is in triplicate, and the said document is the first one.)");
-			return "create-pdf-success-first.jsp";
+			// Close and save
+			editor.close("Period_Update_First.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

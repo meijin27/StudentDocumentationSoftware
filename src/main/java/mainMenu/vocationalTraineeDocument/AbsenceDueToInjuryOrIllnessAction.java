@@ -242,13 +242,12 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			editor.writeText(font, className, 145f, 220f, 110f, "center", 12);
 			editor.writeText(font, name, 382f, 218f, 105f, "center", 12);
 
-			// Close and save
-			editor.close("傷病による欠席理由申立書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Absence Due to Injury or Illness");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「傷病による欠席理由申立書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Absence_Due_to_Injury_or_Illness.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

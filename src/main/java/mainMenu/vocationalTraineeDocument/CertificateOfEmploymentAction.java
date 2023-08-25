@@ -217,13 +217,12 @@ public class CertificateOfEmploymentAction extends Action {
 			// 公共職業安定所名
 			editor.writeText(font, namePESO, 90f, 428f, 55f, "center", 12);
 
-			// Close and save
-			editor.close("就労証明書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Certificate Of Employment");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「就労証明書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Certificate_Of_Employment.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

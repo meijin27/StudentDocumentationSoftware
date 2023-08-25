@@ -291,13 +291,12 @@ public class ReasonsForNonAttendanceAction extends Action {
 				break;
 			}
 
-			// Close and save
-			editor.close("欠席理由申立書.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Reasons for Non Attendance");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「欠席理由申立書」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Reasons_for_Non_Attendance.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

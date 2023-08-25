@@ -282,13 +282,13 @@ public class PermissionBikeAction extends Action {
 
 				num += 392f;
 			}
-			// Close and save
-			editor.close("自転車等通学許可願.pdf");
+
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Permission Bike");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「自転車等通学許可願」を作成しました。当該書類は印刷後、氏名及び保護者欄に押印をお願いします。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Permission_Bike.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");

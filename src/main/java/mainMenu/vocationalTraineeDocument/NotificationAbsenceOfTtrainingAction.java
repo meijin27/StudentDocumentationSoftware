@@ -371,13 +371,12 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				row += 33;
 			}
 
-			// Close and save
-			editor.close("委託訓練欠席（遅刻・早退）届.pdf");
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Notification Absence Of Ttraining");
-			// PDF作成成功画面に遷移
-			request.setAttribute("createPDF", "「委託訓練欠席（遅刻・早退）届」を作成しました。");
-			return "create-pdf-success.jsp";
+			// Close and save
+			editor.close("Notification_Absence_Of_Ttraining.pdf", response);
+
+			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
