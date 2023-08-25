@@ -95,6 +95,12 @@ public class CertificateOfEmploymentAction extends Action {
 		if (secondMonth == null || secondMonth.isEmpty()) {
 
 		} else {
+			// 二月目と一月目が同一ならばエラーを返す
+			if (secondMonth.equals(firstMonth)) {
+				request.setAttribute("logicalError", "一月目と二月目は異なる月にしてください。");
+				return "certificate-of-employment.jsp";
+			}
+
 			// 二月目が入力されていればカレンダーに入力する
 			month = Integer.parseInt(secondMonth);
 			lastDay = getLastDayOfMonth(month);

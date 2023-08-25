@@ -60,6 +60,11 @@
 				<div class="alert alert-danger" role="alert">${nullMessage}
 				</div>
 			</c:if>
+  	        <c:if test="${not empty logicalError}">
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${logicalError}
+	            </div>
+	        </c:if>	     
 			<c:if test="${not empty innerError}">
 				<div class="alert alert-danger" role="alert">${innerError}
 				</div>
