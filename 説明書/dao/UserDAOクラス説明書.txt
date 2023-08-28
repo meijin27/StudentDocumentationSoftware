@@ -1,0 +1,64 @@
+UserDAOクラス説明書
+
+・概要:
+ユーザー情報をデータベースとやり取りするためのクラスです。ユーザーのログイン、アカウント作成、アカウント情報の取得や更新など、多様な操作をサポートします。
+
+・メソッド:executeSqlOperation
+説明: SQL操作を実行するための共通のメソッド。
+引数: SqlConsumer<Connection> operation
+戻り値: なし
+
+・メソッド:loginSearch
+説明: ログイン時に使用。入力されたアカウント名をデータベースから探して、必要な情報を取得する。
+引数: String account
+戻り値: User
+
+・メソッド:createSearch
+説明: アカウント作成時に使用。データベースから同一のアカウント名(削除済みを含む)が存在するか探す。
+引数: String account
+戻り値: User
+
+・メソッド:getField
+説明: 指定されたフィールドの値をデータベースから取得する。
+引数: String field, String id
+戻り値: String
+
+・メソッド:accountInsert
+説明: 新しいアカウント情報をデータベースに追加する。
+引数: User user
+戻り値: int
+
+・メソッド:updateSecret
+説明: ユーザーの秘密の質問と答えをデータベースに更新する。
+引数: User user
+戻り値: int
+
+・メソッド:updateFirstSetting
+説明: ユーザーの初期登録情報をデータベースに更新する。
+引数: User user
+戻り値: int
+
+・メソッド:updateVocationalTraineeSetting
+説明: 職業訓練生の初期設定をデータベースに更新する。
+引数: User user
+戻り値: int
+
+・メソッド:updateField
+説明: 指定されたフィールドの値をデータベースで更新する。
+引数: String field, String value, String id
+戻り値: int
+
+・メソッド:accountDeleted
+説明: 指定されたユーザーIDのアカウントをデータベースから削除する(論理削除)。
+引数: String userId
+戻り値: int
+
+・メソッド:addLoginLog
+説明: ユーザーのログイン情報をデータベースに記録する。
+引数: String userId, String ipAddress
+戻り値: なし
+
+・メソッド:addOperationLog
+説明: 操作のログ情報をデータベースに追加する。
+引数: String userId, String operation
+戻り値: なし

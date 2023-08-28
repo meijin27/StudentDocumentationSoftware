@@ -1,0 +1,58 @@
+Userクラス説明書
+
+クラス概要
+Userクラスは、ユーザーの情報を管理するためのクラスです。各種の属性（例：ID、アカウント名、パスワード等）を保持し、それぞれの属性に対するゲッター(getter)とセッター(setter)メソッドを提供します。
+
+属性
+id : ユーザーのID
+account : ユーザーのアカウント名
+password : ユーザーのパスワード
+masterKey : ユーザーのマスターキー
+secondMasterKey : パスワードを忘れた際のマスターキー
+iv : 初期化ベクトル (Initialization Vector)
+secretQuestion : 秘密の質問
+secretAnswer : 秘密の質問の答え
+lastName : 姓
+firstName : 名
+lastNameRuby : 姓のふりがな
+firstNameRuby : 名のふりがな
+tel : 電話番号
+postCode : 郵便番号
+address : 住所
+birthYear : 生年
+birthMonth : 生月
+birthDay : 生日
+admissionYear : 入学年
+admissionMonth : 入学月
+admissionDay : 入学日
+studentType : 学生の種類
+className : クラス名
+studentNumber : 学籍番号
+schoolYear : 学年
+classNumber : 組の番号
+namePESO : 公共職業安定所の名前 (Public Employment Security Officeの略)
+attendanceNumber : 職業訓練生に付与される出席番号
+employmentInsurance : 雇用保険の有無
+supplyNumber : 支給番号
+メソッド
+ゲッター (Getter) メソッド
+以下のゲッターメソッドは、各属性の値を取得するために使用します。
+
+例:
+public String getId() {
+	return id;
+}
+
+セッター (Setter) メソッド
+以下のセッターメソッドは、各属性の値を設定するために使用します。
+
+例:
+public void setId(String id) {
+	this.id = id;
+}
+
+使用方法:
+ユーザーの情報をセットする場合、セッターメソッドを使用します。例えば、ユーザーIDをセットする場合、setIdメソッドを使用します。同様に、情報を取得する場合はゲッターメソッドを使用します。
+
+注意事項
+このクラスはjava.io.Serializableインターフェイスを実装しています。これは、オブジェクトのシリアライズに関連しています。オブジェクトをファイルに保存したり、ネットワーク経由で送信する際に使用される機能です。
