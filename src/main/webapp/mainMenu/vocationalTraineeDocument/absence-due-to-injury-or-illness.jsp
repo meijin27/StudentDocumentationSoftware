@@ -14,13 +14,13 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">病状</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="disease" placeholder="発熱・咳" value="${disease}" required>
+	                <input class="form-control" type="text" name="disease" placeholder="発熱・咳" value="<c:out value='${disease}'/>" required>
 	            </div>
 		        <!-- 理由 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">理由</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="病院を受診し、療養していた" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="病院を受診し、療養していた" value="<c:out value='${reason}'/>" required>
 	            </div>
 	            <!-- 期間年月日（自） -->
 	            <div class="col-md-4 mb-5">
@@ -159,7 +159,8 @@
 	            </div>
 	        </c:if>	     
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+				<div class="alert alert-danger" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- サブミットボタン -->

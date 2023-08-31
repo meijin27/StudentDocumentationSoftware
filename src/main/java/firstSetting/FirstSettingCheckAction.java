@@ -87,7 +87,16 @@ public class FirstSettingCheckAction extends Action {
 			String masterKey = result.getMasterKey();
 			// ivの取り出し
 			String iv = result.getIv();
-			System.out.println(1);
+
+			// 秘密の質問のデータベースからの取り出し
+			String reEncryptedSecretQuestion = dao.getSecretQuestion(id);
+			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedSecretQuestion == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
 
 			// 登録するデータの暗号化
 			String encryptedLastName = CipherUtil.encrypt(masterKey, iv, lastName);

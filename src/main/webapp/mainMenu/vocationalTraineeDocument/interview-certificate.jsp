@@ -14,7 +14,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">求人職種</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="jobSearch" placeholder="製造業" value="${jobSearch}" required>
+	                <input class="form-control" type="text" name="jobSearch" placeholder="製造業" value="<c:out value='${jobSearch}'/>" required>
 	            </div>
 	            <!-- 面接年月日（自） -->
 	            <p>面接年月日（自）</p>
@@ -183,7 +183,8 @@
 	            </div>
 	        </c:if>	   
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+				<div class="alert alert-danger" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- サブミットボタン -->

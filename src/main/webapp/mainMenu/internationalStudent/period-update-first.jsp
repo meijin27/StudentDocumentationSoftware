@@ -18,13 +18,13 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="nationalityRegion">国籍・地域（Nationality/Region）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="nationalityRegion" placeholder="モンゴル" value="${nationalityRegion}" required>
+	                <input class="form-control" type="text" name="nationalityRegion" placeholder="モンゴル" value="<c:out value='${nationalityRegion}'/>" required>
 	            </div>   	            
    	            <!-- 本国における居住地 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="homeTown">本国における居住地（Home town/city）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar" value="${homeTown}" required>
+	                <input class="form-control" type="text" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar" value="<c:out value='${homeTown}'/>" required>
 	            </div>
   	            <!-- 性別 -->
   				<div class="col-md-6 mb-5">
@@ -72,7 +72,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="passportNumber">旅券番号（Passport Number）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="passportNumber" placeholder="XS1234567" value="${passportNumber}" required>
+	                <input class="form-control" type="text" name="passportNumber" placeholder="XS1234567" value="<c:out value='${passportNumber}'/>" required>
 	            </div>
   	            <!-- 旅券有効期限 -->
   	            <p>旅券有効期限（Passport expiration date）</p>
@@ -117,13 +117,13 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="statusOfResidence">現に有する在留資格（Status of residence）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="statusOfResidence" placeholder="留学" value="${statusOfResidence}" required>
+	                <input class="form-control" type="text" name="statusOfResidence" placeholder="留学" value="<c:out value='${statusOfResidence}'/>" required>
 	            </div>
    	            <!-- 在留期間 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="periodOfStay">在留期間（Period of stay）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="periodOfStay" placeholder="2年" value="${periodOfStay}" required>
+	                <input class="form-control" type="text" name="periodOfStay" placeholder="2年" value="<c:out value='${periodOfStay}'/>" required>
 	            </div>
   	            <!-- 在留期間の満了日 -->
   	            <p>在留期間の満了日（Expiration date of period of stay）</p>
@@ -164,19 +164,19 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="residentCard">在留カード番号（Residence card number）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="${residentCard}" required>
+	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>" required>
 	            </div>
   	            <!-- 希望する在留期間（Desired length of extension） -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="desiredPeriodOfStay">希望在留期間(Desired length of extension)</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="desiredPeriodOfStay" placeholder="3年" value="${desiredPeriodOfStay}" required>
+	                <input class="form-control" type="text" name="desiredPeriodOfStay" placeholder="3年" value="<c:out value='${desiredPeriodOfStay}'/>" required>
 	            </div>
   	            <!-- 更新の理由（Reason for extension） -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reason">更新の理由（Reason for extension）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="専門学校へ留学中のため" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="専門学校へ留学中のため" value="<c:out value='${reason}'/>" required>
 	            </div>	            
  	            <!-- 犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）※交通違反等による処分を含む。 -->
   				<div class="col-md-12 mb-3">
@@ -205,7 +205,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reasonForTheCrime">犯罪の具体的な理由（Reason for the crime）</label>
   	                <label class="form-label" for="reasonForTheCrime">前科がない場合は記入不要（Not required if no criminal record.）</label>
-	                <input class="form-control" type="text" name="reasonForTheCrime" placeholder="高速道路で速度超過した（３０km）" value="${reasonForTheCrime}">
+	                <input class="form-control" type="text" name="reasonForTheCrime" placeholder="高速道路で速度超過した（３０km）" value="<c:out value='${reasonForTheCrime}'/>">
 	            </div>		            
  	            <!-- 在日親族（父・母・配偶者・子・兄弟姉妹・祖父母・叔(伯)父・叔(伯)母など）及び同居者 -->
   				<div class="col-md-12 mb-3">

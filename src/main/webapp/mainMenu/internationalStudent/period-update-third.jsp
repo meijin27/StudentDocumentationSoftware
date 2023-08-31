@@ -39,7 +39,7 @@
  	            <!-- その他の内容 -->
       			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" name="relationshipOtherContents" placeholder="" value="${relationshipOtherContents}">
+	                <input class="form-control" type="text" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
 	            </div>   	            
 
       			<p class="border-bottom"></p>
@@ -70,13 +70,13 @@
  	            <!-- 公益社団法人又は公益財団法人の内容 -->
       			<p class="text-start">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</p>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" name="organizationpublicInterestContents" placeholder="" value="${organizationpublicInterestContents}">
+	                <input class="form-control" type="text" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
 	            </div>   	       
 
  	            <!-- その他の内容 -->
       			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" name="organizationOtherContents" placeholder="" value="${organizationOtherContents}">
+	                <input class="form-control" type="text" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
 	            </div>   	            
       			
        			<p class="border-bottom"></p>
@@ -108,27 +108,27 @@
  	            <!-- 内容 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="work">(1)内容（Type of work）</label>
-	                <input class="form-control" type="text" name="work" placeholder="レジ係" value="${work}">
+	                <input class="form-control" type="text" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
 	            </div>
    	            <!-- 勤務先名称 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="employment">(2)勤務先名称（Place of employment）</label>
-	                <input class="form-control" type="text" name="employment" placeholder="〇〇コンビニ" value="${employment}">
+	                <input class="form-control" type="text" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
 	            </div>
    	            <!-- 勤務先電話番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="workPhone">勤務先電話番号（Telephone No.）</label>
-	                <input class="form-control" type="text" name="workPhone" placeholder="046123456" value="${workPhone}">
+	                <input class="form-control" type="text" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
 	            </div>
    	            <!-- 週間稼働時間 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="workTimePerWeek">(3)週間稼働時間（Work time per week）</label>
-	                <input class="form-control" type="text" name="workTimePerWeek" placeholder="15" value="${workTimePerWeek}">
+	                <input class="form-control" type="text" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
 	            </div>
    	            <!-- 報酬 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="salary ">(4)報酬（Salary）</label>
-	                <input class="form-control" type="text" name="salary" placeholder="20000" value="${salary}">
+	                <input class="form-control" type="text" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
 	            </div>	            
   	            <!-- 月額か日額か -->
    	            <div class="col-md-6 mb-5">
@@ -158,7 +158,7 @@
  	            <!-- その他の内容 -->
       			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="${afterGraduationOtherContents}">
+	                <input class="form-control" type="text" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
 	            </div>
 	        </div>   	    
 	        <!-- エラー表示 -->    	            

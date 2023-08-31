@@ -52,13 +52,13 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reason">納付できない理由</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="想定よりも就職活動による交通費等が発生し、学費を捻出できなかったため。" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="想定よりも就職活動による交通費等が発生し、学費を捻出できなかったため。" value="<c:out value='${reason}'/>" required>
 	            </div>
    	            <!-- 学費の捻出方法 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="howToRaiseFunds">学費の捻出方法</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="howToRaiseFunds" placeholder="アルバイトを増やす。増やした分の給料にて学費を捻出する。" value="${howToRaiseFunds}" required>
+	                <input class="form-control" type="text" name="howToRaiseFunds" placeholder="アルバイトを増やす。増やした分の給料にて学費を捻出する。" value="<c:out value='${howToRaiseFunds}'/>" required>
 	            </div>
   	            <!-- 母国からの送金の有無（留学生のみ要選択） -->
   				<div class="col-md-12 mb-5">
@@ -83,7 +83,7 @@
   	            <!-- 母国からの送金がない理由（留学生のみ要記入） -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reasonNoRemittance">母国からの送金がない理由（留学生のみ要記入）</label>
-	                <input class="form-control" type="text" name="reasonNoRemittance" placeholder="母国の家族も生計に余裕がなく、送金できる状態ではない。" value="${reasonNoRemittance}">
+	                <input class="form-control" type="text" name="reasonNoRemittance" placeholder="母国の家族も生計に余裕がなく、送金できる状態ではない。" value="<c:out value='${reasonNoRemittance}'/>">
 	            </div>
   	            <!-- 海外送金依頼書INVOICE交付申請年月日 -->
   	            <p>海外送金依頼書INVOICE交付申請年月日（留学生のみ要選択、母国からの送金がある場合に記入）</p>
@@ -121,7 +121,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="amountPayable">納付すべき金額（学費、教材費、積立金等）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="amountPayable" placeholder="1000000" value="${amountPayable}" required>
+	                <input class="form-control" type="text" name="amountPayable" placeholder="1000000" value="<c:out value='${amountPayable}'/>" required>
 	            </div>
 	            <!-- 通常納期内納付学費等（教材費・積立金等を含む） -->
 	            <div class="col-md-4 mb-5">
@@ -164,7 +164,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="tuitionFeePaid">通常納期内納付学費等</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="tuitionFeePaid" placeholder="250000" value="${tuitionFeePaid}">
+	                <input class="form-control" type="text" name="tuitionFeePaid" placeholder="250000" value="<c:out value='${tuitionFeePaid}'/>">
 	            </div>
 	         </div>   
              <% for(int set = 1; set <= 4; set++){ %>

@@ -74,6 +74,16 @@ public class VocationalTraineeSettingCheckAction extends Action {
 			// ivの取り出し
 			String iv = result.getIv();
 
+			// 姓のデータベースからの取り出し
+			String reEncryptedLastName = dao.getLastName(id);
+			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedLastName == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}			
+			
 			// 登録するデータの暗号化
 			String encryptedNamePESO = CipherUtil.encrypt(masterKey, iv, namePESO);
 			String encryptedSupplyNumber = CipherUtil.encrypt(masterKey, iv, supplyNumber);

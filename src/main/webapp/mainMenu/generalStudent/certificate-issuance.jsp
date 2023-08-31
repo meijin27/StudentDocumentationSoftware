@@ -70,7 +70,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="">提出先</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="propose" placeholder="横浜市役所" value="${propose}" required>
+	                <input class="form-control" type="text" name="propose" placeholder="横浜市役所" value="<c:out value='${propose}'/>" required>
 	            </div>
 	            <!-- 提出先は入管ですか？ -->
 				<div class="col-md-4 mb-5">
@@ -201,12 +201,12 @@
  	            <!-- 英語姓 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="englishLastName">姓（英語）</label>
-	                <input class="form-control" type="text" name="englishLastName" placeholder="TANAKA" value="${englishLastName}">
+	                <input class="form-control" type="text" name="englishLastName" placeholder="TANAKA" value="<c:out value='${englishLastName}'/>">
 	            </div>
 	            <!-- 英語名 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="englishFirstName">名（英語）</label>
-	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="${englishFirstName}">
+	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishProofOfStudent">在学証明書（英語）</label>

@@ -15,25 +15,25 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">姓</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}" required>
+	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>" required>
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
+	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>" required>
 	            </div>
    	            <!-- 姓（ふりがな） -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">姓（ふりがな）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}" required>
+	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}'/>" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">名（ふりがな）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
+	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}'/>" required>
 	            </div>
        
 	            <!-- 生年月日 -->
@@ -93,7 +93,7 @@
 	        </c:if>
 	        <c:if test="${not empty dayError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${birthDayError}
+	                ${dayError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty innerError}">

@@ -67,8 +67,8 @@
                   ${secretError}
               </div>
             </c:if>
-		    <input type="hidden" name="encryptedId" value="${encryptedId}">
-		    <input type="hidden" name="secretQuestion" value="${secretQuestion}">           
+		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
+		    <input type="hidden" name="secretQuestion" value="<c:out value='${secretQuestion}'/>">           
 			<!-- サブミットボタン  -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>

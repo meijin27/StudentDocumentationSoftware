@@ -131,9 +131,9 @@ public class CertificateIssuanceAction extends Action {
 				// 何か一つだけ入力されている場合
 				request.setAttribute("nameError", "英語の姓と名を全て入力してください。");
 			} else if (englishLastName.length() > 32 || englishFirstName.length() > 32) {
-				request.setAttribute("nameError", "名前は32文字以下で入力してください。");
+				request.setAttribute("nameError", "氏名は32文字以下で入力してください。");
 			} else if (!englishLastName.matches("^[a-zA-Z\\s]*$") || !englishFirstName.matches("^[a-zA-Z\\s]*$")) {
-				request.setAttribute("nameError", "名前は英語で入力してください。");
+				request.setAttribute("nameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
 			}
 			// 入力チェックをtrueにする
 			checkEnglish = true;
@@ -501,9 +501,7 @@ public class CertificateIssuanceAction extends Action {
 			editor.close("Certificate_Issuance.pdf", response);
 
 			return null;
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "certificate-issuance.jsp";

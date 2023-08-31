@@ -79,19 +79,19 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="teacher">担当教員名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="teacher" placeholder="田中　角栄" value="${teacher}" required>
+	                <input class="form-control" type="text" name="teacher" placeholder="田中　角栄" value="<c:out value='${teacher}'/>" required>
 	            </div>
   	            <!-- 教科名 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="subjectName">教科名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="subjectName" placeholder="AIアルゴリズム" value="${subjectName}" required>
+	                <input class="form-control" type="text" name="subjectName" placeholder="AIアルゴリズム" value="<c:out value='${subjectName}'/>" required>
 	            </div>
   	            <!-- 受講事由 -->
 	            <div class="col-md-8 mb-5">
 	                <label class="form-label" for="reason">受講事由</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="新型コロナに罹患し、長期療養を行っていたため" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="新型コロナに罹患し、長期療養を行っていたため" value="<c:out value='${reason}'/>" required>
 	            </div>
 	        </div>	    
 	        <!-- エラー表示 -->         

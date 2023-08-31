@@ -12,20 +12,20 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">公共職業安定所名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="namePESO" placeholder="厚木" value="${namePESO}" required>
+	                <input class="form-control" type="text" name="namePESO" placeholder="厚木" value="<c:out value='${namePESO}'/>" required>
 	            </div>
 
 	            <!-- 支給番号 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">支給番号</label>
-	                <input class="form-control" type="text" name="supplyNumber" placeholder="22-000001-5" value="${supplyNumber}">
+	                <input class="form-control" type="text" name="supplyNumber" placeholder="22-000001-5" value="<c:out value='${supplyNumber}'/>">
 	            </div>	           
 
 	             <!-- 出席番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">出席番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="attendanceNumber" placeholder="16" value="${attendanceNumber}" required>
+	                <input class="form-control" type="text" name="attendanceNumber" placeholder="16" value="<c:out value='${attendanceNumber}'/>" required>
 	            </div>
 
 				<!-- 雇用保険 -->

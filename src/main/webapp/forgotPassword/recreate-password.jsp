@@ -23,8 +23,8 @@
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>
 			</c:if>
-		    <input type="hidden" name="encryptedId" value="${encryptedId}">
-		    <input type="hidden" name="master_key" value="${master_key}">     
+		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
+		    <input type="hidden" name="master_key" value="<c:out value='${master_key}'/>">     
 			<!-- サブミットボタン  -->
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">再登録</button>
 		</form>

@@ -334,7 +334,7 @@ public class NotificationOfChangeAction extends Action {
 				float num = 0;
 				for (int i = 0; i < 12; i++) {
 					String str = residentCard.substring(i, i + 1);
-					editor.writeText(font, str, 235f + num, 326f, 180f, "left", 16);
+					editor.writeText(font, str, 235f + num, 327f, 180f, "left", 16);
 					num += 22.8;
 				}
 				editor.writeText(font, endYear, 265f, 303f, 180f, "left", 12);

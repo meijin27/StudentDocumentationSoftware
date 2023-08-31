@@ -62,13 +62,13 @@
    	            <!-- その他理由 -->
 	            <div class="col-md-8 mb-5">
 	                <label class="form-label" for="reason">事由にてその他を選択した場合の理由</label>
-	                <input class="form-control" type="text" name="reason" placeholder="インターン申込" value="${reason}">
+	                <input class="form-control" type="text" name="reason" placeholder="インターン申込" value="<c:out value='${reason}'/>">
 	            </div>
   	            <!-- 提出先 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="propose">提出先</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="propose" placeholder="アナハイム・エレクトロニクス" value="${propose}" required>
+	                <input class="form-control" type="text" name="propose" placeholder="アナハイム・エレクトロニクス" value="<c:out value='${propose}'/>" required>
 	            </div>
    	            <!-- 提出期限 -->
 	            <div class="col-md-3 mb-5">
@@ -146,7 +146,8 @@
 	            </div>
 	        </c:if>	        
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+				<div class="alert alert-danger" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- サブミットボタン -->

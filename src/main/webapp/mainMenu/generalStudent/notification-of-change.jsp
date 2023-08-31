@@ -65,22 +65,22 @@
   	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="postCode">郵便番号</label>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}">
+	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>">
 	            </div>
    	            <!-- 住所 -->
 	            <div class="col-md-9 mb-5">
 	                <label class="form-label" for="address">住所</label>
-	                <input class="form-control" type="text" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="${address}">
+	                <input class="form-control" type="text" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${address}'/>">
 	            </div>
    	            <!-- 電話番号 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="tel">電話番号</label>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}">
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>">
 	            </div>  
    	            <!-- 在留カード -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="residentCard">在留カード</label>
-	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="${residentCard}">
+	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>">
 	            </div>
   	            <!-- 期間満了年月日 -->
 	            <div class="col-md-3 mb-5">
@@ -120,12 +120,12 @@
  	            <!-- 姓 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">姓</label>
-	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}">
+	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>">
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">名</label>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}">
+	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>">
 	            </div>
 	        </div>
 	        <!-- エラー表示 -->     	        

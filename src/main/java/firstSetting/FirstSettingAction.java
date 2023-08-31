@@ -3,15 +3,22 @@ package firstSetting;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.UserDAO;
 import tool.Action;
+import tool.CustomLogger;
+import tool.Decrypt;
+import tool.DecryptionResult;
 
 public class FirstSettingAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(FirstSettingAction.class);
 
 	@Override
 	public String execute(
@@ -132,6 +139,30 @@ public class FirstSettingAction extends Action {
 				|| request.getAttribute("valueLongError") != null
 				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
 			return "first-setting.jsp";
+		}
+
+		try {
+			// データベース操作用クラス
+			UserDAO dao = new UserDAO();
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
+
+			// 秘密の質問のデータベースからの取り出し
+			String reEncryptedSecretQuestion = dao.getSecretQuestion(id);
+			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
+			if (reEncryptedSecretQuestion == null) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
+			return "certificate-issuance.jsp";
 		}
 
 		// エラーがない場合は確認画面に進む

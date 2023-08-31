@@ -14,13 +14,13 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">申請理由（具体的に）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="reason" placeholder="国民年金保険料の学生納付特例制度申請のため" value="${reason}" required>
+	                <input class="form-control" type="text" name="reason" placeholder="国民年金保険料の学生納付特例制度申請のため" value="<c:out value='${reason}'/>" required>
 	            </div>
   	            <!-- 提出先 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">提出先</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="propose" placeholder="厚木年金事務所" value="${propose}" required>
+	                <input class="form-control" type="text" name="propose" placeholder="厚木年金事務所" value="<c:out value='${propose}'/>" required>
 	            </div>
 	            <!-- 交付区分-->
 	            <p>必要な書類の枚数を選択してください</p>
@@ -117,7 +117,8 @@
 	            </div>
 	        </c:if>	        
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+				<div class="alert alert-danger" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- サブミットボタン -->

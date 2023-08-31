@@ -12,13 +12,13 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="lastName">姓</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="${lastName}" required>
+	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}' />" required>
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="firstName">名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="${firstName}" required>
+	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}' />" required>
 	            </div>
 	            <!-- 生年月日 -->
 	            <div class="col-md-2 mb-3">
@@ -62,31 +62,31 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="lastNameRuby">姓（ふりがな）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="${lastNameRuby}" required>
+	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}' />" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="firstNameRuby">名（ふりがな）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="${firstNameRuby}" required>
+	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}' />" required>
 	            </div>
 	            <!-- 電話番号 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="tel">電話番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="${tel}" required>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222" value="<c:out value='${tel}' />" required>
 	            </div>
 	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="postCode">郵便番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="${postCode}" required>
+	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}' />" required>
 	            </div>
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="address">住所</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="${address}" required>
+	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム" value="<c:out value='${address}' />" required>
 	            </div>
 
   	            <!-- 入校年月日 -->
@@ -143,7 +143,7 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="studentNumber">学籍番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
+	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${studentNumber}' />" required>
 	            </div>
 	            <!-- クラス名 -->
 	            <div class="col-md-6 mb-3">
@@ -189,27 +189,27 @@
 	
 	        </div>
 	        <!-- エラー表示  -->
-	        <c:if test="${not empty nullError}">
+	        <c:if test="${not empty nullError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${nullError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty agreeError}">
+	        <c:if test="${not empty agreeError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${agreeError}
 	            </div>
 	        </c:if>
-  	        <c:if test="${not empty  rubyError}">
+  	        <c:if test="${not empty  rubyError}" >
 	            <div class="alert alert-danger" role="alert">
 	                ${rubyError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty  valueLongError}">
+	        <c:if test="${not empty  valueLongError}" >
 	            <div class="alert alert-danger" role="alert">
 	                ${valueLongError}
 	            </div>
 	        </c:if>
-            <c:if test="${not empty telError}">
+            <c:if test="${not empty telError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${telError}
 	            </div>
@@ -219,17 +219,17 @@
 	                ${postCodeError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty studentNumberError}">
+	        <c:if test="${not empty studentNumberError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${studentNumberError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty dayError}">
+	        <c:if test="${not empty dayError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${dayError}
 	            </div>
 	        </c:if>
-	        <c:if test="${not empty innerError}">
+	        <c:if test="${not empty innerError}" >
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${innerError}
 	            </div>

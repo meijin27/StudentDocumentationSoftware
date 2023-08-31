@@ -14,68 +14,68 @@
 
 	    <div class="data-row">
 	        <div class="data-label"><p>姓: </p></div>
-	        <div class="data-value"><p>${lastName}</p></div>
+	        <div class="data-value"><p><c:out value='${lastName}'/></p></div>
   	        <div class="data-label-second"><p>名:</p></div>
-	        <div class="data-value"><p>${firstName}</p></div>
+	        <div class="data-value"><p><c:out value='${firstName}'/></p></div>
 	    </div>
 
 	    <div class="data-row">
 	        <div class="data-label"><p>姓（ふりがな）: </p></div>
-	        <div class="data-value"><p>${lastNameRuby}</p></div>
+	        <div class="data-value"><p><c:out value='${lastNameRuby}'/></p></div>
 	        <div class="data-label-second"><p>名（ふりがな）:</p></div>
-	        <div class="data-value"><p>${firstNameRuby}</p></div>
+	        <div class="data-value"><p><c:out value='${firstNameRuby}'/></p></div>
 	    </div>
 	
 	    <div class="data-row">
   			<div class="data-label"><p>郵便番号:</p></div>
-			<div class="data-value"><p>${postCode}</p></div>
+			<div class="data-value"><p><c:out value='${postCode}'/></p></div>
 
 	    </div>
 	
 	    <div class="data-row">
 	        <div class="data-label"><p>住所:</p></div>
-	        <div class="data-value-0px"><p>${address}</p></div>
+	        <div class="data-value-0px"><p><c:out value='${address}'/></p></div>
 	    </div>
 	
 		<div class="data-row">
 			<div class="data-label"><p>電話番号:</p></div>
-			<div class="data-value"><p>${tel}</p></div>
+			<div class="data-value"><p><c:out value='${tel}'/></p></div>
 	        <div class="data-label-second"><p>生年月日:</p></div>
-	        <div class="data-value-0px"><p>${birthYear}年${birthMonth}月${birthDay}日</p></div>
+	        <div class="data-value-0px"><p><c:out value="${birthYear}" />年<c:out value="${birthMonth}" />月<c:out value="${birthDay}" />日</p></div>
 	    </div>
 		
 	    <div class="data-row">
 	        <div class="data-label"><p>学生番号:</p></div>
-	        <div class="data-value"><p>${studentNumber}</p></div>	    
+	        <div class="data-value"><p><c:out value='${studentNumber}'/></p></div>	    
   	        <div class="data-label-second"><p>入学年月日:</p></div>
-	        <div class="data-value-0px"><p>${admissionYear}年${admissionMonth}月${admissionDay}日</p></div>
+	        <div class="data-value-0px"><p><c:out value="${admissionYear}" />年<c:out value="${admissionMonth}" />月<c:out value="${admissionDay}" />日</p></div>
 	    </div>
 	    
 	    <div class="data-row">
 			<div class="data-label"><p>学生種別:</p></div>
-			<div class="data-value"><p>${studentType}</p></div>	    
+			<div class="data-value"><p><c:out value='${studentType}'/></p></div>	    
 			<div class="data-label-second"><p>クラス名:</p></div>
-			<div class="data-value-0px"><p>${className}</p></div>
+			<div class="data-value-0px"><p><c:out value='${className}'/></p></div>
 	    </div>
 
 	    <div class="data-row">			        
 	    	<div class="data-label"><p>学年:</p></div>
-	        <div class="data-value"><p>${schoolYear}年</p></div>
+	        <div class="data-value"><p><c:out value='${schoolYear}'/>年</p></div>
   	        <div class="data-label-second "><p>組:</p></div>
-	        <div class="data-value-0px"><p>${classNumber}組</p></div>   
+	        <div class="data-value-0px"><p><c:out value='${classNumber}'/>組</p></div>   
 	    </div>
 
 	    <div class="data-row">
 	        <div class="data-label"><p>ハローワーク:</p></div>
-	        <div class="data-value"><p>${namePESO}</p></div>
+	        <div class="data-value"><p><c:out value='${namePESO}'/></p></div>
 			<div class="data-label-second"><p>支給番号:</p></div>
-			<div class="data-value-0px"><p>${supplyNumber}</p></div>	        
+			<div class="data-value-0px"><p><c:out value='${supplyNumber}'/></p></div>	        
 	    </div>
 	    <div class="data-row">			
 			<div class="data-label"><p>出席番号:</p></div>
-			<div class="data-value"><p>${attendanceNumber}</p></div>	        
+			<div class="data-value"><p><c:out value='${attendanceNumber}'/></p></div>	        
 	        <div class="data-label-second"><p>雇用保険有無:</p></div>
-	        <div class="data-value-0px"><p>${employmentInsurance}</p></div>	        
+	        <div class="data-value-0px"><p><c:out value='${employmentInsurance}'/></p></div>	        
 	    </div>
 		<!-- エラー表示 -->
         <c:if test="${not empty innerError}">

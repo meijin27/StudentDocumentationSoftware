@@ -14,7 +14,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">親族氏名</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="relativeName" placeholder="鈴木　一郎" value="${relativeName}" required>
+	                <input class="form-control" type="text" name="relativeName" placeholder="鈴木　一郎" value="<c:out value='${relativeName}'/>" required>
 	            </div>
 	            <!-- 親族生年月日-->
 	            <div class="col-md-4 mb-5">
@@ -58,7 +58,7 @@
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">親族住所</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="${relativeAddress}" required>
+	                <input class="form-control" type="text" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
 	            </div>
 		        <!-- 欠席理由 -->
 	            <div class="col-md-12 mb-5">
@@ -214,7 +214,8 @@
 	            </div>
 	        </c:if>	     
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+				<div class="alert alert-danger" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- サブミットボタン -->

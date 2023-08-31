@@ -54,13 +54,13 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="patron">保護者</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="patron" placeholder="範馬　勇次郎" value="${patron}" required>
+	                <input class="form-control" type="text" name="patron" placeholder="範馬　勇次郎" value="<c:out value='${patron}'/>" required>
 	            </div>
 	            <!-- 保護者電話番号 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="patronTel">保護者電話番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="patronTel" placeholder="08011112222"value="${patronTel}" required>
+	                <input class="form-control" type="text" name="patronTel" placeholder="08011112222"value="<c:out value='${patronTel}'/>" required>
 	            </div>
 	            <!-- 種別 -->
 				<div class="col-md-4 mb-5">
@@ -163,13 +163,13 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="registrationNumber">登録番号（ナンバー or 防犯登録番号）</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="registrationNumber" placeholder="東京　あ　1234" value="${registrationNumber}" required>
+	                <input class="form-control" type="text" name="registrationNumber" placeholder="東京　あ　1234" value="<c:out value='${registrationNumber}'/>" required>
 	            </div>
 	            <!-- 車種・色 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="modelAndColor">車種・色</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="modelAndColor" placeholder="スーパーカブ50・白"value="${modelAndColor}" required>
+	                <input class="form-control" type="text" name="modelAndColor" placeholder="スーパーカブ50・白" value="<c:out value='${modelAndColor}'/>" required>
 	            </div>    
 	        </div>  
 	        <!-- エラー表示 -->    	        

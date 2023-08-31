@@ -27,18 +27,18 @@
       			<p class="text-start text-center">①試験による証明(Proof based on a Japanese Language Test)</p>
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="testName">試験名（Name of the test）</label>
-	                <input class="form-control" type="text" name="testName" placeholder="日本語能力検定試験" value="${testName}">
+	                <input class="form-control" type="text" name="testName" placeholder="日本語能力検定試験" value="<c:out value='${testName}'/>">
 	            </div>   	            
    	            <!-- 級又は点数 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="attainedLevelOrScore">級又は点数（Attained level or score）</label>
-	                <input class="form-control" type="text" name="attainedLevelOrScore" placeholder="１級" value="${attainedLevelOrScore}">
+	                <input class="form-control" type="text" name="attainedLevelOrScore" placeholder="１級" value="<c:out value='${attainedLevelOrScore}'/>">
 	            </div>
       			<p class="text-start text-center">②日本語教育を受けた教育機関及び期間(Organization and period to have received Japanese language education)</p>
     	        <!-- 機関名 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="organization">機関名（Organization）</label>
-	                <input class="form-control" type="text" name="organization" placeholder="日本語学校　希望ヶ丘駅前支店" value="${organization}" >
+	                <input class="form-control" type="text" name="organization" placeholder="日本語学校　希望ヶ丘駅前支店" value="<c:out value='${organization}'/>" >
 	            </div>
   	 	        <!-- 期間年月日（自） -->
 	            <p class="text-start text-center">期間（自）(Period from)</p>
@@ -89,7 +89,7 @@
  	            <!-- その他 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="others">③その他(Others)</label>
-	                <input class="form-control" type="text" name="others" placeholder="2010年から2018年まで日本で生活しており、小学校も日本の学校に通っていた。" value="${others}">
+	                <input class="form-control" type="text" name="others" placeholder="2010年から2018年まで日本で生活しており、小学校も日本の学校に通っていた。" value="<c:out value='${others}'/>">
 	            </div> 
 	              
       			<p class="border-bottom"></p>
@@ -103,27 +103,27 @@
  	            <!-- 本人負担 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="self">①本人負担（Self）</label>
-	                <input class="form-control" type="text" name="self" placeholder="100,000" value="${self}">
+	                <input class="form-control" type="text" name="self" placeholder="100,000" value="<c:out value='${self}'/>">
 	            </div>
    	            <!-- 在外経費支弁者負担 -->
 	            <div class="col-md-7 mb-5">
 	                <label class="form-label" for="supporterLivingAbroad">②在外経費支弁者負担（Supporter living abroad）</label>
-	                <input class="form-control" type="text" name="supporterLivingAbroad" placeholder="50,000" value="${supporterLivingAbroad}">
+	                <input class="form-control" type="text" name="supporterLivingAbroad" placeholder="50,000" value="<c:out value='${supporterLivingAbroad}'/>">
 	            </div>
    	            <!-- 在日経費支弁者負担 -->
 	            <div class="col-md-7 mb-5">
 	                <label class="form-label" for="supporterInJapan">③在日経費支弁者負担（Supporter in Japan）</label>
-	                <input class="form-control" type="text" name="supporterInJapan" placeholder="80,000" value="${supporterInJapan}">
+	                <input class="form-control" type="text" name="supporterInJapan" placeholder="80,000" value="<c:out value='${supporterInJapan}'/>">
 	            </div>
    	            <!-- 奨学金 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="scholarship">④奨学金（Scholarship）</label>
-	                <input class="form-control" type="text" name="scholarship" placeholder="30,000" value="${scholarship}">
+	                <input class="form-control" type="text" name="scholarship" placeholder="30,000" value="<c:out value='${scholarship}'/>">
 	            </div>
    	            <!-- その他 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="otherDisbursement ">⑤その他（Others）</label>
-	                <input class="form-control" type="text" name="otherDisbursement" placeholder="20,000" value="${otherDisbursement}">
+	                <input class="form-control" type="text" name="otherDisbursement" placeholder="20,000" value="<c:out value='${otherDisbursement}'/>">
 	            </div>	            
       			<p class="border-bottom"></p>	            
      			<p class="text-start">(2)送金・携行等の別</p>
@@ -133,27 +133,27 @@
  	            <!-- 外国からの携行 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingAbroad">①外国からの携行（Carrying from abroad）</label>
-	                <input class="form-control" type="text" name="carryingAbroad" placeholder="2,350,000/年" value="${carryingAbroad}">
+	                <input class="form-control" type="text" name="carryingAbroad" placeholder="2,350,000/年" value="<c:out value='${carryingAbroad}'/>">
 	            </div>	  			
 	            <!-- 携行者 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingName">携行者（Name of the individual carrying cash）</label>
-	                <input class="form-control" type="text" name="carryingName" placeholder="ジョン・スミス" value="${carryingName}">
+	                <input class="form-control" type="text" name="carryingName" placeholder="ジョン・スミス" value="<c:out value='${carryingName}'/>">
 	            </div>	  	
 	            <!-- 携行時期 -->	  			
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="carryingTime">携行時期（Date and time of carrying cash）</label>
-	                <input class="form-control" type="text" name="carryingTime" placeholder="2020年頃" value="${carryingTime}">
+	                <input class="form-control" type="text" name="carryingTime" placeholder="2020年頃" value="<c:out value='${carryingTime}'/>">
 	            </div>	  	
  	            <!-- 外国からの送金 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="remittancesAbroad">②外国からの送金（Remittances from abroad）</label>
-	                <input class="form-control" type="text" name="remittancesAbroad" placeholder="200,000/月" value="${remittancesAbroad}">
+	                <input class="form-control" type="text" name="remittancesAbroad" placeholder="200,000/月" value="<c:out value='${remittancesAbroad}'/>">
 	            </div>	  			  			          
  	            <!-- その他の送金 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="otherRemittances">③その他（Others）</label>
-	                <input class="form-control" type="text" name="otherRemittances" placeholder="" value="${otherRemittances}">
+	                <input class="form-control" type="text" name="otherRemittances" placeholder="" value="<c:out value='${otherRemittances}'/>">
 	            </div>	  			
  
       			<p class="border-bottom"></p>	            
@@ -164,32 +164,32 @@
  	            <!-- 経費支弁者氏名 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterName">経費支弁者氏名(Supporter Name)</label>
-	                <input class="form-control" type="text" name="supporterName" placeholder="有澤　宗一郎" value="${supporterName}">
+	                <input class="form-control" type="text" name="supporterName" placeholder="有澤　宗一郎" value="<c:out value='${supporterName}'/>">
 	            </div>	  
  	            <!--  経費支弁者住所 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterAddress">経費支弁者住所(Supporter Address)</label>
-	                <input class="form-control" type="text" name="supporterAddress" placeholder="京都府京都市四条通４－２" value="${supporterAddress}">
+	                <input class="form-control" type="text" name="supporterAddress" placeholder="京都府京都市四条通４－２" value="<c:out value='${supporterAddress}'/>">
 	            </div>	  
  	            <!-- 経費支弁者電話番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterTel">経費支弁者電話番号(Supporter Tel)</label>
-	                <input class="form-control" type="text" name="supporterTel" placeholder="03-1234-5678" value="${supporterTel}">
+	                <input class="form-control" type="text" name="supporterTel" placeholder="03-1234-5678" value="<c:out value='${supporterTel}'/>">
 	            </div>	  
   	            <!-- 経費支弁者年収 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterIncome">経費支弁者年収(Supporter Annual income)</label>
-	                <input class="form-control" type="text" name="supporterIncome" placeholder="5600000" value="${supporterIncome}">
+	                <input class="form-control" type="text" name="supporterIncome" placeholder="5600000" value="<c:out value='${supporterIncome}'/>">
 	            </div>	  
   	            <!-- 経費支弁者勤務先 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterEmployment">経費支弁者勤務先(Supporter place of employment)</label>
-	                <input class="form-control" type="text" name="supporterEmployment" placeholder="有澤重工業株式会社" value="${supporterEmployment}">
+	                <input class="form-control" type="text" name="supporterEmployment" placeholder="有澤重工業株式会社" value="<c:out value='${supporterEmployment}'/>">
 	            </div>	  
   	            <!-- 経費支弁者勤務先電話番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="supporterWorkTel">経費支弁者勤務先電話番号(Supporter Work Phone Number)</label>
-	                <input class="form-control" type="text" name="supporterWorkTel" placeholder="0120-55-9876" value="${supporterWorkTel}">
+	                <input class="form-control" type="text" name="supporterWorkTel" placeholder="0120-55-9876" value="<c:out value='${supporterWorkTel}'/>">
 	            </div>	 
             <!-- エラー表示 -->
 	        <c:if test="${not empty inputError}">

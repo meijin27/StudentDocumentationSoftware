@@ -64,7 +64,7 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学籍番号</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="studentNumber" placeholder="240001"value="${studentNumber}" required>
+	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${studentNumber}'/>" required>
 	            </div>
 	            <!-- クラス名 -->
 	            <div class="col-md-6 mb-3">

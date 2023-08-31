@@ -77,13 +77,13 @@
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="startingStation<%= set %>">出発駅</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="startingStation<%= set %>" placeholder="希望ヶ丘" value="${startingStation}"  <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control" type="text" name="startingStation<%= set %>" placeholder="希望ヶ丘" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>     	          	        
 	            <!-- 到着駅 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="arrivalStation<%= set %>">到着駅</label>
 	                <span class="text-danger">*</span>
-	                <input class="form-control" type="text" name="arrivalStation<%= set %>" placeholder="大阪" value="${arrivalStation}"  <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control" type="text" name="arrivalStation<%= set %>" placeholder="大阪" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>     	   	        
 	            <!-- 使用目的 -->  	        
 	            <div class="col-md-4 mb-3">
@@ -99,7 +99,7 @@
 	            <!-- その他の理由 -->
 	            <div class="col-md-8 mb-5">
 	                <label class="form-label" for="reason<%= set %>">使用目的がその他の場合は理由を記載</label>
-	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="就職活動のため" value="${reason}">
+	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="就職活動のため">
 	            </div>     	 
  				<% if (set != 1) { %>
 		            <!-- 削除ボタン -->
