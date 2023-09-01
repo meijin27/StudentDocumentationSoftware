@@ -1,0 +1,37 @@
+DecryptionResult クラスに関する説明書
+
+1. 概要
+DecryptionResult クラスは、復号化されたデータを保持するためのデータホルダークラスです。Decrypt クラスによって復号化された各データを効率的に管理およびアクセスするためのクラスとして機能します。
+
+2. コード詳細
+2.1. 変数
+id: 復号化されたIDを保持するための文字列変数。
+account: 復号化されたアカウント名を保持するための文字列変数。
+masterKey: 復号化されたマスターキーを保持するための文字列変数。
+iv: 利用される初期ベクトル (IV) を保持するための文字列変数。
+
+2.2. コンストラクタ
+DecryptionResult(String id, String account, String masterKey, String iv): 4つの文字列パラメータを受け取り、それらの変数をインスタンスに設定します。
+
+2.3. アクセサメソッド
+getId(): 復号化されたIDを返します。
+getAccount(): 復号化されたアカウント名を返します。
+getMasterKey(): 復号化されたマスターキーを返します。
+getIv(): 使用される初期ベクトル (IV) を返します。
+
+3. 使用方法
+復号化されたデータを持つ新しいインスタンスを作成します。
+DecryptionResult result = new DecryptionResult(decryptedId, decryptedAccount, decryptedMasterKey, iv);
+
+必要に応じて、各データを取得します。
+String id = result.getId();
+String account = result.getAccount();
+String masterKey = result.getMasterKey();
+String ivValue = result.getIv();
+
+4. 特徴
+シンプルなデータホルダー: このクラスは、特定の復号化操作の結果を保持し、他の部分のコードから簡単にアクセスできるようにするためのシンプルなデータホルダーとして機能します。
+読み取り専用: このクラスは、データのセットに関してコンストラクタを通じてのみ可能であり、後で変更することはできません。これにより、データの不変性が保持されます。
+
+5. 注意事項
+DecryptionResult クラスのインスタンスは、データの不変性を保持するために、一度設定されると後から変更することができません。

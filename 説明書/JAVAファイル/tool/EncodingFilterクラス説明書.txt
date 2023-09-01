@@ -1,0 +1,25 @@
+EncodingFilter クラスに関する説明書
+
+1. 概要
+EncodingFilter クラスは、ウェブアプリケーションにUTF-8エンコーディングを一貫して適用するための簡単な方法を提供します。特定のURLパターンに対して自動的に動作し、開発者が個々のサーブレットでエンコーディングを手動で設定する手間を省くことができます。
+
+2. メソッド
+doFilter(ServletRequest request, ServletResponse response, FilterChain chain):
+リクエストおよびレスポンスのエンコーディングをUTF-8に設定します。
+リクエストとレスポンスのコンテンツタイプも"text/html; charset=UTF-8"に設定されます。
+その後、次のフィルタまたはサーブレットへのリクエストとレスポンスの処理が進められます。
+
+init(FilterConfig filtercConfig):
+フィルタがインスタンス化されたときに呼び出されるメソッドです。
+
+destroy():
+フィルタが破棄されるときに呼び出されるメソッドです。
+
+アノテーション
+@WebFilter(urlPatterns = { "*.jsp", "*.html", "*.action" }):
+このアノテーションは、フィルタが適用されるURLパターンを定義します。
+現在、.jsp、.html、および.actionという拡張子を持つURLにこのフィルタが適用されます。
+
+3. 特徴
+このフィルタは、.jsp、.html、および.actionという拡張子を持つURLに自動的に適用されます。
+リクエストやレスポンスがこのフィルタを通過すると、そのエンコーディングがUTF-8に設定されます。

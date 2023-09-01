@@ -1,0 +1,18 @@
+MonitorAction クラスに関する説明書
+
+1. 概要
+MonitorActionクラスは、ユーザー情報の取得とデータの復号処理を行い、その結果をmonitor.jspに表示するためのクラスです。このクラスは、Action クラスを拡張しています。
+
+2. メソッド
+public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception
+このメソッドは、以下の手順で操作されます:
+①セッションの確認: セッションが無効または"master_key"や"id"属性がセットされていない場合、ユーザーをログインページへリダイレクトします。
+②データの取得: UserDAO を使用してデータベースからユーザー情報を取得します。
+③復号: ユーザー情報を復号し、その結果をrequestオブジェクトの属性としてセットします。この処理は各ユーザー情報項目ごとに行われます。
+④エラーハンドリング: 何らかの例外が発生した場合、その情報はロガーに記録され、内部エラーメッセージがrequestオブジェクトの属性としてセットされます。
+⑤JSPページへのリダイレクト: 最後に、monitor.jspへのパスが返され、ユーザー情報がそのページに表示されます。
+
+3. 特徴
+CustomLoggerを使用して、エラーやその他の重要な情報をログに記録します。
+CipherUtilクラスは、暗号化や復号のためのユーティリティメソッドを提供します。
+ユーザー情報の復号は2段階で行われます。最初にCipherUtil.commonDecryptで一般的な復号が行われ、次にCipherUtil.decryptでマスターキーとivを使用した復号が行われます。

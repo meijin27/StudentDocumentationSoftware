@@ -1,0 +1,34 @@
+EditPDF クラスに関する説明書
+
+1. 概要
+EditPDF クラスは、PDFの編集操作をサポートするユーティリティクラスです。既存のPDFドキュメントを読み込み、テキストや図形の描画を行う機能が提供されています。
+
+2. コード詳細
+2.1. 変数
+document: PDDocument オブジェクト。ロードしたPDFドキュメントを表します。
+contentStream: PDPageContentStream オブジェクト。PDF上にテキストや図形を描画するためのストリームです。
+
+2.2. コンストラクタ
+EditPDF(String pdfPath): 指定されたパスのPDFドキュメントを読み込み、PDPageContentStream オブジェクトを初期化します。
+PDPageContentStream オブジェクトを初期化します。
+
+2.3. メソッド
+writeText(...):
+指定された位置、幅、および整列に基づいて、PDF上にテキストを描画します。
+テキストが指定した範囲に収まらない場合、フォントサイズを小さくして調整します。
+整列には "left", "center", "right" のいずれかを指定できます。
+
+writeSymbolsOnCalendar(...):
+カレンダー上の特定の日にシンボルを描画するためのメソッドです。
+各日のシンボルは、Map<Integer, String> として提供されます。
+
+drawEllipse(...):
+指定された位置とサイズで、PDF上に楕円を描画します。
+
+close(String filename, HttpServletResponse response):
+PDFの編集を終了し、その内容をHTTPレスポンスの出力ストリームに保存します。これにより、クライアントにダウンロードするPDFファイルが提供されます。
+ファイル名には現在の日時を追加して、ユニークなものとしています。
+
+3. 例外処理:
+いくつかのメソッドは IOException をスローする可能性があります。
+エラーメッセージは CustomLogger を使用して記録されます。

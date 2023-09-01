@@ -1,0 +1,30 @@
+FrontController クラスに関する説明書
+
+1. 概要
+このクラスは、ウェブアプリケーションのページ遷移を制御するためのフロントコントローラサーブレットです。
+*.actionというURLパターンにマッチするリクエストを受け取った場合、対応する***Action.javaのクラスに遷移します。
+
+2. コード詳細
+2.1. メソッド
+doPost(HttpServletRequest request, HttpServletResponse response):
+このメソッドは、POSTリクエストを処理します。
+リクエストのURLから、対応するActionクラスを特定し、そのクラスのexecuteメソッドを実行します。
+その後、executeメソッドによって返されたURLにリクエストをフォワードします。
+
+doGet(HttpServletRequest request, HttpServletResponse response):
+このメソッドは、GETリクエストを処理します。
+実際の処理はdoPostメソッドに委譲します。
+
+2.2. アノテーション
+@WebServlet(urlPatterns = { "*.action" }):
+このアノテーションは、サーブレットが適用されるURLパターンを定義します。
+.actionという拡張子を持つURLにこのサーブレットが適用されます。
+
+3. 使用方法
+JSPのform内に***.actionと記載されている場合、リクエストはこのサーブレットにルーティングされます。
+サーブレットは、受け取ったリクエストのURLから、実行すべきActionクラスを特定し、そのクラスのexecuteメソッドを実行します。
+executeメソッドは次のページのURLを返すと、そのページに遷移します。
+
+4. 特徴
+FrontControllerは、ウェブアプリケーションのページ遷移を一元的に制御するためのサーブレットです。
+リクエストのURLに基づいて対応するActionクラスを特定し、そのクラスのexecuteメソッドを実行することで、適切なページ遷移を実現します。

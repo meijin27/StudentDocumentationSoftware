@@ -41,8 +41,6 @@ public class MonitorAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// アカウント名の取り出し			
-			String account = result.getAccount();
 			// マスターキーの取り出し			
 			String masterKey = result.getMasterKey();
 			// ivの取り出し
