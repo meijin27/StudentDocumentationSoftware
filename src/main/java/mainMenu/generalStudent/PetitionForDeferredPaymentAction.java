@@ -88,19 +88,21 @@ public class PetitionForDeferredPaymentAction extends Action {
 			return "petition-for-deferred-payment.jsp";
 		}
 
+		LocalDate requestDate = null;
+
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
 			int checkYear = Integer.parseInt(requestYear) + 2018;
 			int checkMonth = Integer.parseInt(requestMonth);
 			int checkDay = Integer.parseInt(requestDay);
 			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
 			checkYear = Integer.parseInt(generalDeliveryYear) + 2018;
 			checkMonth = Integer.parseInt(generalDeliveryMonth);
 			checkDay = Integer.parseInt(generalDeliveryDay);
 			// 日付の妥当性チェック
-			date = LocalDate.of(checkYear, checkMonth, checkDay);
+			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
@@ -171,6 +173,12 @@ public class PetitionForDeferredPaymentAction extends Action {
 				if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
 					request.setAttribute("dayError", "選択した日付は土日です。納付期限は土日祝日にならないようにしてください。");
 				}
+				// dateがrequestDateより後の日付かどうかを確認
+				if (!date.isAfter(requestDate)) {
+					// dateがrequestDateより後の日付ではない場合の処理
+					request.setAttribute("dayError", "納付期限は願出年月日より後の日付にしてください。");
+				}
+
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
 			}
@@ -196,13 +204,6 @@ public class PetitionForDeferredPaymentAction extends Action {
 		if (totalPayment != 0) {
 			request.setAttribute("numberError", "納付すべき金額と納付学費及び延納金額の合計が一致しません。");
 			return "petition-for-deferred-payment.jsp";
-		}
-
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
 		}
 
 		try {
@@ -290,6 +291,13 @@ public class PetitionForDeferredPaymentAction extends Action {
 				if (request.getAttribute("exchangeStudentError") != null) {
 					return "petition-for-deferred-payment.jsp";
 				}
+			}
+
+			// リクエストのデータ全削除
+			Enumeration<String> attributeNames = request.getAttributeNames();
+			while (attributeNames.hasMoreElements()) {
+				String attributeName = attributeNames.nextElement();
+				request.removeAttribute(attributeName);
 			}
 
 			// PDFとフォントのパス作成
