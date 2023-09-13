@@ -52,9 +52,9 @@ public class SeachAccountAction extends Action {
 						String encryptedId = CipherUtil.commonEncrypt(String.valueOf(id));
 						// リクエストにユーザー識別用のIDを持たせる				
 						request.setAttribute("encryptedId", encryptedId);
-						// 暗号化した秘密の質問を共通暗号キーで復号化する
+						// 暗号化した秘密の質問を共通暗号キーで復号する
 						String encryptedSecretQuestion = CipherUtil.commonDecrypt(reEncryptedSecretQuestion);
-						// 秘密の質問はアカウント名とIDをキーにして復号化
+						// 秘密の質問はアカウント名とIDをキーにして復号
 						String secretQuestion = CipherUtil.decrypt(account + id, iv, encryptedSecretQuestion);
 						// リクエストに秘密の質問を持たせる				
 						request.setAttribute("secretQuestion", secretQuestion);

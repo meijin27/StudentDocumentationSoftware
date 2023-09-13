@@ -45,7 +45,7 @@ public class CipherUtil {
 		}
 	}
 
-	// マスターキーを用いた復号化
+	// マスターキーを用いた復号
 	public static String decrypt(String key, String iv, String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(key.getBytes("UTF-8"), 16);
@@ -85,7 +85,7 @@ public class CipherUtil {
 		}
 	}
 
-	// 環境変数を用いた復号化	
+	// 環境変数を用いた復号	
 	public static String commonDecrypt(String encryptedValue) {
 		try {
 			byte[] keyBytes = Arrays.copyOf(myKey.getBytes("UTF-8"), 16);

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import dao.UserDAO;
 
-// セッションに格納したIDとマスターキーを復号化するためのクラス
+// セッションに格納したIDとマスターキーを復号するためのクラス
 public class Decrypt {
 	private static final Logger logger = CustomLogger.getLogger(Decrypt.class);
 
