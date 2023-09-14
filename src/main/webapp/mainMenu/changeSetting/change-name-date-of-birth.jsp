@@ -14,32 +14,32 @@
 	            <!-- 姓 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">姓</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>" required>
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">名</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>" required>
 	            </div>
    	            <!-- 姓（ふりがな） -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">姓（ふりがな）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}'/>" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">名（ふりがな）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}'/>" required>
 	            </div>
        
 	            <!-- 生年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="birthYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="birthYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <=currentYear;
@@ -52,7 +52,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="birthMonth">生年月日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="birthMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -64,7 +64,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="birthDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="birthDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>

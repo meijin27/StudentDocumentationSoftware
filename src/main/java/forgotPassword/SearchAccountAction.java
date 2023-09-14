@@ -12,8 +12,8 @@ import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
 
-public class SeachAccountAction extends Action {
-	private static final Logger logger = CustomLogger.getLogger(SeachAccountAction.class);
+public class SearchAccountAction extends Action {
+	private static final Logger logger = CustomLogger.getLogger(SearchAccountAction.class);
 
 	@Override
 	public String execute(
@@ -27,7 +27,7 @@ public class SeachAccountAction extends Action {
 			// 文字数が32文字より多い場合はエラーを返す
 			if (account.length() > 32) {
 				request.setAttribute("accountError", "32文字以下で入力してください。");
-				return "seach-account.jsp";
+				return "search-account.jsp";
 			}
 
 			try {
@@ -63,20 +63,20 @@ public class SeachAccountAction extends Action {
 						// もしアカウントがデータベースに登録されていればエラーメッセージを表示			
 					} else {
 						request.setAttribute("accountError", "このアカウントはパスワードの再設定ができません");
-						return "seach-account.jsp";
+						return "search-account.jsp";
 					}
 				} else {
 					request.setAttribute("accountError", "存在しないアカウントです");
-					return "seach-account.jsp";
+					return "search-account.jsp";
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 				request.setAttribute("accountError", "内部エラーが発生しました。");
-				return "seach-account.jsp";
+				return "search-account.jsp";
 			}
 		}
 		// アカウント名未入力の場合は元のページに戻す
 		request.setAttribute("accountError", "アカウント名の入力は必須です");
-		return "seach-account.jsp";
+		return "search-account.jsp";
 	}
 }

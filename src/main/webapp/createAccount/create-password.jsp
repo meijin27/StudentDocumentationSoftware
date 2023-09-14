@@ -7,13 +7,13 @@
 	<div class="container">
 		<form action="CreatePassword.action" method="post">
 			<p class="text-start" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
-			<p>パスワードを入力してください<span class="text-danger">*</span></p>
+			<p>パスワードを入力してください<span class="required-label">必須</span></p>
 			
 			<div class="form-floating mb-3">
 				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
 				<label	for="password">Password</label>
 			</div>
-			<p>もう一度同じパスワードを入力してください<span class="text-danger">*</span></p>
+			<p>もう一度同じパスワードを入力してください<span class="required-label">必須</span></p>
 			<div class="form-floating mb-5">
 				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" placeholder="Retype Password" required> 
 				<label for="passwordCheck">Retype Password</label>

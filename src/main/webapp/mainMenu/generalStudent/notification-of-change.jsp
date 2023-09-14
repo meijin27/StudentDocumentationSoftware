@@ -16,7 +16,7 @@
    	            <!-- 届出年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
@@ -29,7 +29,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestMonth">届出年月日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -41,7 +41,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -54,7 +54,7 @@
 	            <!-- 変更対象者 -->  	        
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="ChangeSubject">変更対象者</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="ChangeSubject" class="form-control select-center" required>
 	                    <option value="">-- 変更対象者 --</option>
 	                    <option value="本人">本人</option>

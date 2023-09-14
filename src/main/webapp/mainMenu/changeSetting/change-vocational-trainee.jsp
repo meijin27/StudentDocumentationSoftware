@@ -14,7 +14,7 @@
 	            <!-- 公共職業安定所名 Public Employment Security Office-->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">公共職業安定所名</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="namePESO" placeholder="厚木" value="<c:out value='${namePESO}'/>" required>
 	            </div>
 
@@ -27,14 +27,14 @@
 	             <!-- 出席番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">出席番号</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="attendanceNumber" placeholder="16" value="<c:out value='${attendanceNumber}'/>" required>
 	            </div>
 
 				<!-- 雇用保険 -->
 				<div class="col-md-6 mb-5">
 				    <label class="form-label">雇用保険の有無</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
 				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceYes" value="有" 

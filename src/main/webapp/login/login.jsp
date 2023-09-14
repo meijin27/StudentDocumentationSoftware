@@ -33,7 +33,7 @@
 		<!-- 新規アカウント作成用JSPへのリンク  -->
 	    <a href="<%=request.getContextPath()%>/createAccount/create-account.jsp" class="d-block mb-3">新規登録はこちら</a>
 		<!-- パスワード忘却時パスワード再設定用JSPへのリンク  -->
-        <a href="<%=request.getContextPath()%>/forgotPassword/seach-account.jsp">パスワードを忘れた方はこちら</a>
+        <a href="<%=request.getContextPath()%>/forgotPassword/search-account.jsp">パスワードを忘れた方はこちら</a>
     </form>
 </main>
 

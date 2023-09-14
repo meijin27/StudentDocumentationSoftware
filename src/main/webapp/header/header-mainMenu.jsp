@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/mainMenu.css">
 	<link rel="icon" href="<%=request.getContextPath()%>/img/favicon.ico">
 </head>
-<body class="text-center d-flex flex-column h-100">
+<body class="d-flex flex-column h-100">
 
 <header>
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark p-0">

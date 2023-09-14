@@ -14,7 +14,7 @@
   	            <!-- 入学年月日-->
 	            <div class="col-md-2 mb-5">
 	                <label class="form-label invisible-text" for="admissionYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="admissionYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2; i <=currentYear;
@@ -27,7 +27,7 @@
 	            </div>
 	            <div class="col-md-2 mb-5">
 	                <label class="form-label" for="admissionMonth">入学日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="admissionMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -39,7 +39,7 @@
 	            </div>
 	            <div class="col-md-2 mb-5">
 	                <label class="form-label invisible-text" for="admissionDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="admissionDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -52,7 +52,7 @@
 	             <!-- 学生の種類 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学生の種類</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="studentType" class="form-control select-center" required>
 	                    <option value="">-- 学生の種類 --</option>
 	                    <option value="一般学生">一般学生</option>
@@ -63,13 +63,13 @@
 	            <!-- 学籍番号 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学籍番号</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${studentNumber}'/>" required>
 	            </div>
 	            <!-- クラス名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">クラス名</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="className" class="form-control select-center" required>
 	                    <option value="">-- クラス名 --</option>
 	                    <option value="ＩＴ・ゲームソフト科">ＩＴ・ゲームソフト科</option>
@@ -84,7 +84,7 @@
 	            <!-- 学年 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">学年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="schoolYear" class="form-control select-center" required>
 	                    <option value="">-- 学年 --</option>
 	                    <% for(int i=1; i <=2; i++){ %>
@@ -96,7 +96,7 @@
 	            </div>
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">組</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="classNumber" class="form-control select-center" required>
 	                    <option value="">-- 組 --</option>
 	                    <% for(int i=1; i <=3; i++){ %>

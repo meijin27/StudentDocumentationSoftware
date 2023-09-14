@@ -84,7 +84,7 @@
   	            <!-- 資格外活動の有無 -->
   				<div class="col-md-12 mb-5">
 				    <label class="form-label">資格外活動の有無（Are you engaging in activities other than those permitted under the status of residence previously granted?）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="otherActivity" id="otherActivityYes" value="有" 
@@ -145,7 +145,7 @@
  	            <!-- 卒業後の予定 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="afterGraduation" class="form-control select-center" required>
 	                    <option value="">-- 卒業後の予定 --</option>
 	                    <option value="帰国">帰国（Return to home country）</option>

@@ -15,7 +15,7 @@
    	            <!-- 願出年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
@@ -28,7 +28,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestMonth">願出年月日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -40,7 +40,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -53,19 +53,19 @@
    	            <!-- 保護者 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="patron">保護者</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="patron" placeholder="範馬　勇次郎" value="<c:out value='${patron}'/>" required>
 	            </div>
 	            <!-- 保護者電話番号 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="patronTel">保護者電話番号</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="patronTel" placeholder="08011112222"value="<c:out value='${patronTel}'/>" required>
 	            </div>
 	            <!-- 種別 -->
 				<div class="col-md-4 mb-5">
 	                <label class="form-label" for="classification">種別</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex flex-column align-items-start"> 
 				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="classification" id="bicycle" value="自転車" 
@@ -86,7 +86,7 @@
   	            <!-- 期間年月日（自） -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="startYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="startYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2017;
@@ -99,7 +99,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="startMonth">期間年月日（自）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="startMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -111,7 +111,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="startDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="startDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -124,7 +124,7 @@
   	            <!-- 期間年月日（至） -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="endYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="endYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2017;
@@ -137,7 +137,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="endMonth">期間年月日（至）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="endMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -149,7 +149,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="endDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="endDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -162,13 +162,13 @@
 	            <!-- 登録番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="registrationNumber">登録番号（ナンバー or 防犯登録番号）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="registrationNumber" placeholder="東京　あ　1234" value="<c:out value='${registrationNumber}'/>" required>
 	            </div>
 	            <!-- 車種・色 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="modelAndColor">車種・色</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="modelAndColor" placeholder="スーパーカブ50・白" value="<c:out value='${modelAndColor}'/>" required>
 	            </div>    
 	        </div>  

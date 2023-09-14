@@ -13,7 +13,7 @@
    	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
@@ -26,7 +26,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestMonth">申請年月日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -38,7 +38,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -51,7 +51,7 @@
   	            <!-- 用途 -->  	        
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="use">用途</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="use" class="form-control select-center" required>
 	                    <option value="">-- 用途 --</option>
 	                    <option value="就職・進学活動">就職・進学活動</option>
@@ -69,13 +69,13 @@
   	            <!-- 提出先 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="">提出先</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="propose" placeholder="横浜市役所" value="<c:out value='${propose}'/>" required>
 	            </div>
 	            <!-- 提出先は入管ですか？ -->
 				<div class="col-md-4 mb-5">
 	                <label class="form-label" for="immigrationBureau">提出先は入管ですか？</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex flex-column align-items-start"> 
 				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="immigrationBureau" id=immigrationBureauYes value="はい" 

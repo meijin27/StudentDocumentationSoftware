@@ -10,7 +10,7 @@
     </div>
     <div class="container">
 		<form action="ChangeSecret.action" method="post">
-			 <p>現在のパスワードを入力してください<span class="text-danger">*</span></p>
+			 <p>現在のパスワードを入力してください<span class="required-label">必須</span></p>
 			 <div class="form-floating mb-5">
 				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
 			 	<label	for="password">Password</label>
@@ -18,7 +18,7 @@
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
                  <label class="form-label" for="">新しい秘密の質問を選択してください。</label>
-                 <span class="text-danger">*</span>                    
+                 <span class="required-label">必須</span>                    
                  <select name="secretQuestion" class="form-control select-center" required>
                     <option value="">--- 秘密の質問 ---</option>
 		            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
@@ -35,7 +35,7 @@
             <!-- 秘密の質問の答え -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="">新しい秘密の質問の答えを入力してください</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
             </div>      
             <!-- エラー表示 -->

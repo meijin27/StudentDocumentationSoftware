@@ -13,7 +13,7 @@
             <!-- 申請年月日 -->
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="requestYear">年</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <select name="requestYear" class="form-control select-center"  required>
                     <option value="">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-4 mb-5">
                 <label class="form-label" for="requestMonth">申請年月日</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <select name="requestMonth" class="form-control select-center" required>
                     <option value="">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="requestDay">日</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <select name="requestDay" class="form-control select-center" required>
                     <option value="">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
@@ -55,7 +55,7 @@
 	            <!-- 必要枚数 -->           
 				<div class="col-md-2 mb-5">
 				    <label class="form-label" for="sheetsRequired<%= set %>">必要枚数</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex flex-column align-items-start"> 
 				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="sheetsRequired<%= set %>" id="sheetsRequired1f<%= set %>" value="1" 
@@ -76,19 +76,19 @@
 	            <!-- 出発駅 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="startingStation<%= set %>">出発駅</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="startingStation<%= set %>" placeholder="希望ヶ丘" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>     	          	        
 	            <!-- 到着駅 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="arrivalStation<%= set %>">到着駅</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="arrivalStation<%= set %>" placeholder="大阪" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>     	   	        
 	            <!-- 使用目的 -->  	        
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="intendedUse<%= set %>">使用目的</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="intendedUse<%= set %>" class="form-control select-center"  <%= (set == 1) ? "required" : "" %> data-required="true">
 	                    <option value="">-- 使用目的 --</option>
 	                    <option value="帰省">帰省</option>

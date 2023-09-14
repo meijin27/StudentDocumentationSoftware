@@ -13,7 +13,7 @@
    	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestYear">年</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestYear" class="form-control select-center" required>
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
@@ -26,7 +26,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestMonth">申請年月日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestMonth" class="form-control select-center" required>
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
@@ -38,7 +38,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="requestDay" class="form-control select-center" required>
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
@@ -51,7 +51,7 @@
    	            <!-- 補習受講年度 -->
 	            <div class="col-md-5 mb-5">
 	                <label class="form-label" for="fiscalYear">補習受講年度</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="fiscalYear" class="form-control select-center" required>
 	                    <option value="">-- 令和　年度 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2018;
@@ -65,7 +65,7 @@
   	            <!-- 補習受講学期 -->
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="semester">補習受講学期</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="semester" class="form-control select-center" required>
 	                    <option value="">-- 学期 --</option>
 	                    <% for(int i=1; i <=4; i++){ %>
@@ -78,19 +78,19 @@
   	            <!-- 担当教員名 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="teacher">担当教員名</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="teacher" placeholder="田中　角栄" value="<c:out value='${teacher}'/>" required>
 	            </div>
   	            <!-- 教科名 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="subjectName">教科名</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="subjectName" placeholder="AIアルゴリズム" value="<c:out value='${subjectName}'/>" required>
 	            </div>
   	            <!-- 受講事由 -->
 	            <div class="col-md-8 mb-5">
 	                <label class="form-label" for="reason">受講事由</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="reason" placeholder="新型コロナに罹患し、長期療養を行っていたため" value="<c:out value='${reason}'/>" required>
 	            </div>
 	        </div>	    

@@ -43,6 +43,19 @@ main > .container {
   border-top-right-radius: 0;
 }
 
+.form-label {
+    margin-bottom: 0.1rem; 
+}
+
+.required-label {
+    background-color: red;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 0.1rem; 
+}
+
 footer.footer {
   position: fixed;
   width: 100%;

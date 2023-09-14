@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/forgotPassword.css">
 	<link rel="icon" href="<%=request.getContextPath()%>/img/favicon.ico">
 </head>
-<body class="text-center d-flex flex-column h-100">
+<body class="d-flex flex-column h-100">
 	
 <header>
   <!-- Fixed navbar -->

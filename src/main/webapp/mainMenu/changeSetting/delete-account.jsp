@@ -10,7 +10,7 @@
     </div>
     <div class="container">
 		<form action="DeleteAccount.action" method="post">
-			<p>現在のパスワードを入力してください<span class="text-danger">*</span></p>
+			<p>現在のパスワードを入力してください<span class="required-label">必須</span></p>
 			
 			<div class="form-floating mb-5">
 				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
