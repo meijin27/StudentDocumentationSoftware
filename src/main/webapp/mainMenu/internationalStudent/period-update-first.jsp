@@ -228,7 +228,7 @@
 	         </div>
              <% for(int set = 1; set <= 6; set++){ %>
 			    <div class="row set additional-set hidden"  data-set="<%= set %>">
-	               <h6 class="border-bottom"><%= set %>人目の在日親族及び同居人(<%= set %>st relative living in Japan and persons living together)</h3>
+	               <h6 class="border-bottom"><%= set %>人目の在日親族及び同居人(<%= set %>st relative living in Japan and persons living together)</h6>
 	  	            <!-- 続柄（Relationship） -->
    	            	<p class="form-label">続柄（Relationship）<span class="required-label">必須</span></p>
 		            <div class="col-md-4 mb-3">
