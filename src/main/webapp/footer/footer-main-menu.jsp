@@ -11,7 +11,7 @@
 
 <!-- jQuery -->
 <script src="<%=request.getContextPath()%>/js/jquery.js"></script>
-<!-- notification-absence-of-training.jspで使用している行の追加削除用 -->
+<!-- notification-absence-of-training.jsp等で使用している行の追加削除用 -->
 <script src="<%=request.getContextPath()%>/js/row.js"></script>
 <% if (request.getRequestURI().endsWith("/mainMenu/generalStudent/student-discount-coupon.jsp")) { %>
     <!-- このスクリプトは student-discount-coupon.jsp でのみ実行される -->
@@ -89,6 +89,7 @@
         });
     });
 </script>
-
+<!-- セレクトボックスの初期表示のグレー化用 -->
+<script src="<%=request.getContextPath()%>/js/input.js"></script>
 </body>
 </html>

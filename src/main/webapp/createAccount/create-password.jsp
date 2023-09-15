@@ -6,18 +6,20 @@
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="CreatePassword.action" method="post">
-			<p class="text-start" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
-			<p>パスワードを入力してください<span class="required-label">必須</span></p>
+			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
 			
-			<div class="form-floating mb-3">
-				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
-				<label	for="password">Password</label>
+			<!-- パスワード -->
+            <div class="col-md-12 mb-3">
+                <label class="form-label" for="password">パスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="password" name="password" required> 
 			</div>
-			<p>もう一度同じパスワードを入力してください<span class="required-label">必須</span></p>
-			<div class="form-floating mb-5">
-				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" placeholder="Retype Password" required> 
-				<label for="passwordCheck">Retype Password</label>
-			</div>
+			<!-- パスワード再入力 -->			
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="passwordCheck">もう一度同じパスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" required> 
+			</div>			
 			<c:if test="${not empty passwordError}">
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>

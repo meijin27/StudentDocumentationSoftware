@@ -6,10 +6,11 @@
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
     <div class="container">
 	    <form action="SearchAccount.action" method="post">
-	        <p>アカウント名を入力してください<span class="required-label">必須</span><P>
-		    <div class="form-floating">
-		        <input type="text" class="form-control mb-5" id="account" name="account" placeholder="Account" required>
-		        <label for="account">Account</label>
+	        <!-- アカウント名 -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="account">パスワードを再発行するアカウント名を入力してください</label>
+                <span class="required-label">必須</span>
+		        <input type="text" class="form-control mb-5" id="account" name="account" required>
 		    </div>
 		    <!-- エラー表示  -->
 		    <c:if test="${not empty accountError}">

@@ -6,11 +6,13 @@
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="CreateAccount.action" method="post">
-	        <P>新規作成するアカウント名を入力してください<span class="required-label">必須</span></P>
-		    <div class="form-floating">
-		      <input type="text" class="form-control mb-3" id="account" name="account" placeholder="New Accont" required>
-		      <label for="account">New Account</label>
+			<!-- 作成するアカウント名 -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="account">新規作成するアカウント名を入力してください</label>
+                <span class="required-label">必須</span>
+		        <input type="text" class="form-control mb-5" id="account" name="account" required>
 		    </div>
+
 		    <c:if test="${not empty accountError}">
 		       <div class="alert alert-danger" role="alert">
 		           ${accountError}

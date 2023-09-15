@@ -56,6 +56,20 @@ main > .container {
     direction: ltr; /* directionを左から右にリセット */
 }
 
+/* プレースホルダーに表示されている文字色 */
+.form-control::placeholder {
+    color: #bbb;
+}
+
+/* セレクトボックスの初期値の文字色 */
+select option:first-child {
+    color: #bbb;
+}
+/* セレクトボックスの選択後の文字色 */
+select option:not(:first-child) {
+    color: black;
+}
+
 .btn-custom {
     background-color: #d3d3d3; /* 薄いグレー色 */
     color:black /* テキストの色 */
