@@ -5,13 +5,13 @@
 
 <!-- 「委託訓練欠席（遅刻・早退）届」作成用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
-    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
+    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
     </div>			  
 	<form action="NotificationAbsenceOfTtraining.action" method="post">
         <div class="row">
   	            <!-- 対象年月 -->
-            <div class="col-md-6 mb-5">
+            <div class="col-md-4 mb-3">
                 <label class="form-label" for="subjectYear">対象年</label>
                 <span class="required-label">必須</span>
                 <select name="subjectYear" class="form-control select-center" required>
@@ -24,7 +24,7 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-6 mb-5">
+            <div class="col-md-4 mb-3">
                 <label class="form-label" for="subjectMonth">対象月</label>
                 <span class="required-label">必須</span>
                 <select name="subjectMonth" class="form-control select-center" required>
@@ -36,12 +36,13 @@
                     <% } %>
                 </select>
             </div>
+            <div class="col-md-4 mb-3"></div>
         </div>
         <% for(int set = 1; set <= 10; set++){ %>
 		    <div class="row set <% if (set != 1) { %> additional-set hidden <% } %>" data-set="<%= set %>">
                <h3 class="border-bottom"><%= set %>番目の期間</h3>
                <!-- 休業開始日 -->
-		       <div class="col-md-3 mb-5">
+		       <div class="col-md-3 mb-3">
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
 		            <span class="required-label">必須</span>
  		            <select name="restedDayStart<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
@@ -54,7 +55,7 @@
 		            </select>
 		        </div>
 	 	            <!-- 休業終了日 -->
-	            <div class="col-md-3 mb-5">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="restedDayEnd<%= set %>">休業終了日</label>
 	                <span class="required-label">必須</span>
 	                <select name="restedDayEnd<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
@@ -67,13 +68,13 @@
 	                </select>
 	            </div>	         
 	  	            <!-- 理由 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">理由（22文字以下）</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>
 	            <!-- 終日休業有無 -->
-				<div class="col-md-12 mb-5">
+				<div class="col-md-12 mb-3 text-center">
 				    <label class="form-label">終日休みましたか？</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
@@ -97,7 +98,7 @@
 				<p>終日休んでいない場合は遅刻時限数か早退時限数を入力してください</p>
 				<p>朝と帰りは出席し、途中の授業のみ欠席する場合は早退欄に入力してください</p>
 	            <!-- 欠席期間時限数 -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="deadTime<%= set %>">欠席期間時限数</label>
 	                <select name="deadTime<%= set %>" class="form-control select-center">
 	                    <option value="">-- 時限数 --</option>
@@ -109,7 +110,7 @@
 	                </select>
 	            </div>
 	            <!-- 遅刻時限数 -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="latenessTime<%= set %>">遅刻時限数</label>
 	                <select name="latenessTime<%= set %>" class="form-control select-center">
 	                    <option value="">-- 時限数 --</option>
@@ -121,7 +122,7 @@
 	                </select>
 	            </div>
 	            <!-- 早退時限数 -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="leaveEarlyTime<%= set %>">早退時限数</label>
 	                <select name="leaveEarlyTime<%= set %>" class="form-control select-center">
 	                    <option value="">-- 時限数 --</option>
@@ -133,7 +134,7 @@
 	                </select>
 	            </div>
 	            <!-- 証明添付有無 -->
-				<div class="col-md-12 mb-3">
+				<div class="col-md-12 mb-3 text-center">
 				    <label class="form-label text-center">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">

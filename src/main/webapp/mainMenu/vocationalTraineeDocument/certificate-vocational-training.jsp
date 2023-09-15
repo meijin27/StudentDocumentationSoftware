@@ -35,7 +35,7 @@
 			</div>
 	        <div class="row">				
 	            <!-- 証明書対象期間 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
 	                <span class="required-label">必須</span>
 	                <select name="subjectYear" class="form-control select-center" required>
@@ -48,7 +48,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectMonth">月</label>
 	                <select name="subjectMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
@@ -60,7 +60,7 @@
 	                </select>
 	            </div>
 				<!-- 就労・内職 -->
-				<div class="col-md-12 mb-5">
+				<div class="col-md-12 mb-3 text-center">
 				    <label class="form-label text-center">証明書対象期間中に就職、就労、内職又は手伝いをしましたか</label>
 				    <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center">
@@ -81,7 +81,7 @@
 					</div>
 				</div>
 				<!-- 収入 -->
-				<div class="col-md-12 mb-5">
+				<div class="col-md-12 mb-5 text-center">
 				    <label class="form-label">証明書対象期間中に内職又は手伝いをして収入を得ましたか</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">

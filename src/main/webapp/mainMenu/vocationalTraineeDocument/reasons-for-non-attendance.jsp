@@ -60,7 +60,7 @@
 	                <input class="form-control" type="text" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
 	            </div>
 		        <!-- 欠席理由 -->
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="">欠席理由を選択してください。</label>
 	                <span class="required-label">必須</span>                    
 	                <select name="nonAttendanceReason" class="form-control select-center" required>
@@ -76,7 +76,8 @@
 	            	   <option value="卒業式">卒業式</option>
 	     		    </select>
 	            </div>
-       			<p class="border-bottom"></p>
+	            <div class="col-md-8 mb-5"></div>       			
+	            <p class="border-bottom"></p>
 	            <!-- 期間年月日（自） -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="startYear">期間年月日（自）</label>

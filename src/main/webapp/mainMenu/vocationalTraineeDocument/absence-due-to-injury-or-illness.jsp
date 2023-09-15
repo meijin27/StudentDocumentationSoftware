@@ -11,7 +11,7 @@
 		<form action="AbsenceDueToInjuryOrIllness.action" method="post">
 	        <div class="row">
    	            <!-- 病状 -->
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="">病状</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="disease" placeholder="発熱・咳" value="<c:out value='${disease}'/>" required>
@@ -26,7 +26,7 @@
       			<p class="border-bottom"></p>
 
 	            <!-- 期間年月日（自） -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="startYear">期間年月日（自）</label>
 	                <span class="required-label">必須</span>
 	                <select name="startYear" class="form-control select-center" required>
@@ -39,7 +39,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="startMonth">月</label>
 	                <select name="startMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
@@ -50,7 +50,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="startDay">日</label>
 	                <select name="startDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>

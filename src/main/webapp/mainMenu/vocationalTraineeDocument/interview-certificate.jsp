@@ -11,11 +11,12 @@
 		<form action="InterviewCertificate.action" method="post">
 	        <div class="row">
    	            <!-- 求人職種 -->
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="">求人職種</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="jobSearch" placeholder="製造業" value="<c:out value='${jobSearch}'/>" required>
 	            </div>
+	            <div class="col-md-8 mb-3"></div>   
 	            <!-- 面接年月日（自） -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="startYear">面接年月日（自）</label>

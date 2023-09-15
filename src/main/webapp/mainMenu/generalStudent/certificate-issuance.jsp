@@ -5,7 +5,7 @@
 
 <!-- 「証明書交付願」作成用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
-    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
+    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>「証明書交付願」作成</h1><br>
     </div>			  
 		<form action="CertificateIssuance.action" method="post">
@@ -46,8 +46,9 @@
 	                    <% } %>
 	                </select>
 	            </div>	
+       			<p class="border-bottom"></p>
   	            <!-- 用途 -->  	        
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="use">用途</label>
 	                <span class="required-label">必須</span>
 	                <select name="use" class="form-control select-center" required>
@@ -64,25 +65,27 @@
 	                    <option value="国民年金申請">国民年金申請</option>
 	                </select>
 	            </div> 
+	            <div class="col-md-8 mb-3"></div>
   	            <!-- 提出先 -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="">提出先</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="propose" placeholder="横浜市役所" value="<c:out value='${propose}'/>" required>
 	            </div>
+	            <div class="col-md-8 mb-3"></div>
 	            <!-- 提出先は入管ですか？ -->
-				<div class="col-md-4 mb-5">
+				<div class="col-md-4 mb-5 text-center">
 	                <label class="form-label" for="immigrationBureau">提出先は入管ですか？</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex flex-column align-items-start"> 
-				        <div class="form-check mb-2"> 
+					    <div class="form-check">
 				            <input class="form-check-input" type="radio" name="immigrationBureau" id=immigrationBureauYes value="はい" 
 				                   <% if ("はい".equals(request.getParameter("immigrationBureau"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="immigrationBureauYes">
 				                はい
 				            </label>
 				        </div>
-				        <div class="form-check"> 
+					    <div class="form-check">
 				            <input class="form-check-input" type="radio" name="immigrationBureau" id="immigrationBureauNo" value="いいえ" 
 									<% if ("いいえ".equals(request.getParameter("immigrationBureau"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="immigrationBureauNo">
@@ -90,11 +93,12 @@
 				            </label>
 				        </div>
 				    </div>
-				</div>  	   
+				</div> 
+	            <div class="col-md-8 mb-5"></div>
       			<p class="border-bottom"></p>
 	            <!-- 下記は必要になる証明書類の選択フォーム -->
 	            <p>必要な書類の枚数を選択してください</p>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="proofOfStudent">在学証明書</label>
 	                <select name="proofOfStudent" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -106,7 +110,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-   	            <div class="col-md-4 mb-5">
+   	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="attendanceRate">出席率証明書</label>
 	                <select name="attendanceRate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -118,7 +122,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="results">成績証明書</label>
 	                <select name="results" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -130,7 +134,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="expectedGraduation">卒業見込証明書</label>
 	                <select name="expectedGraduation" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -141,7 +145,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="diploma">卒業証明書</label>
 	                <select name="diploma" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -152,7 +156,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="certificateCompletion">履修証明書</label>
 	                <select name="certificateCompletion" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -163,7 +167,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        	            
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="enrollmentCertificate">在籍期間証明書</label>
 	                <select name="enrollmentCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -174,7 +178,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        	            
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="healthCertificate">健康診断書</label>
 	                <select name="healthCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -185,7 +189,7 @@
 	                    <% } %>
 	                </select>
 	            </div>		                   
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="closedPeriod">休業期間証明書</label>
 	                <select name="closedPeriod" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -198,16 +202,16 @@
 	            </div>		                   
 	            <p>英文証明書を発行する場合は氏名を英語で記載してください。</p>
  	            <!-- 英語姓 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="englishLastName">姓（英語）</label>
 	                <input class="form-control" type="text" name="englishLastName" placeholder="TANAKA" value="<c:out value='${englishLastName}'/>">
 	            </div>
 	            <!-- 英語名 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="englishFirstName">名（英語）</label>
 	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="englishProofOfStudent">在学証明書（英語）</label>
 	                <select name="englishProofOfStudent" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -219,7 +223,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
- 	            <div class="col-md-4 mb-5">
+ 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="englishResults">成績証明書（英語）</label>
 	                <select name="englishResults" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -231,7 +235,7 @@
 	                    <% } %>
 	                </select>
 	            </div>  
-  	            <div class="col-md-4 mb-5">
+  	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="englishDiploma">卒業証明書（英語）</label>
 	                <select name="englishDiploma" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -242,35 +246,35 @@
 	                    <% } %>
 	                </select>
 	            </div> 
- 	            <div class="col-md-4 mb-5">
+ 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueBrokenStudentID">学生証再発行（破損）</label>
 	                <select name="reissueBrokenStudentID" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
- 	            <div class="col-md-4 mb-5">
+ 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueLostStudentID">学生証再発行（紛失）</label>
 	                <select name="reissueLostStudentID" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
-  	            <div class="col-md-4 mb-5">
+  	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueTemporaryIdentification">仮身分証明書再発行</label>
 	                <select name="reissueTemporaryIdentification" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="internationalRemittanceRequest">海外送金依頼書</label>
 	                <select name="internationalRemittanceRequest" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="applicationForm">所属機関等作成用申請書</label>
 	                <select name="applicationForm" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>

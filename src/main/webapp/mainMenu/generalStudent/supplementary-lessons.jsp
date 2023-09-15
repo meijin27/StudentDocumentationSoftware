@@ -79,12 +79,14 @@
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="teacher" placeholder="田中　角栄" value="<c:out value='${teacher}'/>" required>
 	            </div>
+	            <div class="col-md-6 mb-3"></div>
   	            <!-- 教科名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectName">教科名</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="subjectName" placeholder="AIアルゴリズム" value="<c:out value='${subjectName}'/>" required>
 	            </div>
+	            <div class="col-md-6 mb-3"></div>
   	            <!-- 受講事由 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="reason">受講事由</label>

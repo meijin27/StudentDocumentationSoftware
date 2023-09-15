@@ -5,7 +5,7 @@
 
 <!-- 「在留期間更新許可申請書　３枚目」作成用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
-    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
+    <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>「在留期間更新許可申請書　３枚目」作成</h1><br>
     </div>			  
 		<form action="PeriodUpdateThird.action" method="post">
@@ -15,7 +15,7 @@
  	            <!-- 申請人との関係 -->
       			<p class="text-start">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</p>
 				<p class="text-start">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</p>
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <select name="relationship" class="form-control select-center">
 	                    <option value="">-- 申請人との関係 --</option>
 	                    <option value="夫">夫（Husband）</option>
@@ -38,7 +38,7 @@
 	            </div>	        
  	            <!-- その他の内容 -->
       			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <input class="form-control" type="text" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
 	            </div>   	            
 
@@ -62,29 +62,28 @@
 				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="otherOrganization" name="otherOrganization" value="otherOrganization">
 				    <label for="otherOrganization">その他（Others）</label>
 				</div>
-				<div class="col-md-12 mb-5 d-flex align-items-center">
+				<div class="col-md-12 mb-3 d-flex align-items-center">
 				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="publicInterest" name="publicInterest" value="publicInterest">
 				    <label for="publicInterest">公益社団法人又は公益財団法人（Public interest incorporated association /Public interest incorporated foundation）</label>
 				</div>
 				
  	            <!-- 公益社団法人又は公益財団法人の内容 -->
       			<p class="text-start">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</p>
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <input class="form-control" type="text" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
 	            </div>   	       
 
  	            <!-- その他の内容 -->
       			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <input class="form-control" type="text" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
 	            </div>   	            
       			
        			<p class="border-bottom"></p>
        			     			
   	            <!-- 資格外活動の有無 -->
-  				<div class="col-md-12 mb-5">
-				    <label class="form-label">資格外活動の有無（Are you engaging in activities other than those permitted under the status of residence previously granted?）</label>
-	                <span class="required-label">必須</span>
+  				<div class="col-md-12 mb-3">
+				    <label class="form-label">資格外活動の有無（Are you engaging in activities other than those permitted under the status of residence previously granted?）<span class="required-label">必須</span></label>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="otherActivity" id="otherActivityYes" value="有" 
@@ -106,32 +105,32 @@
 	  			<p class="text-start">資格外活動が有の場合は，(1)から(4)までの各欄を記入（複数ある場合は全て記入すること）※任意様式の別紙可</p> 
  	  			<p class="text-start">(Fill in (1) to (4) when your answer is "Yes".(Give the information for all of the companies if the applicant works for multiple companies)*another paper may be attached, which does not have to use a prescribed format.)</p> 
  	            <!-- 内容 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="work">(1)内容（Type of work）</label>
 	                <input class="form-control" type="text" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
 	            </div>
    	            <!-- 勤務先名称 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="employment">(2)勤務先名称（Place of employment）</label>
 	                <input class="form-control" type="text" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
 	            </div>
    	            <!-- 勤務先電話番号 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workPhone">勤務先電話番号（Telephone No.）</label>
 	                <input class="form-control" type="text" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
 	            </div>
    	            <!-- 週間稼働時間 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workTimePerWeek">(3)週間稼働時間（Work time per week）</label>
 	                <input class="form-control" type="text" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
 	            </div>
    	            <!-- 報酬 -->
-	            <div class="col-md-6 mb-5">
+	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="salary ">(4)報酬（Salary）</label>
 	                <input class="form-control" type="text" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
 	            </div>	            
   	            <!-- 月額か日額か -->
-   	            <div class="col-md-6 mb-5">
+   	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="monthlyOrDaily">月額・日額（Monthly or Daily）</label>
 	                <select name="monthlyOrDaily" class="form-control select-center">
 	                    <option value="">-- 月額・日額 --</option>
@@ -143,7 +142,7 @@
        			<p class="border-bottom"></p>
 
  	            <!-- 卒業後の予定 -->
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
 	                <span class="required-label">必須</span>
 	                <select name="afterGraduation" class="form-control select-center" required>

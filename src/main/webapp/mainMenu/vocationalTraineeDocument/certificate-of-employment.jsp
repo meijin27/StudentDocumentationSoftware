@@ -12,7 +12,7 @@
 			<p class="text-start text-center" style="color: red;"><strong>当該書類は印刷後、就労先にて太枠内の記入をお願いします。</strong></p>
 
 	        <div class="row">
-	            <div class="col-md-12 mb-3">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="firstMonth">就労した月</label>
 	                <span class="required-label">必須</span>
 	                <select name="firstMonth" class="form-control select-center" required>
@@ -23,7 +23,8 @@
 	                        </option>
 	                    <% } %>
 	                </select>
-	            </div>	        
+	            </div>	     
+	            <div class="col-md-8 mb-3"></div>   
   		    	<p>就労日を選択してください</p>
 				<% for (int i = 1; i <= 31; i++) { %>
 				    <div class="col-md-2 mb-1 d-flex align-items-center">
@@ -35,7 +36,7 @@
 			</div>
 			<div class="row">
   		    	<p style="margin-top: 50px; color: red;">一か月分を作成する場合は下記は選択しないでください</p>
-	            <div class="col-md-12 mb-3">
+	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="secondMonth">就労した月（二か月目）</label>
 	                <select name="secondMonth" class="form-control select-center">
 	                    <option value="">-- 月 --</option>
@@ -46,6 +47,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        
+	            <div class="col-md-8 mb-3"></div>   
   		    	<p>就労日を選択してください（二か月目）</p>
 				<% for (int i = 1; i <= 31; i++) { %>
 				    <div class="col-md-2 mb-1 d-flex align-items-center">

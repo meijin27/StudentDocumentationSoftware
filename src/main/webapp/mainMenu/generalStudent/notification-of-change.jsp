@@ -50,7 +50,7 @@
 	                </select>
 	            </div>	        
 	            <!-- 変更対象者 -->  	        
-	            <div class="col-md-12 mb-5">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="ChangeSubject">変更対象者</label>
 	                <span class="required-label">必須</span>
 	                <select name="ChangeSubject" class="form-control select-center" required>
@@ -60,6 +60,7 @@
 	                    <option value="保証人">保証人</option>
 	                </select>
 	            </div>
+	            <div class="col-md-8 mb-3"></div>
       			<p class="border-bottom"></p>	            
   	            <!-- 郵便番号 -->
 	            <div class="col-md-4 mb-3">
