@@ -10,17 +10,18 @@
     </div>
     <div class="container">
 		<form action="ChangeSecret.action" method="post">
-			 <p>現在のパスワードを入力してください<span class="required-label">必須</span></p>
-			 <div class="form-floating mb-5">
-				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
-			 	<label	for="password">Password</label>
-			 </div>			
+			<!-- パスワード -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="password">現在のパスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="password" name="password" required> 
+			</div>		
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
                  <label class="form-label" for="">新しい秘密の質問を選択してください。</label>
                  <span class="required-label">必須</span>                    
                  <select name="secretQuestion" class="form-control select-center" required>
-                    <option value="">--- 秘密の質問 ---</option>
+                    <option value="" disabled selected style="display:none;">--- 秘密の質問 ---</option>
 		            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
 		            <option value="一番やりこんだゲームは？">一番やりこんだゲームは？</option>
 		            <option value="ペットの名前は？">ペットの名前は？</option>

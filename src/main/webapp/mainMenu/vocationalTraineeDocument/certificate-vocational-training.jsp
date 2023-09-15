@@ -35,12 +35,11 @@
 			</div>
 	        <div class="row">				
 	            <!-- 証明書対象期間 -->
-   	            <p>証明書対象期間（令和　年　月）</p>
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="subjectYear">令和　年</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
+	                <span class="required-label">必須</span>
 	                <select name="subjectYear" class="form-control select-center" required>
-	                    <option value="">-- 令和　年 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -51,9 +50,8 @@
 	            </div>
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="subjectMonth">月</label>
-	                <span class="text-danger">*</span>
 	                <select name="subjectMonth" class="form-control select-center" required>
-	                    <option value="">-- 月 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -63,8 +61,8 @@
 	            </div>
 				<!-- 就労・内職 -->
 				<div class="col-md-12 mb-5">
-				    <label class="form-label">証明書対象期間中に就職、就労、内職又は手伝いをしましたか</label>
-				    <span class="text-danger">*</span>
+				    <label class="form-label text-center">証明書対象期間中に就職、就労、内職又は手伝いをしましたか</label>
+				    <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="problems" id="problemsYes" value="した" 
@@ -85,7 +83,7 @@
 				<!-- 収入 -->
 				<div class="col-md-12 mb-5">
 				    <label class="form-label">証明書対象期間中に内職又は手伝いをして収入を得ましたか</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
 				            <input class="form-check-input" type="radio" name="income" id="incomeYes" value="得た" 

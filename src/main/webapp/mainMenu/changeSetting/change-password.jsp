@@ -10,25 +10,30 @@
     </div>
     <div class="container">
 		<form action="ChangePassword.action" method="post">
-			<p>現在のパスワードを入力してください<span class="required-label">必須</span></p>
-			
-			<div class="form-floating mb-5">
-				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required> 
-				<label	for="password">Password</label>
+
+			<!-- パスワード -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="password">現在のパスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="password" name="password" required> 
 			</div>			
-			
-			<p class="text-start" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
-			<p>新パスワードを入力してください<span class="required-label">必須</span></p>
-			
-			<div class="form-floating mb-3">
-				<input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="New Password" required> 
-				<label	for="newPassword">New Password</label>
+
+			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
+
+			<!-- 新パスワード -->
+            <div class="col-md-12 mb-3">
+                <label class="form-label" for="newPassword">新パスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="newPassword" name="newPassword" required> 
 			</div>
-			<p>もう一度同じパスワードを入力してください<span class="required-label">必須</span></p>
-			<div class="form-floating mb-5">
-				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" placeholder="Retype New Password" required> 
-				<label for="passwordCheck">Retype Password</label>
-			</div>
+			<!-- パスワード再入力 -->			
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="passwordCheck">もう一度同じパスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" required> 
+			</div>	
+
+
 			<!-- エラー表示  -->
 			<c:if test="${not empty passwordError}">
 				<div class="alert alert-danger" role="alert">${passwordError}

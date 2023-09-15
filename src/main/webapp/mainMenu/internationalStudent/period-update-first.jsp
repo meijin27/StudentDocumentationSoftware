@@ -80,7 +80,7 @@
 	                <label class="form-label invisible-text" for="effectiveYear">年</label>
 	                <span class="required-label">必須</span>
 	                <select name="effectiveYear" class="form-control select-center" required>
-	                    <option value="">-- 年（Year） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear; i <=currentYear+10;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -93,7 +93,7 @@
 	                <label class="form-label invisible-text" for="effectiveMonth">月</label>
 	                <span class="required-label">必須</span>
 	                <select name="effectiveMonth" class="form-control select-center" required>
-	                    <option value="">-- 月（Month） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -105,7 +105,7 @@
 	                <label class="form-label invisible-text" for="effectiveDay">日</label>
 	                <span class="required-label">必須</span>
 	                <select name="effectiveDay" class="form-control select-center" required>
-	                    <option value="">-- 日（Day） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -126,11 +126,10 @@
 	                <input class="form-control" type="text" name="periodOfStay" placeholder="2年" value="<c:out value='${periodOfStay}'/>" required>
 	            </div>
   	            <!-- 在留期間の満了日 -->
-  	            <p>在留期間の満了日（Expiration date of period of stay）</p>
+  	            <p>在留期間の満了日（Expiration date of period of stay）<span class="required-label">必須</span></p>
 	            <div class="col-md-4 mb-5">
-	                <span class="required-label">必須</span>
 	                <select name="periodYear" class="form-control select-center" required>
-	                    <option value="">-- 年（Year） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% for(int i=currentYear; i <=currentYear+5; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>年
@@ -139,9 +138,8 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-5">
-	                <span class="required-label">必須</span>
 	                <select name="periodMonth" class="form-control select-center" required>
-	                    <option value="">-- 月（Month） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -150,9 +148,8 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-5">
-	                <span class="required-label">必須</span>
 	                <select name="periodDay" class="form-control select-center" required>
-	                    <option value="">-- 日（Day） --</option>
+	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -249,10 +246,10 @@
 		            </div>
 	   	            <!-- 生年月日 -->
 		            <div class="col-md-4 mb-5">
-		                <label class="form-label invisible-text" for="relativeBirthYear<%= set %>">年</label>
+		                <label class="form-label" for="relativeBirthYear<%= set %>">生年月日（Date of birth）</label>
 		                <span class="required-label">必須</span>
 		                <select name="relativeBirthYear<%= set %>" class="form-control select-center" data-required="true">
-		                    <option value="">-- 年 --</option>
+		                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 		                    <% for(int i=currentYear-110; i <=currentYear;
 		                        i++){ %>
 		                        <option value="<%= i %>">
@@ -262,10 +259,9 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-5">
-		                <label class="form-label" for="relativeBirthMonth<%= set %>">生年月日（Date of birth）</label>
-		                <span class="required-label">必須</span>
+		                <label class="form-label invisible-text" for="relativeBirthMonth<%= set %>">月</label>
 		                <select name="relativeBirthMonth<%= set %>" class="form-control select-center" data-required="true">
-		                    <option value="">-- 月 --</option>
+		                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 		                    <% for(int i=1; i <=12; i++){ %>
 		                        <option value="<%= i %>">
 		                            <%= i %>月
@@ -275,9 +271,8 @@
 		            </div>
 		            <div class="col-md-4 mb-5">
 		                <label class="form-label invisible-text" for="relativeBirthDay<%= set %>">日</label>
-		                <span class="required-label">必須</span>
 		                <select name="relativeBirthDay<%= set %>" class="form-control select-center" data-required="true">
-		                    <option value="">-- 日 --</option>
+		                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 		                    <% for(int i=1; i <=31; i++){ %>
 		                        <option value="<%= i %>">
 		                            <%= i %>日

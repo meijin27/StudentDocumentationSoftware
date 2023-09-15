@@ -13,9 +13,9 @@
   	            <!-- 対象年月 -->
             <div class="col-md-6 mb-5">
                 <label class="form-label" for="subjectYear">対象年</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <select name="subjectYear" class="form-control select-center" required>
-                    <option value="">-- 年 --</option>
+                    <option value="" disabled selected style="display:none;">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear-2018;
                         i++){ %>
                         <option value="<%= i %>">
@@ -26,9 +26,9 @@
             </div>
             <div class="col-md-6 mb-5">
                 <label class="form-label" for="subjectMonth">対象月</label>
-                <span class="text-danger">*</span>
+                <span class="required-label">必須</span>
                 <select name="subjectMonth" class="form-control select-center" required>
-                    <option value="">-- 月 --</option>
+                    <option value="" disabled selected style="display:none;">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -39,13 +39,13 @@
         </div>
         <% for(int set = 1; set <= 10; set++){ %>
 		    <div class="row set <% if (set != 1) { %> additional-set hidden <% } %>" data-set="<%= set %>">
-               <h3 class="border-bottom"><%= set %>行目</h3>
+               <h3 class="border-bottom"><%= set %>番目の期間</h3>
                <!-- 休業開始日 -->
 		       <div class="col-md-3 mb-5">
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
-		            <span class="text-danger">*</span>
+		            <span class="required-label">必須</span>
  		            <select name="restedDayStart<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
-		                <option value="">-- 日 --</option>
+		                <option value="" disabled selected style="display:none;">-- 日 --</option>
 		                <% for(int i = 1; i <= 31; i++){ %>
 		                    <option value="<%= i %>">
 		                        <%= i %>日
@@ -56,9 +56,9 @@
 	 	            <!-- 休業終了日 -->
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="restedDayEnd<%= set %>">休業終了日</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="restedDayEnd<%= set %>" class="form-control select-center" <%= (set == 1) ? "required" : "" %> data-required="true">
-	                    <option value="">-- 日 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -69,13 +69,13 @@
 	  	            <!-- 理由 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">理由（22文字以下）</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>
 	            <!-- 終日休業有無 -->
 				<div class="col-md-12 mb-5">
 				    <label class="form-label">終日休みましたか？</label>
-				    <span class="text-danger">*</span>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">
 				            <input class="form-check-input" type="radio" name="allDayOff<%= set %>" id="allDayOffYes<%= set %>" value="はい" 
@@ -134,8 +134,8 @@
 	            </div>
 	            <!-- 証明添付有無 -->
 				<div class="col-md-12 mb-3">
-				    <label class="form-label">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
-				    <span class="text-danger">*</span>
+				    <label class="form-label text-center">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
+				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">
 				            <input class="form-check-input" type="radio" name="AttachmentOfCertificate<%= set %>" id="AttachmentOfCertificateYes<%= set %>" value="有" 

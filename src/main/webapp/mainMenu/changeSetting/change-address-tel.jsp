@@ -12,18 +12,13 @@
 		<form action="ChangeAddressTel.action" method="post">
 	        <div class="row">
 	            <!-- 郵便番号 -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="">郵便番号</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>" required>
 	            </div>
-	            
-	            <!-- 電話番号 -->
-	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">電話番号</label>
-	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>" required>
-	            </div>
+	            <div class="col-md-9 mb-3"></div>	            
+
 
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-3">
@@ -31,6 +26,15 @@
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="<c:out value='${address}'/>" required>
 	            </div>
+	            
+	            <!-- 電話番号 -->
+	            <div class="col-md-6 mb-3">
+	                <label class="form-label" for="">電話番号</label>
+	                <span class="required-label">必須</span>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>" required>
+	            </div>	            
+	            
+	            
 	        </div>
             <!-- エラー表示 -->
 	        <c:if test="${not empty nullError}">

@@ -13,16 +13,15 @@
    	            <!-- 求人職種 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="">求人職種</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" name="jobSearch" placeholder="製造業" value="<c:out value='${jobSearch}'/>" required>
 	            </div>
 	            <!-- 面接年月日（自） -->
-	            <p>面接年月日（自）</p>
 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="startYear">令和　年</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label" for="startYear">面接年月日（自）</label>
+	                <span class="required-label">必須</span>
 	                <select name="startYear" class="form-control select-center" required>
-	                    <option value="">-- 年 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -32,10 +31,9 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="startMonth">月</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="startMonth">月</label>
 	                <select name="startMonth" class="form-control select-center" required>
-	                    <option value="">-- 月 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -44,10 +42,9 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="startDay">日</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="startDay">日</label>
 	                <select name="startDay" class="form-control select-center" required>
-	                    <option value="">-- 日 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -57,8 +54,7 @@
 	            </div>	        
   				<!-- 午前・午後 -->
 				<div class="col-md-2 mb-5">
-				    <label class="form-label">午前・午後</label>
-				    <span class="text-danger">*</span>
+				    <label class="form-label invisible-text">午前・午後</label>
 				    <div class="d-flex flex-column align-items-start"> 
 				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="startForenoonOrMidday" id="startForenoon" value="午前" 
@@ -77,10 +73,9 @@
 				    </div>
 				</div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="startHour">時</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="startHour">時</label>
 	                <select name="startHour" class="form-control select-center" required>
-	                    <option value="">-- 時 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 時 --</option>
 	                    <% for(int i=0; i <=11; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>時
@@ -89,12 +84,11 @@
 	                </select>
 	            </div>	
   	            <!-- 面接年月日（至） -->
-	            <p>面接年月日（至）</p>
 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="endYear">令和　年</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label" for="endYear">面接年月日（至）</label>
+	                <span class="required-label">必須</span>
 	                <select name="endYear" class="form-control select-center" required>
-	                    <option value="">-- 年 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -104,10 +98,9 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="endMonth">月</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="endMonth">月</label>
 	                <select name="endMonth" class="form-control select-center" required>
-	                    <option value="">-- 月 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -116,10 +109,9 @@
 	                </select>
 	            </div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="endDay">日</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="endDay">日</label>
 	                <select name="endDay" class="form-control select-center" required>
-	                    <option value="">-- 日 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -129,8 +121,7 @@
 	            </div>	        
   				<!-- 午前・午後 -->
 				<div class="col-md-2 mb-5">
-				    <label class="form-label">午前・午後</label>
-				    <span class="text-danger">*</span>
+				    <label class="form-label invisible-text">午前・午後</label>
 				    <div class="d-flex flex-column align-items-start"> 
 				        <div class="form-check mb-2"> 
 				            <input class="form-check-input" type="radio" name="endForenoonOrMidday" id="endForenoon" value="午前" 
@@ -149,10 +140,9 @@
 				    </div>
 				</div>
 	            <div class="col-md-2 mb-3">
-	                <label class="form-label" for="endHour">時</label>
-	                <span class="text-danger">*</span>
+	                <label class="form-label invisible-text" for="endHour">時</label>
 	                <select name="endHour" class="form-control select-center" required>
-	                    <option value="">-- 時 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 時 --</option>
 	                    <% for(int i=0; i <=11; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>時

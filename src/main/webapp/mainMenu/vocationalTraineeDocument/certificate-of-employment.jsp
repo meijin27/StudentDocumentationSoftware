@@ -14,9 +14,9 @@
 	        <div class="row">
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="firstMonth">就労した月</label>
-	                <span class="text-danger">*</span>
+	                <span class="required-label">必須</span>
 	                <select name="firstMonth" class="form-control select-center" required>
-	                    <option value="">-- 月 --</option>
+	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
