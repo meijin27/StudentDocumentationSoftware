@@ -56,8 +56,8 @@
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="maritalStatus" id="maritalStatusMarried" value="有" 
-					               <% if ("有".equals(request.getParameter("maritalStatusMarried"))) { %> checked <% } %> required>
-					        <label class="form-check-label" for="maritalStatus">
+					               <% if ("有".equals(request.getParameter("maritalStatus"))) { %> checked <% } %> required>
+					        <label class="form-check-label" for="maritalStatusMarried">
 					            有（Married）
 					        </label>
 					    </div>
@@ -228,7 +228,7 @@
 	         </div>
              <% for(int set = 1; set <= 6; set++){ %>
 			    <div class="row set additional-set hidden"  data-set="<%= set %>">
-	               <h6 class="border-bottom"><%= set %>人目の在日親族及び同居人(<%= set %>st relative living in Japan and persons living together)</h6>
+	               <h3 class="border-bottom"><%= set %>人目の在日親族及び同居人(<%= set %>st relative living in Japan and persons living together)</h3>
 	  	            <!-- 続柄（Relationship） -->
    	            	<p class="form-label">続柄（Relationship）<span class="required-label">必須</span></p>
 		            <div class="col-md-4 mb-3">
