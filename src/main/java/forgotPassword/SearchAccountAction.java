@@ -66,7 +66,7 @@ public class SearchAccountAction extends Action {
 						return "search-account.jsp";
 					}
 				} else {
-					request.setAttribute("accountError", "存在しないアカウントです");
+					request.setAttribute("accountError", "このアカウントはパスワードの再設定ができません");
 					return "search-account.jsp";
 				}
 			} catch (Exception e) {
