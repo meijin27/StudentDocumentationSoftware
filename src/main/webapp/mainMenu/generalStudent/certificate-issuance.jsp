@@ -213,6 +213,7 @@
 	                <label class="form-label" for="englishFirstName">First Name</label>
 	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
 	            </div>
+	            <!-- 英語在籍証明書 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishProofOfStudent">Proof of Enrollment</label>
 	                <select name="englishProofOfStudent" class="form-control select-center">
@@ -225,6 +226,7 @@
 	                    <% } %>
 	                </select>
 	            </div>
+	            <!-- 英語成績証明書 -->
  	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishResults">Academic Transcript</label>
 	                <select name="englishResults" class="form-control select-center">
@@ -237,6 +239,7 @@
 	                    <% } %>
 	                </select>
 	            </div>  
+	            <!-- 英語卒業証明書 -->
   	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishDiploma">Certificate of Graduation</label>
 	                <select name="englishDiploma" class="form-control select-center">
