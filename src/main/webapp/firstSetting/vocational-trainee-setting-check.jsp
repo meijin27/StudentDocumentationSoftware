@@ -9,16 +9,23 @@
 	    <form action="VocationalTraineeSettingCheck.action" method="post">
 	
 		    <div class="data-row">
-		        <div class="data-label"><p>ハローワーク:</p></div>
+		        <div class="data-label"><p>ハローワーク名:</p></div>
 		        <div class="data-value"><p><c:out value='${namePESO}'/></p></div>
-				<div class="data-label-second"><p>支給番号:</p></div>
-				<div class="data-value-0px"><p><c:out value='${supplyNumber}'/></p></div>	        
 		    </div>
+		        
+		    <div class="data-row">
+				<div class="data-label"><p>支 給 番 号:</p></div>
+				<div class="data-value"><p><c:out value='${supplyNumber}'/></p></div>	        
+		    </div>
+		    
 		    <div class="data-row">			
-				<div class="data-label"><p>出席番号:</p></div>
-				<div class="data-value"><p><c:out value='${attendanceNumber}'/></p></div>	        
-		        <div class="data-label-second"><p>雇用保険有無:</p></div>
-		        <div class="data-value-0px"><p><c:out value='${employmentInsurance}'/></p></div>	        
+				<div class="data-label"><p>出 席 番 号:</p></div>
+				<div class="data-value"><p><c:out value='${attendanceNumber}'/></p></div>	      
+		    </div>
+				
+		    <div class="data-row">
+		        <div class="data-label"><p>雇用保険有無:</p></div>
+		        <div class="data-value"><p><c:out value='${employmentInsurance}'/></p></div>	        
 		    </div>
 		    <input type="hidden" name="namePESO" value="<c:out value='${namePESO}'/>">
 		    <input type="hidden" name="supplyNumber" value="<c:out value='${supplyNumber}'/>">

@@ -106,8 +106,16 @@ select option:not(:first-child) {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
+
+.data-row-marginbottom-0 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end; /* テキストを下揃えにする */
+  margin-bottom: 0px;
+}
+
 
 .data-label {
   width: 100px; /* 固定されている表示内容の幅を指定。 */
@@ -115,21 +123,36 @@ select option:not(:first-child) {
   margin-left: 30px;
 }
 
-.data-label-second {
-  width: 100px; /* 固定されている表示内容の幅を指定。 */
+.data-value {
+  margin-left: 10px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
   text-align: left;
-  margin-left: 60px;
 }
 
-.data-value {
-  width: 100px; /* 固定されている表示内容の幅を指定。 */
-  margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
+.data-value-second {
+  margin-left: 30px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
   text-align: left;
 }
 
 .data-value-0px {
   margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
   text-align: left;
+}
+
+.big-font {
+    font-weight: bold; /* 太字 */
+    font-size: 300%; /* 大きい文字サイズ */
+}
+
+.big-font2 {
+    font-size: 200%; /* 大きい文字サイズ */
+}
+
+.width-150{
+	width: 150px;
+}
+
+.top-aligned {
+    line-height: 1; 
 }
 
 
