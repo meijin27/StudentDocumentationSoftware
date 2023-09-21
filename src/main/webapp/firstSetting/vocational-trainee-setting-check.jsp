@@ -12,6 +12,11 @@
 		        <div class="data-label"><p>ハローワーク名:</p></div>
 		        <div class="data-value"><p><c:out value='${namePESO}'/></p></div>
 		    </div>
+
+		    <div class="data-row">
+		        <div class="data-label"><p>雇用保険有無:</p></div>
+		        <div class="data-value"><p><c:out value='${employmentInsurance}'/></p></div>	        
+		    </div>
 		        
 		    <div class="data-row">
 				<div class="data-label"><p>支 給 番 号:</p></div>
@@ -23,10 +28,6 @@
 				<div class="data-value"><p><c:out value='${attendanceNumber}'/></p></div>	      
 		    </div>
 				
-		    <div class="data-row">
-		        <div class="data-label"><p>雇用保険有無:</p></div>
-		        <div class="data-value"><p><c:out value='${employmentInsurance}'/></p></div>	        
-		    </div>
 		    <input type="hidden" name="namePESO" value="<c:out value='${namePESO}'/>">
 		    <input type="hidden" name="supplyNumber" value="<c:out value='${supplyNumber}'/>">
 		    <input type="hidden" name="attendanceNumber" value="<c:out value='${attendanceNumber}'/>">
