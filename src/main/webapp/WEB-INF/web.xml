@@ -8,4 +8,12 @@
 
   <display-name>StudentDocumentationSoftware</display-name>
 
+  <session-config>
+    <session-timeout>60</session-timeout> <!-- セッションタイムアウトを1時間に設定 -->
+    <cookie-config>
+        <http-only>true</http-only> <!-- JavaScriptによるセッションの読み込み不可 -->
+        <secure>true</secure> <!-- HTTPSを使用する、HTTPは使用不可 -->
+    </cookie-config>
+  </session-config>
+
 </web-app>

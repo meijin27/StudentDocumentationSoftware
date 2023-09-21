@@ -22,12 +22,9 @@ public class LoginAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションタイムアウト設定 (1時間)
-		session.setMaxInactiveInterval(3600);
 		// 入力されたアカウント名とパスワードを変数に格納
 		String account = request.getParameter("account");
 		String password = request.getParameter("password");
-
 		// ログイン名とパスワードが両方とも入力されているときの処理
 		if (account != null && !account.isEmpty() && password != null && !password.isEmpty()) {
 			// 文字数が32文字より多い場合はエラーを返す
@@ -45,6 +42,8 @@ public class LoginAction extends Action {
 				User user = dao.loginSearch(encryptedAccount);
 				// データベースにアカウント名が存在し、パスワードが一致した場合の処理
 				if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
+					// ログイン成功後にセッションIDを再生成
+					request.changeSessionId();
 					// ユーザーIDを変数に格納
 					String id = user.getId();
 					// ivを変数に格納
