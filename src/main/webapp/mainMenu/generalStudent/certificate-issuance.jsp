@@ -167,7 +167,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        	            
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="enrollmentCertificate">在籍期間証明書</label>
 	                <select name="enrollmentCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -178,7 +178,7 @@
 	                    <% } %>
 	                </select>
 	            </div>	        	            
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="healthCertificate">健康診断書</label>
 	                <select name="healthCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -189,7 +189,7 @@
 	                    <% } %>
 	                </select>
 	            </div>		                   
-	            <div class="col-md-4 mb-3">
+	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="closedPeriod">休業期間証明書</label>
 	                <select name="closedPeriod" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
@@ -199,53 +199,59 @@
 	                        </option>
 	                    <% } %>
 	                </select>
-	            </div>		                   
-	            <p>英文証明書を発行する場合は氏名を英語で記載してください。</p>
+	            </div>
+      			<p class="border-bottom"></p>
+	            <p>Select the number of documents required ( English Form Only )</p>
+	            <p>＊ Names must be entered for English documents</p>
  	            <!-- 英語姓 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="englishLastName">姓（英語）</label>
+	                <label class="form-label" for="englishLastName">Last Name</label>
 	                <input class="form-control" type="text" name="englishLastName" placeholder="TANAKA" value="<c:out value='${englishLastName}'/>">
 	            </div>
 	            <!-- 英語名 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="englishFirstName">名（英語）</label>
+	                <label class="form-label" for="englishFirstName">First Name</label>
 	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
 	            </div>
-	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="englishProofOfStudent">在学証明書（英語）</label>
+	            <!-- 英語在籍証明書 -->
+	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="englishProofOfStudent">Proof of Enrollment</label>
 	                <select name="englishProofOfStudent" class="form-control select-center">
-	                    <option value="">-- 不要 --</option>
+	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>枚
+	                            <%= i %> sheet
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>
- 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="englishResults">成績証明書（英語）</label>
+	            <!-- 英語成績証明書 -->
+ 	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="englishResults">Academic Transcript</label>
 	                <select name="englishResults" class="form-control select-center">
-	                    <option value="">-- 不要 --</option>
+	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>枚
+	                            <%= i %> sheet
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div>  
-  	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="englishDiploma">卒業証明書（英語）</label>
+	            <!-- 英語卒業証明書 -->
+  	            <div class="col-md-4 mb-5">
+	                <label class="form-label" for="englishDiploma">Certificate of Graduation</label>
 	                <select name="englishDiploma" class="form-control select-center">
-	                    <option value="">-- 不要 --</option>
+	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
-	                            <%= i %>枚
+	                            <%= i %> sheet
 	                        </option>
 	                    <% } %>
 	                </select>
 	            </div> 
+      			<p class="border-bottom"></p>
  	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueBrokenStudentID">学生証再発行（破損）</label>
 	                <select name="reissueBrokenStudentID" class="form-control select-center">

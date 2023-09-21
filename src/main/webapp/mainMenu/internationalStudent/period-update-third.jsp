@@ -10,11 +10,12 @@
     </div>			  
 		<form action="PeriodUpdateThird.action" method="post">
    			<p class="text-start">・在留期間更新許可申請書は３枚組で、当該書類は３枚目です。</p>
-  			<p class="text-start margin-bottom-50  border-bottom">(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)</p>
+  			<p class="text-start margin-bottom-50 mb-5">(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)</p>
+   			<p class="border-bottom"></p>
 	        <div class="row">
  	            <!-- 申請人との関係 -->
-      			<p class="text-start">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</p>
-				<p class="text-start">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</p>
+      			<p class="text-start form-label">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</p>
+				<p class="text-start form-label">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</p>
 	            <div class="col-md-12 mb-3">
 	                <select name="relationship" class="form-control select-center">
 	                    <option value="">-- 申請人との関係 --</option>
@@ -37,14 +38,14 @@
 	                </select>
 	            </div>	        
  	            <!-- その他の内容 -->
-      			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
-	            <div class="col-md-12 mb-3">
+      			<p class="text-start form-label">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
+	            <div class="col-md-12 mb-5">
 	                <input class="form-control" type="text" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
 	            </div>   	            
 
       			<p class="border-bottom"></p>
  	            <!-- 奨学金支給機関 -->
-       			<p class="text-start">奨学金支給機関 （2枚目でで奨学金を選択した場合に記入）※複数選択可</p>
+       			<p class="text-start form-label">奨学金支給機関 （2枚目でで奨学金を選択した場合に記入）※複数選択可</p>
 				<p class="text-start">Organization which provide scholarship (Check one of the following when the answer to the question 22(1) is scholarship)* multiple answers possible</p>
 				<div class="col-md-6 mb-3 d-flex align-items-center">
 				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="foreignGovernment" name="foreignGovernment" value="foreignGovernment">
@@ -68,14 +69,14 @@
 				</div>
 				
  	            <!-- 公益社団法人又は公益財団法人の内容 -->
-      			<p class="text-start">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</p>
+      			<p class="text-start form-label">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</p>
 	            <div class="col-md-12 mb-3">
 	                <input class="form-control" type="text" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
 	            </div>   	       
 
  	            <!-- その他の内容 -->
-      			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
-	            <div class="col-md-12 mb-3">
+      			<p class="text-start form-label">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
+	            <div class="col-md-12 mb-5">
 	                <input class="form-control" type="text" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
 	            </div>   	            
       			
@@ -102,7 +103,7 @@
 					</div>
 				</div>            
 
-	  			<p class="text-start">資格外活動が有の場合は，(1)から(4)までの各欄を記入（複数ある場合は全て記入すること）※任意様式の別紙可</p> 
+	  			<p class="text-start form-label">資格外活動が有の場合は，(1)から(4)までの各欄を記入（複数ある場合は全て記入すること）※任意様式の別紙可</p> 
  	  			<p class="text-start">(Fill in (1) to (4) when your answer is "Yes".(Give the information for all of the companies if the applicant works for multiple companies)*another paper may be attached, which does not have to use a prescribed format.)</p> 
  	            <!-- 内容 -->
 	            <div class="col-md-6 mb-3">
@@ -125,12 +126,12 @@
 	                <input class="form-control" type="text" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
 	            </div>
    	            <!-- 報酬 -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="salary ">(4)報酬（Salary）</label>
 	                <input class="form-control" type="text" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
 	            </div>	            
   	            <!-- 月額か日額か -->
-   	            <div class="col-md-6 mb-3">
+   	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="monthlyOrDaily">月額・日額（Monthly or Daily）</label>
 	                <select name="monthlyOrDaily" class="form-control select-center">
 	                    <option value="">-- 月額・日額 --</option>
@@ -155,7 +156,7 @@
 	            </div>	
 	            
  	            <!-- その他の内容 -->
-      			<p class="text-start">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
+      			<p class="text-start form-label">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</p>
 	            <div class="col-md-12 mb-5">
 	                <input class="form-control" type="text" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
 	            </div>
