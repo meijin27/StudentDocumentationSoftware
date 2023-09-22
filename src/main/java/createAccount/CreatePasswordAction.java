@@ -23,13 +23,20 @@ public class CreatePasswordAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// セッションから暗号化されたアカウント名を取り出す
+		String encryptedAccount = (String) session.getAttribute("encryptedAccount");
 
 		// 入力されたパスワードと再確認用パスワードを変数に格納
 		String password = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
 
-		// リクエストの有効期限切れの場合はエラーとして処理
-		if (request.getParameter("encryptedAccount") == null) {
+		// 暗号化されたアカウントやトークンがnull、もしくはトークンが一致しない場合はエラー
+		if (encryptedAccount == null || sessionToken == null || requestToken == null
+				|| !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
 			String contextPath = request.getContextPath();
@@ -39,10 +46,6 @@ public class CreatePasswordAction extends Action {
 
 		// ユーザー情報を格納するクラスの作成
 		User user = new User();
-		// リクエストから暗号化されたアカウント名を取り出す
-		String encryptedAccount = request.getParameter("encryptedAccount");
-		// リクエストに共通暗号キーで暗号化されたアカウント名を格納
-		request.setAttribute("encryptedAccount", encryptedAccount);
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
@@ -71,16 +74,21 @@ public class CreatePasswordAction extends Action {
 				UserDAO dao = new UserDAO();
 				// データベースにアカウント登録する
 				dao.accountInsert(user);
-				// リクエストにアカウント名を格納する
-				request.setAttribute("accountName", account);
+				// 暗号化されたアカウント名のセッションからの削除
+				request.getSession().removeAttribute("encryptedAccount");
+				// トークンの削除
+				request.getSession().removeAttribute("csrfToken");
+				// セッションにアカウント名を格納する
+				session.setAttribute("accountName", account);
+				// アカウント作成成功画面にリダイレクト
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/createAccount/create-success.jsp");
+				return null;
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 				request.setAttribute("passwordError", "内部エラーが発生しました。");
 				return "create-password.jsp";
 			}
-			// アカウント作成成功画面に遷移
-			return "create-success.jsp";
-
 			// パスワードの入力形式が不適切ならエラー処理
 		} else {
 

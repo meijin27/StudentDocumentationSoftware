@@ -1,6 +1,8 @@
 package tool;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,14 +15,20 @@ import javax.servlet.annotation.WebFilter;
 // エンコーディングフィルタのクラス、サーブレットにUTF-8等を自動適用する
 @WebFilter(urlPatterns = { "*.jsp", "*.html", "*.action" })
 public class EncodingFilter implements Filter {
+	private static final Logger logger = CustomLogger.getLogger(EncodingFilter.class);
 
 	@Override
 	public void doFilter(
 			ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=UTF-8");
 
-		chain.doFilter(request, response);
+		try {
+			request.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html; charset=UTF-8");
+
+			chain.doFilter(request, response);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Page encoding failed", e);
+		}
 	}
 
 	@Override

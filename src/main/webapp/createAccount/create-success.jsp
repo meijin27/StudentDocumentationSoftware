@@ -4,6 +4,19 @@
 
 <!-- 新規アカウント作成成功JSP  -->
 <main class="form-createAccount w-100 m-auto text-center flex-shrink-0">
+
+	<%
+		// セッションからアカウント名を取得
+		String accountName = (String) session.getAttribute("accountName");
+	
+		// アカウント名をリクエストに格納
+		request.setAttribute("accountName", accountName); // リクエストスコープにセット
+
+		// アカウント名のセッションからの削除(フィルター機能によりセッションにアカウント名がないとこのｊｓｐにアクセスできない)
+		request.getSession().removeAttribute("accountName");	
+		
+	%>
+
 	<div class="container">
 		<h3 class="p-1">アカウントが作成されました</h3>
 		<h3 class="pt-1 pb-5 pl-5 pr-5">アカウント名：<strong><c:out value="${accountName}" /></strong></h3>

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import bean.User;
 import dao.UserDAO;
@@ -19,6 +20,22 @@ public class CreateAccountAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		// セッションの作成
+		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+
+		// トークンが一致しない、またはどちらかがnullの場合はエラー
+		if (sessionToken == null || requestToken == null || !sessionToken.equals(requestToken)) {
+			// ログインページにリダイレクト
+			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
+			String contextPath = request.getContextPath();
+			response.sendRedirect(contextPath + "/login/login.jsp");
+			return null;
+		}
 
 		// 入力されたアカウント名を変数に格納
 		String account = request.getParameter("account");
@@ -55,10 +72,14 @@ public class CreateAccountAction extends Action {
 
 			// ユーザーデータがnullである　＝　未登録アカウントの場合の処理
 			if (user == null) {
-				// リクエストに共通暗号キーで暗号化されたアカウント名を格納
-				request.setAttribute("encryptedAccount", encryptedAccount);
-				// パスワード登録画面に移動
-				return "create-password.jsp";
+				// セッションに共通暗号キーで暗号化されたアカウント名を格納
+				session.setAttribute("encryptedAccount", encryptedAccount);
+				// トークンの削除
+				request.getSession().removeAttribute("csrfToken");
+				// パスワード登録画面にリダイレクト
+				String contextPath = request.getContextPath();
+				response.sendRedirect(contextPath + "/createAccount/create-password.jsp");
+				return null;
 				// もしアカウントがデータベースに登録されていればエラーメッセージを表示			
 			} else {
 				request.setAttribute("accountError", "このアカウントは使用できません。");
