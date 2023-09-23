@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-login.jsp" />
+<c:import url="/token/token.jsp" />
 
 <!-- ログイン用JSP  -->
 <main class="form-login w-100 m-auto">
@@ -28,7 +29,9 @@
 	            <% session.removeAttribute("otherError"); %>
 	        </div>
 	    </c:if>
-	    <!-- サブミットボタン  -->
+	    <!-- トークンの格納  -->
+	    <input type="hidden" name="csrfToken" value="${csrfToken}">	    
+	    <!-- Loginボタン  -->
         <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">Login</button>
 		<!-- 新規アカウント作成用JSPへのリンク  -->
 	    <a href="<%=request.getContextPath()%>/createAccount/create-account.jsp" class="d-block mb-3">新規登録はこちら</a>

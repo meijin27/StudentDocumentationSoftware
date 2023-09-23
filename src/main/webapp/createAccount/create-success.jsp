@@ -12,7 +12,7 @@
 		// アカウント名をリクエストに格納
 		request.setAttribute("accountName", accountName); // リクエストスコープにセット
 
-		// アカウント名のセッションからの削除(フィルター機能によりセッションにアカウント名がないとこのｊｓｐにアクセスできない)
+		// アカウント名のセッションからの削除(フィルター機能によりセッションにアカウント名がない場合、このｊｓｐにアクセスできない)
 		request.getSession().removeAttribute("accountName");	
 		
 	%>

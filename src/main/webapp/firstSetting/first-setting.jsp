@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
+<<c:import url="/token/token.jsp" />UUID" %>
 
 <!-- 初期登録用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
@@ -292,8 +293,9 @@
 			    <input class="form-check-input" id="agreeCheckbox" type="checkbox" name="agree" value="1">
 			    <label class="form-check-label" for="agreeCheckbox">利用規約及びプライバシーポリシーに同意する</label>
 			</div>
-
-			<!-- サブミットボタン  -->
+		    <!-- トークンの格納  -->
+		    <input type="hidden" name="csrfToken" value="${csrfToken}">
+			<!-- 次へボタン  -->
 		    <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
 	    </form>
     </div>

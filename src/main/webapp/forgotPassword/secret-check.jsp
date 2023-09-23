@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-forgotPassword.jsp" />
+<c:import url="/token/token.jsp" />
 
 <!-- パスワード忘却時秘密の質問の答えと生年月日確認用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
@@ -66,7 +67,9 @@
             </c:if>
 		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
 		    <input type="hidden" name="secretQuestion" value="<c:out value='${secretQuestion}'/>">           
-			<!-- サブミットボタン  -->
+		    <!-- トークンの格納  -->
+ 		    <input type="hidden" name="csrfToken" value="${csrfToken}">		    
+		    <!-- 次へボタン  -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">次へ</button>
         </form>
     </main>

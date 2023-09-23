@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
+<c:import url="/token/token.jsp" />
 
 <!-- 初期登録内容確認用JSP  -->
 <main class="form-firstSetting col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
@@ -80,8 +81,8 @@
 			<input type="hidden" name="studentNumber" value="<c:out value='${studentNumber}'/>">
 			<input type="hidden" name="schoolYear" value="<c:out value='${schoolYear}'/>">
 			<input type="hidden" name="classNumber" value="<c:out value='${classNumber}'/>">
-
-
+		    <!-- トークンの格納  -->
+		    <input type="hidden" name="csrfToken" value="${csrfToken}">
             <!-- 登録ボタン -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
 	     </form>            
@@ -107,6 +108,7 @@
 			<input type="hidden" name="classNumber" value="<c:out value='${classNumber}'/>">
 
 			<input type="hidden" name="goBack" value="true">
+		    <!-- 戻るボタン  -->		
 			<input type="submit" class="w-100 btn btn-lg btn-secondary mb-3" value="戻る">
 		 </form>
 	</div>     

@@ -1,22 +1,10 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-createAccount.jsp" />
-<%@ page import="java.util.UUID" %>
+<c:import url="/token/token.jsp" />
 
 <!-- 新規アカウント用パスワード作成用JSP  -->
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
-
-	<%
-		// セッションからトークンを取得
-		String csrfToken = (String) session.getAttribute("csrfToken");
-		
-		// セッションにトークンがない場合は新たに生成してセッションに格納
-		if (csrfToken == null) {
-		    csrfToken = UUID.randomUUID().toString();
-		    session.setAttribute("csrfToken", csrfToken);
-		}
-	%>
-
 	<div class="container">
 		<form action="CreatePassword.action" method="post">
 			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
@@ -37,8 +25,11 @@
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>
 			</c:if>
-		    <input type="hidden" name="csrfToken" value="${sessionScope.csrfToken}">
+		    <!-- トークンの格納  -->
+		    <input type="hidden" name="csrfToken" value="${csrfToken}">
+		    <!-- 登録ボタン  -->
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
+		    <!-- 戻るボタン  -->		
 			<a href="create-account.jsp" class="w-100 btn btn-lg btn-secondary mb-3">戻る</a>
 		</form>
 	</div>

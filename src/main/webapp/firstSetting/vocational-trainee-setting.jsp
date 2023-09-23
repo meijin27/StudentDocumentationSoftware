@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
+<c:import url="/token/token.jsp" />
 
 <!-- 職業訓練生の初期設定用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
@@ -73,6 +74,8 @@
 	                ${innerError}
 	            </div>
 	        </c:if>	
+		    <!-- トークンの格納  -->
+ 		    <input type="hidden" name="csrfToken" value="${csrfToken}">	        
 	        <!-- サブミットボタン  -->
 	        <button class="w-100 btn btn-lg btn-primary mb-3" id="submitButton" type="submit">次へ</button>
 

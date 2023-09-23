@@ -1,6 +1,7 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-forgotPassword.jsp" />
+<c:import url="/token/token.jsp" />
 
 <!-- パスワード忘却時パスワード再設定用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
@@ -28,7 +29,9 @@
 			</c:if>
 		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
 		    <input type="hidden" name="master_key" value="<c:out value='${master_key}'/>">     
-			<!-- サブミットボタン  -->
+		    <!-- トークンの格納  -->
+ 		    <input type="hidden" name="csrfToken" value="${csrfToken}">		    
+			<!-- 再登録ボタン  -->
 			<button class="w-100 btn btn-lg btn-primary mb-3" type="submit">再登録</button>
 		</form>
 	</div>
