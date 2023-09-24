@@ -1,6 +1,5 @@
 package firstSetting;
 
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,56 +22,69 @@ public class FirstSettingCheckAction extends Action {
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = (String) session.getAttribute("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
 
-		// リクエストからデータの取り出し
-		String lastName = request.getParameter("lastName");
-		String firstName = request.getParameter("firstName");
-		String lastNameRuby = request.getParameter("lastNameRuby");
-		String firstNameRuby = request.getParameter("firstNameRuby");
-		String tel = request.getParameter("tel");
-		String postCode = request.getParameter("postCode");
-		String address = request.getParameter("address");
-		String birthYear = request.getParameter("birthYear");
-		String birthMonth = request.getParameter("birthMonth");
-		String birthDay = request.getParameter("birthDay");
-		String admissionYear = request.getParameter("admissionYear");
-		String admissionMonth = request.getParameter("admissionMonth");
-		String admissionDay = request.getParameter("admissionDay");
-		String studentType = request.getParameter("studentType");
-		String className = request.getParameter("className");
-		String studentNumber = request.getParameter("studentNumber");
-		String schoolYear = request.getParameter("schoolYear");
-		String classNumber = request.getParameter("classNumber");
+		// セッションからデータの取り出し
+		String lastName = (String) session.getAttribute("lastName");
+		String firstName = (String) session.getAttribute("firstName");
+		String lastNameRuby = (String) session.getAttribute("lastNameRuby");
+		String firstNameRuby = (String) session.getAttribute("firstNameRuby");
+		String tel = (String) session.getAttribute("tel");
+		String postCode = (String) session.getAttribute("postCode");
+		String address = (String) session.getAttribute("address");
+		String birthYear = (String) session.getAttribute("birthYear");
+		String birthMonth = (String) session.getAttribute("birthMonth");
+		String birthDay = (String) session.getAttribute("birthDay");
+		String admissionYear = (String) session.getAttribute("admissionYear");
+		String admissionMonth = (String) session.getAttribute("admissionMonth");
+		String admissionDay = (String) session.getAttribute("admissionDay");
+		String studentType = (String) session.getAttribute("studentType");
+		String className = (String) session.getAttribute("className");
+		String studentNumber = (String) session.getAttribute("studentNumber");
+		String schoolYear = (String) session.getAttribute("schoolYear");
+		String classNumber = (String) session.getAttribute("classNumber");
+
 		String goBack = request.getParameter("goBack");
 
-		// 入力された値をリクエストに格納
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
+		// 未入力項目があればエラーを返す
+		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || tel == null
+				|| postCode == null || address == null ||
+				birthYear == null || birthMonth == null || birthDay == null || admissionYear == null
+				|| admissionMonth == null || admissionDay == null || studentType == null
+				|| className == null
+				|| studentNumber == null || schoolYear == null || classNumber == null || lastName.isEmpty()
+				|| firstName.isEmpty() || lastNameRuby.isEmpty()
+				|| firstNameRuby.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
+				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || admissionYear.isEmpty()
+				|| admissionMonth.isEmpty() || admissionDay.isEmpty() || studentType.isEmpty()
+				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()) {
+			session.setAttribute("nullError", "未入力項目があります。");
+			// 初期設定ページへリダイレクト
+			response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+			return null;
 		}
 
 		// 「戻る」ボタンが押された場合は入力フォームへ戻る
 		if (goBack != null) {
-			return "first-setting.jsp";
-		}
-
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
+			// 初期設定ページへリダイレクト
+			response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+			return null;
 		}
 
 		try {
@@ -93,7 +105,6 @@ public class FirstSettingCheckAction extends Action {
 			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
 			if (reEncryptedSecretQuestion == null) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
@@ -167,17 +178,48 @@ public class FirstSettingCheckAction extends Action {
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
-			return "first-setting.jsp";
+			// 初期設定ページへリダイレクト
+			response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 		}
 
+		// 初期設定登録情報のセッションからの削除
+		request.getSession().removeAttribute("lastName");
+		request.getSession().removeAttribute("firstName");
+		request.getSession().removeAttribute("lastNameRuby");
+		request.getSession().removeAttribute("firstNameRuby");
+		request.getSession().removeAttribute("tel");
+		request.getSession().removeAttribute("postCode");
+		request.getSession().removeAttribute("address");
+		request.getSession().removeAttribute("birthYear");
+		request.getSession().removeAttribute("birthMonth");
+		request.getSession().removeAttribute("birthDay");
+		request.getSession().removeAttribute("admissionYear");
+		request.getSession().removeAttribute("admissionMonth");
+		request.getSession().removeAttribute("admissionDay");
+		request.getSession().removeAttribute("studentType");
+		request.getSession().removeAttribute("className");
+		request.getSession().removeAttribute("studentNumber");
+		request.getSession().removeAttribute("schoolYear");
+		request.getSession().removeAttribute("classNumber");
+		// 初期設定未登録情報及び初期設定未チェック情報のセッションからの削除
+		request.getSession().removeAttribute("firstSetting");
+		request.getSession().removeAttribute("firstSettingCheck");
+		// トークンの削除
+		request.getSession().removeAttribute("csrfToken");
+
+		// 学生区分によってページ遷移先を変更する
 		if (studentType.equals("職業訓練生")) {
-			return "vocational-trainee-setting.jsp";
+			// セッションに職業訓練生未登録情報を持たせる				
+			session.setAttribute("vocationalSetting", "unregistered");
+			// 職業訓練生登録ページへリダイレクト
+			response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
 		} else {
 			// メインページにリダイレクト
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
-			return null;
 		}
+
+		return null;
+
 	}
 
 }

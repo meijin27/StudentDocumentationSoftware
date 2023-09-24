@@ -1,10 +1,16 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/header/header-firstSetting.jsp" />
-<<c:import url="/token/token.jsp" />UUID" %>
+<c:import url="/token/token.jsp" />
 
 <!-- 初期登録用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
+
+	<%
+		// 初期設定未確認セッションの削除(フィルター機能によりセッションに初期設定未確認情報がない場合、初期設定確認ｊｓｐにアクセスできない)
+		request.getSession().removeAttribute("firstSettingCheck");	
+	%>
+
     <h2 class="p-5 text-center">初期設定</h2>
     <div class="content">
 	    <form action="FirstSetting.action" method="post">
@@ -14,14 +20,14 @@
 				<div class="col-md-6 mb-3">
 				    <label class="form-label" for="lastNameId">名前</label>
 				    <span class="required-label">必須</span>
-				    <input class="form-control" id="lastNameId" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}' />" required>
+				    <input class="form-control" id="lastNameId" type="text" name="lastName" placeholder="田中" value="<c:out value='${sessionScope.lastName}' />" required>
     				<small class="text-muted">姓</small>
 				</div>
 
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="firstName">名</label>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}' />" required>
+	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${sessionScope.firstName}' />" required>
     				<small class="text-muted">名</small>
 
 	            </div>
@@ -29,12 +35,12 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="lastNameRuby">ふりがな</label>
 				    <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}' />" required>
+	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${sessionScope.lastNameRuby}' />" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label invisible-text" for="firstNameRuby">名（ふりがな）</label>
-	                <input class="form-control border-bottom" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}' />" required>
+	                <input class="form-control border-bottom" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${sessionScope.firstNameRuby}' />" required>
 	            </div>
        			<p class="border-bottom"></p>
 	            <!-- 生年月日 -->
@@ -79,13 +85,13 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="postCode">郵便番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}' />" required>
+	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${sessionScope.postCode}' />" required>
 	            </div>
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="address">住所</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム" value="<c:out value='${address}' />" required>
+	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム" value="<c:out value='${sessionScope.address}' />" required>
 	            </div>
 	            
        			<p class="border-bottom"></p>
@@ -93,7 +99,7 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="tel">電話番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222" value="<c:out value='${tel}' />" required>
+	                <input class="form-control" type="text" name="tel" placeholder="08011112222" value="<c:out value='${sessionScope.tel}' />" required>
 	            </div>
        			<p class="border-bottom"></p>
   	            <!-- 入校年月日 -->
@@ -149,7 +155,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="studentNumber">学籍番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${studentNumber}' />" required>
+	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${sessionScope.studentNumber}' />" required>
 	            </div>
   	            <div class="col-md-8 mb-3"></div>
 	            

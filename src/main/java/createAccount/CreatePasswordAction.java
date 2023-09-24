@@ -29,6 +29,8 @@ public class CreatePasswordAction extends Action {
 		String requestToken = request.getParameter("csrfToken");
 		// セッションから暗号化されたアカウント名を取り出す
 		String encryptedAccount = (String) session.getAttribute("encryptedAccount");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
 		// 入力されたパスワードと再確認用パスワードを変数に格納
 		String password = request.getParameter("password");
@@ -39,7 +41,6 @@ public class CreatePasswordAction extends Action {
 				|| !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -81,7 +82,6 @@ public class CreatePasswordAction extends Action {
 				// セッションにアカウント名を格納する
 				session.setAttribute("accountName", account);
 				// アカウント作成成功画面にリダイレクト
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/createAccount/create-success.jsp");
 				return null;
 			} catch (Exception e) {

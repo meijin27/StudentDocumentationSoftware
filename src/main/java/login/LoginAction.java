@@ -22,6 +22,21 @@ public class LoginAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
+		// トークンが一致しない、またはどちらかがnullの場合はエラー
+		if (sessionToken == null || requestToken == null || !sessionToken.equals(requestToken)) {
+			// セッションにエラーメッセージを格納
+			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
+			// ログインページにリダイレクト
+			response.sendRedirect(contextPath + "/login/login.jsp");
+			return null;
+		}
+
 		// 入力されたアカウント名とパスワードを変数に格納
 		String account = request.getParameter("account");
 		String password = request.getParameter("password");
@@ -78,23 +93,28 @@ public class LoginAction extends Action {
 
 					// ユーザーのデータベースに秘密の質問が登録されていなければ秘密の質問と答え登録ページに移動
 					if (user.getSecretQuestion() == null) {
-						String contextPath = request.getContextPath();
+						// セッションに秘密の質問未登録情報を持たせる				
+						session.setAttribute("secretSetting", "unregistered");
+						// 秘密の質問設定ページへリダイレクト
 						response.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
 						return null;
 						// ユーザーのデータベースに学生種別が登録されていなければ初期登録ページに移動
 					} else if (studentType == null) {
-						String contextPath = request.getContextPath();
+						// セッションに初期設定未登録情報を持たせる				
+						session.setAttribute("firstSetting", "unregistered");
+						// 初期設定ページへリダイレクト
 						response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 						return null;
 						// ユーザーのデータベースにハローワーク名が登録されていなければ職業訓練生登録ページに移動
 					} else if (studentType.equals("職業訓練生") && user.getNamePESO() == null) {
-						String contextPath = request.getContextPath();
+						// セッションに職業訓練生未登録情報を持たせる				
+						session.setAttribute("vocationalSetting", "unregistered");
+						// 職業訓練生登録ページへリダイレクト
 						response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
 						return null;
 						// メインメニューに移動
 					} else {
 						// メインページにリダイレクト
-						String contextPath = request.getContextPath();
 						response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
 						return null;
 					}

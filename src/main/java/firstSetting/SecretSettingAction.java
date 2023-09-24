@@ -22,14 +22,20 @@ public class SecretSettingAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -80,7 +86,15 @@ public class SecretSettingAction extends Action {
 				dao.updateSecret(user);
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Create SecretQuestion & Answer");
-				return "first-setting.jsp";
+				// 秘密の質問未登録情報のセッションからの削除
+				request.getSession().removeAttribute("secretSetting");
+				// トークンの削除
+				request.getSession().removeAttribute("csrfToken");
+				// セッションに初期設定未登録情報を格納する
+				session.setAttribute("firstSetting", "unregistered");
+				// 初期設定画面へ遷移する				
+				response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+				return null;
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 				request.setAttribute("secretError", "内部エラーが発生しました。");

@@ -37,29 +37,54 @@ public class AuthenticationFilter implements Filter {
 		httpResponse.setHeader("Expires", "0");
 
 		try {
+			// 宛先アドレス
 			String uri = httpRequest.getRequestURI();
+			// リダイレクト用コンテキストパス
+			String contextPath = httpRequest.getContextPath();
 
+			// セッションにID情報が格納されているログインしている状態の場合
 			if (session != null && session.getAttribute("id") != null) {
-				// ログインしている場合は通常通りリクエストを続行				
-				chain.doFilter(request, response);
-			} else if (uri.endsWith("login.jsp") || uri.endsWith("Login.action")) {
+				// 秘密の質問が未登録状態のセッションがある場合は秘密の質問の初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
+				if ((uri.endsWith("secret-setting.jsp") || uri.endsWith("SecretSetting.action"))
+						&& session.getAttribute("secretSetting") != null) {
+					chain.doFilter(request, response);
+				} else if (session.getAttribute("secretSetting") != null) {
+					httpResponse.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
+					// 初期設定未登録情報のセッションがある場合は初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
+				} else if ((uri.endsWith("first-setting.jsp") || uri.endsWith("FirstSetting.action"))
+						&& session.getAttribute("firstSetting") != null) {
+					chain.doFilter(request, response);
+					// 初期設定未チェック情報のセッションがある場合は初期登録確認ページは許可,それ以外のページにアクセスしようとしても強制遷移
+				} else if ((uri.endsWith("first-setting-check.jsp") || uri.endsWith("FirstSettingCheck.action"))
+						&& session.getAttribute("firstSetting") != null
+						&& session.getAttribute("firstSettingCheck") != null) {
+					chain.doFilter(request, response);
+				} else if (session.getAttribute("firstSetting") != null) {
+					httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+
+				} else {
+					// ログインしている場合は通常通りリクエストを続行				
+					chain.doFilter(request, response);
+				}
 				// ログインページからのアクセスは許可	
+			} else if (uri.endsWith("login.jsp") || uri.endsWith("Login.action")) {
 				chain.doFilter(request, response);
-			} else if (uri.endsWith("create-account.jsp") || uri.endsWith("CreateAccount.action")) {
 				// 新規アカウント作成ページは許可	
+			} else if (uri.endsWith("create-account.jsp") || uri.endsWith("CreateAccount.action")) {
 				chain.doFilter(request, response);
+				// 新規アカウント作成用のパスワード作成ページは暗号化されたアカウントがセッションに格納されていれば許可
 			} else if ((uri.endsWith("create-password.jsp") || uri.endsWith("CreatePassword.action"))
 					&& session != null && session.getAttribute("encryptedAccount") != null) {
-				// 新規アカウント作成用のパスワード作成ページは暗号化されたアカウントがセッションに格納されていれば許可
 				chain.doFilter(request, response);
+				// 新規アカウント作成用のアカウント作成成功ページはアカウント名がセッションに格納されていれば許可
 			} else if (uri.endsWith("create-success.jsp") && session != null
 					&& session.getAttribute("accountName") != null) {
-				// 新規アカウント作成用のアカウント作成成功ページはアカウント名がセッションに格納されていれば許可
 				chain.doFilter(request, response);
-			} else {
 				// 上記以外の場合はログインページへリダイレクト
-				// コンテキストパスを取得し、そのパスを基に正しいURLにリダイレクト
-				String contextPath = httpRequest.getContextPath();
+			} else {
+				// セッションを取得し、無効化
+				session.invalidate();
+				// ログインページへリダイレクト
 				httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 			}
 		} catch (Exception e) {

@@ -61,52 +61,14 @@
 				<div class="data-label"><p>学生種別:</p></div>
 				<div class="data-value"><p><c:out value='${studentType}'/></p></div>	    
 		    </div>
-
-
-			<input type="hidden" name="lastName" value="<c:out value='${lastName}'/>">
-			<input type="hidden" name="firstName" value="<c:out value='${firstName}'/>">
-			<input type="hidden" name="lastNameRuby" value="<c:out value='${lastNameRuby}'/>">
-			<input type="hidden" name="firstNameRuby" value="<c:out value='${firstNameRuby}'/>">
-			<input type="hidden" name="tel" value="<c:out value='${tel}'/>">
-			<input type="hidden" name="postCode" value="<c:out value='${postCode}'/>">
-			<input type="hidden" name="address" value="<c:out value='${address}'/>">
-			<input type="hidden" name="birthYear" value="<c:out value='${birthYear}'/>">
-			<input type="hidden" name="birthMonth" value="<c:out value='${birthMonth}'/>">
-			<input type="hidden" name="birthDay" value="<c:out value='${birthDay}'/>">
-			<input type="hidden" name="admissionYear" value="<c:out value='${admissionYear}'/>">
-			<input type="hidden" name="admissionMonth" value="<c:out value='${admissionMonth}'/>">
-			<input type="hidden" name="admissionDay" value="<c:out value='${admissionDay}'/>">
-			<input type="hidden" name="studentType" value="<c:out value='${studentType}'/>">
-			<input type="hidden" name="className" value="<c:out value='${className}'/>">
-			<input type="hidden" name="studentNumber" value="<c:out value='${studentNumber}'/>">
-			<input type="hidden" name="schoolYear" value="<c:out value='${schoolYear}'/>">
-			<input type="hidden" name="classNumber" value="<c:out value='${classNumber}'/>">
+		    
 		    <!-- トークンの格納  -->
 		    <input type="hidden" name="csrfToken" value="${csrfToken}">
             <!-- 登録ボタン -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
 	     </form>            
-	     <!-- 初期登録JSPへ戻るボタン、登録内容をリクエストに格納している  -->
+	     <!-- 初期登録JSPへ戻るボタン -->
 	     <form action="FirstSettingCheck.action" method="post">
-			<input type="hidden" name="lastName" value="<c:out value='${lastName}'/>">
-			<input type="hidden" name="firstName" value="<c:out value='${firstName}'/>">
-			<input type="hidden" name="lastNameRuby" value="<c:out value='${lastNameRuby}'/>">
-			<input type="hidden" name="firstNameRuby" value="<c:out value='${firstNameRuby}'/>">
-			<input type="hidden" name="tel" value="<c:out value='${tel}'/>">
-			<input type="hidden" name="postCode" value="<c:out value='${postCode}'/>">
-			<input type="hidden" name="address" value="<c:out value='${address}'/>">
-			<input type="hidden" name="birthYear" value="<c:out value='${birthYear}'/>">
-			<input type="hidden" name="birthMonth" value="<c:out value='${birthMonth}'/>">
-			<input type="hidden" name="birthDay" value="<c:out value='${birthDay}'/>">
-			<input type="hidden" name="admissionYear" value="<c:out value='${admissionYear}'/>">
-			<input type="hidden" name="admissionMonth" value="<c:out value='${admissionMonth}'/>">
-			<input type="hidden" name="admissionDay" value="<c:out value='${admissionDay}'/>">
-			<input type="hidden" name="studentType" value="<c:out value='${studentType}'/>">
-			<input type="hidden" name="className" value="<c:out value='${className}'/>">
-			<input type="hidden" name="studentNumber" value="<c:out value='${studentNumber}'/>">
-			<input type="hidden" name="schoolYear" value="<c:out value='${schoolYear}'/>">
-			<input type="hidden" name="classNumber" value="<c:out value='${classNumber}'/>">
-
 			<input type="hidden" name="goBack" value="true">
 		    <!-- 戻るボタン  -->		
 			<input type="submit" class="w-100 btn btn-lg btn-secondary mb-3" value="戻る">
