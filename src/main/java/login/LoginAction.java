@@ -92,6 +92,8 @@ public class LoginAction extends Action {
 					session.setAttribute("id", encryptedId);
 					// セッションに再暗号化したマスターキーを持たせる
 					session.setAttribute("master_key", reEncryptedKey);
+					// トークンの削除
+					request.getSession().removeAttribute("csrfToken");
 
 					// ユーザーのデータベースに秘密の質問が登録されていなければ秘密の質問と答え登録ページに移動
 					if (user.getSecretQuestion() == null) {

@@ -68,7 +68,7 @@ public class AuthenticationFilter implements Filter {
 				// 暗号化されたアカウントがセッションに格納されていない状態で新規アカウント作成用のパスワード作成ページにアクセスするとログアウトする
 				else if ((uri.endsWith("/create-password.jsp") || uri.endsWith("/CreatePassword.action"))
 						&& session.getAttribute("encryptedAccount") == null) {
-					httpResponse.sendRedirect(contextPath + "/Logout");
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 				}
 				// 新規アカウント作成用のアカウント作成成功ページはアカウント名がセッションに格納されていれば許可
 				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") != null) {
@@ -76,7 +76,7 @@ public class AuthenticationFilter implements Filter {
 				}
 				// アカウント名がセッションに格納されていない状態で新規アカウント作成成功ページにアクセスするとログアウトする
 				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") == null) {
-					httpResponse.sendRedirect(contextPath + "/Logout");
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 				}
 
 				// パスワードを忘れた場合の処理
@@ -90,7 +90,7 @@ public class AuthenticationFilter implements Filter {
 				else if ((uri.endsWith("/secret-check.jsp") || uri.endsWith("/SecretCheck.action"))
 						&& (session.getAttribute("secretQuestion") == null
 								|| session.getAttribute("encryptedId") == null)) {
-					httpResponse.sendRedirect(contextPath + "/Logout");
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 				}
 				// パスワード忘却時のパスワード再作成ページはマスターキーと暗号化されたIDがセッションに格納されていれば許可
 				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
@@ -102,7 +102,7 @@ public class AuthenticationFilter implements Filter {
 				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
 						&& (session.getAttribute("master_key") == null
 								|| session.getAttribute("encryptedId") == null)) {
-					httpResponse.sendRedirect(contextPath + "/Logout");
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 				}
 				// パスワード再作成成功ページはパスワード再作成成功メッセージがセッションに格納されていれば許可
 				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") != null) {
@@ -110,7 +110,7 @@ public class AuthenticationFilter implements Filter {
 				}
 				// パスワード再作成成功メッセージがセッションに格納されていない状態でパスワード再作成成功ページにアクセスするとログアウトする
 				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") == null) {
-					httpResponse.sendRedirect(contextPath + "/Logout");
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
 				}
 
 				// ログイン時の処理
@@ -122,6 +122,10 @@ public class AuthenticationFilter implements Filter {
 						chain.doFilter(request, response);
 					} else if (session.getAttribute("secretSetting") != null) {
 						httpResponse.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
+						// 秘密の質問が登録状態ではアクセス不許可、メインページに遷移する
+					} else if ((uri.endsWith("/secret-setting.jsp") || uri.endsWith("/SecretSetting.action"))
+							&& session.getAttribute("secretSetting") == null) {
+						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
 						// 初期設定未登録情報のセッションがある場合は初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
 					} else if ((uri.endsWith("/first-setting.jsp") || uri.endsWith("/FirstSetting.action"))
 							&& session.getAttribute("firstSetting") != null) {
@@ -133,6 +137,11 @@ public class AuthenticationFilter implements Filter {
 						chain.doFilter(request, response);
 					} else if (session.getAttribute("firstSetting") != null) {
 						httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+						//  初期設定が登録状態ではアクセス不許可、メインページに遷移する
+					} else if ((uri.endsWith("/first-setting.jsp") || uri.endsWith("/FirstSetting.action")
+							|| uri.endsWith("/first-setting-check.jsp") || uri.endsWith("/FirstSettingCheck.action"))
+							&& session.getAttribute("firstSetting") == null) {
+						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
 						// 職業訓練生情報未登録情報のセッションがある場合は職業訓練生情報登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
 					} else if ((uri.endsWith("/vocational-trainee-setting.jsp")
 							|| uri.endsWith("/VocationalTraineeSetting.action"))
@@ -146,17 +155,30 @@ public class AuthenticationFilter implements Filter {
 						chain.doFilter(request, response);
 					} else if (session.getAttribute("vocationalSetting") != null) {
 						httpResponse.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
+						//  職業訓練生情報が登録状態ではアクセス不許可、メインページに遷移する
+					} else if ((uri.endsWith("/vocational-trainee-setting.jsp")
+							|| uri.endsWith("/VocationalTraineeSetting.action")
+							|| uri.endsWith("/vocational-trainee-setting-check.jsp")
+							|| uri.endsWith("/VocationalTraineeSettingCheck.action"))
+							&& session.getAttribute("vocationalSetting") == null) {
+						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+						// 行為成功ページは行為成功メッセージがセッションに格納されていれば許可
+					} else if (uri.endsWith("/action-success.jsp")
+							&& session.getAttribute("action") != null) {
+						chain.doFilter(request, response);
+					}
+					// 行為成功メッセージがセッションに格納されていない状態で行為成功ページにアクセスは不許可、メインページに遷移する
+					else if (uri.endsWith("/action-success.jsp") && session.getAttribute("action") == null) {
+						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+						// その他のページへのアクセスは許可する
 					} else {
 						chain.doFilter(request, response);
 					}
-
-				} else {
-					chain.doFilter(request, response);
 				}
-
 			}
+		} catch (
 
-		} catch (Exception e) {
+		Exception e) {
 			logger.log(Level.SEVERE, "Page change failed", e);
 		}
 	}
