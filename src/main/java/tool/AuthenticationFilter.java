@@ -180,7 +180,6 @@ public class AuthenticationFilter implements Filter {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Page change failed", e);
-			e.printStackTrace();
 		}
 	}
 
