@@ -27,12 +27,18 @@ public class ChangeNameDateofBirthAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
+		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -152,15 +158,21 @@ public class ChangeNameDateofBirthAction extends Action {
 			dao.updateBirthDay(user);
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Change Name & Date of Birth");
+
+			// セッションに変更情報を持たせる				
+			session.setAttribute("action", "名前と生年月日を変更しました。");
+			// トークンの削除
+			request.getSession().removeAttribute("csrfToken");
+
+			// エラーがない場合は行為成功表示用JSPへリダイレクト
+			response.sendRedirect(contextPath + "/mainMenu/action-success.jsp");
+			return null;
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "change-name-date-of-birth.jsp";
 		}
-		// 名前と生年月日変更成功画面に遷移
-		request.setAttribute("changes", "名前と生年月日を変更しました。");
-		return "change-success.jsp";
-
 	}
 
 }

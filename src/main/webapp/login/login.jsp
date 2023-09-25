@@ -3,19 +3,6 @@
 <c:import url="/header/header-login.jsp" />
 <c:import url="/token/token.jsp" />
 
-	<%
-
-		// セッションからエラー情報を取得
-		String accountName = (String) session.getAttribute("otherError");
-	
-		// エラー情報をリクエストに格納
-		request.setAttribute("otherError", otherError); // リクエストスコープにセット
-	
-		// セッションの削除(このページにアクセスした時点でセッションは削除する）
-		request.getSession().invalidate();
-		
-	%>
-
 <!-- ログイン用JSP  -->
 <main class="form-login w-100 m-auto">
     <form action="Login.action" method="post">

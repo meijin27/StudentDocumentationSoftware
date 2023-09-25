@@ -26,12 +26,18 @@ public class ChangeStudentInfoAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
+		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -152,15 +158,29 @@ public class ChangeStudentInfoAction extends Action {
 			dao.updateAdmissionDay(user);
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Change Student Infometion");
+
+			// セッションに変更情報を持たせる				
+			session.setAttribute("action", "学生情報を変更しました。");
+			// トークンの削除
+			request.getSession().removeAttribute("csrfToken");
+
+			// 変更した学生種類が職業訓練生かつ未登録の場合は情報登録画面に遷移する
+			if (studentType.equals("職業訓練生") && user.getNamePESO() == null) {
+				// セッションに職業訓練生未登録情報を持たせる				
+				session.setAttribute("vocationalSetting", "unregistered");
+				// 職業訓練生登録ページへリダイレクト
+				response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
+				return null;
+			} else {
+				// エラーがない場合は行為成功表示用JSPへリダイレクト
+				response.sendRedirect(contextPath + "/mainMenu/action-success.jsp");
+				return null;
+			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "change-student-info.jsp";
 		}
-		// 学生情報変更成功画面に遷移
-		request.setAttribute("changes", "学生情報を変更しました。");
-		return "change-success.jsp";
-
 	}
 
 }

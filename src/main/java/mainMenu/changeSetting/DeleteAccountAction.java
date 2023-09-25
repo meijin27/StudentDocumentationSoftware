@@ -22,16 +22,21 @@ public class DeleteAccountAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("id") == null || session.getAttribute("master_key") == null) {
+		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
-
 		// 入力されたパスワードを変数に格納
 		String password = request.getParameter("password");
 
@@ -64,14 +69,17 @@ public class DeleteAccountAction extends Action {
 				user.setId(id);
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Delete Account");
-				// データベースからアカウントの削除
+				// データベースからアカウントの削除（削除フラグを立てるだけ、データは削除しない）
 				dao.accountDeleted(id);
-				// セッションを消去
+				// IDとマスターキーのセッションを消去
 				session.removeAttribute("id");
 				session.removeAttribute("master_key");
-				// アカウント削除後、ログインページにリダイレクト
+				// アカウント削除メッセージをセッションに格納
 				session.setAttribute("otherError", "アカウントが削除されました。");
-				String contextPath = request.getContextPath();
+
+				// トークンの削除
+				request.getSession().removeAttribute("csrfToken");
+				// アカウント削除後、ログインページにリダイレクト
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			} else {

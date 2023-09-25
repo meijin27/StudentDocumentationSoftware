@@ -3,12 +3,12 @@
 <c:import url="/header/header-mainMenu.jsp" />
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 
-<!-- 設定変更成功表示用JSP  -->
+<!-- 行為成功表示用JSP  -->
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
 
 	<%
 		// セッションから変更箇所を取得
-		String accountName = (String) session.getAttribute("action");
+		String action = (String) session.getAttribute("action");
 	
 		// 変更箇所をリクエストに格納
 		request.setAttribute("action", action); // リクエストスコープにセット

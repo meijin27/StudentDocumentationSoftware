@@ -41,22 +41,20 @@ public class AuthenticationFilter implements Filter {
 			// リダイレクト用コンテキストパス
 			String contextPath = httpRequest.getContextPath();
 
-			// セッションがない場合
-			if (session == null) {
-				if (uri.endsWith("/login.jsp") || uri.endsWith("/Login.action")) {
-					// ログインページのアクセスは許可	
-					chain.doFilter(request, response);
-				} else if (uri.endsWith("/create-account.jsp") || uri.endsWith("/CreateAccount.action")) {
-					// 新規アカウント作成ページは許可				
-					chain.doFilter(request, response);
-				} else if (uri.endsWith("/search-account.jsp") || uri.endsWith("/SearchAccount.action")) {
-					// パスワードを忘れた場合のアカウント検索ページは許可				
-					chain.doFilter(request, response);
-				} else {
-					// セッションがない状態で上記以外のページにアクセスしようとした場合、ログインページへリダイレクト
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
-				}
-
+			// ログイン・ログアウト・新規アカウント作成（最初のページ）・パスワード再発行（最初のページ）はアクセスを無条件で許可
+			if (uri.endsWith("/login.jsp") || uri.endsWith("/Login.action") || uri.endsWith("/Logout")) {
+				// ログインページ・ログアウトページへのアクセスは許可	
+				chain.doFilter(request, response);
+			} else if (uri.endsWith("/create-account.jsp") || uri.endsWith("/CreateAccount.action")) {
+				// 新規アカウント作成ページは許可				
+				chain.doFilter(request, response);
+			} else if (uri.endsWith("/search-account.jsp") || uri.endsWith("/SearchAccount.action")) {
+				// パスワードを忘れた場合のアカウント検索ページは許可				
+				chain.doFilter(request, response);
+				// セッションがない場合
+			} else if (session == null) {
+				// セッションがない状態で上記以外のページにアクセスしようとした場合、ログアウトページへリダイレクト
+				httpResponse.sendRedirect(contextPath + "/Logout");
 				// セッションがある場合	
 			} else {
 				// 新規アカウント作成
@@ -68,7 +66,7 @@ public class AuthenticationFilter implements Filter {
 				// 暗号化されたアカウントがセッションに格納されていない状態で新規アカウント作成用のパスワード作成ページにアクセスするとログアウトする
 				else if ((uri.endsWith("/create-password.jsp") || uri.endsWith("/CreatePassword.action"))
 						&& session.getAttribute("encryptedAccount") == null) {
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
 				// 新規アカウント作成用のアカウント作成成功ページはアカウント名がセッションに格納されていれば許可
 				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") != null) {
@@ -76,7 +74,7 @@ public class AuthenticationFilter implements Filter {
 				}
 				// アカウント名がセッションに格納されていない状態で新規アカウント作成成功ページにアクセスするとログアウトする
 				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") == null) {
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
 
 				// パスワードを忘れた場合の処理
@@ -90,7 +88,7 @@ public class AuthenticationFilter implements Filter {
 				else if ((uri.endsWith("/secret-check.jsp") || uri.endsWith("/SecretCheck.action"))
 						&& (session.getAttribute("secretQuestion") == null
 								|| session.getAttribute("encryptedId") == null)) {
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
 				// パスワード忘却時のパスワード再作成ページはマスターキーと暗号化されたIDがセッションに格納されていれば許可
 				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
@@ -102,7 +100,7 @@ public class AuthenticationFilter implements Filter {
 				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
 						&& (session.getAttribute("master_key") == null
 								|| session.getAttribute("encryptedId") == null)) {
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
 				// パスワード再作成成功ページはパスワード再作成成功メッセージがセッションに格納されていれば許可
 				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") != null) {
@@ -110,7 +108,7 @@ public class AuthenticationFilter implements Filter {
 				}
 				// パスワード再作成成功メッセージがセッションに格納されていない状態でパスワード再作成成功ページにアクセスするとログアウトする
 				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") == null) {
-					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
 
 				// ログイン時の処理
@@ -174,12 +172,15 @@ public class AuthenticationFilter implements Filter {
 					} else {
 						chain.doFilter(request, response);
 					}
+					// 何にも該当しない場合はログアウトページへ遷移する	
+				} else {
+					httpResponse.sendRedirect(contextPath + "/Logout");
 				}
-			}
-		} catch (
 
-		Exception e) {
+			}
+		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Page change failed", e);
+			e.printStackTrace();
 		}
 	}
 

@@ -32,12 +32,18 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れや直接初期設定入力ページにアクセスした場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -224,7 +230,6 @@ public class PetitionForDeferredPaymentAction extends Action {
 			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
 			if (reEncryptedLastName == null) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
@@ -383,6 +388,10 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 			// 出力内容のデータベースへの登録
 			dao.addOperationLog(id, "Printing Petition For Deferred-payment");
+
+			// トークンの削除
+			request.getSession().removeAttribute("csrfToken");
+
 			// Close and save
 			editor.close("Petition_For_Deferred-payment.pdf", response);
 
