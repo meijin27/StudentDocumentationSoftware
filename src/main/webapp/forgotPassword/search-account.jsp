@@ -3,6 +3,13 @@
 <c:import url="/header/header-forgotPassword.jsp" />
 <c:import url="/token/token.jsp" />
 
+	<%
+	
+		// セッションの削除(フィルター機能によりこのページにアクセスした時点でログアウトする）
+		request.getSession().invalidate();
+		
+	%>
+
 <!-- パスワード忘却時アカウント検索用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
     <div class="container">

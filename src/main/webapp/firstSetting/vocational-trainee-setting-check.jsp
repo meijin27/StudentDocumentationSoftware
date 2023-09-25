@@ -29,21 +29,13 @@
 				<div class="data-value"><p><c:out value='${attendanceNumber}'/></p></div>	      
 		    </div>
 				
-		    <input type="hidden" name="namePESO" value="<c:out value='${namePESO}'/>">
-		    <input type="hidden" name="supplyNumber" value="<c:out value='${supplyNumber}'/>">
-		    <input type="hidden" name="attendanceNumber" value="<c:out value='${attendanceNumber}'/>">
-		    <input type="hidden" name="employmentInsurance" value="<c:out value='${employmentInsurance}'/>">
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">	      
             <!-- 登録ボタン -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">登録</button>
 	     </form>
-	     <!-- 職業訓練生の初期登録JSPへ戻るボタン、登録内容をリクエストに格納している  -->
+	     <!-- 職業訓練生の初期登録JSPへ戻るボタン  -->
 	     <form action="VocationalTraineeSettingCheck.action" method="post">
-		    <input type="hidden" name="namePESO" value="<c:out value='${namePESO}'/>">
-		    <input type="hidden" name="supplyNumber" value="<c:out value='${supplyNumber}'/>">
-		    <input type="hidden" name="attendanceNumber" value="<c:out value='${attendanceNumber}'/>">
-		    <input type="hidden" name="employmentInsurance" value="<c:out value='${employmentInsurance}'/>">
 		    <input type="hidden" name="goBack" value="true">
 		    <input type="submit" class="w-100 btn btn-lg btn-secondary mb-3" value="戻る">
 		 </form>      

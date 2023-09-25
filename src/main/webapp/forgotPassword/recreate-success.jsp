@@ -8,7 +8,7 @@
 	<%
 	
 		// セッションの削除(フィルター機能によりセッションがない場合、このｊｓｐにアクセスできない)
-		request.getSession().removeAttribute("recreateSuccess");	
+		request.getSession().invalidate();
 		
 	%>
 	

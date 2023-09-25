@@ -3,6 +3,19 @@
 <c:import url="/header/header-login.jsp" />
 <c:import url="/token/token.jsp" />
 
+	<%
+
+		// セッションからエラー情報を取得
+		String accountName = (String) session.getAttribute("otherError");
+	
+		// エラー情報をリクエストに格納
+		request.setAttribute("otherError", otherError); // リクエストスコープにセット
+	
+		// セッションの削除(このページにアクセスした時点でセッションは削除する）
+		request.getSession().invalidate();
+		
+	%>
+
 <!-- ログイン用JSP  -->
 <main class="form-login w-100 m-auto">
     <form action="Login.action" method="post">
@@ -23,9 +36,9 @@
 	            ${loginError }
 	        </div>
 	    </c:if>
-	    <c:if test="${not empty sessionScope.otherError}">
+	    <c:if test="${not empty otherError}">
 	        <div class="alert alert-danger" role="alert">
-	            ${sessionScope.otherError}
+	            ${otherError}
 	            <% session.removeAttribute("otherError"); %>
 	        </div>
 	    </c:if>

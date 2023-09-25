@@ -27,12 +27,13 @@ public class CreateAccountAction extends Action {
 		String sessionToken = (String) session.getAttribute("csrfToken");
 		// リクエストパラメータからトークンを取得
 		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
 		// トークンが一致しない、またはどちらかがnullの場合はエラー
 		if (sessionToken == null || requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -72,12 +73,15 @@ public class CreateAccountAction extends Action {
 
 			// ユーザーデータがnullである　＝　未登録アカウントの場合の処理
 			if (user == null) {
+				// 現在のセッションを無効化
+				session.invalidate();
+				// 新しいセッションを作成
+				session = request.getSession(true);
 				// セッションに共通暗号キーで暗号化されたアカウント名を格納
 				session.setAttribute("encryptedAccount", encryptedAccount);
 				// トークンの削除
 				request.getSession().removeAttribute("csrfToken");
 				// パスワード登録画面にリダイレクト
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/createAccount/create-password.jsp");
 				return null;
 				// もしアカウントがデータベースに登録されていればエラーメッセージを表示			

@@ -20,14 +20,21 @@ public class VocationalTraineeSettingAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
@@ -38,12 +45,12 @@ public class VocationalTraineeSettingAction extends Action {
 		String attendanceNumber = request.getParameter("attendanceNumber");
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
-		// 入力された値をリクエストに格納
+		// 入力された値をセッションに格納
 		Enumeration<String> parameterNames = request.getParameterNames();
 		while (parameterNames.hasMoreElements()) {
 			String paramName = parameterNames.nextElement();
 			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
+			session.setAttribute(paramName, paramValue);
 		}
 
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
@@ -92,7 +99,6 @@ public class VocationalTraineeSettingAction extends Action {
 			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
 			if (reEncryptedLastName == null) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
@@ -102,8 +108,15 @@ public class VocationalTraineeSettingAction extends Action {
 			return "certificate-issuance.jsp";
 		}
 
-		// エラーがない場合は確認画面に進む
-		return "vocational-trainee-setting-check.jsp";
+		// セッションに初期設定未チェック情報を持たせる				
+		session.setAttribute("vocationalSettingCheck", "unchecked");
+		// トークンの削除
+		request.getSession().removeAttribute("csrfToken");
+
+		// エラーがない場合は確認画面へリダイレクト
+		// 初期設定確認ページへリダイレクト
+		response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting-check.jsp");
+		return null;
 
 	}
 

@@ -65,8 +65,6 @@
                   ${secretError}
               </div>
             </c:if>
-		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
-		    <input type="hidden" name="secretQuestion" value="<c:out value='${secretQuestion}'/>">           
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">		    
 		    <!-- 次へボタン  -->

@@ -21,31 +21,35 @@ public class RecreatePasswordAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// 入力されたパスワードと再確認用パスワードを変数に格納
-		String password = request.getParameter("password");
-		String passwordCheck = request.getParameter("passwordCheck");
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// セッションから暗号化されたマスターキーを取り出す
+		String reEncryptedMasterkey = (String) session.getAttribute("master_key");
+		// セッションから暗号化されたIDを取り出す
+		String encryptedId = (String) session.getAttribute("encryptedId");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// リクエストの有効期限切れの場合はエラーとして処理
-		if (request.getParameter("encryptedId") == null || request.getParameter("master_key") == null) {
+		// マスターキーやIDがnull,トークンが一致しない、またはどちらかがnullの場合はエラー
+		if (encryptedId == null || reEncryptedMasterkey == null || sessionToken == null || requestToken == null
+				|| !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
 
-		// リクエストから暗号化されたIDの取り出し
-		String encryptedId = request.getParameter("encryptedId");
-		// リクエストに共通暗号キーで暗号化されたIDを格納
-		request.setAttribute("encryptedId", encryptedId);
+		// 入力されたパスワードと再確認用パスワードを変数に格納
+		String password = request.getParameter("password");
+		String passwordCheck = request.getParameter("passwordCheck");
+
 		// IDの復号
 		String id = CipherUtil.commonDecrypt(encryptedId);
-		// リクエストから暗号化されたマスターキーの取り出し
-		String reEncryptedMasterkey = request.getParameter("master_key");
-		// リクエストに暗号化されたマスターキーを格納
-		request.setAttribute("master_key", reEncryptedMasterkey);
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
@@ -94,8 +98,18 @@ public class RecreatePasswordAction extends Action {
 				dao.updateMasterKey(user);
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Forgot Password Recreate");
-				// パスワード再作成成功画面に遷移
-				return "recreate-success.jsp";
+
+				// セッションから秘密の質問を削除
+				request.getSession().removeAttribute("master_key");
+				// セッションから暗号化されたIDを削除
+				request.getSession().removeAttribute("encryptedId");
+				// トークンの削除
+				request.getSession().removeAttribute("csrfToken");
+				// セッションにパスワード再作成確認用変数を格納する
+				session.setAttribute("recreateSuccess", "Recreate_Success");
+				// パスワード再作成成功画面にリダイレクト
+				response.sendRedirect(contextPath + "/forgotPassword/recreate-success.jsp");
+				return null;
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 				request.setAttribute("passwordError", "内部エラーが発生しました。");

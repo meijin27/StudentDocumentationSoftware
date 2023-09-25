@@ -4,6 +4,13 @@
 <c:import url="/token/token.jsp" />
 
 
+	<%
+	
+		// セッションの削除(フィルター機能によりこのページにアクセスした時点でログアウトする）
+		request.getSession().invalidate();
+		
+	%>
+	
 <!-- 新規アカウント名作成用JSP  -->
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">

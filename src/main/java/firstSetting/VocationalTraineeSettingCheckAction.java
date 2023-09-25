@@ -1,6 +1,5 @@
 package firstSetting;
 
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,42 +22,35 @@ public class VocationalTraineeSettingCheckAction extends Action {
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = (String) session.getAttribute("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// セッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null) {
+		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
+		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
+				|| requestToken == null || !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
 
-		// リクエストからデータの取り出し
-		String namePESO = request.getParameter("namePESO");
-		String supplyNumber = request.getParameter("supplyNumber");
-		String attendanceNumber = request.getParameter("attendanceNumber");
-		String employmentInsurance = request.getParameter("employmentInsurance");
-		String goBack = request.getParameter("goBack");
+		// セッションからデータの取り出し
+		String namePESO = (String) session.getAttribute("namePESO");
+		String supplyNumber = (String) session.getAttribute("supplyNumber");
+		String attendanceNumber = (String) session.getAttribute("attendanceNumber");
+		String employmentInsurance = (String) session.getAttribute("employmentInsurance");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
+		String goBack = request.getParameter("goBack");
 
 		// 「戻る」ボタンが押された場合は入力フォームへ戻る
 		if (goBack != null) {
 			return "vocational-trainee-setting.jsp";
-		}
-
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
 		}
 
 		try {
@@ -79,11 +71,10 @@ public class VocationalTraineeSettingCheckAction extends Action {
 			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
 			if (reEncryptedLastName == null) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				String contextPath = request.getContextPath();
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
-			}			
-			
+			}
+
 			// 登録するデータの暗号化
 			String encryptedNamePESO = CipherUtil.encrypt(masterKey, iv, namePESO);
 			String encryptedSupplyNumber = CipherUtil.encrypt(masterKey, iv, supplyNumber);
@@ -109,7 +100,18 @@ public class VocationalTraineeSettingCheckAction extends Action {
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Create Vocational Trainee Setting");
 
-			String contextPath = request.getContextPath();
+			// 職業訓練生登録情報のセッションからの削除
+			request.getSession().removeAttribute("namePESO");
+			request.getSession().removeAttribute("supplyNumber");
+			request.getSession().removeAttribute("attendanceNumber");
+			request.getSession().removeAttribute("employmentInsurance");
+			// 職業訓練生未登録情報及び職業訓練生未チェック情報のセッションからの削除
+			request.getSession().removeAttribute("vocationalSetting");
+			request.getSession().removeAttribute("vocationalSettingCheck");
+			// トークンの削除
+			request.getSession().removeAttribute("csrfToken");
+
+			// メインページにリダイレクト
 			response.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
 			return null;
 		} catch (Exception e) {

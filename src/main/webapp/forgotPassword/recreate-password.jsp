@@ -27,8 +27,6 @@
 				<div class="alert alert-danger" role="alert">${passwordError}
 				</div>
 			</c:if>
-		    <input type="hidden" name="encryptedId" value="<c:out value='${encryptedId}'/>">
-		    <input type="hidden" name="master_key" value="<c:out value='${master_key}'/>">     
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">		    
 			<!-- 再登録ボタン  -->

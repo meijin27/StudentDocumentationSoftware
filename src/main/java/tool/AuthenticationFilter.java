@@ -10,13 +10,11 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-//このアノテーションでフィルタリングするURLパターン、jspとサーブレットの実行ファイル
-@WebFilter(urlPatterns = { "*.jsp", "*.action" })
+// ページ遷移のフィルタリング
 public class AuthenticationFilter implements Filter {
 	private static final Logger logger = CustomLogger.getLogger(AuthenticationFilter.class);
 
@@ -27,6 +25,7 @@ public class AuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		HttpSession session = httpRequest.getSession(false); // 引数にfalseを指定すると、存在しない場合はnullが返ります。
@@ -42,51 +41,121 @@ public class AuthenticationFilter implements Filter {
 			// リダイレクト用コンテキストパス
 			String contextPath = httpRequest.getContextPath();
 
-			// セッションにID情報が格納されているログインしている状態の場合
-			if (session != null && session.getAttribute("id") != null) {
-				// 秘密の質問が未登録状態のセッションがある場合は秘密の質問の初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
-				if ((uri.endsWith("secret-setting.jsp") || uri.endsWith("SecretSetting.action"))
-						&& session.getAttribute("secretSetting") != null) {
+			// セッションがない場合
+			if (session == null) {
+				if (uri.endsWith("/login.jsp") || uri.endsWith("/Login.action")) {
+					// ログインページのアクセスは許可	
 					chain.doFilter(request, response);
-				} else if (session.getAttribute("secretSetting") != null) {
-					httpResponse.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
-					// 初期設定未登録情報のセッションがある場合は初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
-				} else if ((uri.endsWith("first-setting.jsp") || uri.endsWith("FirstSetting.action"))
-						&& session.getAttribute("firstSetting") != null) {
+				} else if (uri.endsWith("/create-account.jsp") || uri.endsWith("/CreateAccount.action")) {
+					// 新規アカウント作成ページは許可				
 					chain.doFilter(request, response);
-					// 初期設定未チェック情報のセッションがある場合は初期登録確認ページは許可,それ以外のページにアクセスしようとしても強制遷移
-				} else if ((uri.endsWith("first-setting-check.jsp") || uri.endsWith("FirstSettingCheck.action"))
-						&& session.getAttribute("firstSetting") != null
-						&& session.getAttribute("firstSettingCheck") != null) {
+				} else if (uri.endsWith("/search-account.jsp") || uri.endsWith("/SearchAccount.action")) {
+					// パスワードを忘れた場合のアカウント検索ページは許可				
 					chain.doFilter(request, response);
-				} else if (session.getAttribute("firstSetting") != null) {
-					httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
-
 				} else {
-					// ログインしている場合は通常通りリクエストを続行				
+					// セッションがない状態で上記以外のページにアクセスしようとした場合、ログインページへリダイレクト
+					httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+				}
+
+				// セッションがある場合	
+			} else {
+				// 新規アカウント作成
+				// 新規アカウント作成用のパスワード作成ページは暗号化されたアカウントがセッションに格納されていれば許可
+				if ((uri.endsWith("/create-password.jsp") || uri.endsWith("/CreatePassword.action"))
+						&& session.getAttribute("encryptedAccount") != null) {
 					chain.doFilter(request, response);
 				}
-				// ログインページからのアクセスは許可	
-			} else if (uri.endsWith("login.jsp") || uri.endsWith("Login.action")) {
-				chain.doFilter(request, response);
-				// 新規アカウント作成ページは許可	
-			} else if (uri.endsWith("create-account.jsp") || uri.endsWith("CreateAccount.action")) {
-				chain.doFilter(request, response);
-				// 新規アカウント作成用のパスワード作成ページは暗号化されたアカウントがセッションに格納されていれば許可
-			} else if ((uri.endsWith("create-password.jsp") || uri.endsWith("CreatePassword.action"))
-					&& session != null && session.getAttribute("encryptedAccount") != null) {
-				chain.doFilter(request, response);
+				// 暗号化されたアカウントがセッションに格納されていない状態で新規アカウント作成用のパスワード作成ページにアクセスするとログアウトする
+				else if ((uri.endsWith("/create-password.jsp") || uri.endsWith("/CreatePassword.action"))
+						&& session.getAttribute("encryptedAccount") == null) {
+					httpResponse.sendRedirect(contextPath + "/Logout");
+				}
 				// 新規アカウント作成用のアカウント作成成功ページはアカウント名がセッションに格納されていれば許可
-			} else if (uri.endsWith("create-success.jsp") && session != null
-					&& session.getAttribute("accountName") != null) {
-				chain.doFilter(request, response);
-				// 上記以外の場合はログインページへリダイレクト
-			} else {
-				// セッションを取得し、無効化
-				session.invalidate();
-				// ログインページへリダイレクト
-				httpResponse.sendRedirect(contextPath + "/login/login.jsp");
+				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") != null) {
+					chain.doFilter(request, response);
+				}
+				// アカウント名がセッションに格納されていない状態で新規アカウント作成成功ページにアクセスするとログアウトする
+				else if (uri.endsWith("/create-success.jsp") && session.getAttribute("accountName") == null) {
+					httpResponse.sendRedirect(contextPath + "/Logout");
+				}
+
+				// パスワードを忘れた場合の処理
+				// パスワード忘却時の秘密の質問の答え解答ページは秘密の質問と暗号化されたIDがセッションに格納されていれば許可
+				else if ((uri.endsWith("/secret-check.jsp") || uri.endsWith("/SecretCheck.action"))
+						&& (session.getAttribute("secretQuestion") != null
+								&& session.getAttribute("encryptedId") != null)) {
+					chain.doFilter(request, response);
+				}
+				// 秘密の質問か暗号化されたIDがセッションに格納されていない状態でパスワード忘却時の秘密の質問の答え解答ページにアクセスするとログアウトする
+				else if ((uri.endsWith("/secret-check.jsp") || uri.endsWith("/SecretCheck.action"))
+						&& (session.getAttribute("secretQuestion") == null
+								|| session.getAttribute("encryptedId") == null)) {
+					httpResponse.sendRedirect(contextPath + "/Logout");
+				}
+				// パスワード忘却時のパスワード再作成ページはマスターキーと暗号化されたIDがセッションに格納されていれば許可
+				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
+						&& (session.getAttribute("master_key") != null
+								&& session.getAttribute("encryptedId") != null)) {
+					chain.doFilter(request, response);
+				}
+				// マスターキーか暗号化されたIDがセッションに格納されていない状態でパスワード再作成ページにアクセスするとログアウトする
+				else if ((uri.endsWith("/recreate-password.jsp") || uri.endsWith("/RecreatePassword.action"))
+						&& (session.getAttribute("master_key") == null
+								|| session.getAttribute("encryptedId") == null)) {
+					httpResponse.sendRedirect(contextPath + "/Logout");
+				}
+				// パスワード再作成成功ページはパスワード再作成成功メッセージがセッションに格納されていれば許可
+				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") != null) {
+					chain.doFilter(request, response);
+				}
+				// パスワード再作成成功メッセージがセッションに格納されていない状態でパスワード再作成成功ページにアクセスするとログアウトする
+				else if (uri.endsWith("/recreate-success.jsp") && session.getAttribute("recreateSuccess") == null) {
+					httpResponse.sendRedirect(contextPath + "/Logout");
+				}
+
+				// ログイン時の処理
+				// セッションにID情報が格納されているログインしている状態の場合
+				else if (session.getAttribute("id") != null) {
+					// 秘密の質問が未登録状態のセッションがある場合は秘密の質問の初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
+					if ((uri.endsWith("/secret-setting.jsp") || uri.endsWith("/SecretSetting.action"))
+							&& session.getAttribute("secretSetting") != null) {
+						chain.doFilter(request, response);
+					} else if (session.getAttribute("secretSetting") != null) {
+						httpResponse.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
+						// 初期設定未登録情報のセッションがある場合は初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
+					} else if ((uri.endsWith("/first-setting.jsp") || uri.endsWith("/FirstSetting.action"))
+							&& session.getAttribute("firstSetting") != null) {
+						chain.doFilter(request, response);
+						// 初期設定未チェック情報のセッションがある場合は初期登録確認ページは許可,それ以外のページにアクセスしようとしても強制遷移
+					} else if ((uri.endsWith("/first-setting-check.jsp") || uri.endsWith("/FirstSettingCheck.action"))
+							&& session.getAttribute("firstSetting") != null
+							&& session.getAttribute("firstSettingCheck") != null) {
+						chain.doFilter(request, response);
+					} else if (session.getAttribute("firstSetting") != null) {
+						httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
+						// 職業訓練生情報未登録情報のセッションがある場合は職業訓練生情報登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
+					} else if ((uri.endsWith("/vocational-trainee-setting.jsp")
+							|| uri.endsWith("/VocationalTraineeSetting.action"))
+							&& session.getAttribute("vocationalSetting") != null) {
+						chain.doFilter(request, response);
+						// 職業訓練生情報未チェック情報のセッションがある場合は職業訓練生情報確認ページは許可,それ以外のページにアクセスしようとしても強制遷移
+					} else if ((uri.endsWith("/vocational-trainee-setting-check.jsp")
+							|| uri.endsWith("/VocationalTraineeSettingCheck.action"))
+							&& session.getAttribute("vocationalSetting") != null
+							&& session.getAttribute("vocationalSettingCheck") != null) {
+						chain.doFilter(request, response);
+					} else if (session.getAttribute("vocationalSetting") != null) {
+						httpResponse.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
+					} else {
+						chain.doFilter(request, response);
+					}
+
+				} else {
+					chain.doFilter(request, response);
+				}
+
 			}
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Page change failed", e);
 		}

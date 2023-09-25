@@ -19,26 +19,28 @@ public class SecretCheckAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
+		// セッションからトークンを取得
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		// リクエストパラメータからトークンを取得
+		String requestToken = request.getParameter("csrfToken");
+		// セッションから秘密の質問を取り出す
+		String secretQuestion = (String) session.getAttribute("secretQuestion");
+		// セッションから暗号化されたIDを取り出す
+		String encryptedId = (String) session.getAttribute("encryptedId");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
 
-		// リクエストの有効期限切れの場合はエラーとして処理
-		if (request.getParameter("encryptedId") == null || request.getParameter("secretQuestion") == null) {
+		// 秘密の質問やIDがNULL、トークンが一致しない、またはどちらかがnullの場合はエラー
+		if (encryptedId == null || secretQuestion == null || sessionToken == null || requestToken == null
+				|| !sessionToken.equals(requestToken)) {
 			// ログインページにリダイレクト
 			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			String contextPath = request.getContextPath();
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return null;
 		}
-
-		// リクエストから暗号化されたIDの取り出し
-		String encryptedId = request.getParameter("encryptedId");
-		// リクエストに共通暗号キーで暗号化されたIDを格納
-		request.setAttribute("encryptedId", encryptedId);
-		// リクエストから秘密の質問の取り出し
-		String secretQuestion = request.getParameter("secretQuestion");
-		// リクエストに秘密の質問を格納
-		request.setAttribute("secretQuestion", secretQuestion);
 
 		// 入力された値の変数への格納
 		String secretAnswer = request.getParameter("secretAnswer");
@@ -101,9 +103,15 @@ public class SecretCheckAction extends Action {
 					String encryptedKey = CipherUtil.encrypt(account + id, iv, secondMasterKey);
 					// 暗号化したマスターキーをさらに共通暗号キーで暗号化する
 					String reEncryptedKey = CipherUtil.commonEncrypt(encryptedKey);
-					// リクエストに再暗号化したマスターキーを持たせる
-					request.setAttribute("master_key", reEncryptedKey);
-					return "recreate-password.jsp";
+					// セッションに再暗号化したマスターキーを格納
+					session.setAttribute("master_key", reEncryptedKey);
+					// セッションから秘密の質問を削除
+					request.getSession().removeAttribute("secretQuestion");
+					// トークンの削除
+					request.getSession().removeAttribute("csrfToken");
+					// 秘密の質問と答え確認画面にリダイレクト
+					response.sendRedirect(contextPath + "/forgotPassword/recreate-password.jsp");
+					return null;
 				}
 			}
 		} catch (Exception e) {

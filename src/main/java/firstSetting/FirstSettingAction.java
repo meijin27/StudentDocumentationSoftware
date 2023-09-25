@@ -171,6 +171,8 @@ public class FirstSettingAction extends Action {
 
 		// セッションに初期設定未チェック情報を持たせる				
 		session.setAttribute("firstSettingCheck", "unchecked");
+		// トークンの削除
+		request.getSession().removeAttribute("csrfToken");
 
 		// エラーがない場合は確認画面へリダイレクト
 		// 初期設定確認ページへリダイレクト

@@ -5,6 +5,12 @@
 
 <!-- 職業訓練生の初期設定用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
+
+	<%
+		// 職業訓練生情報未確認セッションの削除(フィルター機能によりセッションに職業訓練生情報未確認情報がない場合、職業訓練生情報確認ｊｓｐにアクセスできない)
+		request.getSession().removeAttribute("vocationalSettingCheck");	
+	%>
+
     <h2 class="p-5">職業訓練生の設定</h2>
     <div class="content">
 	    <form action="VocationalTraineeSetting.action" method="post">

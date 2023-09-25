@@ -10,10 +10,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 
 // エンコーディングフィルタのクラス、サーブレットにUTF-8等を自動適用する
-@WebFilter(urlPatterns = { "*.jsp", "*.html", "*.action" })
 public class EncodingFilter implements Filter {
 	private static final Logger logger = CustomLogger.getLogger(EncodingFilter.class);
 

@@ -57,8 +57,10 @@ public class LoginAction extends Action {
 				User user = dao.loginSearch(encryptedAccount);
 				// データベースにアカウント名が存在し、パスワードが一致した場合の処理
 				if (user != null && PasswordUtil.isPasswordMatch(password, user.getPassword())) {
-					// ログイン成功後にセッションIDを再生成
-					request.changeSessionId();
+					// 現在のセッションを無効化
+					session.invalidate();
+					// 新しいセッションを作成
+					session = request.getSession(true);
 					// ユーザーIDを変数に格納
 					String id = user.getId();
 					// ivを変数に格納
