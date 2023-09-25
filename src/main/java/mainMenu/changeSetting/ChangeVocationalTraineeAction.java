@@ -128,6 +128,7 @@ public class ChangeVocationalTraineeAction extends Action {
 
 			// 職業訓練生設定のデータベースへの登録
 			dao.updateVocationalTraineeSetting(user);
+
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Chage Vocational Trainee Setting");
 

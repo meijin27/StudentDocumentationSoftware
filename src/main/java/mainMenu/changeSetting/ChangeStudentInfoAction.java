@@ -156,6 +156,18 @@ public class ChangeStudentInfoAction extends Action {
 			dao.updateAdmissionYear(user);
 			dao.updateAdmissionMonth(user);
 			dao.updateAdmissionDay(user);
+
+			// 変更した学生種類が職業訓練生ではなく職業訓練生情報が登録済みの場合は登録情報をnullにする
+			if (!studentType.equals("職業訓練生") && dao.getNamePESO(id) != null) {
+				user.setNamePESO(null);
+				user.setSupplyNumber(null);
+				user.setAttendanceNumber(null);
+				user.setEmploymentInsurance(null);
+
+				// 職業訓練生設定のデータベースへの登録
+				dao.updateVocationalTraineeSetting(user);
+			}
+
 			// アップデート内容のデータベースへの登録
 			dao.addOperationLog(id, "Change Student Infometion");
 
@@ -172,6 +184,7 @@ public class ChangeStudentInfoAction extends Action {
 				response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
 				return null;
 			} else {
+
 				// エラーがない場合は行為成功表示用JSPへリダイレクト
 				response.sendRedirect(contextPath + "/mainMenu/action-success.jsp");
 				return null;

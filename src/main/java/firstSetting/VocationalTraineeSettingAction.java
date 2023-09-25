@@ -68,6 +68,7 @@ public class VocationalTraineeSettingAction extends Action {
 		// 雇用保険「無」の場合で支給番号を記載している場合は支給番号を強制的に下記文字列にする。
 		else if (employmentInsurance.equals("無")) {
 			supplyNumber = "支給番号無し";
+			session.setAttribute("supplyNumber", supplyNumber);
 		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す
