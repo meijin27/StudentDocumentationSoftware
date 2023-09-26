@@ -10,11 +10,20 @@
 			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
 
 			<!-- パスワード -->
-            <div class="col-md-12 mb-3">
-                <label class="form-label" for="password">パスワードを入力してください</label>
-                <span class="required-label">必須</span>
-				<input type="password" class="form-control" id="password" name="password" required> 
+			<div class="col-md-12 mb-3">
+			    <label class="form-label" for="password">パスワードを入力してください</label>
+			    <span class="required-label">必須</span>
+			    <input type="password" class="form-control" id="password" name="password" required>
+			    <div class="password-helper lbls">
+		            <p class="pb10">パスワードチェック項目</p>
+		            <small class="req_min8 popup-small"><span data-feather="check"></span>最小８文字</small>
+		            <small class="req_max32 popup-small"><span  data-feather="check"></span>最大３２文字</small>
+		            <small class="req_uppercase popup-small"><span data-feather="check"></span>英大文字含む</small>
+		            <small class="req_lowercase popup-small"><span data-feather="check"></span>英子文字含む</small>
+		            <small class="req_number popup-small"><span data-feather="check"></span>数字含む</small>
+			    </div>
 			</div>
+						
 			<!-- パスワード再入力 -->			
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="passwordCheck">もう一度同じパスワードを入力してください</label>

@@ -106,6 +106,16 @@ public class ChangeVocationalTraineeAction extends Action {
 			// ivの取り出し
 			String iv = result.getIv();
 
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
+			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+			// もし学生種類が職業訓練生でなければエラーを返す
+			if (!studentType.equals("職業訓練生")) {
+				request.setAttribute("innerError", "学生種別が職業訓練生のみ変更可能です。");
+				return "interview-certificate.jsp";
+			}
+
 			// 登録するデータの暗号化
 			String encryptedNamePESO = CipherUtil.encrypt(masterKey, iv, namePESO);
 			String encryptedSupplyNumber = CipherUtil.encrypt(masterKey, iv, supplyNumber);

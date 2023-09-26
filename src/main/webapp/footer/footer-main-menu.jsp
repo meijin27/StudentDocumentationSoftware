@@ -89,6 +89,10 @@
         });
     });
 </script>
+
+<!-- パスワードのポップアップボックス -->
+<script src="<%=request.getContextPath()%>/js/password_helper_popup.js"></script>
+
 <!-- セレクトボックスの初期表示のグレー化用 -->
 <script src="<%=request.getContextPath()%>/js/input.js"></script>
 </body>

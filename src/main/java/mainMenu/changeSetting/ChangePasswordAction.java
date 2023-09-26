@@ -42,17 +42,17 @@ public class ChangePasswordAction extends Action {
 		}
 
 		// 入力された現在のパスワードと新パスワードと再確認用パスワードを変数に格納
-		String password = request.getParameter("password");
-		String newPassword = request.getParameter("newPassword");
+		String oldPassword = request.getParameter("oldPassword");
+		String newPassword = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null || password.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+		if (oldPassword == null || oldPassword.isEmpty() || newPassword == null || newPassword.isEmpty()) {
 			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (!newPassword.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "新パスワードと確認用パスワードが一致しません。再度入力してください。");
-		} else if (password.length() > 32 || newPassword.length() > 32) {
+		} else if (oldPassword.length() > 32 || newPassword.length() > 32) {
 			request.setAttribute("passwordError", "32文字以下で入力してください。");
 		}
 
@@ -73,7 +73,7 @@ public class ChangePasswordAction extends Action {
 				// IDでデータベースを検索
 				String registerPassword = dao.getPassword(id);
 				// 現在のパスワードの一致確認
-				if (PasswordUtil.isPasswordMatch(password, registerPassword)) {
+				if (PasswordUtil.isPasswordMatch(oldPassword, registerPassword)) {
 					// 復号とIDやIV等の取り出しクラスの設定
 					Decrypt decrypt = new Decrypt(dao);
 					DecryptionResult result = decrypt.getDecryptedMasterKey(session);
