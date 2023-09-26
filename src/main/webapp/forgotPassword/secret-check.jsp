@@ -12,15 +12,15 @@
             <div class="row">
                 <!-- 秘密の質問の答え -->
                 <div class="col-md-12 mb-3">
-                    <label class="form-label" for="">秘密の質問の答えを入力してください</label>
+                    <label class="form-label" for="secretAnswer">秘密の質問の答えを入力してください</label>
                     <span class="required-label">必須</span>
-                    <input class="form-control" type="text" name="secretAnswer" required>
+                    <input class="form-control" type="text" id="secretAnswer" name="secretAnswer" required>
                 </div>
                 <!-- 生年月日 -->
                 <div class="col-md-4 mb-5">
 	                <label class="form-label" for="birthYear">生年月日</label>
                     <span class="required-label">必須</span>                    
-				    <select name="birthYear" class="form-control select-center" required>
+				    <select id="birthYear"  name="birthYear" class="form-control select-center" required>
 				        <option value="" disabled selected style="display:none;">--- 年 ---</option>
 				        <% 
 				        int currentYear = java.time.Year.now().getValue();
@@ -34,7 +34,7 @@
 				</div>
                 <div class="col-md-4 mb-5">				
   	                <label class="form-label invisible-text" for="birthMonth">月</label>
-				    <select name="birthMonth" class="form-control select-center" required>
+				    <select id="birthMonth"  name="birthMonth" class="form-control select-center" required>
 				        <option value="" disabled selected style="display:none;">--- 月 ---</option>
 				        <% 
 				        for(int i=1; i <= 12; i++){ 
@@ -47,7 +47,7 @@
 				</div>
                 <div class="col-md-4 mb-5">
                     <label class="form-label invisible-text" for="birthDay">日</label>
-				    <select name="birthDay" class="form-control select-center" required>
+				    <select id="birthDay" name="birthDay" class="form-control select-center" required>
 				        <option value="" disabled selected style="display:none;">--- 日 ---</option>
 				        <% 
 				        for(int i=1; i <= 31; i++){ 

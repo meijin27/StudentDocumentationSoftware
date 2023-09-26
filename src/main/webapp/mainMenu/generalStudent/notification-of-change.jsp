@@ -18,7 +18,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestYear">届出年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="requestYear" class="form-control select-center" required>
+	                <select id="requestYear" name="requestYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
 	                        i++){ %>
@@ -30,7 +30,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">月</label>
-	                <select name="requestMonth" class="form-control select-center" required>
+	                <select id="requestMonth" name="requestMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -41,7 +41,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <select name="requestDay" class="form-control select-center" required>
+	                <select id="requestDay" name="requestDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -54,7 +54,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="ChangeSubject">変更対象者</label>
 	                <span class="required-label">必須</span>
-	                <select name="ChangeSubject" class="form-control select-center" required>
+	                <select id="ChangeSubject" name="ChangeSubject" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 変更対象者 --</option>
 	                    <option value="本人">本人</option>
 	                    <option value="保護者">保護者</option>
@@ -66,30 +66,30 @@
   	            <!-- 郵便番号 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="postCode">郵便番号</label>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>">
+	                <input class="form-control" type="text" id="postCode" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>">
 	            </div>
    	            <!-- 住所 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="address">住所</label>
-	                <input class="form-control" type="text" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${address}'/>">
+	                <input class="form-control" type="text" id="address" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${address}'/>">
 	            </div>
       			<p class="border-bottom"></p>
    	            <!-- 電話番号 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="tel">電話番号</label>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>">
+	                <input class="form-control" type="text" id="tel" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>">
 	            </div>  
        			<p class="border-bottom"></p>
    	            <!-- 在留カード -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="residentCard">在留カード</label>
-	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>">
+	                <input class="form-control" type="text" id="residentCard" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>">
 	            </div>
 	            <div class="col-md-8 mb-3"></div>
   	            <!-- 期間満了年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="endYear">期間満了年月日</label>
-	                <select name="endYear" class="form-control select-center">
+	                <select id="endYear" name="endYear" class="form-control select-center">
 	                    <option value="">-- 年 --</option>
 	                    <% for(int i=currentYear; i <=currentYear+2;
 	                        i++){ %>
@@ -101,7 +101,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="endMonth">月</label>
-	                <select name="endMonth" class="form-control select-center">
+	                <select id="endMonth" name="endMonth" class="form-control select-center">
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -112,7 +112,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="endDay">日</label>
-	                <select name="endDay" class="form-control select-center">
+	                <select id="endDay" name="endDay" class="form-control select-center">
 	                    <option value="">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -124,14 +124,14 @@
        			<p class="border-bottom"></p>	            	     	            
  	            <!-- 姓 -->
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="">名前</label>
-	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>">
+	                <label class="form-label" for="lastName">名前</label>
+	                <input class="form-control" type="text" id="lastName" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>">
     				<small class="text-muted">姓</small>
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label invisible-text" for="">名</label>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>">
+	                <label class="form-label invisible-text" for="firstName">名</label>
+	                <input class="form-control" type="text" id="firstName" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>">
     				<small class="text-muted">名</small>
 	            </div>
 	        </div>

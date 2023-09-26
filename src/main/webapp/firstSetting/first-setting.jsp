@@ -27,7 +27,7 @@
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="firstName">名</label>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${sessionScope.firstName}' />" required>
+	                <input class="form-control" type="text"id="firstName" name="firstName" placeholder="太郎" value="<c:out value='${sessionScope.firstName}' />" required>
     				<small class="text-muted">名</small>
 
 	            </div>
@@ -35,19 +35,19 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="lastNameRuby">ふりがな</label>
 				    <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="lastNameRuby" placeholder="たなか" value="<c:out value='${sessionScope.lastNameRuby}' />" required>
+	                <input class="form-control" type="text" id="lastNameRuby" name="lastNameRuby" placeholder="たなか" value="<c:out value='${sessionScope.lastNameRuby}' />" required>
 	            </div>
 	            <!-- 名（ふりがな） -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label invisible-text" for="firstNameRuby">名（ふりがな）</label>
-	                <input class="form-control border-bottom" type="text" name="firstNameRuby" placeholder="たろう" value="<c:out value='${sessionScope.firstNameRuby}' />" required>
+	                <input class="form-control border-bottom" type="text" id="firstNameRuby" name="firstNameRuby" placeholder="たろう" value="<c:out value='${sessionScope.firstNameRuby}' />" required>
 	            </div>
        			<p class="border-bottom"></p>
 	            <!-- 生年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="birthYear">生年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="birthYear" class="form-control select-center" required>
+	                <select id="birthYear" name="birthYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <= currentYear - 14;
 	                        i++){ %>
@@ -59,7 +59,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="birthManth">月</label>
-	                <select name="birthMonth" class="form-control select-center" required>
+	                <select id="birthMonth" name="birthMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -70,7 +70,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="birthDay">日</label>
-	                <select name="birthDay" class="form-control select-center" required>
+	                <select id="birthDay" name="birthDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -85,13 +85,13 @@
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="postCode">郵便番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${sessionScope.postCode}' />" required>
+	                <input class="form-control" type="text" id="postCode" name="postCode" placeholder="2310017" value="<c:out value='${sessionScope.postCode}' />" required>
 	            </div>
 	            <!-- 住所 -->
 	            <div class="col-md-12 mb-5">
 	                <label class="form-label" for="address">住所</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム" value="<c:out value='${sessionScope.address}' />" required>
+	                <input class="form-control" type="text" id="address" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム" value="<c:out value='${sessionScope.address}' />" required>
 	            </div>
 	            
        			<p class="border-bottom"></p>
@@ -99,14 +99,14 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="tel">電話番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222" value="<c:out value='${sessionScope.tel}' />" required>
+	                <input class="form-control" type="text" id="tel" name="tel" placeholder="08011112222" value="<c:out value='${sessionScope.tel}' />" required>
 	            </div>
        			<p class="border-bottom"></p>
   	            <!-- 入校年月日 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="admissionYear">入学日</label>
 	                <span class="required-label">必須</span>
-	                <select name="admissionYear" class="form-control select-center" required>
+	                <select id="admissionYear" name="admissionYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% for(int i=currentYear-2; i <= currentYear;
 	                        i++){ %>
@@ -118,7 +118,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="admissionManth">月</label>
-	                <select name="admissionMonth" class="form-control select-center" required>
+	                <select id="admissionMonth" name="admissionMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -129,7 +129,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="admissionDay">日</label>
-	                <select name="admissionDay" class="form-control select-center" required>
+	                <select id="admissionDay" name="admissionDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -143,7 +143,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="studentType">学生の種類</label>
 	                <span class="required-label">必須</span>
-	                <select name="studentType" class="form-control select-center" required>
+	                <select id="studentType"  name="studentType" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">- 学生の種類 -</option>
 	                    <option value="一般学生">一般学生</option>
 	                    <option value="留学生">留学生</option>
@@ -155,7 +155,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="studentNumber">学籍番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="studentNumber" placeholder="240001" value="<c:out value='${sessionScope.studentNumber}' />" required>
+	                <input class="form-control" type="text" id="studentNumber"  name="studentNumber" placeholder="240001" value="<c:out value='${sessionScope.studentNumber}' />" required>
 	            </div>
   	            <div class="col-md-8 mb-3"></div>
 	            
@@ -163,7 +163,7 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="className">クラス名</label>
 	                <span class="required-label">必須</span>
-	                <select name="className" class="form-control select-center" required>
+	                <select id="className" name="className" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- クラス名 --</option>
 	                    <option value="ＩＴ・ゲームソフト科">ＩＴ・ゲームソフト科</option>
 	                    <option value="ＡＩ・データサイエンス科">ＡＩ・データサイエンス科</option>
@@ -178,7 +178,7 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="schoolYear">学年</label>
 	                <span class="required-label">必須</span>
-	                <select name="schoolYear" class="form-control select-center" required>
+	                <select id="schoolYear" name="schoolYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">- 学年 -</option>
 	                    <% for(int i=1; i <=2; i++){ %>
 	                        <option value="<%= i %>">
@@ -191,7 +191,7 @@
 		        <div class="col-md-3 mb-5">
 	                <label class="form-label" for="classNumber">組</label>
 	                <span class="required-label">必須</span>
-	                <select name="classNumber" class="form-control select-center" required>
+	                <select id="classNumber"  name="classNumber" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 組 --</option>
 	                    <% for(int i=1; i <=3; i++){ %>
 	                        <option value="<%= i %>">

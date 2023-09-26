@@ -19,12 +19,12 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">公共職業安定所名</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="namePESO" placeholder="厚木" value="<c:out value='${namePESO}'/>" required>
+	                <input class="form-control" type="text" id="namePESO" name="namePESO" placeholder="厚木" value="<c:out value='${namePESO}'/>" required>
 	            </div>
 	            <div class="col-md-6 mb-3"></div>
 				<!-- 雇用保険 -->
 				<div class="col-md-6 mb-3 text-center">
-				    <label class="form-label">雇用保険の有無</label>
+				    <label class="form-label" for="employmentInsuranceYes">雇用保険の有無</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
@@ -47,14 +47,14 @@
 	            <!-- 支給番号 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="">支給番号</label>
-	                <input class="form-control" type="text" name="supplyNumber" placeholder="22-000001-5" value="<c:out value='${supplyNumber}'/>">
+	                <input class="form-control" type="text" id="supplyNumber" name="supplyNumber" placeholder="22-000001-5" value="<c:out value='${supplyNumber}'/>">
 	            </div>	           
 	            <div class="col-md-6 mb-3"></div>
 	             <!-- 出席番号 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="">出席番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="attendanceNumber" placeholder="16" value="<c:out value='${attendanceNumber}'/>" required>
+	                <input class="form-control" type="text" id="attendanceNumber" name="attendanceNumber" placeholder="16" value="<c:out value='${attendanceNumber}'/>" required>
 	            </div>
 	            <div class="col-md-6 mb-5"></div>
 

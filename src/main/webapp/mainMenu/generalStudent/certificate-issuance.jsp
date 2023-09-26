@@ -15,7 +15,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestYear">申請年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="requestYear" class="form-control select-center" required>
+	                <select id="requestYear" name="requestYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
@@ -27,7 +27,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">申請年月日</label>
-	                <select name="requestMonth" class="form-control select-center" required>
+	                <select id="requestMonth" name="requestMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -38,7 +38,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <select name="requestDay" class="form-control select-center" required>
+	                <select id="requestDay" name="requestDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -52,7 +52,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="use">用途</label>
 	                <span class="required-label">必須</span>
-	                <select name="use" class="form-control select-center" required>
+	                <select id="use" name="use" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 用途 --</option>
 	                    <option value="就職・進学活動">就職・進学活動</option>
 	                    <option value="奨学金等申請">奨学金等申請</option>                 
@@ -69,9 +69,9 @@
 	            <div class="col-md-8 mb-3"></div>
   	            <!-- 提出先 -->
 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="">提出先</label>
+	                <label class="form-label" for="propose">提出先</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="propose" placeholder="横浜市役所" value="<c:out value='${propose}'/>" required>
+	                <input class="form-control" type="text" id="propose" name="propose" placeholder="横浜市役所" value="<c:out value='${propose}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>
 	            <!-- 提出先は入管ですか？ -->
@@ -101,7 +101,7 @@
 	            <p>必要な書類の枚数を選択してください</p>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="proofOfStudent">在学証明書</label>
-	                <select name="proofOfStudent" class="form-control select-center">
+	                <select id="proofOfStudent" name="proofOfStudent" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -113,7 +113,7 @@
 	            </div>
    	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="attendanceRate">出席率証明書</label>
-	                <select name="attendanceRate" class="form-control select-center">
+	                <select id="attendanceRate" name="attendanceRate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -125,7 +125,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="results">成績証明書</label>
-	                <select name="results" class="form-control select-center">
+	                <select id="results" name="results" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -137,7 +137,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="expectedGraduation">卒業見込証明書</label>
-	                <select name="expectedGraduation" class="form-control select-center">
+	                <select id="expectedGraduation" name="expectedGraduation" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -148,7 +148,7 @@
 	            </div>	        
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="diploma">卒業証明書</label>
-	                <select name="diploma" class="form-control select-center">
+	                <select id="diploma" name="diploma" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -159,7 +159,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="certificateCompletion">履修証明書</label>
-	                <select name="certificateCompletion" class="form-control select-center">
+	                <select id="certificateCompletion" name="certificateCompletion" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -170,7 +170,7 @@
 	            </div>	        	            
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="enrollmentCertificate">在籍期間証明書</label>
-	                <select name="enrollmentCertificate" class="form-control select-center">
+	                <select id="enrollmentCertificate" name="enrollmentCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -181,7 +181,7 @@
 	            </div>	        	            
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="healthCertificate">健康診断書</label>
-	                <select name="healthCertificate" class="form-control select-center">
+	                <select id="healthCertificate" name="healthCertificate" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -192,7 +192,7 @@
 	            </div>		                   
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="closedPeriod">休業期間証明書</label>
-	                <select name="closedPeriod" class="form-control select-center">
+	                <select id="closedPeriod" name="closedPeriod" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -207,17 +207,17 @@
  	            <!-- 英語姓 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="englishLastName">Last Name</label>
-	                <input class="form-control" type="text" name="englishLastName" placeholder="TANAKA" value="<c:out value='${englishLastName}'/>">
+	                <input class="form-control" type="text" id="englishLastName" name="englishLastName" placeholder="TANAKA" value="<c:out value='${englishLastName}'/>">
 	            </div>
 	            <!-- 英語名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="englishFirstName">First Name</label>
-	                <input class="form-control" type="text" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
+	                <input class="form-control" type="text" id="englishFirstName" name="englishFirstName" placeholder="TARO" value="<c:out value='${englishFirstName}'/>">
 	            </div>
 	            <!-- 英語在籍証明書 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishProofOfStudent">Proof of Enrollment</label>
-	                <select name="englishProofOfStudent" class="form-control select-center">
+	                <select id="englishProofOfStudent" name="englishProofOfStudent" class="form-control select-center">
 	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -230,7 +230,7 @@
 	            <!-- 英語成績証明書 -->
  	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishResults">Academic Transcript</label>
-	                <select name="englishResults" class="form-control select-center">
+	                <select id="englishResults" name="englishResults" class="form-control select-center">
 	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -243,7 +243,7 @@
 	            <!-- 英語卒業証明書 -->
   	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="englishDiploma">Certificate of Graduation</label>
-	                <select name="englishDiploma" class="form-control select-center">
+	                <select id="englishDiploma" name="englishDiploma" class="form-control select-center">
 	                    <option value="">-- unneeded --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -255,42 +255,42 @@
       			<p class="border-bottom"></p>
  	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueBrokenStudentID">学生証再発行（破損）</label>
-	                <select name="reissueBrokenStudentID" class="form-control select-center">
+	                <select id="reissueBrokenStudentID" name="reissueBrokenStudentID" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
  	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueLostStudentID">学生証再発行（紛失）</label>
-	                <select name="reissueLostStudentID" class="form-control select-center">
+	                <select id="reissueLostStudentID" name="reissueLostStudentID" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
   	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="reissueTemporaryIdentification">仮身分証明書再発行</label>
-	                <select name="reissueTemporaryIdentification" class="form-control select-center">
+	                <select id="reissueTemporaryIdentification" name="reissueTemporaryIdentification" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="internationalRemittanceRequest">海外送金依頼書</label>
-	                <select name="internationalRemittanceRequest" class="form-control select-center">
+	                <select id="internationalRemittanceRequest" name="internationalRemittanceRequest" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="applicationForm">所属機関等作成用申請書</label>
-	                <select name="applicationForm" class="form-control select-center">
+	                <select id="applicationForm" name="applicationForm" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="overseasRemittanceCalculator">海外送金計算書</label>
-	                <select name="overseasRemittanceCalculator" class="form-control select-center">
+	                <select id="overseasRemittanceCalculator" name="overseasRemittanceCalculator" class="form-control select-center">
 	                    <option value="">-- 不要 --</option>
 	                    <option value="1">1枚</option>
 	                </select>

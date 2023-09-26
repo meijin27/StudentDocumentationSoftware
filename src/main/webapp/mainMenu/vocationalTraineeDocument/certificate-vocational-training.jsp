@@ -21,7 +21,7 @@
         
 			<% for (int i = 1; i <= 31; i++) { %>
 			    <div class="col-md-2 mb-3">
-			        <label><%= i %>日: </label>
+			        <label for="day<%= i %>"><%= i %>日: </label>
 					<% String dayAttribute = request.getParameter("day"+i) != null ? request.getParameter("day"+i) : ""; %>
 			        <select class="form-control select-center" id="day<%= i %>" name="day<%= i %>">
 			            <option value="" <% if (dayAttribute.isEmpty()) { %> selected <% } %>>--無--</option>
@@ -39,7 +39,7 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
 	                <span class="required-label">必須</span>
-	                <select name="subjectYear" class="form-control select-center" required>
+	                <select id="subjectYear" name="subjectYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
@@ -50,8 +50,8 @@
 	                </select>
 	            </div>
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="subjectMonth">月</label>
-	                <select name="subjectMonth" class="form-control select-center" required>
+	                <label class="form-label invisible-text" for="subjectMonth">月</label>
+	                <select id="subjectMonth" name="subjectMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">

@@ -185,6 +185,10 @@ select option:not(:first-child) {
  * Navbar
  */
  
+.nav-link {
+  color: rgb(0, 255, 255);
+}
+
 .navbar-custom .nav-link {
   color: rgb(0, 255, 255) !important;
 }

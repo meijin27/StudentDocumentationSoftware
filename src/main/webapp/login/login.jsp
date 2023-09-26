@@ -11,11 +11,11 @@
 
         <div class="form-floating">
             <input type="text" class="form-control" id="account" name="account" placeholder="Accont" required>
-            <label for="floatingInput">Account</label>
+            <label for="account">Account</label>
         </div>
         <div class="form-floating">
             <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            <label for="floatingPassword">Password</label>
+            <label for="password">Password</label>
         </div>
         <!-- エラー表示  -->
 	    <c:if test="${not empty loginError}">

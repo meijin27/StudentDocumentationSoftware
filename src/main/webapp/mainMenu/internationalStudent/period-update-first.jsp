@@ -19,14 +19,14 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="nationalityRegion">国籍・地域（Nationality/Region）</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="nationalityRegion" placeholder="モンゴル" value="<c:out value='${nationalityRegion}'/>" required>
+	                <input class="form-control" type="text" id="nationalityRegion" name="nationalityRegion" placeholder="モンゴル" value="<c:out value='${nationalityRegion}'/>" required>
 	            </div>   
 	            <div class="col-md-6 mb-3"></div>	            
    	            <!-- 本国における居住地 -->
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="homeTown">本国における居住地（Home town/city）</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar" value="<c:out value='${homeTown}'/>" required>
+	                <input class="form-control" type="text" id="homeTown" name="homeTown" placeholder="Olympic Street 1, Ulaanbaatar" value="<c:out value='${homeTown}'/>" required>
 	            </div>
   	            <!-- 性別 -->
   				<div class="col-md-6 mb-3 text-center">
@@ -73,15 +73,15 @@
 				</div>
 	            <div class="col-md-6 mb-3"></div>	      
    	            <!-- 旅券番号 -->
-   	            <p class="form-label">旅券番号（Passport Number）<span class="required-label">必須</span></p>
+                <label class="form-label" for="passportNumber">旅券番号（Passport Number）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <input class="form-control" type="text" name="passportNumber" placeholder="XS1234567" value="<c:out value='${passportNumber}'/>" required>
+	                <input class="form-control" type="text" id="passportNumber" name="passportNumber" placeholder="XS1234567" value="<c:out value='${passportNumber}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>	      
   	            <!-- 旅券有効期限 -->
-  	            <p class="form-label">旅券有効期限（Passport expiration date）<span class="required-label">必須</span></p>
+                <label class="form-label" for="effectiveYear">旅券有効期限（Passport expiration date）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <select name="effectiveYear" class="form-control select-center" required>
+	                <select id="effectiveYear" name="effectiveYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear; i <=currentYear+10;
 	                        i++){ %>
@@ -92,7 +92,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select name="effectiveMonth" class="form-control select-center" required>
+	                <select id="effectiveMonth" name="effectiveMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -102,7 +102,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select name="effectiveDay" class="form-control select-center" required>
+	                <select id="effectiveDay" name="effectiveDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -112,21 +112,21 @@
 	                </select>
 	            </div>	
   	            <!-- 現に有する在留資格 -->
-  	            <p class="form-label">現に有する在留資格（Status of residence）<span class="required-label">必須</span></p>
+                <label class="form-label" for="statusOfResidence">現に有する在留資格（Status of residence）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <input class="form-control" type="text" name="statusOfResidence" placeholder="留学" value="<c:out value='${statusOfResidence}'/>" required>
+	                <input class="form-control" type="text" id="statusOfResidence" name="statusOfResidence" placeholder="留学" value="<c:out value='${statusOfResidence}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>	      	            
    	            <!-- 在留期間 -->
-   	            <p class="form-label">在留期間（Period of stay）<span class="required-label">必須</span></p>
+                <label class="form-label" for="periodOfStay">在留期間（Period of stay）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <input class="form-control" type="text" name="periodOfStay" placeholder="2年" value="<c:out value='${periodOfStay}'/>" required>
+	                <input class="form-control" type="text" id="periodOfStay" name="periodOfStay" placeholder="2年" value="<c:out value='${periodOfStay}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>	      	            
   	            <!-- 在留期間の満了日 -->
-  	            <p class="form-label">在留期間の満了日（Expiration date of period of stay）<span class="required-label">必須</span></p>
+                <label class="form-label" for="periodYear">在留期間の満了日（Expiration date of period of stay）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <select name="periodYear" class="form-control select-center" required>
+	                <select id="periodYear" name="periodYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% for(int i=currentYear; i <=currentYear+5; i++){ %>
 	                        <option value="<%= i %>">
@@ -136,7 +136,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select name="periodMonth" class="form-control select-center" required>
+	                <select id="periodMonth" name="periodMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -146,7 +146,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select name="periodDay" class="form-control select-center" required>
+	                <select id="periodDay" name="periodDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -156,22 +156,22 @@
 	                </select>
 	            </div>	
   	            <!-- 在留カード番号（Residence card number） -->
-   	            <p class="form-label">在留カード番号（Residence card number）<span class="required-label">必須</span></p>
+                <label class="form-label" for="residentCard">在留カード番号（Residence card number）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <input class="form-control" type="text" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>" required>
+	                <input class="form-control" type="text" id="residentCard" name="residentCard" placeholder="AB12345678CD" value="<c:out value='${residentCard}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>	      	            
   	            <!-- 希望する在留期間（Desired length of extension） -->
-   	            <p class="form-label">希望在留期間(Desired length of extension)<span class="required-label">必須</span></p>
+                <label class="form-label" for="desiredPeriodOfStay">希望在留期間(Desired length of extension)<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <input class="form-control" type="text" name="desiredPeriodOfStay" placeholder="3年" value="<c:out value='${desiredPeriodOfStay}'/>" required>
+	                <input class="form-control" type="text" id="desiredPeriodOfStay" name="desiredPeriodOfStay" placeholder="3年" value="<c:out value='${desiredPeriodOfStay}'/>" required>
 	            </div>
 	            <div class="col-md-8 mb-3"></div>	      	            
   	            <!-- 更新の理由（Reason for extension） -->
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="reason">更新の理由（Reason for extension）</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="reason" placeholder="専門学校へ留学中のため" value="<c:out value='${reason}'/>" required>
+	                <input class="form-control" type="text" id="reason" name="reason" placeholder="専門学校へ留学中のため" value="<c:out value='${reason}'/>" required>
 	            </div>	            
  	            <!-- 犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）※交通違反等による処分を含む。 -->
   				<div class="col-md-12 mb-3">
@@ -200,7 +200,7 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="reasonForTheCrime">犯罪の具体的な理由（Reason for the crime）</label>
   	                <label class="form-label" for="reasonForTheCrime">前科がない場合は記入不要（Not required if no criminal record.）</label>
-	                <input class="form-control" type="text" name="reasonForTheCrime" placeholder="高速道路で速度超過した（３０km）" value="<c:out value='${reasonForTheCrime}'/>">
+	                <input class="form-control" type="text" id="reasonForTheCrime" name="reasonForTheCrime" placeholder="高速道路で速度超過した（３０km）" value="<c:out value='${reasonForTheCrime}'/>">
 	            </div>		            
  	            <!-- 在日親族（父・母・配偶者・子・兄弟姉妹・祖父母・叔(伯)父・叔(伯)母など）及び同居者 -->
   				<div class="col-md-12 mb-3">
@@ -231,21 +231,21 @@
 			    <div class="row set additional-set hidden"  data-set="<%= set %>">
 	               <h3 class="border-bottom"><%= set %>人目の在日親族及び同居人(<%= set %>st relative living in Japan and persons living together)</h3>
 	  	            <!-- 続柄（Relationship） -->
-   	            	<p class="form-label">続柄（Relationship）<span class="required-label">必須</span></p>
+	                <label class="form-label" for="relationship<%= set %>">続柄（Relationship）<span class="required-label">必須</span></label>
 		            <div class="col-md-4 mb-3">
-		                <input class="form-control" type="text" name="relationship<%= set %>" placeholder="父" data-required="true">
+		                <input class="form-control" type="text" id="relationship<%= set %>" name="relationship<%= set %>" placeholder="父" data-required="true">
 		            </div>
 	            	<div class="col-md-8 mb-3"></div>	      	            
 	  	            <!-- 氏名（Name） -->
-   	            	<p class="form-label">氏名（Name）<span class="required-label">必須</span></p>
+	                <label class="form-label" for="relativeName<%= set %>">氏名（Name）<span class="required-label">必須</span></label>
 		            <div class="col-md-6 mb-3">
-		                <input class="form-control" type="text" name="relativeName<%= set %>" placeholder="Genghis Khan" data-required="true">
+		                <input class="form-control" type="text" id="relativeName<%= set %>" name="relativeName<%= set %>" placeholder="Genghis Khan" data-required="true">
 		            </div>
 	            	<div class="col-md-6 mb-3"></div>	      	            
 	   	            <!-- 生年月日 -->
-   	            	<p class="form-label">生年月日（Date of birth）<span class="required-label">必須</span></p>
+	                <label class="form-label" for="relativeBirthYear<%= set %>">生年月日（Date of birth）<span class="required-label">必須</span></label>
 		            <div class="col-md-4 mb-3">
-		                <select name="relativeBirthYear<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthYear<%= set %>" name="relativeBirthYear<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 		                    <% for(int i=currentYear-110; i <=currentYear;
 		                        i++){ %>
@@ -256,7 +256,7 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-3">
-		                <select name="relativeBirthMonth<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthMonth<%= set %>" name="relativeBirthMonth<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 		                    <% for(int i=1; i <=12; i++){ %>
 		                        <option value="<%= i %>">
@@ -266,7 +266,7 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-3">
-		                <select name="relativeBirthDay<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthDay<%= set %>" name="relativeBirthDay<%= set %>" class="form-control select-center" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 		                    <% for(int i=1; i <=31; i++){ %>
 		                        <option value="<%= i %>">
@@ -279,7 +279,7 @@
 		            <div class="col-md-6 mb-3">
 		                <label class="form-label" for="relativeNationalityRegion<%= set %>">国籍・地域（Nationality/Region）</label>
 		                <span class="required-label">必須</span>
-		                <input class="form-control" type="text" name="relativeNationalityRegion<%= set %>" placeholder="モンゴル" data-required="true">
+		                <input class="form-control" type="text" id="relativeNationalityRegion<%= set %>" name="relativeNationalityRegion<%= set %>" placeholder="モンゴル" data-required="true">
 		            </div>       
 	            	<div class="col-md-6 mb-3"></div>	      	            
       	            <!-- 同居の有無 -->
@@ -304,15 +304,15 @@
 					    </div>
 					</div>   
 	  	            <!-- 勤務先名称・通学先名称 -->
-   	            	<p class="form-label">勤務先名称・通学先名称（Place of employment/Place of school）<span class="required-label">必須</span></p>
+	                <label class="form-label" for="placeOfEmployment<%= set %>">勤務先名称・通学先名称（Place of employment/Place of school）<span class="required-label">必須</span></label>
 		            <div class="col-md-6 mb-3">
-		                <input class="form-control" type="text" name="placeOfEmployment<%= set %>" placeholder="横浜市役所" data-required="true">
+		                <input class="form-control" type="text" id="placeOfEmployment<%= set %>" name="placeOfEmployment<%= set %>" placeholder="横浜市役所" data-required="true">
 		            </div>
 	            	<div class="col-md-6 mb-3"></div>	      	            
 		         	<!-- 在留カード番号・特別永住者証明書番号 -->
-   	            	<p class="form-label">在留カード番号・特別永住者証明書番号（Residence card number Special Permanent Resident Certificate number）<span class="required-label">必須</span></p>
+	                <label class="form-label" for="cardNumber<%= set %>">在留カード番号・特別永住者証明書番号（Residence card number Special Permanent Resident Certificate number）<span class="required-label">必須</span></label>
 		            <div class="col-md-4 mb-3">
-		                <input class="form-control" type="text" name="cardNumber<%= set %>" placeholder="AB12345678CD" data-required="true">
+		                <input class="form-control" type="text" id="cardNumber<%= set %>" name="cardNumber<%= set %>" placeholder="AB12345678CD" data-required="true">
 		            </div>	 
 	            	<div class="col-md-8 mb-3"></div>	      	            
 		            <!-- 削除ボタン -->

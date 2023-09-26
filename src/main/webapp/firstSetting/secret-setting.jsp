@@ -9,9 +9,9 @@
         <form action="SecretSetting.action" method="post">
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
-                 <label class="form-label" for="">秘密の質問を選択してください。</label>
+                 <label class="form-label" for="secretQuestion">秘密の質問を選択してください。</label>
                  <span class="required-label">必須</span>                    
-                 <select name="secretQuestion" class="form-control select-center" required>
+                 <select id="secretQuestion" name="secretQuestion" class="form-control select-center" required>
                     <option value="" disabled selected style="display:none;">--- 秘密の質問 ---</option>
 		            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
 		            <option value="一番やりこんだゲームは？">一番やりこんだゲームは？</option>
@@ -26,9 +26,9 @@
              </div>
             <!-- 秘密の質問の答え -->
             <div class="col-md-12 mb-5">
-                <label class="form-label" for="">秘密の質問の答えを入力してください</label>
+                <label class="form-label" for="secretAnswer">秘密の質問の答えを入力してください</label>
                 <span class="required-label">必須</span>
-                <input class="form-control" type="text" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
+                <input class="form-control" type="text" id="secretAnswer" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
             </div>
 		    <!-- エラー表示  -->
   	        <c:if test="${not empty secretError}">
