@@ -19,7 +19,7 @@
 	            <div class="col-md-4 mb-0">
 	                <label class="form-label" for="changeYear">変更年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="changeYear" class="form-control select-center" required>
+	                <select id="changeYear" name="changeYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
@@ -31,7 +31,7 @@
 	            </div>
 	            <div class="col-md-4 mb-0">
 	                <label class="form-label invisible-text" for="changeMonth">月</label>
-	                <select name="changeMonth" class="form-control select-center" required>
+	                <select id="changeMonth" name="changeMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -42,7 +42,7 @@
 	            </div>
 	            <div class="col-md-4 mb-0">
 	                <label class="form-label invisible-text" for="changeDay">日</label>
-	                <select name="changeDay" class="form-control select-center" required>
+	                <select id="changeDay" name="changeDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -55,38 +55,38 @@
 
 	            <!-- 姓 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">名前</label>
-	                <input class="form-control" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>">
+	                <label class="form-label" for="lastName">名前</label>
+	                <input class="form-control" type="text" id="lastName" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>">
     				<small class="text-muted">姓</small>	                
 	            </div>
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label invisible-text" for="">名</label>
-	                <input class="form-control" type="text" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>">
+	                <label class="form-label invisible-text" for="firstName">名</label>
+	                <input class="form-control" type="text" id="firstName" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>">
     				<small class="text-muted">名</small>	                
 	            </div>
   	            <!-- 郵便番号 -->
 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="">郵便番号</label>
-	                <input class="form-control" type="text" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>">
+	                <label class="form-label" for="postCode">郵便番号</label>
+	                <input class="form-control" type="text" id="postCode" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>">
 	            </div>
 	            <div class="col-md-8 mb-3"></div>
    	            <!-- 住所 -->
 	            <div class="col-md-12 mb-3">
-	                <label class="form-label" for="">住所</label>
-	                <input class="form-control" type="text" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${address}'/>">
+	                <label class="form-label" for="address">住所</label>
+	                <input class="form-control" type="text" id="address" name="address" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${address}'/>">
 	            </div>
    	            <!-- 電話番号 -->
 	            <div class="col-md-4 mb-3">
-	                <label class="form-label" for="">電話番号</label>
-	                <input class="form-control" type="text" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>">
+	                <label class="form-label" for="tel">電話番号</label>
+	                <input class="form-control" type="text" id="tel" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>">
 	            </div>  
   	            <div class="col-md-8 mb-3"></div>
   	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestYear">申請年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="requestYear" class="form-control select-center" required>
+	                <select id="requestYear" name="requestYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
@@ -98,7 +98,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">月</label>
-	                <select name="requestMonth" class="form-control select-center" required>
+	                <select id="requestMonth" name="requestMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -109,7 +109,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <select name="requestDay" class="form-control select-center" required>
+	                <select id="requestDay" name="requestDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">

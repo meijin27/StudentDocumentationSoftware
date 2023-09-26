@@ -15,16 +15,16 @@
 	        <div class="row">
    	            <!-- 親族氏名 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">親族氏名</label>
+	                <label class="form-label" for="relativeName">親族氏名</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="relativeName" placeholder="鈴木　一郎" value="<c:out value='${relativeName}'/>" required>
+	                <input class="form-control" type="text" id="relativeName" name="relativeName" placeholder="鈴木　一郎" value="<c:out value='${relativeName}'/>" required>
 	            </div>
 	            <div class="col-md-6 mb-3"></div>	            
 	            <!-- 親族生年月日-->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="birthYear">親族生年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="birthYear" class="form-control select-center" required>
+	                <select id="birthYear" name="birthYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-110; i <=currentYear;
 	                        i++){ %>
@@ -36,7 +36,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="birthMonth">月</label>
-	                <select name="birthMonth" class="form-control select-center" required>
+	                <select id="birthMonth" name="birthMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -47,7 +47,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="birthDay">日</label>
-	                <select name="birthDay" class="form-control select-center" required>
+	                <select id="birthDay" name="birthDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -58,15 +58,15 @@
 	            </div>	        
    	            <!-- 親族住所 -->
 	            <div class="col-md-12 mb-3">
-	                <label class="form-label" for="">親族住所</label>
+	                <label class="form-label" for="relativeAddress">親族住所</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
+	                <input class="form-control" type="text" id="relativeAddress" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
 	            </div>
   	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestYear">申請年月日</label>
 	                <span class="required-label">必須</span>
-	                <select name="requestYear" class="form-control select-center" required>
+	                <select id="requestYear" name="requestYear" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% for(int i=currentYear-1; i <=currentYear;
 	                        i++){ %>
@@ -78,7 +78,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">月</label>
-	                <select name="requestMonth" class="form-control select-center" required>
+	                <select id="requestMonth" name="requestMonth" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -89,7 +89,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <select name="requestDay" class="form-control select-center" required>
+	                <select id="requestDay" name="requestDay" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
