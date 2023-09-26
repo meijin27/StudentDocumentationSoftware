@@ -162,7 +162,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="tuitionFeePaid">通常納期内納付学費等</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="tuitionFeePaid" name="tuitionFeePaid" placeholder="250000" value="<c:out value='${tuitionFeePaid}'/>">
+	                <input class="form-control" type="text" id="tuitionFeePaid" name="tuitionFeePaid" placeholder="250000" value="<c:out value='${tuitionFeePaid}'/>" required>
 	            </div>
 	         </div>   
              <% for(int set = 1; set <= 4; set++){ %>

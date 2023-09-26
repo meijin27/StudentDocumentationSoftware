@@ -51,7 +51,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="subject">事由</label>
 	                <span class="required-label">必須</span>
-	                <select id="subject" name="subject" class="form-control select-center">
+	                <select id="subject" name="subject" class="form-control select-center" required>
 	                    <option value="" disabled selected style="display:none;">-- 事由 --</option>
                         <option value="就職試験">就職試験</option>
                         <option value="大学（編）入学試験">大学（編）入学試験</option>
