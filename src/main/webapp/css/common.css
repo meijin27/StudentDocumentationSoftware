@@ -1,0 +1,190 @@
+/* 未入力項目の枠線の色 */
+.input-invalid {
+  border: 3px solid pink !important;
+}
+
+/* 「必須」の赤字ラベル */
+.required-label {
+    background-color: red;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 0.1rem; 
+}
+
+/* 表示しない項目 */
+.hidden {
+    display: none;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.margin-bottom-50 {
+    margin-bottom: 50px;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
+/* 文字を３倍の大きさにする */
+.big-font {
+    font-weight: bold; /* 太字 */
+    font-size: 300%; /* 大きい文字サイズ */
+}
+
+/* 文字を２倍の大きさにする */
+.big-font2 {
+    font-size: 200%; /* 大きい文字サイズ */
+}
+
+/* 幅を150pxにする */
+.width-150{
+	width: 150px;
+}
+
+/* テキストの行の高さ */
+.top-aligned {
+    line-height: 1; 
+}
+
+/* 文字色を透明にする */
+.invisible-text {
+  color: transparent;
+}
+
+/* selectの選択肢と選択結果を中央揃えにする */
+.form-control.select-center {
+    text-align: center;
+    text-align-last: center; 
+    direction: ltr; /* directionを左から右にリセット */
+}
+
+/* プレースホルダーに表示されている文字色 */
+.form-control::placeholder {
+    color: #bbb;
+}
+
+/* セレクトボックスの初期値の文字色 */
+select option:first-child {
+    color: #bbb;
+}
+
+/* セレクトボックスの選択後の文字色 */
+select option:not(:first-child) {
+    color: black;
+}
+
+/* パスワード入力補助用ポップアップ */
+.password-helper {
+    display: none;
+    position: absolute;
+    border: 5px solid rgb(187, 211, 248);
+    background-color: #f9f9f9;
+    padding: 20px;
+    background: #fff;
+    font-weight: 300;
+    z-index: 999;
+    -webkit-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
+    -moz-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
+    box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
+}
+
+/* パスワード入力補助用ポップアップの文字設定 */
+.popup-small {
+    line-height: 20px;
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    display: block;
+}
+
+/* パスワード入力補助用ポップアップのチェック記号の書式 */
+.popup-small svg {
+    width: 2em;   
+    height: 2em;  
+    margin: 0 5px 0 0;
+    stroke: #ececec;
+}
+
+/* パスワード入力補助用ポップアップで条件を満たした場合に緑色にするため */
+.popup-small.fulfilled svg {
+    stroke: #8ac249;
+}
+
+/* パスワード入力補助用ポップアップ表示用 */
+.password-helper.show {
+    display: block;
+}
+
+/* パスワード入力補助用ポップアップのラベル書式 */
+.pb10 {
+    padding-bottom: 10px !important;
+    border-bottom: #ececec 1px solid;
+    font-weight: 700 !important;
+}
+
+/*
+ * Sidebar
+ */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    top: 5rem;
+  }
+}
+
+.sidebar-sticky {
+  height: calc(100vh - 48px);
+  text-align: left;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+.sidebar .nav-link {
+  margin-left: 20px;
+  font-weight: 500;
+  color: #333;
+}
+
+.sidebar .nav-link .feather {
+  margin-right: 4px;
+  color: #727272;
+}
+
+.sidebar .nav-link.active {
+  color: #2470dc;
+}
+
+.sidebar .nav-link:hover .feather,
+.sidebar .nav-link.active .feather {
+  color: inherit;
+}
+
+.sidebar-heading {
+  font-size: .75rem;
+}
+
+/*
+ * Navbar
+ */
+ 
+.navbar-custom .nav-link {
+  color: rgb(0, 255, 255) !important;
+}

@@ -53,20 +53,20 @@
                 <h3 class="border-bottom"><%= set %>枚目</h3>
 	            <!-- 必要枚数 -->           
 				<div class="col-md-4 mb-3 text-center">
-				    <label class="form-label" for="sheetsRequired<%= set %>">必要枚数</label>
+				    <label class="form-label" for="sheetsRequired1f<%= set %>">必要枚数</label>
 				    <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center">
 					    <div class="form-check form-check-inline mr-lg-5">
 				            <input class="form-check-input" type="radio" name="sheetsRequired<%= set %>" id="sheetsRequired1f<%= set %>" value="1" 
 				                   <% if ("1".equals(request.getParameter("sheetsRequired" + set))) { %> checked <% } %>  <%= (set == 1) ? "required" : "" %> data-required="true">
-				            <label class="form-check-label" for="sheetsRequired<%= set %>">
+				            <label class="form-check-label" for="sheetsRequired1f<%= set %>">
 				                １枚
 				            </label>
 				        </div>
 					    <div class="form-check form-check-inline ml-lg-5">
 				            <input class="form-check-input" type="radio" name="sheetsRequired<%= set %>" id="sheetsRequired2f<%= set %>" value="2" 
 									<% if ("2".equals(request.getParameter("sheetsRequired" + set))) { %> checked <% } %>  <%= (set == 1) ? "required" : "" %> data-required="true">
-				            <label class="form-check-label" for="sheetsRequired<%= set %>">
+				            <label class="form-check-label" for="sheetsRequired2f<%= set %>">
 				                ２枚
 				            </label>
 				        </div>

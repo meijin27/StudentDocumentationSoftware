@@ -49,27 +49,6 @@ main > .container {
     text-align: left; 
 }
 
-/* selectの選択肢と選択結果を中央揃えにする */
-.form-control.select-center {
-    text-align: center;
-    text-align-last: center; 
-    direction: ltr; /* directionを左から右にリセット */
-}
-
-/* プレースホルダーに表示されている文字色 */
-.form-control::placeholder {
-    color: #bbb;
-}
-
-/* セレクトボックスの初期値の文字色 */
-select option:first-child {
-    color: #bbb;
-}
-/* セレクトボックスの選択後の文字色 */
-select option:not(:first-child) {
-    color: black;
-}
-
 .btn-custom {
     background-color: #d3d3d3; /* 薄いグレー色 */
     color:black /* テキストの色 */
@@ -92,14 +71,6 @@ select option:not(:first-child) {
   flex-grow: 1;
   width: 100%;
   padding-bottom: 70px; /* Should be equal or larger than the footer's height */
-}
-
-.invisible-text {
-  color: transparent;
-}
-
-.text-left {
-    text-align: left;
 }
 
 .data-row {
@@ -137,24 +108,6 @@ select option:not(:first-child) {
   margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
   text-align: left;
 }
-
-.big-font {
-    font-weight: bold; /* 太字 */
-    font-size: 300%; /* 大きい文字サイズ */
-}
-
-.big-font2 {
-    font-size: 200%; /* 大きい文字サイズ */
-}
-
-.width-150{
-	width: 150px;
-}
-
-.top-aligned {
-    line-height: 1; 
-}
-
 
 footer.footer {
   position: fixed;

@@ -37,15 +37,6 @@ main > .container {
     margin-bottom: 0.1rem; 
 }
 
-.required-label {
-    background-color: red;
-    color: white;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    margin-bottom: 0.1rem; 
-}
-
 /* selectの選択肢と選択結果を中央揃えにする */
 .form-control.select-center {
     text-align: center;
@@ -69,74 +60,6 @@ select option:not(:first-child) {
 
 .radio-spacing {
     margin-right: 40px; /* こちらの値を適宜調整してください */
-}
-
-.hidden {
-    display: none;
-}
-
-.left-align {
-    text-align: left;
-}
-
-.margin-bottom-50 {
-    margin-bottom: 50px;
-}
-
-.margin-bottom-20 {
-    margin-bottom: 20px;
-}
-
-.invisible-text {
-  color: transparent;
-}
-
-/* パスワード入力補助用ポップアップ */
-.password-helper {
-    display: none;
-    position: absolute;
-    border: 5px solid rgb(187, 211, 248);
-    background-color: #f9f9f9;
-    padding: 20px;
-    background: #fff;
-    font-weight: 300;
-    z-index: 999;
-    -webkit-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-    -moz-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-    box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-}
-
-/* パスワード入力補助用ポップアップの文字設定 */
-.popup-small {
-    line-height: 20px;
-    margin: 0 0 5px 0;
-    font-size: 1em;
-    display: block;
-}
-
-/* パスワード入力補助用ポップアップのチェック記号の書式 */
-.popup-small svg {
-    width: 2em;   
-    height: 2em;  
-    margin: 0 5px 0 0;
-    stroke: #ececec;
-}
-
-/* パスワード入力補助用ポップアップで条件を満たした場合に緑色にするため */
-.popup-small.fulfilled svg {
-    stroke: #8ac249;
-}
-
-/* パスワード入力補助用ポップアップ表示用 */
-.password-helper.show {
-    display: block;
-}
-
-/* パスワード入力補助用ポップアップのラベル書式 */
-.pb10 {
-    padding-bottom: 10px !important;
-    border-bottom: #ececec 1px solid;
-    font-weight: 700 !important;
 }
 
 footer.footer {
@@ -195,81 +118,3 @@ footer.footer {
   margin-left: 0px; /* 固定されている表示内容と変化する表示内容の間隔を指定。。 */
   text-align: left;
 }
-
-.big-font {
-    font-weight: bold; /* 太字 */
-    font-size: 300%; /* 大きい文字サイズ */
-}
-
-.big-font2 {
-    font-size: 200%; /* 大きい文字サイズ */
-}
-
-.width-150{
-	width: 150px;
-}
-
-.top-aligned {
-    line-height: 1; 
-}
-
-
-/*
- * Sidebar
- */
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Behind the navbar */
-  padding: 48px 0 0; /* Height of navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-}
-
-@media (max-width: 767.98px) {
-  .sidebar {
-    top: 5rem;
-  }
-}
-
-.sidebar-sticky {
-  height: calc(100vh - 48px);
-  text-align: left;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-}
-
-.sidebar .nav-link {
-  margin-left: 20px;
-  font-weight: 500;
-  color: #333;
-}
-
-.sidebar .nav-link .feather {
-  margin-right: 4px;
-  color: #727272;
-}
-
-.sidebar .nav-link.active {
-  color: #2470dc;
-}
-
-.sidebar .nav-link:hover .feather,
-.sidebar .nav-link.active .feather {
-  color: inherit;
-}
-
-.sidebar-heading {
-  font-size: .75rem;
-}
-
-/*
- * Navbar
- */
- 
-.navbar-custom .nav-link {
-  color: rgb(0, 255, 255) !important;
-}
-

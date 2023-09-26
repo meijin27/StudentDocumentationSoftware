@@ -94,6 +94,10 @@
 <script src="<%=request.getContextPath()%>/js/password_helper_popup.js"></script>
 
 <!-- セレクトボックスの初期表示のグレー化用 -->
-<script src="<%=request.getContextPath()%>/js/input.js"></script>
+<script src="<%=request.getContextPath()%>/js/input_gray.js"></script>
+
+<!-- 未入力項目の枠線色付け用 -->
+<script src="<%=request.getContextPath()%>/js/input_invalid.js"></script>
+
 </body>
 </html>

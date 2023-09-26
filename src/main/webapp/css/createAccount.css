@@ -47,65 +47,6 @@ main > .container {
     margin-bottom: 0.1rem; 
 }
 
-.required-label {
-    background-color: red;
-    color: white;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    margin-bottom: 0.1rem; 
-}
-
-/* パスワード入力補助用ポップアップ */
-.password-helper {
-    display: none;
-    position: absolute;
-    border: 5px solid rgb(187, 211, 248);
-    background-color: #f9f9f9;
-    padding: 20px;
-    background: #fff;
-    font-weight: 300;
-    z-index: 999;
-    -webkit-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-    -moz-box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-    box-shadow: 0 1px 20px rgba(34, 44, 55, 0.3);
-}
-
-/* パスワード入力補助用ポップアップの文字設定 */
-.popup-small {
-    line-height: 20px;
-    margin: 0 0 5px 0;
-    font-size: 1em;
-    display: block;
-}
-
-/* パスワード入力補助用ポップアップのチェック記号の書式 */
-.popup-small svg {
-    width: 2em;   
-    height: 2em;  
-    margin: 0 5px 0 0;
-    stroke: #ececec;
-}
-
-/* パスワード入力補助用ポップアップで条件を満たした場合に緑色にするため */
-.popup-small.fulfilled svg {
-    stroke: #8ac249;
-}
-
-/* パスワード入力補助用ポップアップ表示用 */
-.password-helper.show {
-    display: block;
-}
-
-/* パスワード入力補助用ポップアップのラベル書式 */
-.pb10 {
-    padding-bottom: 10px !important;
-    border-bottom: #ececec 1px solid;
-    font-weight: 700 !important;
-}
-
-
-
 .clear:after {
     visibility: hidden;
     display: block;
