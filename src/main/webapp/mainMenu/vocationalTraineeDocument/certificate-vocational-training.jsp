@@ -23,7 +23,8 @@
 			    <div class="col-md-2 mb-3">
 			        <label for="day<%= i %>"><%= i %>日: </label>
 					<% String dayAttribute = request.getParameter("day"+i) != null ? request.getParameter("day"+i) : ""; %>
-			        <select class="form-control select-center" id="day<%= i %>" name="day<%= i %>">
+	                <c:set var="paramDay" value="day${set}" />
+			        <select class="form-control select-center auto-select" data-selected-value="<c:out value='${param[paramDay]}'/>" id="day<%= i %>" name="day<%= i %>">
 			            <option value="" <% if (dayAttribute.isEmpty()) { %> selected <% } %>>--無--</option>
 			            <option value="＝" <% if ("＝".equals(dayAttribute)) { %> selected <% } %>>＝</option>
 			            <option value="〇" <% if ("〇".equals(dayAttribute)) { %> selected <% } %>>〇</option>
@@ -39,7 +40,7 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
 	                <span class="required-label">必須</span>
-	                <select id="subjectYear" name="subjectYear" class="form-control select-center" required>
+	                <select id="subjectYear" name="subjectYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
@@ -51,7 +52,7 @@
 	            </div>
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="subjectMonth">月</label>
-	                <select id="subjectMonth" name="subjectMonth" class="form-control select-center" required>
+	                <select id="subjectMonth" name="subjectMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -105,11 +106,13 @@
 	        </div>
 	        <!-- エラー表示 -->
   			<c:if test="${not empty nullMessage}">
-				<div class="alert alert-danger" role="alert">${nullMessage}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${nullMessage}
 				</div>
 			</c:if>
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->

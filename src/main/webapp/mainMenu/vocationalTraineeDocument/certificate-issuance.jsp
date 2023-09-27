@@ -27,7 +27,7 @@
 	            <p>必要な書類の枚数を選択してください</p>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="proofOfStudent">在校証明書</label>
-	                <select id="proofOfStudent" name="proofOfStudent" class="form-control select-center">
+	                <select id="proofOfStudent" name="proofOfStudent" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.proofOfStudent}'/>">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5;
 	                        i++){ %>
@@ -39,7 +39,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="certificateOfCompletion">修了証明書</label>
-	                <select id="certificateOfCompletion" name="certificateOfCompletion" class="form-control select-center">
+	                <select id="certificateOfCompletion" name="certificateOfCompletion" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.certificateOfCompletion}'/>">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -50,7 +50,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="certificateOfExpectedCompletion">修了見込証明書</label>
-	                <select id="certificateOfExpectedCompletion" name="certificateOfExpectedCompletion" class="form-control select-center">
+	                <select id="certificateOfExpectedCompletion" name="certificateOfExpectedCompletion" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.certificateOfExpectedCompletion}'/>">
 	                    <option value="">-- 不要 --</option>
 	                    <% for(int i=1; i <=5; i++){ %>
 	                        <option value="<%= i %>">
@@ -63,7 +63,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="requestYear">申請年月日</label>
 	                <span class="required-label">必須</span>
-	                <select id="requestYear" name="requestYear" class="form-control select-center" required>
+	                <select id="requestYear" name="requestYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
@@ -75,7 +75,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">月</label>
-	                <select id="requestMonth" name="requestMonth" class="form-control select-center" required>
+	                <select id="requestMonth" name="requestMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -86,7 +86,7 @@
 	            </div>
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
-	                <select id="requestDay" name="requestDay" class="form-control select-center" required>
+	                <select id="requestDay" name="requestDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestDay}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -103,7 +103,7 @@
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${valueLongError}
 	            </div>
 	        </c:if>
@@ -113,7 +113,7 @@
 	            </div>
 	        </c:if>	        
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 					${innerError}
 				</div>
 			</c:if>

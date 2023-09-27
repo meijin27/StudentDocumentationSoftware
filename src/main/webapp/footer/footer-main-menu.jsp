@@ -55,6 +55,9 @@
     feather.replace();
 </script>
 
+<!-- セレクトボックスの入力値の自動選択 -->
+<script src="<%=request.getContextPath()%>/js/auto_select.js"></script>
+
 <!-- サイドバーのリンクの展開と格納  -->
 <script src="<%=request.getContextPath()%>/js/sidebar_expansion.js"></script>
 

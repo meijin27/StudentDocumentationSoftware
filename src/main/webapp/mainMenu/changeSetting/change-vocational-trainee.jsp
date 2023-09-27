@@ -63,17 +63,17 @@
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${valueLongError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  attendanceNumberError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${attendanceNumberError}
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  innerError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${innerError}
 	            </div>
 	        </c:if>

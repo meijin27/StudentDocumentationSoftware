@@ -81,7 +81,7 @@
   	            <!-- 旅券有効期限 -->
                 <label class="form-label" for="effectiveYear">旅券有効期限（Passport expiration date）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <select id="effectiveYear" name="effectiveYear" class="form-control select-center" required>
+	                <select id="effectiveYear" name="effectiveYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear; i <=currentYear+10;
 	                        i++){ %>
@@ -92,7 +92,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select id="effectiveMonth" name="effectiveMonth" class="form-control select-center" required>
+	                <select id="effectiveMonth" name="effectiveMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -102,7 +102,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select id="effectiveDay" name="effectiveDay" class="form-control select-center" required>
+	                <select id="effectiveDay" name="effectiveDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveDay}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -126,7 +126,7 @@
   	            <!-- 在留期間の満了日 -->
                 <label class="form-label" for="periodYear">在留期間の満了日（Expiration date of period of stay）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
-	                <select id="periodYear" name="periodYear" class="form-control select-center" required>
+	                <select id="periodYear" name="periodYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
 	                    <% for(int i=currentYear; i <=currentYear+5; i++){ %>
 	                        <option value="<%= i %>">
@@ -136,7 +136,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select id="periodMonth" name="periodMonth" class="form-control select-center" required>
+	                <select id="periodMonth" name="periodMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -146,7 +146,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-4 mb-3">
-	                <select id="periodDay" name="periodDay" class="form-control select-center" required>
+	                <select id="periodDay" name="periodDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodDay}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -245,7 +245,7 @@
 	   	            <!-- 生年月日 -->
 	                <label class="form-label" for="relativeBirthYear<%= set %>">生年月日（Date of birth）<span class="required-label">必須</span></label>
 		            <div class="col-md-4 mb-3">
-		                <select id="relativeBirthYear<%= set %>" name="relativeBirthYear<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthYear<%= set %>" name="relativeBirthYear<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 		                    <% for(int i=currentYear-110; i <=currentYear;
 		                        i++){ %>
@@ -256,7 +256,7 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-3">
-		                <select id="relativeBirthMonth<%= set %>" name="relativeBirthMonth<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthMonth<%= set %>" name="relativeBirthMonth<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 		                    <% for(int i=1; i <=12; i++){ %>
 		                        <option value="<%= i %>">
@@ -266,7 +266,7 @@
 		                </select>
 		            </div>
 		            <div class="col-md-4 mb-3">
-		                <select id="relativeBirthDay<%= set %>" name="relativeBirthDay<%= set %>" class="form-control select-center" data-required="true">
+		                <select id="relativeBirthDay<%= set %>" name="relativeBirthDay<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
 		                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 		                    <% for(int i=1; i <=31; i++){ %>
 		                        <option value="<%= i %>">
@@ -333,7 +333,7 @@
 	            </div>
 	        </c:if>	        
             <c:if test="${not empty  valueLongError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${valueLongError}
             	</div>
         	</c:if>
@@ -348,12 +348,13 @@
 	            </div>
 	        </c:if>	    
             <c:if test="${not empty  exchangeStudentError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${exchangeStudentError}
             	</div>
         	</c:if>        	
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 			<!-- 追加ボタン -->

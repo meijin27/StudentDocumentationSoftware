@@ -18,7 +18,7 @@
                 <label class="form-label" for="relationship">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</label>
                 <label class="form-label" for="relationship">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</label>
 	            <div class="col-md-12 mb-3">
-	                <select id="relationship" name="relationship" class="form-control select-center">
+	                <select id="relationship" name="relationship" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.relationship}'/>">
 	                    <option value="">-- 申請人との関係 --</option>
 	                    <option value="夫">夫（Husband）</option>
 	                    <option value="妻">妻（Wife）</option>
@@ -134,7 +134,7 @@
   	            <!-- 月額か日額か -->
    	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="monthlyOrDaily">月額・日額（Monthly or Daily）</label>
-	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control select-center">
+	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.monthlyOrDaily}'/>">
 	                    <option value="">-- 月額・日額 --</option>
 	                    <option value="月額">月額（Monthly）</option>
 	                    <option value="日額">日額（Daily）</option>
@@ -147,7 +147,7 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
 	                <span class="required-label">必須</span>
-	                <select id="afterGraduation" name="afterGraduation" class="form-control select-center" required>
+	                <select id="afterGraduation" name="afterGraduation" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 卒業後の予定 --</option>
 	                    <option value="帰国">帰国（Return to home country）</option>
 	                    <option value="日本での進学">日本での進学（Enter a school of higher education in Japan）</option>
@@ -189,12 +189,13 @@
 	            </div>
 	        </c:if>
             <c:if test="${not empty exchangeStudentError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${exchangeStudentError}
             	</div>
         	</c:if>        	
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->

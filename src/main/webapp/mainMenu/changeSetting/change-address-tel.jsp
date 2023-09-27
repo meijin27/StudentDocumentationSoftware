@@ -44,7 +44,7 @@
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${valueLongError}
 	            </div>
 	        </c:if>

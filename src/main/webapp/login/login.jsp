@@ -19,12 +19,12 @@
         </div>
         <!-- エラー表示  -->
 	    <c:if test="${not empty loginError}">
-	        <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger text-center input-field" role="alert">
 	            ${loginError }
 	        </div>
 	    </c:if>
 	    <c:if test="${not empty otherError}">
-	        <div class="alert alert-danger" role="alert">
+	        <div class="alert alert-danger text-center input-field" role="alert">
 	            ${otherError}
 	            <% session.removeAttribute("otherError"); %>
 	        </div>

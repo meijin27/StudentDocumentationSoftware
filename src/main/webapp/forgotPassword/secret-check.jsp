@@ -20,7 +20,7 @@
                 <div class="col-md-4 mb-5">
 	                <label class="form-label" for="birthYear">生年月日</label>
                     <span class="required-label">必須</span>                    
-				    <select id="birthYear"  name="birthYear" class="form-control select-center" required>
+				    <select id="birthYear"  name="birthYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
 				        <option value="" disabled selected style="display:none;">--- 年 ---</option>
 				        <% 
 				        int currentYear = java.time.Year.now().getValue();
@@ -34,7 +34,7 @@
 				</div>
                 <div class="col-md-4 mb-5">				
   	                <label class="form-label invisible-text" for="birthMonth">月</label>
-				    <select id="birthMonth"  name="birthMonth" class="form-control select-center" required>
+				    <select id="birthMonth"  name="birthMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
 				        <option value="" disabled selected style="display:none;">--- 月 ---</option>
 				        <% 
 				        for(int i=1; i <= 12; i++){ 
@@ -47,7 +47,7 @@
 				</div>
                 <div class="col-md-4 mb-5">
                     <label class="form-label invisible-text" for="birthDay">日</label>
-				    <select id="birthDay" name="birthDay" class="form-control select-center" required>
+				    <select id="birthDay" name="birthDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
 				        <option value="" disabled selected style="display:none;">--- 日 ---</option>
 				        <% 
 				        for(int i=1; i <= 31; i++){ 

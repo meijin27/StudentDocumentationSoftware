@@ -31,7 +31,8 @@
 				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" required> 
 			</div>			
 			<c:if test="${not empty passwordError}">
-				<div class="alert alert-danger" role="alert">${passwordError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${passwordError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->

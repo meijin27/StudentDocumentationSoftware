@@ -16,7 +16,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="admissionYear">入学年月日</label>
 	                <span class="required-label">必須</span>
-	                <select id="admissionYear" name="admissionYear" class="form-control select-center" required>
+	                <select id="admissionYear" name="admissionYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.admissionYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2; i <=currentYear;
 	                        i++){ %>
@@ -28,7 +28,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="admissionMonth">月</label>
-	                <select id="admissionMonth" name="admissionMonth" class="form-control select-center" required>
+	                <select id="admissionMonth" name="admissionMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.admissionMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -39,7 +39,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="admissionDay">日</label>
-	                <select id="admissionDay" name="admissionDay" class="form-control select-center" required>
+	                <select id="admissionDay" name="admissionDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.admissionDay}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -52,7 +52,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="studentType">学生の種類</label>
 	                <span class="required-label">必須</span>
-	                <select id="studentType" name="studentType" class="form-control select-center" required>
+	                <select id="studentType" name="studentType" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.studentType}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 学生の種類 --</option>
 	                    <option value="一般学生">一般学生</option>
 	                    <option value="留学生">留学生</option>
@@ -71,7 +71,7 @@
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="className">クラス名</label>
 	                <span class="required-label">必須</span>
-	                <select id="className" name="className" class="form-control select-center" required>
+	                <select id="className" name="className" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.className}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- クラス名 --</option>
 	                    <option value="ＩＴ・ゲームソフト科">ＩＴ・ゲームソフト科</option>
 	                    <option value="ＡＩ・データサイエンス科">ＡＩ・データサイエンス科</option>
@@ -86,7 +86,7 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="schoolYear">学年</label>
 	                <span class="required-label">必須</span>
-	                <select id="schoolYear" name="schoolYear" class="form-control select-center" required>
+	                <select id="schoolYear" name="schoolYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.schoolYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 学年 --</option>
 	                    <% for(int i=1; i <=2; i++){ %>
 	                        <option value="<%= i %>">
@@ -98,7 +98,7 @@
 	            <div class="col-md-3 mb-5">
 	                <label class="form-label" for="classNumber">組</label>
 	                <span class="required-label">必須</span>
-	                <select id="classNumber" name="classNumber" class="form-control select-center" required>
+	                <select id="classNumber" name="classNumber" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.classNumber}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 組 --</option>
 	                    <% for(int i=1; i <=3; i++){ %>
 	                        <option value="<%= i %>">

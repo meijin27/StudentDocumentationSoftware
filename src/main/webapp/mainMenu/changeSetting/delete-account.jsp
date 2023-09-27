@@ -19,7 +19,8 @@
 			</div>				
 			<!-- エラー表示 -->
 			<c:if test="${not empty passwordError}">
-				<div class="alert alert-danger" role="alert">${passwordError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${passwordError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->

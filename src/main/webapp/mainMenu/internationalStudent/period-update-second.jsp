@@ -44,7 +44,7 @@
   	 	        <!-- 期間年月日（自） -->
                 <label class="form-label" for="startYear">期間（自）(Period from)</label>
 	            <div class="col-md-6 mb-3">
-	                <select id="startYear" name="startYear" class="form-control select-center" >
+	                <select id="startYear" name="startYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startYear}'/>" >
 	                    <option value="">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-10; i <=currentYear;
 	                        i++){ %>
@@ -55,7 +55,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-6 mb-3">
-	                <select id="startMonth" name="startMonth" class="form-control select-center" >
+	                <select id="startMonth" name="startMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startMonth}'/>" >
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -67,7 +67,7 @@
   	            <!-- 期間年月日（至） -->
                 <label class="form-label" for="endYear">期間（至）(Period to)</label>
 	            <div class="col-md-6 mb-3">
-	                <select id="endYear" name="endYear" class="form-control select-center" >
+	                <select id="endYear" name="endYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endYear}'/>" >
 	                    <option value="">-- 年 --</option>
 	                    <% for(int i=currentYear-10; i <=currentYear;
 	                        i++){ %>
@@ -78,7 +78,7 @@
 	                </select>
 	            </div>
 	            <div class="col-md-6 mb-3">
-	                <select id="endMonth" name="endMonth" class="form-control select-center" >
+	                <select id="endMonth" name="endMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endMonth}'/>" >
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -233,27 +233,28 @@
 	            </div>
 	        </c:if>
             <c:if test="${not empty remittancesAbroadError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${remittancesAbroadError}
             	</div>
         	</c:if>
             <c:if test="${not empty otherRemittancesError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${otherRemittancesError}
             	</div>
         	</c:if>
         	<c:if test="${not empty supporterError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${supporterError}
             	</div>
         	</c:if>
             <c:if test="${not empty exchangeStudentError}">
-            	<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${exchangeStudentError}
             	</div>
         	</c:if>        	
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->

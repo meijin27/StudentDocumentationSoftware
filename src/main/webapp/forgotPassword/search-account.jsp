@@ -15,7 +15,7 @@
 		    </div>
 		    <!-- エラー表示  -->
 		    <c:if test="${not empty accountError}">
-		        <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 		            ${accountError}
 		        </div>
 		    </c:if>      

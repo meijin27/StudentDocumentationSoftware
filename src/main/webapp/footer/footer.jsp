@@ -16,6 +16,10 @@
     feather.replace();
 </script>
 
+
+<!-- セレクトボックスの入力値の自動選択 -->
+<script src="<%=request.getContextPath()%>/js/auto_select.js"></script>
+
 <!-- パスワードのポップアップボックス -->
 <script src="<%=request.getContextPath()%>/js/password_helper_popup.js"></script>
 

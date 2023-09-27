@@ -16,7 +16,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="firstMonth">就労した月</label>
 	                <span class="required-label">必須</span>
-	                <select id="firstMonth" name="firstMonth" class="form-control select-center" required>
+	                <select id="firstMonth" name="firstMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.firstMonth}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -39,7 +39,7 @@
   		    	<p style="margin-top: 50px; color: red;">一か月分を作成する場合は下記は選択しないでください</p>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="secondMonth">就労した月（二か月目）</label>
-	                <select id="secondMonth" name="secondMonth" class="form-control select-center">
+	                <select id="secondMonth" name="secondMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.secondMonth}'/>">
 	                    <option value="">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -60,7 +60,8 @@
 	        </div>
 	        <!-- エラー表示  -->
   			<c:if test="${not empty nullMessage}">
-				<div class="alert alert-danger" role="alert">${nullMessage}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${nullMessage}
 				</div>
 			</c:if>
   	        <c:if test="${not empty logicalError}">
@@ -69,7 +70,8 @@
 	            </div>
 	        </c:if>	     
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">${innerError}
+	            <div class="alert alert-danger text-center input-field" role="alert">
+					${innerError}
 				</div>
 			</c:if>
 		    <!-- トークンの格納  -->
