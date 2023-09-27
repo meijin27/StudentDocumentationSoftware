@@ -193,9 +193,10 @@ public class SupplementaryLessonsAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "補習受講申請書");
 			// Close and save
-			editor.close("Supplementary_Lessons.pdf", response);
+			editor.close("Supplementary_Lessons.pdf", request, response);
 
 			return null;
 		} catch (

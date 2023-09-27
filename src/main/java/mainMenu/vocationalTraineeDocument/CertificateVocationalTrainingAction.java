@@ -199,9 +199,10 @@ public class CertificateVocationalTrainingAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "公共職業訓練等受講証明書");
 			// Close and save
-			editor.close("Certificate_Vocational_Training.pdf", response);
+			editor.close("Certificate_Vocational_Training.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

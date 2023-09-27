@@ -242,9 +242,10 @@ public class InterviewCertificateAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "面接証明書");
 			// Close and save
-			editor.close("Interview_Certificate.pdf", response);
+			editor.close("Interview_Certificate.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

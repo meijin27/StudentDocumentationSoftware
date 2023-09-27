@@ -318,9 +318,10 @@ public class StudentDiscountCouponAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "学割証発行願");
 			// Close and save
-			editor.close("Student_Discount_Coupon.pdf", response);
+			editor.close("Student_Discount_Coupon.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

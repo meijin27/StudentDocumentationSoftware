@@ -272,9 +272,10 @@ public class RecommendedDeliveryAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "推薦書交付願");
 			// Close and save
-			editor.close("Recommended_Delivery.pdf", response);
+			editor.close("Recommended_Delivery.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

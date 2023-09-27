@@ -380,9 +380,10 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "委託訓練欠席（遅刻・早退）届");
 			// Close and save
-			editor.close("Notification_Absence_Of_Ttraining.pdf", response);
+			editor.close("Notification_Absence_Of_Ttraining.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

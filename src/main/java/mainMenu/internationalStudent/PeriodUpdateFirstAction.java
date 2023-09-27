@@ -407,9 +407,10 @@ public class PeriodUpdateFirstAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "在留期間更新許可申請書1枚目");
 			// Close and save
-			editor.close("Period_Update_First.pdf", response);
+			editor.close("Period_Update_First.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

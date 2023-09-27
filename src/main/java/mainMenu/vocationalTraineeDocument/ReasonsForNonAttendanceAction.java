@@ -300,9 +300,10 @@ public class ReasonsForNonAttendanceAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "欠席理由申立書");
 			// Close and save
-			editor.close("Reasons_for_Non_Attendance.pdf", response);
+			editor.close("Reasons_for_Non_Attendance.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

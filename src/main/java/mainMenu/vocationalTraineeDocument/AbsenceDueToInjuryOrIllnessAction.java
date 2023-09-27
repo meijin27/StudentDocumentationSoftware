@@ -251,9 +251,10 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "傷病による欠席理由申立書");
 			// Close and save
-			editor.close("Absence_Due_to_Injury_or_Illness.pdf", response);
+			editor.close("Absence_Due_to_Injury_or_Illness.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

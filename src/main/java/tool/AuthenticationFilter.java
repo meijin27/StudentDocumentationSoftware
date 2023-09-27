@@ -168,6 +168,15 @@ public class AuthenticationFilter implements Filter {
 					// 行為成功メッセージがセッションに格納されていない状態で行為成功ページにアクセスは不許可、メインページに遷移する
 					else if (uri.endsWith("/action-success.jsp") && session.getAttribute("action") == null) {
 						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+						// PDF作成成功ページは 書類名がセッションに格納されていれば許可
+					} else if (uri.endsWith("/PDFcreate-success.jsp")
+							&& session.getAttribute("document") != null) {
+						chain.doFilter(request, response);
+					}
+					//  PDF書類名がセッションに格納されていない状態で PDF作成成功ページにアクセスは不許可、メインページに遷移する
+					else if (uri.endsWith("/PDFcreate-success.jsp") && session.getAttribute("document") == null) {
+						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+
 						// その他のページへのアクセスは許可する
 					} else {
 						chain.doFilter(request, response);

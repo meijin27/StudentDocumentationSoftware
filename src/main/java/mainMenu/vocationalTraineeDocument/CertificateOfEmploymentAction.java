@@ -232,9 +232,10 @@ public class CertificateOfEmploymentAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "就労証明書");
 			// Close and save
-			editor.close("Certificate_Of_Employment.pdf", response);
+			editor.close("Certificate_Of_Employment.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

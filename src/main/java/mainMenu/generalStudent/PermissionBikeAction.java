@@ -293,9 +293,10 @@ public class PermissionBikeAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "自転車等通学許可願");
 			// Close and save
-			editor.close("Permission_Bike.pdf", response);
+			editor.close("Permission_Bike.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

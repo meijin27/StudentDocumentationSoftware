@@ -115,9 +115,10 @@ public class AttachingReceiptsAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "別紙　領収書添付用");
 			// Close and save
-			editor.close("Attaching_Receipts.pdf", response);
+			editor.close("Attaching_Receipts.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

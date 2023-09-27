@@ -391,9 +391,10 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "学費延納願");
 			// Close and save
-			editor.close("Petition_For_Deferred-payment.pdf", response);
+			editor.close("Petition_For_Deferred-payment.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

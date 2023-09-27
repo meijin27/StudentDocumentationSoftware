@@ -199,8 +199,10 @@ public class PetitionForRelativesAction extends Action {
 			dao.addOperationLog(id, "Printing Petition For Relatives");
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "親族続柄申立書");
 			// Close and save
-			editor.close("Petition_For_Relatives.pdf", response);
+			editor.close("Petition_For_Relatives.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

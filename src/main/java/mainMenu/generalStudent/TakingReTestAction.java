@@ -193,9 +193,10 @@ public class TakingReTestAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "再試験受験申請書");
 			// Close and save
-			editor.close("Taking_Re_Test.pdf", response);
+			editor.close("Taking_Re_Test.pdf", request, response);
 
 			return null;
 		} catch (

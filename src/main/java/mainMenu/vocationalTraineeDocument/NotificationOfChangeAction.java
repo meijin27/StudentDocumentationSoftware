@@ -322,9 +322,10 @@ public class NotificationOfChangeAction extends Action {
 
 			// トークンの削除
 			request.getSession().removeAttribute("csrfToken");
-
+			// セッションに作成した書類名を持たせる				
+			session.setAttribute("document", "氏名・住所等変更届");
 			// Close and save
-			editor.close("Vocational_Trainee_Notification_Of_Change.pdf", response);
+			editor.close("Vocational_Trainee_Notification_Of_Change.pdf", request, response);
 
 			return null;
 		} catch (Exception e) {

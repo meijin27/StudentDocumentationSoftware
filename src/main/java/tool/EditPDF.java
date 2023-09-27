@@ -1,5 +1,6 @@
 package tool;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,7 +8,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -137,9 +140,11 @@ public class EditPDF {
 
 	// このメソッドは、PDFの編集を終了し、その内容をHTTPレスポンスの出力ストリームに保存します。
 	// これにより、クライアントにダウンロードするPDFファイルが提供されます。
-	public void close(String filename, HttpServletResponse response) {
+	public void close(String filename, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			contentStream.close();
+			// リダイレクト用コンテキストパス
+			String contextPath = request.getContextPath();
 
 			// Create a formatter
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -149,14 +154,20 @@ public class EditPDF {
 			filename = filename.substring(0, filename.length() - 4);
 			String newFilename = filename + formatter.format(now) + ".pdf";
 
-			// Set the content type and download name
-			response.setContentType("application/pdf");
-			response.setHeader("Content-Disposition", "attachment; filename=" + newFilename);
-
-			// Write the PDF to the HttpServletResponse output stream
-			document.save(response.getOutputStream());
-
+			// Save the PDF to a byte array
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			document.save(baos);
 			document.close();
+
+			// Save the byte array to the session
+			HttpSession session = request.getSession();
+			// PDFデータをセッションに格納
+			session.setAttribute("pdfData", baos.toByteArray());
+			session.setAttribute("pdfFilename", newFilename);
+
+			// Redirect to the download page
+			response.sendRedirect(contextPath + "/mainMenu/PDFcreate-success.jsp");
+
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			throw new RuntimeException("Process cannot be saved.");
