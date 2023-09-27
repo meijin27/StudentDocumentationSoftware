@@ -131,13 +131,6 @@ public class StudentDiscountCouponAction extends Action {
 			count++;
 		}
 
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
-		}
-
 		try {
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();

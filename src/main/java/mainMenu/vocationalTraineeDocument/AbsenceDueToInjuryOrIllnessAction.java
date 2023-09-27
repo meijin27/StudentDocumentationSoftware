@@ -146,13 +146,6 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 		// 間の日数を計算
 		String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
 
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
-		}
-
 		try {
 			// データベース操作用クラス
 			UserDAO dao = new UserDAO();

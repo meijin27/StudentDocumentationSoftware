@@ -86,13 +86,6 @@ public class ChangeVocationalTraineeAction extends Action {
 			return "change-vocational-trainee.jsp";
 		}
 
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
-		}
-
 		try {
 			// データベースとの接続用
 			UserDAO dao = new UserDAO();

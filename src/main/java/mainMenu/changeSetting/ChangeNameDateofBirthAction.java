@@ -100,13 +100,6 @@ public class ChangeNameDateofBirthAction extends Action {
 			return "change-name-date-of-birth.jsp";
 		}
 
-		// リクエストのデータ全削除
-		Enumeration<String> attributeNames = request.getAttributeNames();
-		while (attributeNames.hasMoreElements()) {
-			String attributeName = attributeNames.nextElement();
-			request.removeAttribute(attributeName);
-		}
-
 		try {
 			// データベースとの接続用
 			UserDAO dao = new UserDAO();

@@ -22,10 +22,10 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="year">面接年月日</label>
 	                <select id="year" name="year" class="form-control select-center">
-	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+	                    <option value="" disabled <%= request.getParameter("year") == null ? "selected" : "" %> style="display:none;">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-2019; i <=currentYear-2018;
 	                        i++){ %>
-	                        <option value="<%= i %>">
+	                        <option value="<%= i %>" <%= i == (request.getParameter("year") == null ? -1 : Integer.parseInt(request.getParameter("year"))) ? "selected" : "" %>>
 	                            令和<%= i %>年（<%= i+2018 %>年）
 	                        </option>
 	                    <% } %>
@@ -34,9 +34,9 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="month">月</label>
 	                <select id="month" name="month" class="form-control select-center">
-	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+	                    <option value="" disabled <%= request.getParameter("month") == null ? "selected" : "" %> style="display:none;">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
-	                        <option value="<%= i %>">
+							<option value="<%= i %>" <%= i == (request.getParameter("month") == null ? -1 : Integer.parseInt(request.getParameter("month"))) ? "selected" : "" %>>
 	                            <%= i %>月
 	                        </option>
 	                    <% } %>
@@ -45,9 +45,9 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label invisible-text" for="day">日</label>
 	                <select id="day" name="day" class="form-control select-center">
-	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+	                    <option value="" disabled <%= request.getParameter("day") == null ? "selected" : "" %> style="display:none;">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
-	                        <option value="<%= i %>">
+	                        <option value="<%= i %>" <%= i == (request.getParameter("day") == null ? -1 : Integer.parseInt(request.getParameter("day"))) ? "selected" : "" %>>
 	                            <%= i %>日
 	                        </option>
 	                    <% } %>
@@ -57,9 +57,9 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="startHour">面接開始時刻</label>
 	                <select id="startHour" name="startHour" class="form-control select-center">
-	                    <option value="" disabled selected style="display:none;">-- 時 --</option>
+	                    <option value="" disabled <%= request.getParameter("startHour") == null ? "selected" : "" %> style="display:none;">-- 時 --</option>
 	                    <% for(int i=0; i <=23; i++){ %>
-	                        <option value="<%= i %>">
+	                        <option value="<%= i %>" <%= i == (request.getParameter("startHour") == null ? -1 : Integer.parseInt(request.getParameter("startHour"))) ? "selected" : "" %>>
 	                            <%= i %>時
 	                        </option>
 	                    <% } %>
@@ -71,9 +71,9 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label" for="endHour">面接終了時刻</label>
 	                <select id="endHour" name="endHour" class="form-control select-center">
-	                    <option value="" disabled selected style="display:none;">-- 時 --</option>
+	                    <option value="" disabled <%= request.getParameter("endHour") == null ? "selected" : "" %> style="display:none;">-- 時 --</option>
 	                    <% for(int i=0; i <= 23; i++){ %>
-	                        <option value="<%= i %>">
+	                        <option value="<%= i %>" <%= i == (request.getParameter("endHour") == null ? -1 : Integer.parseInt(request.getParameter("endHour"))) ? "selected" : "" %>>
 	                            <%= i %>時
 	                        </option>
 	                    <% } %>
@@ -88,7 +88,7 @@
 	            </div>
 	        </c:if>
 	        <c:if test="${not empty  valueLongError}">
-	            <div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${valueLongError}
 	            </div>
 	        </c:if>
@@ -103,7 +103,7 @@
 	            </div>
 	        </c:if>	   
 			<c:if test="${not empty innerError}">
-				<div class="alert alert-danger" role="alert">
+	            <div class="alert alert-danger text-center input-field" role="alert">
 					${innerError}
 				</div>
 			</c:if>
