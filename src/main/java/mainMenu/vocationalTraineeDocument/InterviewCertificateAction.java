@@ -75,7 +75,6 @@ public class InterviewCertificateAction extends Action {
 		// 日付に未入力項目がある場合は、印刷する書類に日時を記入しない
 		if (year == null || month == null || day == null ||
 				year.isEmpty() || month.isEmpty() || day.isEmpty()) {
-			jobSearch = "";
 			year = "";
 			month = "";
 			day = "";
