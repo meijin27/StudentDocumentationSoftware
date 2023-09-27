@@ -113,7 +113,7 @@ public class ChangeVocationalTraineeAction extends Action {
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "学生種別が職業訓練生のみ変更可能です。");
-				return "interview-certificate.jsp";
+				return "change-vocational-trainee.jsp";
 			}
 
 			// 登録するデータの暗号化
