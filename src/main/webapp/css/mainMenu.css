@@ -79,10 +79,6 @@ footer.footer {
   height: 16px;
 }
 
-.left-aligned-text {
-  text-align: left;
-}
-
 .data-row {
   display: flex;
   justify-content: flex-start;

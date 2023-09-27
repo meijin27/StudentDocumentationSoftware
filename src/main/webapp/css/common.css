@@ -26,6 +26,10 @@
     text-align: left;
 }
 
+.left-aligned-text {
+  text-align: left;
+}
+
 .margin-bottom-50 {
     margin-bottom: 50px;
 }
