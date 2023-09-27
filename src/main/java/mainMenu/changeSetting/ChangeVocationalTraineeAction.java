@@ -112,7 +112,7 @@ public class ChangeVocationalTraineeAction extends Action {
 			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("innerError", "学生種別が職業訓練生のみ変更可能です。");
+				request.setAttribute("innerError", "学生種別が職業訓練生の場合のみ変更可能です。");
 				return "change-vocational-trainee.jsp";
 			}
 
