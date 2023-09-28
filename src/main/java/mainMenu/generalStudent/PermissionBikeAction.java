@@ -138,7 +138,7 @@ public class PermissionBikeAction extends Action {
 		}
 
 		// 種別が「自転車」「原動機付自転車」以外の場合はエラーを返す
-		if (!(classification.equals("自転車") || classification.equals("原動機付自転車無"))) {
+		if (!(classification.equals("自転車") || classification.equals("原動機付自転車"))) {
 			request.setAttribute("innerError", "種別は「自転車」「原動機付自転車」から選択してください");
 		}
 

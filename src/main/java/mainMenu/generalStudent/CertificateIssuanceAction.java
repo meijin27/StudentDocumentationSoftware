@@ -200,13 +200,13 @@ public class CertificateIssuanceAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{4}$")
+			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{1,2}$")
 					|| !requestMonth.matches("^\\d{1,2}$")
 					|| !requestDay.matches("^\\d{1,2}$")) {
 				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
 			} else {
-				int checkYear = Integer.parseInt(requestYear);
+				int checkYear = Integer.parseInt(requestYear) + 2018;
 				int checkMonth = Integer.parseInt(requestMonth);
 				int checkDay = Integer.parseInt(requestDay);
 

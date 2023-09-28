@@ -213,11 +213,17 @@ public class PeriodUpdateFirstAction extends Action {
 
 			// 年月日が存在しない日付の場合はエラーにする
 			try {
-				int checkYear = Integer.parseInt(relativeBirthYear);
-				int checkMonth = Integer.parseInt(relativeBirthMonth);
-				int checkDay = Integer.parseInt(relativeBirthDay);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+				if (!relativeBirthYear.matches("^\\d{4}$") || !relativeBirthMonth.matches("^\\d{1,2}$")
+						|| !relativeBirthDay.matches("^\\d{1,2}$")) {
+					request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+				} else {
+					int checkYear = Integer.parseInt(relativeBirthYear);
+					int checkMonth = Integer.parseInt(relativeBirthMonth);
+					int checkDay = Integer.parseInt(relativeBirthDay);
+					// 日付の妥当性チェック
+					LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+				}
 			} catch (NumberFormatException e) {
 				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
@@ -226,10 +232,7 @@ public class PeriodUpdateFirstAction extends Action {
 
 			// 文字数が32文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
 			if (relationship.length() > 32 || relativeName.length() > 32 || relativeNationalityRegion.length() > 32
-					|| livingTogether.length() > 32 || placeOfEmployment.length() > 32 || cardNumber.length() > 32
-					|| relativeBirthYear.length() > 4
-					|| relativeBirthMonth.length() > 2 || relativeBirthDay.length() > 2
-					|| livingTogether.length() > 1) {
+					|| livingTogether.length() > 32 || placeOfEmployment.length() > 32 || cardNumber.length() > 32) {
 				request.setAttribute("valueLongError", "32文字以下で入力してください。");
 			}
 

@@ -94,9 +94,9 @@ public class CertificateOfEmploymentAction extends Action {
 		for (int i = 1; i <= 31; i++) {
 			String day = "firstMonthDay" + i;
 			String marker = request.getParameter(day);
-			// 就労日が空文字か「○」以外の入力があった場合にエラーを返す
-			if (marker != null && !marker.isEmpty() && !marker.equals("○")) {
-				request.setAttribute("innerError", "就労日は「○」以外入力しないでください。");
+			// 就労日が空文字か「〇」以外の入力があった場合にエラーを返す
+			if (marker != null && !marker.isEmpty() && !marker.equals("〇")) {
+				request.setAttribute("innerError", "就労日は「〇」以外入力しないでください。");
 				return "certificate-of-employment.jsp";
 			}
 			// 指定された月の最後の日以降の日付であれば強制的に空文字にする
@@ -132,9 +132,9 @@ public class CertificateOfEmploymentAction extends Action {
 			for (int i = 1; i <= 31; i++) {
 				String day = "secondMonthDay" + i;
 				String marker = request.getParameter(day);
-				// 就労日が空文字か「○」以外の入力があった場合にエラーを返す
-				if (marker != null && !marker.isEmpty() && !marker.equals("○")) {
-					request.setAttribute("innerError", "就労日は「○」以外入力しないでください。");
+				// 就労日が空文字か「〇」以外の入力があった場合にエラーを返す
+				if (marker != null && !marker.isEmpty() && !marker.equals("〇")) {
+					request.setAttribute("innerError", "就労日は「〇」以外入力しないでください。");
 					return "certificate-of-employment.jsp";
 				}
 				// 指定された月の最後の日以降の日付であれば強制的に空文字にする

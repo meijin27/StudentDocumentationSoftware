@@ -81,7 +81,7 @@ public class RecommendedDeliveryAction extends Action {
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
 			// 年月日が半角数字の適切な桁数になっていることを検証し、違う場合はエラーを返す。
-			if (!requestYear.matches("^\\d{4}$")
+			if (!requestYear.matches("^\\d{1,2}$")
 					|| !requestMonth.matches("^\\d{1,2}$")
 					|| !requestDay.matches("^\\d{1,2}$") || !deadlineYear.matches("^\\d{1,2}$")
 					|| !deadlineMonth.matches("^\\d{1,2}$")

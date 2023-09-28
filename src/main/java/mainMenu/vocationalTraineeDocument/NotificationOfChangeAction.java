@@ -84,9 +84,9 @@ public class NotificationOfChangeAction extends Action {
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
 
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!changeYear.matches("^\\d{4}$") || !changeMonth.matches("^\\d{1,2}$")
-					|| !changetDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{4}$")
+			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+			if (!changeYear.matches("^\\d{1,2}$") || !changeMonth.matches("^\\d{1,2}$")
+					|| !changetDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{1,2}$")
 					|| !requestMonth.matches("^\\d{1,2}$")
 					|| !requestDay.matches("^\\d{1,2}$")) {
 				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");

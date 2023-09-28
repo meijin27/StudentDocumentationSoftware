@@ -93,32 +93,39 @@ public class PetitionForDeferredPaymentAction extends Action {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "petition-for-deferred-payment.jsp";
 		}
-
+		// 各種日付の整合確認用
 		LocalDate requestDate = null;
-
+		LocalDate generalDeliveryDate = null;
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear) + 2018;
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
-			// 日付の妥当性チェック
-			requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{1,2}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$") || !generalDeliveryYear.matches("^\\d{1,2}$")
+					|| !generalDeliveryMonth.matches("^\\d{1,2}$")
+					|| !generalDeliveryDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear) + 2018;
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
+				// 日付の妥当性チェック
+				requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(generalDeliveryYear) + 2018;
-			checkMonth = Integer.parseInt(generalDeliveryMonth);
-			checkDay = Integer.parseInt(generalDeliveryDay);
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+				checkYear = Integer.parseInt(generalDeliveryYear) + 2018;
+				checkMonth = Integer.parseInt(generalDeliveryMonth);
+				checkDay = Integer.parseInt(generalDeliveryDay);
+				// 日付の妥当性チェック
+				generalDeliveryDate = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (reason.length() > 64 || howToRaiseFunds.length() > 64 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2 || generalDeliveryYear.length() > 4
-				|| generalDeliveryMonth.length() > 2 || generalDeliveryDay.length() > 2) {
+		// 文字数が64文字より多い場合はエラーを返す。
+		if (reason.length() > 64 || howToRaiseFunds.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
@@ -173,30 +180,34 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 			// 年月日が存在しない日付の場合はエラーにする
 			try {
-				int checkYear = Integer.parseInt(deliveryYear) + 2018;
-				int checkMonth = Integer.parseInt(deliveryMonth);
-				int checkDay = Integer.parseInt(deliveryDay);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-				// 土日のチェック
-				if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-					request.setAttribute("dayError", "選択した日付は土日です。納付期限は土日祝日にならないようにしてください。");
-				}
-				// dateがrequestDateより後の日付かどうかを確認
-				if (!date.isAfter(requestDate)) {
-					// dateがrequestDateより後の日付ではない場合の処理
-					request.setAttribute("dayError", "納付期限は願出年月日より後の日付にしてください。");
+				// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+				if (!deliveryYear.matches("^\\d{1,2}$")
+						|| !deliveryMonth.matches("^\\d{1,2}$")
+						|| !deliveryDay.matches("^\\d{1,2}$")) {
+					request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+				} else {
+					int checkYear = Integer.parseInt(deliveryYear) + 2018;
+					int checkMonth = Integer.parseInt(deliveryMonth);
+					int checkDay = Integer.parseInt(deliveryDay);
+					// 日付の妥当性チェック
+					LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+					// 土日のチェック
+					if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+						request.setAttribute("dayError", "選択した日付は土日です。納付期限は土日祝日にならないようにしてください。");
+					}
+					// 納付期限が申請日より後の日付かどうかを確認
+					if (!date.isAfter(requestDate)) {
+						request.setAttribute("dayError", "納付期限は願出年月日より後の日付にしてください。");
+					}
+					// 納付期限が通常納期内納付学費等より後の日付かどうかを確認
+					if (!date.isAfter(generalDeliveryDate)) {
+						request.setAttribute("dayError", "納付期限は通常納期内納付学費等より後の日付にしてください。");
+					}
 				}
 			} catch (NumberFormatException e) {
 				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
-			}
-
-			// セレクトボックスの有効範囲画外の場合もエラーを返す。
-			if (deliveryYear.length() > 4
-					|| deliveryMonth.length() > 2 || deliveryDay.length() > 2) {
-				request.setAttribute("valueLongError", "入力にはセレクトボックスを使用してください。");
 			}
 
 			// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
