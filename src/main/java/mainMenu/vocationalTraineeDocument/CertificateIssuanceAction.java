@@ -82,12 +82,19 @@ public class CertificateIssuanceAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear);
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
+			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{1,2}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear) + 2018;
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
 
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
@@ -101,10 +108,8 @@ public class CertificateIssuanceAction extends Action {
 			request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (reason.length() > 64 || propose.length() > 64 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2 || proofOfStudent.length() > 1
-				|| certificateOfCompletion.length() > 1 || certificateOfExpectedCompletion.length() > 1) {
+		// 文字数が64文字より多い場合はエラーを返す。
+		if (reason.length() > 64 || propose.length() > 64) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 

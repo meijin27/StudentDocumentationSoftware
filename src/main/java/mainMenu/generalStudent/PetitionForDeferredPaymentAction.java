@@ -301,7 +301,7 @@ public class PetitionForDeferredPaymentAction extends Action {
 						// 日付の妥当性チェック
 						LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 					} catch (NumberFormatException e) {
-						request.setAttribute("exchangeStudentError", "invoiceは数字で入力してください。");
+						request.setAttribute("exchangeStudentError", "invoiceの年月日は数字で入力してください。");
 					} catch (DateTimeException e) {
 						request.setAttribute("exchangeStudentError", "invoiceが存在しない日付です。");
 					}

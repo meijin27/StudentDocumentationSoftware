@@ -140,16 +140,16 @@
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">
-				            <input class="form-check-input" type="radio" name="AttachmentOfCertificate<%= set %>" id="AttachmentOfCertificateYes<%= set %>" value="有" 
-				                   <% if ("有".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
-				            <label class="form-check-label" for="AttachmentOfCertificateYes<%= set %>">
+				            <input class="form-check-input" type="radio" name="attachmentOfCertificate<%= set %>" id="attachmentOfCertificateYes<%= set %>" value="有" 
+				                   <% if ("有".equals(request.getParameter("attachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
+				            <label class="form-check-label" for="attachmentOfCertificateYes<%= set %>">
 				                有
 				            </label>
 				        </div>
 				        <div class="form-check"> 
-				            <input class="form-check-input" type="radio" name="AttachmentOfCertificate<%= set %>" id="AttachmentOfCertificateNo<%= set %>" value="無" 
-				                   <% if ("無".equals(request.getParameter("AttachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
-				            <label class="form-check-label" for="AttachmentOfCertificateNo<%= set %>">
+				            <input class="form-check-input" type="radio" name="attachmentOfCertificate<%= set %>" id="attachmentOfCertificateNo<%= set %>" value="無" 
+				                   <% if ("無".equals(request.getParameter("attachmentOfCertificate" + set))) { %> checked <% } %> <%= (set == 1) ? "required" : "" %> data-required="true">
+				            <label class="form-check-label" for="attachmentOfCertificateNo<%= set %>">
 				                無
 				            </label>
 				        </div>
@@ -183,7 +183,12 @@
             <div class="alert alert-danger text-center input-field" role="alert">
                 ${logicalError}
             </div>
-        </c:if>	   	        
+        </c:if>	 
+        <c:if test="${not empty numberError}">
+            <div class="alert alert-danger text-center input-field" role="alert">
+                ${numberError}
+            </div>
+        </c:if>	   	                 	        
 		<c:if test="${not empty innerError}">
             <div class="alert alert-danger text-center input-field" role="alert">
 				${innerError}

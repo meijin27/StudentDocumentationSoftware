@@ -77,22 +77,28 @@ public class ChangeNameDateofBirthAction extends Action {
 
 		// 生年月日が存在しない日付の場合はエラーにする
 		try {
-			int year = Integer.parseInt(birthYear);
-			int month = Integer.parseInt(birthMonth);
-			int day = Integer.parseInt(birthDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!birthYear.matches("^\\d{4}$")
+					|| !birthMonth.matches("^\\d{1,2}$")
+					|| !birthDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int year = Integer.parseInt(birthYear);
+				int month = Integer.parseInt(birthMonth);
+				int day = Integer.parseInt(birthDay);
 
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(year, month, day);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(year, month, day);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		// 文字数が32文字より多い場合はエラーを返す。
 		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32 || birthYear.length() > 4 || birthMonth.length() > 2
-				|| birthDay.length() > 2) {
+				|| firstNameRuby.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

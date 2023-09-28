@@ -83,19 +83,30 @@ public class NotificationOfChangeAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(changeYear);
-			int checkMonth = Integer.parseInt(changeMonth);
-			int checkDay = Integer.parseInt(changetDay);
 
-			// 日付の妥当性チェック
-			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!changeYear.matches("^\\d{4}$") || !changeMonth.matches("^\\d{1,2}$")
+					|| !changetDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(changeYear);
+				int checkMonth = Integer.parseInt(changeMonth);
+				int checkDay = Integer.parseInt(changetDay);
 
-			checkYear = Integer.parseInt(requestYear);
-			checkMonth = Integer.parseInt(requestMonth);
-			checkDay = Integer.parseInt(requestDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			Date = LocalDate.of(checkYear, checkMonth, checkDay);
+				checkYear = Integer.parseInt(requestYear);
+				checkMonth = Integer.parseInt(requestMonth);
+				checkDay = Integer.parseInt(requestDay);
 
+				date = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
+
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}

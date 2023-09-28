@@ -74,12 +74,19 @@ public class ChangeStudentInfoAction extends Action {
 
 		// 入学年月日が存在しない日付の場合はエラーにする
 		try {
-			int year = Integer.parseInt(admissionYear);
-			int month = Integer.parseInt(admissionMonth);
-			int day = Integer.parseInt(admissionDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!admissionYear.matches("^\\d{4}$")
+					|| !admissionMonth.matches("^\\d{1,2}$")
+					|| !admissionDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int year = Integer.parseInt(admissionYear);
+				int month = Integer.parseInt(admissionMonth);
+				int day = Integer.parseInt(admissionDay);
 
-			// 日付の妥当性チェック
-			LocalDate Date = LocalDate.of(year, month, day);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(year, month, day);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
@@ -96,10 +103,9 @@ public class ChangeStudentInfoAction extends Action {
 			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
 		}
 
-		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (studentType.length() > 5 || className.length() > 32 || admissionYear.length() > 4
-				|| admissionMonth.length() > 2 || admissionDay.length() > 2) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		// セレクトボックスの有効範囲画外の場合はエラーを返す。
+		if (studentType.length() > 5 || className.length() > 16) {
+			request.setAttribute("valueLongError", "16文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

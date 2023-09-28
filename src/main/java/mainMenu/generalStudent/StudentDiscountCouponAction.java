@@ -70,11 +70,18 @@ public class StudentDiscountCouponAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear);
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear);
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
@@ -122,9 +129,9 @@ public class StudentDiscountCouponAction extends Action {
 				request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
 			}
 
-			// 文字数が18文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
+			// 文字数が18文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 			if (startingStation.length() > 18 || arrivalStation.length() > 18 || reason.length() > 18
-					|| intendedUse.length() > 3 || sheetsRequired.length() > 1) {
+					|| intendedUse.length() > 3) {
 				request.setAttribute("valueLongError", "18文字以下で入力してください。");
 			}
 

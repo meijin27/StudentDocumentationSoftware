@@ -77,19 +77,30 @@ public class PetitionForRelativesAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(birthYear);
-			int checkMonth = Integer.parseInt(birthMonth);
-			int checkDay = Integer.parseInt(birthDay);
 
-			// 日付の妥当性チェック
-			LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!birthYear.matches("^\\d{4}$") || !birthMonth.matches("^\\d{1,2}$")
+					|| !birthDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
 
-			checkYear = Integer.parseInt(requestYear);
-			checkMonth = Integer.parseInt(requestMonth);
-			checkDay = Integer.parseInt(requestDay);
+				int checkYear = Integer.parseInt(birthYear);
+				int checkMonth = Integer.parseInt(birthMonth);
+				int checkDay = Integer.parseInt(birthDay);
 
-			Date = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 
+				checkYear = Integer.parseInt(requestYear);
+				checkMonth = Integer.parseInt(requestMonth);
+				checkDay = Integer.parseInt(requestDay);
+
+				date = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}

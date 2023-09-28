@@ -85,55 +85,56 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear);
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
-			// 日付の妥当性チェック
-			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$") || !startYear.matches("^\\d{4}$")
+					|| !startMonth.matches("^\\d{1,2}$")
+					|| !startDay.matches("^\\d{1,2}$") || !endYear.matches("^\\d{4}$")
+					|| !endMonth.matches("^\\d{1,2}$")
+					|| !endDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear);
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
+				// 日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(startYear);
-			checkMonth = Integer.parseInt(startMonth);
-			checkDay = Integer.parseInt(startDay);
-			// 日付の妥当性チェック
-			date = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 開始日が終了日よりも前かどうかをチェックする
+				int checkStartYear = Integer.parseInt(startYear);
+				int checkStartMonth = Integer.parseInt(startMonth);
+				int checkStartDay = Integer.parseInt(startDay);
 
-			checkYear = Integer.parseInt(endYear);
-			checkMonth = Integer.parseInt(endMonth);
-			checkDay = Integer.parseInt(endDay);
-			// 日付の妥当性チェック
-			date = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 日付の妥当性チェック
+				date = LocalDate.of(checkStartYear, checkStartMonth, checkStartDay);
+
+				int checkEndYear = Integer.parseInt(endYear);
+				int checkEndMonth = Integer.parseInt(endMonth);
+				int checkEndDay = Integer.parseInt(endDay);
+				// 日付の妥当性チェック
+				date = LocalDate.of(checkEndYear, checkEndMonth, checkEndDay);
+
+				// 年度が整合とれるか確認する
+				if (checkStartYear > checkEndYear) {
+					request.setAttribute("logicalError", "開始年は終了年よりも前でなければなりません。");
+					// 月が整合取れるか確認する
+				} else if (checkStartYear == checkEndYear && checkStartMonth > checkEndMonth) {
+					request.setAttribute("logicalError", "開始月は終了月よりも前でなければなりません。");
+					// 日付が整合取れるか確認する
+				} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth
+						&& checkStartDay > checkEndDay) {
+					request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
+				}
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
-			return "absence-due-to-injury-or-illness.jsp"; // この後のコードで数値化して利用するため、ナンバーエラーが発生した場合はリターンを返す
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 開始日が終了日よりも前かどうかをチェックする
-		int checkStartYear = Integer.parseInt(startYear);
-		int checkStartMonth = Integer.parseInt(startMonth);
-		int checkStartDay = Integer.parseInt(startDay);
-
-		int checkEndYear = Integer.parseInt(endYear);
-		int checkEndMonth = Integer.parseInt(endMonth);
-		int checkEndDay = Integer.parseInt(endDay);
-
-		// 年度が整合とれるか確認する
-		if (checkStartYear > checkEndYear) {
-			request.setAttribute("logicalError", "開始年は終了年よりも前でなければなりません。");
-			// 月が整合取れるか確認する
-		} else if (checkStartYear == checkEndYear && checkStartMonth > checkEndMonth) {
-			request.setAttribute("logicalError", "開始月は終了月よりも前でなければなりません。");
-			// 日付が整合取れるか確認する
-		} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth && checkStartDay > checkEndDay) {
-			request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
-		}
-
-		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (disease.length() > 32 || reason.length() > 32 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2 || startYear.length() > 4
-				|| startMonth.length() > 2 || startDay.length() > 2 || endYear.length() > 4
-				|| endMonth.length() > 2 || endDay.length() > 2) {
+		// 文字数が32文字より多い場合はエラーを返す。
+		if (disease.length() > 32 || reason.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

@@ -200,22 +200,33 @@ public class CertificateIssuanceAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear);
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear);
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
 
-			// 届出年月日の日付の妥当性チェック
-			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 届出年月日の日付の妥当性チェック
+				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が18文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
-		if (propose.length() > 18 || immigrationBureau.length() > 3 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2) {
-			request.setAttribute("valueLongError", "18文字以下で入力してください。");
+		// 文字数が18文字より多い場合はエラーを返す。
+		if (propose.length() > 18) {
+			request.setAttribute("valueLongError", "提出先は18文字以下で入力してください。");
+		}
+
+		// 文字数が8文字より多い場合はエラーを返す。
+		if (use.length() > 18) {
+			request.setAttribute("valueLongError", "用途は8文字以下で入力してください。");
 		}
 
 		// 提出先が「はい」「いいえ」以外の場合はエラーを返す

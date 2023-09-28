@@ -115,12 +115,12 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			String deadTime = request.getParameter("deadTime" + num);
 			String latenessTime = request.getParameter("latenessTime" + num);
 			String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
-			String AttachmentOfCertificate = request.getParameter("AttachmentOfCertificate" + num);
+			String attachmentOfCertificate = request.getParameter("attachmentOfCertificate" + num);
 
 			// 未入力項目があればエラーを返す
-			if (AttachmentOfCertificate == null || restedDayStart == null
+			if (attachmentOfCertificate == null || restedDayStart == null
 					|| restedDayEnd == null || reason == null || allDayOff == null
-					|| AttachmentOfCertificate.isEmpty()
+					|| attachmentOfCertificate.isEmpty()
 					|| restedDayStart.isEmpty() || restedDayEnd.isEmpty()
 					|| reason.isEmpty()
 					|| allDayOff.isEmpty()) {
@@ -133,6 +133,16 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				}
 			}
 
+			// 全日休みは「はい」「いいえ」以外の場合はエラーを返す
+			if (!(allDayOff.equals("はい") || allDayOff.equals("いいえ"))) {
+				request.setAttribute("innerError", "全日休確認は「はい」「いいえ」から選択してください");
+			}
+
+			// 証明添付有無は「有」「無」以外の場合はエラーを返す
+			if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
+				request.setAttribute("innerError", "証明添付有無は「有」「無」から選択してください");
+			}
+
 			// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
 			if (allDayOff.equals("はい") && (deadTime == null || deadTime.isEmpty())) {
 				request.setAttribute("nullError", "欠席期間時限数を入力してください。");
@@ -141,10 +151,16 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				request.setAttribute("nullError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
 				// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
 			} else if (allDayOff.equals("いいえ") && !restedDayStart.equals(restedDayEnd)) {
-				request.setAttribute("nullError", "複数の日付をまたぐ場合は終日休業になります。");
+				request.setAttribute("logicalError", "複数の日付をまたぐ場合は終日休業になります。");
+				// 終日休業が「はい」かつ休業時限数が数字以外の場合はエラーを返す
+			} else if (allDayOff.equals("はい") && !deadTime.matches("^\\d{1,3}$")) {
+				request.setAttribute("numberError", "時間は半角数字で入力してください。");
 				// 終日休業が「はい」ならば欠席時限数を累計時限に追加する
-			} else if (allDayOff.equals("はい")) {
+			} else if (allDayOff.equals("いいえ")
+					&& (!latenessTime.matches("^\\d{1,2}$") || !leaveEarlyTime.matches("^\\d{1,2}$"))) {
 				totalHours += Integer.parseInt(deadTime);
+				// 終日休業が「いいえ」かつ遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
+				request.setAttribute("numberError", "時間は半角数字で入力してください。");
 				// 終日休業が「いいえ」ならば遅刻時限及び早退時限の入力されている値を累計時限に追加する
 			} else if (allDayOff.equals("いいえ")) {
 				// 遅刻時限数が入力されていた場合
@@ -166,17 +182,16 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				int checkEndDay = Integer.parseInt(restedDayEnd);
 				// 日付の妥当性チェック
 				LocalDate date = LocalDate.of(checkYear, checkMonth, checkStartDay);
-				date = LocalDate.of(checkYear, checkMonth, checkEndDay);
+
+				// 休業開始日が休業終了日よりも前かどうかをチェックする
+				if (checkStartDay > checkEndDay) {
+					request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
+				}
+
+			} catch (NumberFormatException e) {
+				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
-			}
-
-			// 休業開始日が休業終了日よりも前かどうかをチェックする
-			int checkStartDay = Integer.parseInt(restedDayStart);
-			int checkEndDay = Integer.parseInt(restedDayEnd);
-			// 日付が整合とれるか確認する
-			if (checkStartDay > checkEndDay) {
-				request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
 			}
 
 			// 文字数が22文字より多い場合はエラーを返す
@@ -187,7 +202,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			// エラーが発生している場合は元のページに戻す
 			if (request.getAttribute("nullError") != null || request.getAttribute("logicalError") != null
 					|| request.getAttribute("dayError") != null
-					|| request.getAttribute("valueLongError") != null) {
+					|| request.getAttribute("valueLongError") != null || request.getAttribute("numberError") != null) {
 				return "notification-absence-of-training.jsp";
 			}
 
@@ -320,7 +335,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				String deadTime = request.getParameter("deadTime" + num);
 				String latenessTime = request.getParameter("latenessTime" + num);
 				String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
-				String AttachmentOfCertificate = request.getParameter("AttachmentOfCertificate" + num);
+				String attachmentOfCertificate = request.getParameter("attachmentOfCertificate" + num);
 				// 月日・欠席日数
 				editor.writeText(font, subjectMonth, 44f, 386f - row, 40f, "left", 12);
 				editor.writeText(font, restedDayStart, 73f, 386f - row, 40f, "left", 12);
@@ -360,7 +375,7 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				editor.writeText(font, parameters.get("totalHours" + num), 535f, 378f - row, 70f, "center", 12);
 
 				// 雇用保険の有無に応じて〇の位置を変える
-				if (AttachmentOfCertificate.equals("有")) {
+				if (attachmentOfCertificate.equals("有")) {
 					editor.writeText(font, "〇", 737f, 384f - row, 40f, "left", 16);
 				} else {
 					editor.writeText(font, "〇", 755f, 384f - row, 40f, "left", 16);

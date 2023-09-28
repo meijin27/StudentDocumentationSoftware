@@ -90,30 +90,41 @@ public class PermissionBikeAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear) + 2018;
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
+			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+			if (!requestYear.matches("^\\d{1,2}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$") || !startYear.matches("^\\d{1,2}$")
+					|| !startMonth.matches("^\\d{1,2}$")
+					|| !startDay.matches("^\\d{1,2}$") || !endYear.matches("^\\d{1,2}$")
+					|| !endMonth.matches("^\\d{1,2}$")
+					|| !endDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear) + 2018;
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
 
-			// 願出年月日の日付の妥当性チェック
-			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 願出年月日の日付の妥当性チェック
+				LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(startYear) + 2018;
-			checkMonth = Integer.parseInt(startMonth);
-			checkDay = Integer.parseInt(startDay);
-			// 期間年月日（自）の日付の妥当性チェック
-			LocalDate startDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				checkYear = Integer.parseInt(startYear) + 2018;
+				checkMonth = Integer.parseInt(startMonth);
+				checkDay = Integer.parseInt(startDay);
+				// 期間年月日（自）の日付の妥当性チェック
+				LocalDate startDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(endYear) + 2018;
-			checkMonth = Integer.parseInt(endMonth);
-			checkDay = Integer.parseInt(endDay);
-			// 期間年月日（至）の日付の妥当性チェック
-			LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				checkYear = Integer.parseInt(endYear) + 2018;
+				checkMonth = Integer.parseInt(endMonth);
+				checkDay = Integer.parseInt(endDay);
+				// 期間年月日（至）の日付の妥当性チェック
+				LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			// 申請日と申請期間の比較
-			if (startDate.isBefore(requestDate)) {
-				request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
-			} else if (endDate.isBefore(startDate)) {
-				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
+				// 申請日と申請期間の比較
+				if (startDate.isBefore(requestDate)) {
+					request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+				} else if (endDate.isBefore(startDate)) {
+					request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
+				}
 			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
@@ -131,12 +142,9 @@ public class PermissionBikeAction extends Action {
 			request.setAttribute("innerError", "種別は「自転車」「原動機付自転車」から選択してください");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスとラジオボタンの有効範囲画外の場合もエラーを返す。
+		// 文字数が32文字より多い場合はエラーを返す。
 		if (patron.length() > 32 || registrationNumber.length() > 32
-				|| modelAndColor.length() > 32 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2 || startYear.length() > 4
-				|| startMonth.length() > 2 || startDay.length() > 2 || endYear.length() > 4
-				|| endMonth.length() > 2 || endDay.length() > 2 || classification.length() > 7) {
+				|| modelAndColor.length() > 32) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

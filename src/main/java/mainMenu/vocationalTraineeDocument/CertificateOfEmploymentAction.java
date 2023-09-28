@@ -112,7 +112,7 @@ public class CertificateOfEmploymentAction extends Action {
 		if (secondMonth == null || secondMonth.isEmpty()) {
 
 		} else {
-			// 一月目は半角数字2桁以下でなければエラーを返す
+			// 二月目は半角数字2桁以下でなければエラーを返す
 			if (!secondMonth.matches("^\\d{1,2}$")) {
 				request.setAttribute("numberError", "月は半角数字2桁以下で入力してください。");
 				return "certificate-of-employment.jsp";

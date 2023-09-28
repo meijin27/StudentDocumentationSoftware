@@ -73,7 +73,6 @@ public class VocationalTraineeSettingAction extends Action {
 		// 雇用保険が「有」「無」以外の場合はエラーを返す
 		else if (!(employmentInsurance.equals("有") || employmentInsurance.equals("無"))) {
 			request.setAttribute("innerError", "雇用保険は「有」「無」から選択してください");
-			return "vocational-trainee-setting.jsp";
 		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す
@@ -87,7 +86,8 @@ public class VocationalTraineeSettingAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("attendanceNumberError") != null || request.getAttribute("valueLongError") != null) {
+		if (request.getAttribute("attendanceNumberError") != null || request.getAttribute("valueLongError") != null
+				|| request.getAttribute("innerError") != null) {
 			return "vocational-trainee-setting.jsp";
 		}
 

@@ -80,22 +80,31 @@ public class RecommendedDeliveryAction extends Action {
 
 		// 年月日が存在しない日付の場合はエラーにする
 		try {
-			int checkYear = Integer.parseInt(requestYear) + 2018;
-			int checkMonth = Integer.parseInt(requestMonth);
-			int checkDay = Integer.parseInt(requestDay);
+			// 年月日が半角数字の適切な桁数になっていることを検証し、違う場合はエラーを返す。
+			if (!requestYear.matches("^\\d{4}$")
+					|| !requestMonth.matches("^\\d{1,2}$")
+					|| !requestDay.matches("^\\d{1,2}$") || !deadlineYear.matches("^\\d{1,2}$")
+					|| !deadlineMonth.matches("^\\d{1,2}$")
+					|| !deadlineDay.matches("^\\d{1,2}$")) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				int checkYear = Integer.parseInt(requestYear) + 2018;
+				int checkMonth = Integer.parseInt(requestMonth);
+				int checkDay = Integer.parseInt(requestDay);
 
-			// 申請日の日付の妥当性チェック
-			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				// 申請日の日付の妥当性チェック
+				LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			checkYear = Integer.parseInt(deadlineYear) + 2018;
-			checkMonth = Integer.parseInt(deadlineMonth);
-			checkDay = Integer.parseInt(deadlineDay);
-			// 提出期限日の日付の妥当性チェック
-			LocalDate deadlineDate = LocalDate.of(checkYear, checkMonth, checkDay);
+				checkYear = Integer.parseInt(deadlineYear) + 2018;
+				checkMonth = Integer.parseInt(deadlineMonth);
+				checkDay = Integer.parseInt(deadlineDay);
+				// 提出期限日の日付の妥当性チェック
+				LocalDate deadlineDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-			// 申請日と提出期限日の比較
-			if (deadlineDate.isBefore(requestDate)) {
-				request.setAttribute("dayError", "提出期限は申請日より後の日付でなければなりません。");
+				// 申請日と提出期限日の比較
+				if (deadlineDate.isBefore(requestDate)) {
+					request.setAttribute("dayError", "提出期限は申請日より後の日付でなければなりません。");
+				}
 			}
 		} catch (NumberFormatException e) {
 			request.setAttribute("dayError", "年月日は数字で入力してください。");
@@ -106,16 +115,14 @@ public class RecommendedDeliveryAction extends Action {
 		// 事由が「その他」の場合で理由が未記載の場合はエラーを返す
 		if (subject.equals("その他") && (reason == null || reason.isEmpty())) {
 			request.setAttribute("nullError", "事由が「その他」の場合は理由を入力してください。");
-			// 文字数が18文字より多い場合はエラーを返す
-		} else if (reason.length() > 18) {
+			// 文字数が18文字より多い場合はエラーを返す。セレクトボックスの入力値の確認も行う。
+		} else if (reason.length() > 18 || subject.length() > 12) {
 			request.setAttribute("valueLongError", "理由は18文字以下で入力してください。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (propose.length() > 32 || subject.length() > 12 || requestYear.length() > 4
-				|| requestMonth.length() > 2 || requestDay.length() > 2 || deadlineYear.length() > 4
-				|| deadlineMonth.length() > 2 || deadlineDay.length() > 2 || nominationForm.length() > 5) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		// 文字数が32文字より多い場合はエラーを返す。
+		if (propose.length() > 32) {
+			request.setAttribute("valueLongError", "提出先は32文字以下で入力してください。");
 		}
 
 		// 推薦様式が「本校書式」「いいえ」以外の場合はエラーを返す

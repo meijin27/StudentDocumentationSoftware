@@ -75,7 +75,7 @@
 	                <span class="required-label">必須</span>
 	                <select id="deadlineYear" name="deadlineYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.deadlineYear}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
-	                    <% for(int i=currentYear-2019; i <=currentYear-2018; i++){ %>
+	                    <% for(int i=currentYear-2018; i <=currentYear-2017; i++){ %>
 	                        <option value="<%= i %>">
 	                            令和<%= i %>年（<%= i+2018 %>年）
 	                        </option>

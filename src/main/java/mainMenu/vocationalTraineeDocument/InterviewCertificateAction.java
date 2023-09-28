@@ -83,12 +83,18 @@ public class InterviewCertificateAction extends Action {
 		} else {
 			// 年月日が存在しない日付の場合はエラーにする
 			try {
-				int checkYear = Integer.parseInt(year) + 2018;
-				int checkMonth = Integer.parseInt(month);
-				int checkDay = Integer.parseInt(day);
+				// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+				if (!year.matches("^\\d{1,2}$") || !month.matches("^\\d{1,2}$")
+						|| !day.matches("^\\d{1,2}$")) {
+					request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+				} else {
+					int checkYear = Integer.parseInt(year) + 2018;
+					int checkMonth = Integer.parseInt(month);
+					int checkDay = Integer.parseInt(day);
 
-				// 日付の妥当性チェック
-				LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
+					// 日付の妥当性チェック
+					LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+				}
 			} catch (NumberFormatException e) {
 				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
