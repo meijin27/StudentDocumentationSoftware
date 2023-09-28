@@ -106,9 +106,14 @@ public class PeriodUpdateSecondAction extends Action {
 				|| endYear == null || endYear.isEmpty() || endMonth == null || endMonth.isEmpty()) {
 			// どれかだけ入力されている場合
 			request.setAttribute("organizationError", "日本語教育を受けた機関と期間は全て入力してください。");
-		} else if (organization.length() > 32) {
-			// 文字数が32文字より多い場合はエラーを返す
+		} else if (organization.length() > 32 || startYear.length() > 4
+				|| startMonth.length() > 2 || endYear.length() > 4 || endMonth.length() > 2) {
+			// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 			request.setAttribute("organizationError", "32文字以下で入力してください。");
+		} else if (!startYear.matches("^\\d+$") || !startMonth.matches("^\\d+$") || !endYear.matches("^\\d+$")
+				|| !endMonth.matches("^\\d+$")) {
+			// 期間が数字以外を入力された場合はエラーを返す
+			request.setAttribute("organizationError", "期間は半角数字で入力してください");
 		} else if (Integer.parseInt(startYear) > Integer.parseInt(endYear)
 				|| (startYear.equals(endYear) && (Integer.parseInt(startMonth) > Integer.parseInt(endMonth)))) {
 			// 教育開始が終了より後の場合はエラーを返す

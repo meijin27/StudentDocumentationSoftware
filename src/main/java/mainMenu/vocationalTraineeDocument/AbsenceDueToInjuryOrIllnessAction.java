@@ -102,12 +102,14 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			checkDay = Integer.parseInt(endDay);
 			// 日付の妥当性チェック
 			date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
+			return "absence-due-to-injury-or-illness.jsp"; // この後のコードで数値化して利用するため、ナンバーエラーが発生した場合はリターンを返す
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 開始時刻が終了時刻よりも前かどうかをチェックする
+		// 開始日が終了日よりも前かどうかをチェックする
 		int checkStartYear = Integer.parseInt(startYear);
 		int checkStartMonth = Integer.parseInt(startMonth);
 		int checkStartDay = Integer.parseInt(startDay);
@@ -127,8 +129,11 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 			request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
-		if (disease.length() > 32 || reason.length() > 32) {
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (disease.length() > 32 || reason.length() > 32 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2 || startYear.length() > 4
+				|| startMonth.length() > 2 || startDay.length() > 2 || endYear.length() > 4
+				|| endMonth.length() > 2 || endDay.length() > 2) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

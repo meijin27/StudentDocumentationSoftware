@@ -89,16 +89,21 @@ public class InterviewCertificateAction extends Action {
 
 				// 日付の妥当性チェック
 				LocalDate Date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+			} catch (NumberFormatException e) {
+				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
 			}
 		}
 
+		// 開始終了時刻に未記載がある場合は、印刷する書類に時間を記入しない
 		if (startHour == null
 				|| endHour == null || startHour.isEmpty() || endHour.isEmpty()) {
 			startHour = "";
 			endHour = "";
+			// 時間は半角2桁以下でなければエラーを返す
+		} else if (!startHour.matches("^\\d{1,2}$") || !endHour.matches("^\\d{1,2}$")) {
+			request.setAttribute("numberError", "時間は半角数字２桁以下で入力してください。");
 		} else {
 			// 開始時刻が終了時刻よりも前かどうかをチェックする
 			int checkStartHour = Integer.parseInt(startHour);
@@ -131,7 +136,7 @@ public class InterviewCertificateAction extends Action {
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+				|| request.getAttribute("valueLongError") != null || request.getAttribute("numberError") != null) {
 			return "interview-certificate.jsp";
 		}
 

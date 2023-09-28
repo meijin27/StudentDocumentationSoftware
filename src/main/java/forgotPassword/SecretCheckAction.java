@@ -1,5 +1,7 @@
 package forgotPassword;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,9 +58,25 @@ public class SecretCheckAction extends Action {
 			return "secret-check.jsp";
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す		
-		if (secretAnswer.length() > 32) {
+		// 文字数が32文字より多い場合はエラーを返す。生年月日はセレクトボックスの有効範囲画外の場合にエラーを返す。		
+		if (secretAnswer.length() > 32 || birthYear.length() > 4 || birthMonth.length() > 2 || birthDay.length() > 2) {
 			request.setAttribute("secretError", "32文字以下で入力してください。");
+			return "secret-check.jsp";
+		}
+
+		// 生年月日が数字か確認する
+		try {
+			int year = Integer.parseInt(birthYear);
+			int month = Integer.parseInt(birthMonth);
+			int day = Integer.parseInt(birthDay);
+
+			// 正しい日付かどうか確認する
+			LocalDate date = LocalDate.of(year, month, day);
+		} catch (NumberFormatException e) {
+			request.setAttribute("secretError", "生年月日は数字で入力してください。");
+			return "secret-check.jsp";
+		} catch (DateTimeException e) {
+			request.setAttribute("secretError", "有効な日付を入力してください。");
 			return "secret-check.jsp";
 		}
 

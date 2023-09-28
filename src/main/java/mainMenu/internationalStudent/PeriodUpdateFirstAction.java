@@ -112,15 +112,19 @@ public class PeriodUpdateFirstAction extends Action {
 			checkDay = Integer.parseInt(periodDay);
 			// 日付の妥当性チェック
 			date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
 		if (nationalityRegion.length() > 32 || homeTown.length() > 32 || passportNumber.length() > 32
 				|| statusOfResidence.length() > 32 || periodOfStay.length() > 32 || desiredPeriodOfStay.length() > 32
-				|| reason.length() > 32) {
+				|| reason.length() > 32 || effectiveYear.length() > 4
+				|| effectiveMonth.length() > 2 || effectiveDay.length() > 2 || periodYear.length() > 4
+				|| periodMonth.length() > 2 || periodDay.length() > 2 || sex.length() > 1
+				|| maritalStatus.length() > 1 || criminalRecord.length() > 1) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
@@ -133,6 +137,21 @@ public class PeriodUpdateFirstAction extends Action {
 			request.setAttribute("residentCardError", "在留カード番号は記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
 		}
 
+		// ラジオボタンの入力値チェック
+		// 性別が「男」「女」以外の場合はエラーを返す
+		if (!(sex.equals("男") || sex.equals("女"))) {
+			request.setAttribute("innerError", "性別は「男（Male）」「女（Female）」から選択してください");
+			// 配偶者が「有」「無」以外の場合はエラーを返す
+		} else if (!(maritalStatus.equals("有") || maritalStatus.equals("無"))) {
+			request.setAttribute("innerError", "配偶者は「有（Married）」「無（Single）」から選択してください");
+		}
+
+		// 犯罪歴が「有」「無」以外の場合はエラーを返す
+		if (!(criminalRecord.equals("有") || criminalRecord.equals("無"))) {
+			request.setAttribute("criminalError", "犯罪歴は「有」「無」から選択してください");
+		}
+
+		// 犯罪歴が有り、かつ理由が未記載の場合はエラーを返す
 		if (criminalRecord.equals("有") && (reasonForTheCrime == null || reasonForTheCrime.isEmpty())) {
 			request.setAttribute("criminalError", "犯罪の具体的な理由を入力してください。");
 		}
@@ -141,7 +160,8 @@ public class PeriodUpdateFirstAction extends Action {
 		if (request.getAttribute("numberError") != null
 				|| request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null
-				|| request.getAttribute("residentCardError") != null || request.getAttribute("criminalError") != null) {
+				|| request.getAttribute("residentCardError") != null || request.getAttribute("criminalError") != null
+				|| request.getAttribute("innerError") != null) {
 			return "period-update-first.jsp";
 		}
 		// 作成する行数のカウント
@@ -193,13 +213,18 @@ public class PeriodUpdateFirstAction extends Action {
 				int checkDay = Integer.parseInt(relativeBirthDay);
 				// 日付の妥当性チェック
 				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			} catch (NumberFormatException e) {
+				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
 			}
 
-			// 文字数が32文字より多い場合はエラーを返す
+			// 文字数が32文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
 			if (relationship.length() > 32 || relativeName.length() > 32 || relativeNationalityRegion.length() > 32
-					|| livingTogether.length() > 32 || placeOfEmployment.length() > 32 || cardNumber.length() > 32) {
+					|| livingTogether.length() > 32 || placeOfEmployment.length() > 32 || cardNumber.length() > 32
+					|| relativeBirthYear.length() > 4
+					|| relativeBirthMonth.length() > 2 || relativeBirthDay.length() > 2
+					|| livingTogether.length() > 1) {
 				request.setAttribute("valueLongError", "32文字以下で入力してください。");
 			}
 
@@ -212,10 +237,17 @@ public class PeriodUpdateFirstAction extends Action {
 				request.setAttribute("residentCardError", "在留カード番号は記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
 			}
 
+			// ラジオボタンの入力値チェック
+			// 同居の有無が「有」「無」以外の場合はエラーを返す
+			if (!(livingTogether.equals("有") || livingTogether.equals("無"))) {
+				request.setAttribute("innerError", "同居の有無は「有（Living together）」「無（Not living together）」から選択してください");
+			}
+
 			// エラーが発生している場合は元のページに戻す
 			if (request.getAttribute("dayError") != null
 					|| request.getAttribute("valueLongError") != null
-					|| request.getAttribute("residentCardError") != null) {
+					|| request.getAttribute("residentCardError") != null
+					|| request.getAttribute("innerError") != null) {
 				return "period-update-first.jsp";
 			}
 

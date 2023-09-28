@@ -72,7 +72,7 @@ public class ChangeStudentInfoAction extends Action {
 			return "change-student-info.jsp";
 		}
 
-		// 生年月日が存在しない日付の場合はエラーにする
+		// 入学年月日が存在しない日付の場合はエラーにする
 		try {
 			int year = Integer.parseInt(admissionYear);
 			int month = Integer.parseInt(admissionMonth);
@@ -80,6 +80,8 @@ public class ChangeStudentInfoAction extends Action {
 
 			// 日付の妥当性チェック
 			LocalDate Date = LocalDate.of(year, month, day);
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
@@ -89,9 +91,20 @@ public class ChangeStudentInfoAction extends Action {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
+		// 学年・クラスが半角1桁でなければエラーを返す
+		if (!schoolYear.matches("^\\d{1}$") && !classNumber.matches("^\\d{1}$")) {
+			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
+		}
+
+		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (studentType.length() > 5 || className.length() > 32 || admissionYear.length() > 4
+				|| admissionMonth.length() > 2 || admissionDay.length() > 2) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		}
+
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null
-				|| request.getAttribute("studentNumberError") != null) {
+				|| request.getAttribute("studentNumberError") != null || request.getAttribute("numberError") != null) {
 			return "change-student-info.jsp";
 		}
 

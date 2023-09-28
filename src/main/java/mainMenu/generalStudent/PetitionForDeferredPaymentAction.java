@@ -109,18 +109,21 @@ public class PetitionForDeferredPaymentAction extends Action {
 			checkDay = Integer.parseInt(generalDeliveryDay);
 			// 日付の妥当性チェック
 			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (reason.length() > 64 || howToRaiseFunds.length() > 64) {
+		// 文字数が64文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (reason.length() > 64 || howToRaiseFunds.length() > 64 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2 || generalDeliveryYear.length() > 4
+				|| generalDeliveryMonth.length() > 2 || generalDeliveryDay.length() > 2) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
 		// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
-		if (!amountPayable.matches("\\d+") || !tuitionFeePaid.matches("\\d+") || amountPayable.length() > 7
+		if (!amountPayable.matches("\\d+$") || !tuitionFeePaid.matches("\\d+$") || amountPayable.length() > 7
 				|| tuitionFeePaid.length() > 7) {
 			request.setAttribute("numberError", "金額は数字のみ7桁以下で入力してください。");
 		} else {
@@ -184,13 +187,20 @@ public class PetitionForDeferredPaymentAction extends Action {
 					// dateがrequestDateより後の日付ではない場合の処理
 					request.setAttribute("dayError", "納付期限は願出年月日より後の日付にしてください。");
 				}
-
+			} catch (NumberFormatException e) {
+				request.setAttribute("dayError", "年月日は数字で入力してください。");
 			} catch (DateTimeException e) {
 				request.setAttribute("dayError", "存在しない日付です。");
 			}
 
+			// セレクトボックスの有効範囲画外の場合もエラーを返す。
+			if (deliveryYear.length() > 4
+					|| deliveryMonth.length() > 2 || deliveryDay.length() > 2) {
+				request.setAttribute("valueLongError", "入力にはセレクトボックスを使用してください。");
+			}
+
 			// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
-			if (!deferredPaymentAmount.matches("\\d+") || deferredPaymentAmount.length() > 7) {
+			if (!deferredPaymentAmount.matches("\\d+$") || deferredPaymentAmount.length() > 7) {
 				request.setAttribute("numberError", "金額は数字のみ7桁以下で入力してください。");
 				// 総支払金額より延納金額を減算する
 			} else {
@@ -268,8 +278,15 @@ public class PetitionForDeferredPaymentAction extends Action {
 			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// 学生種別が留学生の場合は記入必須項目の確認を行う。
 			if (studentType.equals("留学生")) {
-				// 母国からの送金が「無」で理由未記載の場合はエラーを返す。
-				if (remittanceFromCountry.equals("無") && (reasonNoRemittance == null || reasonNoRemittance.isEmpty())) {
+				// 母国からの送金が入力されていない場合はエラーを返す
+				if (remittanceFromCountry == null || remittanceFromCountry.isEmpty()) {
+					request.setAttribute("exchangeStudentError", "母国からの送金有無を選択してください");
+					// 母国からの送金が入力されている場合で「有」「無」以外の入力値の場合はエラーを返す
+				} else if (!(remittanceFromCountry.equals("有") || remittanceFromCountry.equals("無"))) {
+					request.setAttribute("exchangeStudentError", "母国からの送金有無は「有」「無」から選択してください");
+					// 母国からの送金が「無」で理由未記載の場合はエラーを返す。
+				} else if (remittanceFromCountry.equals("無")
+						&& (reasonNoRemittance == null || reasonNoRemittance.isEmpty())) {
 					request.setAttribute("exchangeStudentError", "母国からの送金がない場合は理由を記載してください。");
 					// 母国からの送金が「有」ならばinvoiceの日時を記載を確認する
 				} else if (remittanceFromCountry.equals("有")
@@ -283,12 +300,16 @@ public class PetitionForDeferredPaymentAction extends Action {
 						int checkDay = Integer.parseInt(invoiceDay);
 						// 日付の妥当性チェック
 						LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+					} catch (NumberFormatException e) {
+						request.setAttribute("exchangeStudentError", "invoiceは数字で入力してください。");
 					} catch (DateTimeException e) {
 						request.setAttribute("exchangeStudentError", "invoiceが存在しない日付です。");
 					}
 				}
-				// 文字数が64文字より多い場合はエラーを返す
-				if (reasonNoRemittance.length() > 64) {
+
+				// 文字数が64文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
+				if (reasonNoRemittance.length() > 64 || invoiceYear.length() > 4
+						|| invoiceMonth.length() > 2 || invoiceDay.length() > 2 || remittanceFromCountry.length() > 1) {
 					request.setAttribute("exchangeStudentError", "母国からの送金がない理由は64文字以下で入力してください。");
 				}
 
@@ -296,13 +317,6 @@ public class PetitionForDeferredPaymentAction extends Action {
 				if (request.getAttribute("exchangeStudentError") != null) {
 					return "petition-for-deferred-payment.jsp";
 				}
-			}
-
-			// リクエストのデータ全削除
-			Enumeration<String> attributeNames = request.getAttributeNames();
-			while (attributeNames.hasMoreElements()) {
-				String attributeName = attributeNames.nextElement();
-				request.removeAttribute(attributeName);
 			}
 
 			// PDFとフォントのパス作成

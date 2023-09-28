@@ -118,6 +118,18 @@ public class CertificateIssuanceAction extends Action {
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkCredentials = true;
+			// 入力されている証明書のバリデーションチェック
+			if ((!proofOfStudent.isEmpty() && !proofOfStudent.matches("^\\d{1}$"))
+					&& (!attendanceRate.isEmpty() && !attendanceRate.matches("^\\d{1}$"))
+					&& (!results.isEmpty() && !results.matches("^\\d{1}$"))
+					&& (!expectedGraduation.isEmpty() && !expectedGraduation.matches("^\\d{1}$"))
+					&& (!diploma.isEmpty() && !diploma.matches("^\\d{1}$"))
+					&& (!certificateCompletion.isEmpty() && !certificateCompletion.matches("^\\d{1}$"))
+					&& (!enrollmentCertificate.isEmpty() && !enrollmentCertificate.matches("^\\d{1}$"))
+					&& (!healthCertificate.isEmpty() && !healthCertificate.matches("^\\d{1}$"))
+					&& (!closedPeriod.isEmpty() && !closedPeriod.matches("^\\d{1}$"))) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 		}
 
 		// 英文の証明書の入力のチェック
@@ -143,6 +155,12 @@ public class CertificateIssuanceAction extends Action {
 			}
 			// 入力チェックをtrueにする
 			checkEnglish = true;
+			// 入力されている証明書のバリデーションチェック
+			if ((!englishProofOfStudent.isEmpty() && !englishProofOfStudent.matches("^\\d{1}$"))
+					&& (!englishResults.isEmpty() && !englishResults.matches("^\\d{1}$"))
+					&& (!englishDiploma.isEmpty() && !englishDiploma.matches("^\\d{1}$"))) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 		}
 
 		// 再発行の証明書の入力のチェック
@@ -154,6 +172,13 @@ public class CertificateIssuanceAction extends Action {
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkReissue = true;
+			// 入力されている証明書のバリデーションチェック
+			if ((!reissueBrokenStudentID.isEmpty() && !reissueBrokenStudentID.matches("^\\d{1}$"))
+					&& (!reissueLostStudentID.isEmpty() && !reissueLostStudentID.matches("^\\d{1}$"))
+					&& (!reissueTemporaryIdentification.isEmpty()
+							&& !reissueTemporaryIdentification.matches("^\\d{1}$"))) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 		}
 
 		// その他の書類の入力のチェック
@@ -165,6 +190,12 @@ public class CertificateIssuanceAction extends Action {
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkOther = true;
+			// 入力されている証明書のバリデーションチェック
+			if ((!internationalRemittanceRequest.isEmpty() && !internationalRemittanceRequest.matches("^\\d{1}$"))
+					&& (!applicationForm.isEmpty() && !applicationForm.matches("^\\d{1}$"))
+					&& (!overseasRemittanceCalculator.isEmpty() && !overseasRemittanceCalculator.matches("^\\d{1}$"))) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 		}
 
 		// 年月日が存在しない日付の場合はエラーにする
@@ -175,14 +206,21 @@ public class CertificateIssuanceAction extends Action {
 
 			// 届出年月日の日付の妥当性チェック
 			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が18文字より多い場合はエラーを返す
-		if (propose.length() > 18) {
+		// 文字数が18文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
+		if (propose.length() > 18 || immigrationBureau.length() > 3 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2) {
 			request.setAttribute("valueLongError", "18文字以下で入力してください。");
+		}
+
+		// 提出先が「はい」「いいえ」以外の場合はエラーを返す
+		if (!(immigrationBureau.equals("はい") || immigrationBureau.equals("いいえ"))) {
+			request.setAttribute("innerError", "提出先は「はい」「いいえ」から選択してください");
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
@@ -195,7 +233,8 @@ public class CertificateIssuanceAction extends Action {
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("nameError") != null || request.getAttribute("inputError") != null
 				|| request.getAttribute("valueLongError") != null
-				|| request.getAttribute("dayError") != null) {
+				|| request.getAttribute("dayError") != null || request.getAttribute("numberError") != null
+				|| request.getAttribute("innerError") != null) {
 			return "certificate-issuance.jsp";
 		}
 

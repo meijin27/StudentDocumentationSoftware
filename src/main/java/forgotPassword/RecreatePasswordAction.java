@@ -99,7 +99,7 @@ public class RecreatePasswordAction extends Action {
 				// アップデート内容のデータベースへの登録
 				dao.addOperationLog(id, "Forgot Password Recreate");
 
-				// セッションから秘密の質問を削除
+				// セッションからマスターキーを削除
 				request.getSession().removeAttribute("master_key");
 				// セッションから暗号化されたIDを削除
 				request.getSession().removeAttribute("encryptedId");

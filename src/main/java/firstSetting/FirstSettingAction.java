@@ -106,6 +106,11 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
+		// 学年・クラスが半角1桁でなければエラーを返す
+		if (!schoolYear.matches("^\\d{1}$") && !classNumber.matches("^\\d{1}$")) {
+			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
+		}
+
 		// 「同意する」ボタンが押されていない場合はエラーにする。
 		if (request.getParameter("agree").isEmpty() || request.getParameter("agree") == null) {
 			request.setAttribute("agreeError", "「利用規約及びプライバシーポリシーに同意する」をチェックしない限り登録できません。");
@@ -126,13 +131,17 @@ public class FirstSettingAction extends Action {
 
 			// 日付の妥当性チェック
 			date = LocalDate.of(year, month, day);
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が多い場合はエラーを返す
+		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32) {
+				|| firstNameRuby.length() > 32 || studentType.length() > 5 || className.length() > 32
+				|| birthYear.length() > 4 || birthMonth.length() > 2 || birthDay.length() > 2
+				|| admissionYear.length() > 4 || admissionMonth.length() > 2 || admissionDay.length() > 2) {
 			request.setAttribute("valueLongError", "住所以外は32文字以下で入力してください。");
 		} else if (address.length() > 64) {
 			request.setAttribute("valueLongError", "住所は64文字以下で入力してください。");
@@ -142,7 +151,8 @@ public class FirstSettingAction extends Action {
 		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null
 				|| request.getAttribute("rubyError") != null || request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null
-				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
+				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null
+				|| request.getAttribute("numberError") != null) {
 			return "first-setting.jsp";
 		}
 

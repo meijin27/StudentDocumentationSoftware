@@ -53,7 +53,7 @@ public class ChangeSecretAction extends Action {
 		} else if (secretQuestion == null || secretQuestion.isEmpty() || secretAnswer == null
 				|| secretAnswer.isEmpty()) {
 			request.setAttribute("secretError", "未選択・未入力項目があります。");
-		} else if (password.length() > 32 || secretAnswer.length() > 32) {
+		} else if (password.length() > 32 || secretAnswer.length() > 32 || secretQuestion.length() > 32) {
 			request.setAttribute("secretError", "32文字以下で入力してください。");
 		}
 

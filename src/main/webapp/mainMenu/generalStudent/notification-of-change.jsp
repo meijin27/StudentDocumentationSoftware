@@ -52,9 +52,9 @@
 	            </div>	        
 	            <!-- 変更対象者 -->  	        
 	            <div class="col-md-4 mb-5">
-	                <label class="form-label" for="ChangeSubject">変更対象者</label>
+	                <label class="form-label" for="changeSubject">変更対象者</label>
 	                <span class="required-label">必須</span>
-	                <select id="ChangeSubject" name="ChangeSubject" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.ChangeSubject}'/>" required>
+	                <select id="changeSubject" name="changeSubject" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.changeSubject}'/>" required>
 	                    <option value="" disabled selected style="display:none;">-- 変更対象者 --</option>
 	                    <option value="本人">本人</option>
 	                    <option value="保護者">保護者</option>
@@ -176,6 +176,11 @@
 	                ${residentCardError}
 	            </div>
 	        </c:if>
+            <c:if test="${not empty  valueLongError}">
+	            <div class="alert alert-danger text-center input-field" role="alert">
+                	${valueLongError}
+            	</div>
+        	</c:if>	        
 			<c:if test="${not empty innerError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 					${innerError}

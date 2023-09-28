@@ -83,13 +83,16 @@ public class ChangeNameDateofBirthAction extends Action {
 
 			// 日付の妥当性チェック
 			LocalDate date = LocalDate.of(year, month, day);
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32) {
+				|| firstNameRuby.length() > 32 || birthYear.length() > 4 || birthMonth.length() > 2
+				|| birthDay.length() > 2) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

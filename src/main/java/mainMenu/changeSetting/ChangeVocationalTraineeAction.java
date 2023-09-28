@@ -56,13 +56,13 @@ public class ChangeVocationalTraineeAction extends Action {
 
 		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
 		if (namePESO == null
-				|| supplyNumber == null || attendanceNumber == null || employmentInsurance == null || namePESO.isEmpty()
+				|| attendanceNumber == null || employmentInsurance == null || namePESO.isEmpty()
 				|| attendanceNumber.isEmpty() || employmentInsurance.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "change-vocational-trainee.jsp";
 		}
 		// 雇用保険「有」の場合は支給番号を記載する必要あり
-		else if (employmentInsurance.equals("有") && supplyNumber.isEmpty()) {
+		else if (employmentInsurance.equals("有") && (supplyNumber == null || supplyNumber.isEmpty())) {
 			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
 			return "change-vocational-trainee.jsp";
 		}
@@ -70,14 +70,19 @@ public class ChangeVocationalTraineeAction extends Action {
 		else if (employmentInsurance.equals("無")) {
 			supplyNumber = "支給番号無し";
 		}
+		// 雇用保険が「有」「無」以外の場合はエラーを返す
+		else if (!(employmentInsurance.equals("有") || employmentInsurance.equals("無"))) {
+			request.setAttribute("innerError", "雇用保険は「有」「無」から選択してください");
+			return "change-vocational-trainee.jsp";
+		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す
 		if (!attendanceNumber.matches("^\\d{1,2}$")) {
 			request.setAttribute("attendanceNumberError", "出席番号は半角数字2桁以下で入力してください。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (namePESO.length() > 32 || supplyNumber.length() > 32) {
+		// 文字数が32文字より多い場合はエラーを返す。雇用保険有無は１文字以上ならばエラーを返す
+		if (namePESO.length() > 32 || supplyNumber.length() > 32 || employmentInsurance.length() > 1) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

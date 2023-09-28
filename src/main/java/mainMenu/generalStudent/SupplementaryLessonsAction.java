@@ -88,13 +88,21 @@ public class SupplementaryLessonsAction extends Action {
 
 			// 届出年月日の日付の妥当性チェック
 			LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
-		if (subjectName.length() > 32 || teacher.length() > 32 || reason.length() > 32) {
+		// 年度は２桁以下・学期は半角1桁でなければエラーを返す
+		if (!fiscalYear.matches("^\\d{1,2}$") && !semester.matches("^\\d{1}$")) {
+			request.setAttribute("numberError", "年度・学期は半角数字で入力してください。");
+		}
+
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (subjectName.length() > 32 || teacher.length() > 32 || reason.length() > 32 || fiscalYear.length() > 2
+				|| semester.length() > 1 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

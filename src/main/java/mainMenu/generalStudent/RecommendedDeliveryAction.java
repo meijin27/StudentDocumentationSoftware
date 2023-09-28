@@ -97,6 +97,8 @@ public class RecommendedDeliveryAction extends Action {
 			if (deadlineDate.isBefore(requestDate)) {
 				request.setAttribute("dayError", "提出期限は申請日より後の日付でなければなりません。");
 			}
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
@@ -109,14 +111,21 @@ public class RecommendedDeliveryAction extends Action {
 			request.setAttribute("valueLongError", "理由は18文字以下で入力してください。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す
-		if (propose.length() > 32) {
-			request.setAttribute("valueLongError", "提出先は32文字以下で入力してください。");
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (propose.length() > 32 || subject.length() > 12 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2 || deadlineYear.length() > 4
+				|| deadlineMonth.length() > 2 || deadlineDay.length() > 2 || nominationForm.length() > 5) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		}
+
+		// 推薦様式が「本校書式」「いいえ」以外の場合はエラーを返す
+		if (!(nominationForm.equals("本校書式") || nominationForm.equals("提出先書式"))) {
+			request.setAttribute("innerError", "推薦様式は「本校書式」「提出先書式」から選択してください");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("nullError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+				|| request.getAttribute("valueLongError") != null || request.getAttribute("innerError") != null) {
 			return "recommended-delivery.jsp";
 		}
 

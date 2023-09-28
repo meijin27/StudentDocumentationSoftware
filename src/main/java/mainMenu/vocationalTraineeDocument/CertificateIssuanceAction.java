@@ -88,13 +88,23 @@ public class CertificateIssuanceAction extends Action {
 
 			// 日付の妥当性チェック
 			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (reason.length() > 64 || propose.length() > 64) {
+		// 必要枚数は半角1桁でなければエラーを返す
+		if ((proofOfStudent != null && !proofOfStudent.matches("^\\d{1}$"))
+				|| (certificateOfCompletion != null && !certificateOfCompletion.matches("^\\d{1}$"))
+				|| (certificateOfExpectedCompletion != null && !certificateOfExpectedCompletion.matches("^\\d{1}$"))) {
+			request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
+		}
+
+		// 文字数が64文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (reason.length() > 64 || propose.length() > 64 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2 || proofOfStudent.length() > 1
+				|| certificateOfCompletion.length() > 1 || certificateOfExpectedCompletion.length() > 1) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 

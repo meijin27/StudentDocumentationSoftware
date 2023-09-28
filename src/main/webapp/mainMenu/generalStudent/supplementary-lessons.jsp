@@ -106,6 +106,11 @@
 	                ${dayError}
 	            </div>
 	        </c:if>	        
+   	        <c:if test="${not empty numberError}" >
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${numberError}
+	            </div>
+	        </c:if>	 
             <c:if test="${not empty  valueLongError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
                 	${valueLongError}

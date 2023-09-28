@@ -70,6 +70,12 @@ public class CertificateVocationalTrainingAction extends Action {
 			return "certificate-vocational-training.jsp";
 		}
 
+		// 証明書対象期間は半角2桁以下でなければエラーを返す
+		if (!subjectYear.matches("^\\d{1,2}$") || !subjectMonth.matches("^\\d{1,2}$")) {
+			request.setAttribute("numberError", "証明書対象期間は半角2桁以下で入力してください。");
+			return "certificate-vocational-training.jsp";
+		}
+
 		// 日付毎に入力された記号をMAPに格納する
 		int year = Integer.parseInt(subjectYear);
 		int month = Integer.parseInt(subjectMonth);
@@ -81,10 +87,26 @@ public class CertificateVocationalTrainingAction extends Action {
 			// カレンダーに存在しない日付であれば強制的に「/」にする
 			if (i > daysInMonth) {
 				calendar.put(i, "／");
-				// 入力された値がnullでなければ記号を格納する。未選択の場合は空文字列を格納する。	
+				// 入力された値がnullでなけく、２文字以上であればエラーを返す。
 			} else if (marker != null) {
+				if (marker.length() > 1) {
+					request.setAttribute("innerError", "日付には一文字の記号を入力してください。");
+					return "certificate-vocational-training.jsp";
+				}
+				// 入力された値がnullでなければ記号を格納する。未選択の場合は空文字列を格納する。	
 				calendar.put(i, marker);
 			}
+		}
+
+		// ラジオボタンの入力値チェック
+		// 就労有無が「した」「しない」以外の場合はエラーを返す
+		if (!(problems.equals("した") || problems.equals("しない"))) {
+			request.setAttribute("innerError", "就労有無は「した」「しない」から選択してください");
+			return "certificate-vocational-training.jsp";
+			// 収入有無が「得た」「得ない」以外の場合はエラーを返す
+		} else if (!(income.equals("得た") || income.equals("得ない"))) {
+			request.setAttribute("innerError", "収入有無は「得た」「得ない」から選択してください");
+			return "certificate-vocational-training.jsp";
 		}
 
 		try {

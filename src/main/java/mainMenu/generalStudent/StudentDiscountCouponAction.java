@@ -68,6 +68,19 @@ public class StudentDiscountCouponAction extends Action {
 			return "student-discount-coupon.jsp";
 		}
 
+		// 年月日が存在しない日付の場合はエラーにする
+		try {
+			int checkYear = Integer.parseInt(requestYear);
+			int checkMonth = Integer.parseInt(requestMonth);
+			int checkDay = Integer.parseInt(requestDay);
+			// 日付の妥当性チェック
+			LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
+		} catch (DateTimeException e) {
+			request.setAttribute("dayError", "存在しない日付です。");
+		}
+
 		// 作成する行数のカウント
 		int count = 0;
 
@@ -104,19 +117,14 @@ public class StudentDiscountCouponAction extends Action {
 				request.setAttribute("nullError", "使用目的がその他の場合は理由を記載してください。");
 			}
 
-			// 年月日が存在しない日付の場合はエラーにする
-			try {
-				int checkYear = Integer.parseInt(requestYear);
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-			} catch (DateTimeException e) {
-				request.setAttribute("dayError", "存在しない日付です。");
+			// 必要枚数は半角1桁でなければエラーを返す
+			if (!sheetsRequired.matches("^\\d{1}$")) {
+				request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
 			}
 
-			// 文字数が18文字より多い場合はエラーを返す
-			if (startingStation.length() > 18 || arrivalStation.length() > 18 || reason.length() > 18) {
+			// 文字数が18文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
+			if (startingStation.length() > 18 || arrivalStation.length() > 18 || reason.length() > 18
+					|| intendedUse.length() > 3 || sheetsRequired.length() > 1) {
 				request.setAttribute("valueLongError", "18文字以下で入力してください。");
 			}
 

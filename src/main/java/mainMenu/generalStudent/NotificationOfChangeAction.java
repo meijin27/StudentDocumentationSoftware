@@ -49,7 +49,7 @@ public class NotificationOfChangeAction extends Action {
 		String requestYear = request.getParameter("requestYear");
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
-		String ChangeSubject = request.getParameter("ChangeSubject");
+		String changeSubject = request.getParameter("changeSubject");
 		String tel = request.getParameter("tel");
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
@@ -76,10 +76,10 @@ public class NotificationOfChangeAction extends Action {
 
 		// 未入力項目があればエラーを返す
 		if (requestYear == null || requestMonth == null || requestDay == null
-				|| ChangeSubject == null
+				|| changeSubject == null
 				|| requestYear.isEmpty() || requestMonth.isEmpty()
 				|| requestDay.isEmpty()
-				|| ChangeSubject.isEmpty()
+				|| changeSubject.isEmpty()
 
 		) {
 			request.setAttribute("nullError", "未入力項目があります。");
@@ -135,6 +135,9 @@ public class NotificationOfChangeAction extends Action {
 		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
 			// 記号番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
 			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
+		} else if (endYear.length() > 4 || endMonth.length() > 2 || endDay.length() > 2) {
+			// セレクトボックスの有効範囲画外の場合もエラーを返す。
+			request.setAttribute("valueLongError", "入力にはセレクトボックスを使用してください。");
 		} else {
 			changeResidentCard = true;
 		}
@@ -160,8 +163,16 @@ public class NotificationOfChangeAction extends Action {
 					request.setAttribute("dayError", "期間満了年月日は届出年月日より後の日付でなければなりません。");
 				}
 			}
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
+		}
+
+		// セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (requestYear.length() > 4 || requestMonth.length() > 2 || requestDay.length() > 2
+				|| changeSubject.length() > 3) {
+			request.setAttribute("valueLongError", "入力にはセレクトボックスを使用してください。");
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
@@ -175,7 +186,8 @@ public class NotificationOfChangeAction extends Action {
 		if (request.getAttribute("nameError") != null || request.getAttribute("inputError") != null
 				|| request.getAttribute("addressError") != null || request.getAttribute("dayError") != null
 				|| request.getAttribute("postCodeError") != null || request.getAttribute("telError") != null
-				|| request.getAttribute("residentCardError") != null) {
+				|| request.getAttribute("residentCardError") != null
+				|| request.getAttribute("valueLongError") != null) {
 			return "notification-of-change.jsp";
 		}
 
@@ -272,9 +284,9 @@ public class NotificationOfChangeAction extends Action {
 			}
 
 			// 申請者の種類
-			if (ChangeSubject.equals("本人")) {
+			if (changeSubject.equals("本人")) {
 				editor.writeText(font, "✓", 157f, 500f, 50f, "left", 12);
-			} else if (ChangeSubject.equals("保護者")) {
+			} else if (changeSubject.equals("保護者")) {
 				editor.writeText(font, "✓", 228f, 500f, 50f, "left", 12);
 			} else {
 				editor.writeText(font, "✓", 299f, 500f, 50f, "left", 12);

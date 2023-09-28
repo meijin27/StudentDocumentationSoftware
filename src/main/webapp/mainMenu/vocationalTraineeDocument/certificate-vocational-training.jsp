@@ -110,6 +110,11 @@
 					${nullMessage}
 				</div>
 			</c:if>
+    	    <c:if test="${not empty numberError}" >
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${numberError}
+	            </div>
+	        </c:if>	 
 			<c:if test="${not empty innerError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 					${innerError}

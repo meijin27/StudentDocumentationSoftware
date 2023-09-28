@@ -80,6 +80,12 @@ public class CertificateOfEmploymentAction extends Action {
 			return "certificate-of-employment.jsp";
 		}
 
+		// 一月目は半角数字2桁以下でなければエラーを返す
+		if (!firstMonth.matches("^\\d{1,2}$")) {
+			request.setAttribute("numberError", "月は半角数字2桁以下で入力してください。");
+			return "certificate-of-employment.jsp";
+		}
+
 		int month = Integer.parseInt(firstMonth);
 		int lastDay = getLastDayOfMonth(month);
 
@@ -88,6 +94,11 @@ public class CertificateOfEmploymentAction extends Action {
 		for (int i = 1; i <= 31; i++) {
 			String day = "firstMonthDay" + i;
 			String marker = request.getParameter(day);
+			// 就労日が空文字か「○」以外の入力があった場合にエラーを返す
+			if (marker != null && !marker.isEmpty() && !marker.equals("○")) {
+				request.setAttribute("innerError", "就労日は「○」以外入力しないでください。");
+				return "certificate-of-employment.jsp";
+			}
 			// 指定された月の最後の日以降の日付であれば強制的に空文字にする
 			if (i > lastDay) {
 				firstMonthCalendar.put(i, "");
@@ -101,6 +112,12 @@ public class CertificateOfEmploymentAction extends Action {
 		if (secondMonth == null || secondMonth.isEmpty()) {
 
 		} else {
+			// 一月目は半角数字2桁以下でなければエラーを返す
+			if (!secondMonth.matches("^\\d{1,2}$")) {
+				request.setAttribute("numberError", "月は半角数字2桁以下で入力してください。");
+				return "certificate-of-employment.jsp";
+			}
+
 			// 二月目と一月目が同一ならばエラーを返す
 			if (secondMonth.equals(firstMonth)) {
 				request.setAttribute("logicalError", "一月目と二月目は異なる月にしてください。");
@@ -115,7 +132,11 @@ public class CertificateOfEmploymentAction extends Action {
 			for (int i = 1; i <= 31; i++) {
 				String day = "secondMonthDay" + i;
 				String marker = request.getParameter(day);
-
+				// 就労日が空文字か「○」以外の入力があった場合にエラーを返す
+				if (marker != null && !marker.isEmpty() && !marker.equals("○")) {
+					request.setAttribute("innerError", "就労日は「○」以外入力しないでください。");
+					return "certificate-of-employment.jsp";
+				}
 				// 指定された月の最後の日以降の日付であれば強制的に空文字にする
 				if (i > lastDay) {
 					secondMonthCalendar.put(i, "");

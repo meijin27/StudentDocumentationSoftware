@@ -79,8 +79,8 @@ public class PeriodUpdateThirdAction extends Action {
 		// 申請人との関係がその他の場合で詳細記入がなければエラーを返す
 		if (relationship.equals("その他") && (relationshipOtherContents == null || relationshipOtherContents.isEmpty())) {
 			request.setAttribute("otherError", "申請人との関係でその他を選択した場合は詳細も入力してください。");
-		} else if (relationshipOtherContents.length() > 16) {
-			// 文字数が16文字より多い場合はエラーを返す
+		} else if (relationshipOtherContents.length() > 16 || relationship.length() > 16) {
+			// 文字数が16文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 			request.setAttribute("otherError", "その他の詳細は16文字以下で入力してください。");
 		}
 
@@ -91,6 +91,12 @@ public class PeriodUpdateThirdAction extends Action {
 		} else if (organizationpublicInterestContents.length() > 16) {
 			// 文字数が16文字より多い場合はエラーを返す
 			request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人の詳細は16文字以下で入力してください。");
+		} else if ((foreignGovernment != null && foreignGovernment.length() > 18)
+				|| (japaneseGovernment != null && japaneseGovernment.length() > 18)
+				|| (localGovernment != null && localGovernment.length() > 18)
+				|| (otherOrganization != null && otherOrganization.length() > 18)
+				|| (publicInterest != null && publicInterest.length() > 18)) {
+			request.setAttribute("publicInterestError", " 奨学金支給機関名は18文字以下で入力してください。");
 		}
 
 		// 奨学金支給機関がその他の場合で詳細記入がなければエラーを返す
@@ -104,6 +110,12 @@ public class PeriodUpdateThirdAction extends Action {
 
 		// 更新項目確認用変数
 		boolean checkOtherActivity = false;
+
+		// ラジオボタンの入力値チェック
+		// 資格外活動の有無が「有」「無」以外の場合はエラーを返す
+		if (!(otherActivity.equals("有") || otherActivity.equals("無"))) {
+			request.setAttribute("otherActivityError", "資格外活動は「有（Yes）」「無（No）」から選択してください");
+		}
 
 		// 資格外活動の有無が有の場合で内容等が全て未入力なら問題なし
 		if (otherActivity.equals("有")) {
@@ -121,8 +133,8 @@ public class PeriodUpdateThirdAction extends Action {
 					monthlyOrDaily == null || monthlyOrDaily.isEmpty()) {
 				// どれかだけ入力されている場合
 				request.setAttribute("otherActivityError", "資格外活動の内容を入力する場合は(1)～(4)の全項目を入力してください。");
-			} else if (work.length() > 32 || employment.length() > 32) {
-				// 文字数が32文字より多い場合はエラーを返す
+			} else if (work.length() > 32 || employment.length() > 32 || monthlyOrDaily.length() > 2) {
+				// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 				request.setAttribute("otherActivityError", "32文字以下で入力してください。");
 			} else if (!workPhone.matches("^\\d{10,11}$")) {
 				// 電話番号が半角10~11桁でなければエラーを返す
@@ -150,8 +162,8 @@ public class PeriodUpdateThirdAction extends Action {
 		if (afterGraduation.equals("その他")
 				&& (afterGraduationOtherContents == null || afterGraduationOtherContents.isEmpty())) {
 			request.setAttribute("afterGraduationError", "卒業後の予定でその他を選択した場合は詳細も入力してください。");
-		} else if (afterGraduationOtherContents.length() > 32) {
-			// 文字数が21文字より多い場合はエラーを返す
+		} else if (afterGraduationOtherContents.length() > 32 || afterGraduation.length() > 6) {
+			// 文字数が21文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 			request.setAttribute("afterGraduationError", "卒業後の予定のその他の詳細は32文字以下で入力してください。");
 		}
 

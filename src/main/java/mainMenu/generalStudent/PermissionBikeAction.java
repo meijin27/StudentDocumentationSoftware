@@ -115,6 +115,8 @@ public class PermissionBikeAction extends Action {
 			} else if (endDate.isBefore(startDate)) {
 				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
 			}
+		} catch (NumberFormatException e) {
+			request.setAttribute("dayError", "年月日は数字で入力してください。");
 		} catch (DateTimeException e) {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
@@ -123,15 +125,25 @@ public class PermissionBikeAction extends Action {
 		if (!patronTel.matches("^\\d{10,11}$")) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
-		// 文字数が32文字より多い場合はエラーを返す
-		if (patron.length() > 32 || registrationNumber.length() > 32 || modelAndColor.length() > 32) {
+
+		// 種別が「自転車」「原動機付自転車」以外の場合はエラーを返す
+		if (!(classification.equals("自転車") || classification.equals("原動機付自転車無"))) {
+			request.setAttribute("innerError", "種別は「自転車」「原動機付自転車」から選択してください");
+		}
+
+		// 文字数が32文字より多い場合はエラーを返す。セレクトボックスとラジオボタンの有効範囲画外の場合もエラーを返す。
+		if (patron.length() > 32 || registrationNumber.length() > 32
+				|| modelAndColor.length() > 32 || requestYear.length() > 4
+				|| requestMonth.length() > 2 || requestDay.length() > 2 || startYear.length() > 4
+				|| startMonth.length() > 2 || startDay.length() > 2 || endYear.length() > 4
+				|| endMonth.length() > 2 || endDay.length() > 2 || classification.length() > 7) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (request.getAttribute("nullError") != null || request.getAttribute("telError") != null
 				|| request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+				|| request.getAttribute("valueLongError") != null || request.getAttribute("innerError") != null) {
 			return "permission-bike.jsp";
 		}
 

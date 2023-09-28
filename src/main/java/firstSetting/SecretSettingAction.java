@@ -47,7 +47,7 @@ public class SecretSettingAction extends Action {
 		// もしも入力値が無し、もしくは空の場合はエラーを返す
 		if (secretQuestion != null && !secretQuestion.isEmpty() && secretAnswer != null && !secretAnswer.isEmpty()) {
 			// 文字数が32文字より多い場合はエラーを返す
-			if (secretAnswer.length() > 32) {
+			if (secretAnswer.length() > 32 || secretQuestion.length() > 32) {
 				request.setAttribute("secretError", "32文字以下で入力してください。");
 				return "secret-setting.jsp";
 			}
