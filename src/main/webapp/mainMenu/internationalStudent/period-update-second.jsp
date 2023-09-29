@@ -1,5 +1,6 @@
 <%@page contentType="text/html; charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:import url="/header/header-mainMenu.jsp" />
 <%@include file="/mainMenu/side-bar-menu.jsp" %>
 <c:import url="/token/token.jsp" />
@@ -201,62 +202,19 @@
 	                <label class="form-label" for="supporterWorkTel">経費支弁者勤務先電話番号(Supporter Work Phone Number)</label>
 	                <input class="form-control" type="text" id="supporterWorkTel" name="supporterWorkTel" placeholder="0120-55-9876" value="<c:out value='${supporterWorkTel}'/>">
 	            </div>	 
-            <!-- エラー表示 -->
-	        <c:if test="${not empty inputError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${inputError}
-	            </div>
-	        </c:if>	        
-	        <c:if test="${not empty testNameError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${testNameError}
-	            </div>
-	        </c:if>
-	        <c:if test="${not empty organizationError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${organizationError}
-	            </div>
-	        </c:if>
-	        <c:if test="${not empty othersError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${othersError}
-	            </div>
-	        </c:if>
-	        <c:if test="${not empty payError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${payError}
-	            </div>
-	        </c:if>
-	        <c:if test="${not empty carryingAbroadError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-	                ${carryingAbroadError}
-	            </div>
-	        </c:if>
-            <c:if test="${not empty remittancesAbroadError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-                	${remittancesAbroadError}
-            	</div>
-        	</c:if>
-            <c:if test="${not empty otherRemittancesError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-                	${otherRemittancesError}
-            	</div>
-        	</c:if>
-        	<c:if test="${not empty supporterError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-                	${supporterError}
-            	</div>
-        	</c:if>
-            <c:if test="${not empty exchangeStudentError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-                	${exchangeStudentError}
-            	</div>
-        	</c:if>        	
-			<c:if test="${not empty innerError}">
-	            <div class="alert alert-danger text-center input-field" role="alert">
-					${innerError}
-				</div>
-			</c:if>
+	        </div>    
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>     
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">			
 			<!-- 作成ボタン -->

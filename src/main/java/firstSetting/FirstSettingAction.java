@@ -1,7 +1,5 @@
 package firstSetting;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,21 +22,15 @@ public class FirstSettingAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateToken(request, response)) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -94,43 +86,25 @@ public class FirstSettingAction extends Action {
 		}
 
 		// 学年・クラスが半角1桁でなければエラーを返す
-		if (!ValidationUtil.isSingleDigit(schoolYear) || !ValidationUtil.isSingleDigit(classNumber)) {
+		if (!ValidationUtil.isSingleDigit(schoolYear, classNumber)) {
 			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
 		}
 
 		// 「同意する」ボタンが押されていない場合はエラーにする。
-		if (request.getParameter("agree").isEmpty() || request.getParameter("agree") == null) {
+		if (request.getParameter("agree") == null || request.getParameter("agree").isEmpty()) {
 			request.setAttribute("agreeError", "「利用規約及びプライバシーポリシーに同意する」をチェックしない限り登録できません。");
 		}
 
 		// 生年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!birthYear.matches("^\\d{4}$")
-					|| !birthMonth.matches("^\\d{1,2}$")
-					|| !birthDay.matches("^\\d{1,2}$") || !admissionYear.matches("^\\d{4}$")
-					|| !admissionMonth.matches("^\\d{1,2}$")
-					|| !admissionDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int year = Integer.parseInt(birthYear);
-				int month = Integer.parseInt(birthMonth);
-				int day = Integer.parseInt(birthDay);
-
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(year, month, day);
-				// 入学年月日が存在しない日付の場合はエラーにする
-				year = Integer.parseInt(admissionYear);
-				month = Integer.parseInt(admissionMonth);
-				day = Integer.parseInt(admissionDay);
-
-				// 日付の妥当性チェック
-				date = LocalDate.of(year, month, day);
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (!ValidationUtil.isFourDigit(birthYear, admissionYear) ||
+				!ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay, admissionMonth, admissionDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (!ValidationUtil.validateDate(birthYear, birthMonth, birthDay) ||
+					!ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 入力値に特殊文字が入っていないか確認する
@@ -139,11 +113,14 @@ public class FirstSettingAction extends Action {
 		}
 
 		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32 || studentType.length() > 5 || className.length() > 16) {
-			request.setAttribute("valueLongError", "住所以外は32文字以下で入力してください。");
-		} else if (address.length() > 64) {
-			request.setAttribute("valueLongError", "住所は64文字以下で入力してください。");
+		if (!ValidationUtil.areValidLengths(32, lastName, firstName, lastNameRuby, firstNameRuby)) {
+			request.setAttribute("valueLongError", "名前およびふりがなは32文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(64, address)) {
+			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(5, studentType)) {
+			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(16, className)) {
+			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
