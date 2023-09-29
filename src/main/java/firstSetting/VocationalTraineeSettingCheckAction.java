@@ -14,6 +14,8 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class VocationalTraineeSettingCheckAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(VocationalTraineeSettingCheckAction.class);
@@ -24,19 +26,13 @@ public class VocationalTraineeSettingCheckAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = (String) session.getAttribute("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "vocationalSetting",
+				"vocationalSettingCheck")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -47,6 +43,13 @@ public class VocationalTraineeSettingCheckAction extends Action {
 		String employmentInsurance = (String) session.getAttribute("employmentInsurance");
 
 		String goBack = request.getParameter("goBack");
+
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(namePESO, supplyNumber, attendanceNumber, employmentInsurance)) {
+			// 初期設定ページへリダイレクト
+			response.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
+			return null;
+		}
 
 		// 「戻る」ボタンが押された場合は入力フォームへ戻る
 		if (goBack != null) {

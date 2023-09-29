@@ -42,4 +42,24 @@ public class Decrypt {
 			throw new RuntimeException("An error occurred during decryption.");
 		}
 	}
+
+	public String getDecryptedDate(DecryptionResult result, String reEncryptedDate) throws Exception {
+
+		try {
+			// マスターキーの取り出し			
+			String masterKey = result.getMasterKey();
+			// ivの取り出し
+			String iv = result.getIv();
+
+			String encryptedDate = (reEncryptedDate != null) ? CipherUtil.commonDecrypt(reEncryptedDate)
+					: null;
+			String date = (encryptedDate != null) ? CipherUtil.decrypt(masterKey, iv, encryptedDate) : null;
+
+			return date;
+		} catch (Exception e) {
+			CustomLogger.getLogger(Decrypt.class).log(Level.SEVERE, "Decryption failed.", e);
+			throw new RuntimeException("An error occurred during decryption.");
+		}
+	}
+
 }

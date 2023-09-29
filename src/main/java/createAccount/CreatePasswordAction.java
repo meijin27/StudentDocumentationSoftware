@@ -13,7 +13,10 @@ import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
+import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class CreatePasswordAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(CreatePasswordAction.class);
@@ -23,43 +26,36 @@ public class CreatePasswordAction extends Action {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// セッションから暗号化されたアカウント名を取り出す
 		String encryptedAccount = (String) session.getAttribute("encryptedAccount");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
+		// トークン及び暗号化されたアカウント名の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "encryptedAccount")) {
+			// ログイン状態が不正ならば処理を終了
+			return null;
+		}
+
 		// 入力されたパスワードと再確認用パスワードを変数に格納
 		String password = request.getParameter("password");
 		String passwordCheck = request.getParameter("passwordCheck");
-
-		// 暗号化されたアカウントやトークンがnull、もしくはトークンが一致しない場合はエラー
-		if (encryptedAccount == null || sessionToken == null || requestToken == null
-				|| !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
-			return null;
-		}
 
 		// ユーザー情報を格納するクラスの作成
 		User user = new User();
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null || password.isEmpty()) {
-			request.setAttribute("passwordError", "パスワードの入力は必須です");
+		if (ValidationUtil.isNullOrEmpty(password, passwordCheck)) {
+			request.setAttribute("nullError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
-		} else if (password.length() > 32) {
-			request.setAttribute("passwordError", "32文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(32, password)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
-		// パスワードエラーが発生していたら元のページに戻りやり直し
-		if (request.getAttribute("passwordError") != null) {
+		// エラーが発生している場合は元のページに戻す
+		if (ErrorCheckUtil.hasErrorAttributes(request)) {
 			return "create-password.jsp";
 		}
 

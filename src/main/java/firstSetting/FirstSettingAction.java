@@ -29,7 +29,7 @@ public class FirstSettingAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateToken(request, response)) {
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "firstSetting")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}

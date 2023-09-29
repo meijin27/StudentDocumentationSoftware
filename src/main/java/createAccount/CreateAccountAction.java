@@ -12,6 +12,8 @@ import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class CreateAccountAction extends Action {
 
@@ -23,18 +25,12 @@ public class CreateAccountAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// トークンが一致しない、またはどちらかがnullの場合はエラー
-		if (sessionToken == null || requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークンの確認
+		if (!RequestAndSessionUtil.validateSession(request, response)) {
+			// トークンが不正ならば処理を終了
 			return null;
 		}
 
@@ -42,9 +38,9 @@ public class CreateAccountAction extends Action {
 		String account = request.getParameter("account");
 
 		// アカウント名が入力されている場合の処理
-		if (account != null && !account.isEmpty()) {
+		if (!ValidationUtil.isNullOrEmpty(account)) {
 			// 文字数が32文字より多い場合はエラーを返す
-			if (account.length() > 32) {
+			if (!ValidationUtil.areValidLengths(32, account)) {
 				request.setAttribute("accountError", "32文字以下で入力してください。");
 				return "create-account.jsp";
 			}

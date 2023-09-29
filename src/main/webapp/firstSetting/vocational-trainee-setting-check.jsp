@@ -37,6 +37,9 @@
 	     <!-- 職業訓練生の初期登録JSPへ戻るボタン  -->
 	     <form action="VocationalTraineeSettingCheck.action" method="post">
 		    <input type="hidden" name="goBack" value="true">
+   		    <!-- トークンの格納  -->
+ 		    <input type="hidden" name="csrfToken" value="${csrfToken}">	     
+		    <!-- 戻るボタン  -->	
 		    <input type="submit" class="w-100 btn btn-lg btn-secondary mb-3" value="戻る">
 		 </form>      
 	</div>     

@@ -14,6 +14,8 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class FirstSettingCheckAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(FirstSettingCheckAction.class);
@@ -24,19 +26,13 @@ public class FirstSettingCheckAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = (String) session.getAttribute("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "firstSetting",
+				"firstSettingCheck")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -63,18 +59,9 @@ public class FirstSettingCheckAction extends Action {
 		String goBack = request.getParameter("goBack");
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || tel == null
-				|| postCode == null || address == null ||
-				birthYear == null || birthMonth == null || birthDay == null || admissionYear == null
-				|| admissionMonth == null || admissionDay == null || studentType == null
-				|| className == null
-				|| studentNumber == null || schoolYear == null || classNumber == null || lastName.isEmpty()
-				|| firstName.isEmpty() || lastNameRuby.isEmpty()
-				|| firstNameRuby.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
-				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || admissionYear.isEmpty()
-				|| admissionMonth.isEmpty() || admissionDay.isEmpty() || studentType.isEmpty()
-				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()) {
-			session.setAttribute("nullError", "未入力項目があります。");
+		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, tel, birthYear, birthMonth,
+				birthDay, admissionYear, admissionMonth, admissionDay, studentType, className, studentNumber,
+				schoolYear, classNumber)) {
 			// 初期設定ページへリダイレクト
 			response.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 			return null;

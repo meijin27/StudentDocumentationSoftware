@@ -30,19 +30,30 @@ public class RequestAndSessionUtil {
 		}
 	}
 
-	// トークン及びログイン状態の確認メソッド
-	public static boolean validateToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	// トークン及びセッションの確認メソッド
+	public static boolean validateSession(HttpServletRequest request, HttpServletResponse response,
+			String... attributeNames) throws IOException {
 		HttpSession session = request.getSession();
 		String sessionToken = (String) session.getAttribute("csrfToken");
 		String requestToken = request.getParameter("csrfToken");
 		String contextPath = request.getContextPath();
-		// トークンが一致しない、またはセッションにIDとマスターキーが格納されていない場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
+
+		// トークンがnull、またはトークンが一致しない場合はエラーとして処理
+		if (sessionToken == null || requestToken == null || !sessionToken.equals(requestToken)) {
+			session.setAttribute("otherError", "セッションエラーが発生しました。");
 			// ログインページにリダイレクト
 			response.sendRedirect(contextPath + "/login/login.jsp");
 			return false;
+		}
+
+		// その他の指定されたセッション属性がnullの場合はエラーとして処理
+		for (String attributeName : attributeNames) {
+			if (session.getAttribute(attributeName) == null) {
+				session.setAttribute("otherError", "セッションエラーが発生しました。");
+				// ログインページにリダイレクト
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return false;
+			}
 		}
 		return true;
 	}
