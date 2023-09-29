@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +17,7 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.ValidationUtil;
 
 public class ChangeNameDateofBirthAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangeNameDateofBirthAction.class);
@@ -61,17 +61,14 @@ public class ChangeNameDateofBirthAction extends Action {
 		}
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || birthYear == null
-				|| birthMonth == null || birthDay == null
-				|| lastName.isEmpty() || firstName.isEmpty() || lastNameRuby.isEmpty() || firstNameRuby.isEmpty()
-				|| birthYear.isEmpty() || birthMonth.isEmpty()
-				|| birthDay.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, birthYear, birthMonth,
+				birthDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
+			return "change-name-date-of-birth.jsp";
 		}
 
 		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
-		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
-		if (!pattern.matcher(lastNameRuby).matches() || !pattern.matcher(firstNameRuby).matches()) {
+		if (!ValidationUtil.isHiragana(lastNameRuby, firstNameRuby)) {
 			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
 		}
 
@@ -102,8 +99,13 @@ public class ChangeNameDateofBirthAction extends Action {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(firstName, lastName)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("rubyError") != null
+		if (request.getAttribute("validationError") != null || request.getAttribute("rubyError") != null
 				|| request.getAttribute("dayError") != null
 				|| request.getAttribute("valueLongError") != null) {
 			return "change-name-date-of-birth.jsp";

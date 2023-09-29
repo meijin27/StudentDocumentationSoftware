@@ -135,6 +135,10 @@ public class NotificationOfChangeAction extends Action {
 		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
 			// 記号番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
 			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
+		} else if (!endYear.matches("^\\d{4}$")
+				|| !endMonth.matches("^\\d{1,2}$")
+				|| !endDay.matches("^\\d{1,2}$")) {
+			request.setAttribute("residentCardError", "年月日は正規の桁数で入力してください。");
 		} else {
 			changeResidentCard = true;
 		}
@@ -144,9 +148,7 @@ public class NotificationOfChangeAction extends Action {
 			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
 			if (!requestYear.matches("^\\d{4}$")
 					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$") || !endYear.matches("^\\d{4}$")
-					|| !endMonth.matches("^\\d{1,2}$")
-					|| !endDay.matches("^\\d{1,2}$")) {
+					|| !requestDay.matches("^\\d{1,2}$")) {
 				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
 			} else {
 				int checkYear = Integer.parseInt(requestYear);

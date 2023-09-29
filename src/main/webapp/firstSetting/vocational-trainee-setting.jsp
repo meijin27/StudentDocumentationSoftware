@@ -29,14 +29,14 @@
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check form-check-inline mr-lg-5">
 				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceYes" value="有" 
-				                   <% if ("有".equals(request.getParameter("employmentInsurance"))) { %> checked <% } %> required>
+				                   <% if ("有".equals(session.getAttribute("employmentInsurance"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="employmentInsuranceYes">
 				                有
 				            </label>
 				        </div>
 				        <div class="form-check form-check-inline ml-lg-5">
 				            <input class="form-check-input" type="radio" name="employmentInsurance" id="employmentInsuranceNo" value="無"
-				                   <% if ("無".equals(request.getParameter("employmentInsurance"))) { %> checked <% } %> required>
+				                   <% if ("無".equals(session.getAttribute("employmentInsurance"))) { %> checked <% } %> required>
 				            <label class="form-check-label" for="employmentInsuranceNo">
 				                無
 				            </label>
@@ -75,6 +75,11 @@
 	                ${attendanceNumberError}
 	            </div>
 	        </c:if>
+	        <c:if test="${not empty validationError}" >
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${validationError}
+	            </div>
+	        </c:if>	       
 	        <c:if test="${not empty  innerError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${innerError}

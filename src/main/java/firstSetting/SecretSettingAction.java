@@ -14,7 +14,9 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.ValidationUtil;
 
 public class SecretSettingAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(SecretSettingAction.class);
@@ -49,8 +51,18 @@ public class SecretSettingAction extends Action {
 			// 文字数が32文字より多い場合はエラーを返す
 			if (secretAnswer.length() > 32 || secretQuestion.length() > 32) {
 				request.setAttribute("secretError", "32文字以下で入力してください。");
+			}
+
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
+
+			// エラーが発生している場合は元のページに戻す
+			if (ErrorCheckUtil.hasErrorAttributes(request)) {
 				return "secret-setting.jsp";
 			}
+
 			try {
 				// データベース操作用クラス
 				UserDAO dao = new UserDAO();

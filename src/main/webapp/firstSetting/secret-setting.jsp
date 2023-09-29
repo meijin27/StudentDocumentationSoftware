@@ -13,14 +13,14 @@
                  <span class="required-label">必須</span>                    
                  <select id="secretQuestion" name="secretQuestion" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.secretQuestion}'/>" required>
                     <option value="" disabled selected style="display:none;">--- 秘密の質問 ---</option>
-		            <option value="好きなモビルスーツは?">好きなモビルスーツは?</option>
-		            <option value="一番やりこんだゲームは？">一番やりこんだゲームは？</option>
-		            <option value="ペットの名前は？">ペットの名前は？</option>
-		            <option value="卒業した小学校の名前は？">卒業した小学校の名前は？</option>
-		            <option value="親の旧姓は？">親の旧姓は？</option>
-		            <option value="尊敬する人はだれ？">尊敬する人はだれ？</option>
-			        <option value="座右の銘はなに？">座右の銘はなに？</option>
-            		<option value="はじめて買った車は？">はじめて買った車は？</option>
+		            <option value="好きなモビルスーツ">好きなモビルスーツ</option>
+		            <option value="一番やりこんだゲーム">一番やりこんだゲーム</option>
+		            <option value="ペットの名前">ペットの名前</option>
+		            <option value="卒業した小学校の名前">卒業した小学校の名前</option>
+		            <option value="親の旧姓">親の旧姓</option>
+		            <option value="尊敬する人">尊敬する人</option>
+			        <option value="座右の銘">座右の銘</option>
+            		<option value="はじめて買った車">はじめて買った車</option>
             		<option value="ご自由にご記載ください">ご自由にご記載ください</option>
      			</select>
              </div>
@@ -31,6 +31,11 @@
                 <input class="form-control" type="text" id="secretAnswer" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
             </div>
 		    <!-- エラー表示  -->
+	        <c:if test="${not empty validationError}" >	
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${validationError}
+	            </div>
+	        </c:if>	       
   	        <c:if test="${not empty secretError}">
               <div class="alert alert-danger text-center input-field" role="alert">
                   ${secretError}

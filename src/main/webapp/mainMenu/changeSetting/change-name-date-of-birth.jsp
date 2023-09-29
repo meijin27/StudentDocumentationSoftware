@@ -96,6 +96,11 @@
 	                ${dayError}
 	            </div>
 	        </c:if>
+	        <c:if test="${not empty validationError}" >
+	            <div class="alert alert-danger text-center input-field" role="alert">
+	                ${validationError}
+	            </div>
+	        </c:if>	     	        
 	        <c:if test="${not empty innerError}">
 	            <div class="alert alert-danger text-center input-field" role="alert">
 	                ${innerError}

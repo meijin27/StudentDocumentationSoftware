@@ -137,7 +137,7 @@ public class StudentDiscountCouponAction extends Action {
 
 			// エラーが発生している場合は元のページに戻す
 			if (request.getAttribute("nullError") != null
-					|| request.getAttribute("dayError") != null
+					|| request.getAttribute("dayError") != null || request.getAttribute("numberError") != null
 					|| request.getAttribute("valueLongError") != null) {
 				return "student-discount-coupon.jsp";
 			}

@@ -15,6 +15,7 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.ValidationUtil;
 
 public class ChangeAddressTelAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangeAddressTelAction.class);
@@ -57,6 +58,7 @@ public class ChangeAddressTelAction extends Action {
 		if (tel == null || postCode == null || address == null || tel.isEmpty() || postCode.isEmpty()
 				|| address.isEmpty()) {
 			request.setAttribute("nullError", "未入力項目があります。");
+			return "change-address-tel.jsp";
 		}
 
 		// 電話番号が半角10~11桁でなければエラーを返す
@@ -74,8 +76,13 @@ public class ChangeAddressTelAction extends Action {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(address)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("valueLongError") != null
+		if (request.getAttribute("validationError") != null || request.getAttribute("valueLongError") != null
 				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
 			return "change-address-tel.jsp";
 		}

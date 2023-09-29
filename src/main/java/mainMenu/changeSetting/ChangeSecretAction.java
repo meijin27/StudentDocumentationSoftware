@@ -15,7 +15,9 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.ValidationUtil;
 
 public class ChangeSecretAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangeSecretAction.class);
@@ -55,10 +57,13 @@ public class ChangeSecretAction extends Action {
 			request.setAttribute("secretError", "未選択・未入力項目があります。");
 		} else if (password.length() > 32 || secretAnswer.length() > 32 || secretQuestion.length() > 32) {
 			request.setAttribute("secretError", "32文字以下で入力してください。");
+			// 入力値に特殊文字が入っていないか確認する
+		} else if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
+			request.setAttribute("secretError", "使用できない特殊文字が含まれています");
 		}
 
-		// パスワードエラーが発生していたら元のページに戻りやり直し
-		if (request.getAttribute("secretError") != null) {
+		// エラーが発生している場合は元のページに戻す
+		if (ErrorCheckUtil.hasErrorAttributes(request)) {
 			return "change-secret.jsp";
 		}
 

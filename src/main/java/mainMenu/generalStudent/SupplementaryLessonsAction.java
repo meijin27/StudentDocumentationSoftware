@@ -102,7 +102,7 @@ public class SupplementaryLessonsAction extends Action {
 		}
 
 		// 年度は２桁以下・学期は半角1桁でなければエラーを返す
-		if (!fiscalYear.matches("^\\d{1,2}$") && !semester.matches("^\\d{1}$")) {
+		if (!fiscalYear.matches("^\\d{1,2}$") || !semester.matches("^\\d{1}$")) {
 			request.setAttribute("numberError", "年度・学期は半角数字で入力してください。");
 		}
 

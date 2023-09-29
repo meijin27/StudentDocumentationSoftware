@@ -2,10 +2,8 @@ package firstSetting;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +14,9 @@ import tool.Action;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.ErrorCheckUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class FirstSettingAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(FirstSettingAction.class);
@@ -62,52 +63,38 @@ public class FirstSettingAction extends Action {
 		String classNumber = request.getParameter("classNumber");
 
 		// 未入力項目があればエラーを返す
-		if (lastName == null || firstName == null || lastNameRuby == null || firstNameRuby == null || tel == null
-				|| postCode == null || address == null ||
-				birthYear == null || birthMonth == null || birthDay == null || admissionYear == null
-				|| admissionMonth == null || admissionDay == null || studentType == null
-				|| className == null
-				|| studentNumber == null || schoolYear == null || classNumber == null || lastName.isEmpty()
-				|| firstName.isEmpty() || lastNameRuby.isEmpty()
-				|| firstNameRuby.isEmpty() || tel.isEmpty() || postCode.isEmpty() || address.isEmpty() ||
-				birthYear.isEmpty() || birthMonth.isEmpty() || birthDay.isEmpty() || admissionYear.isEmpty()
-				|| admissionMonth.isEmpty() || admissionDay.isEmpty() || studentType.isEmpty()
-				|| className.isEmpty() || studentNumber.isEmpty() || schoolYear.isEmpty() || classNumber.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, tel, birthYear, birthMonth,
+				birthDay, admissionYear, admissionMonth, admissionDay, studentType, className, studentNumber,
+				schoolYear, classNumber)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "first-setting.jsp";
 		}
 
 		// 入力された値をセッションに格納
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			session.setAttribute(paramName, paramValue);
-		}
+		RequestAndSessionUtil.storeParametersInSession(request);
 
 		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
-		Pattern pattern = Pattern.compile("^[\u3040-\u309F]+$");
-		if (!pattern.matcher(lastNameRuby).matches() || !pattern.matcher(firstNameRuby).matches()) {
+		if (!ValidationUtil.isHiragana(lastNameRuby, firstNameRuby)) {
 			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
 		}
 
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (!tel.matches("^\\d{10,11}$")) {
+		if (!ValidationUtil.isTenOrElevenDigit(tel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
 		// 郵便番号が半角7桁でなければエラーを返す
-		if (!postCode.matches("^\\d{7}$")) {
+		if (!ValidationUtil.isSevenDigit(postCode)) {
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		}
 
 		// 学籍番号が半角6桁でなければエラーを返す
-		if (!studentNumber.matches("^\\d{6}$")) {
+		if (!ValidationUtil.isSixDigit(studentNumber)) {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
 		// 学年・クラスが半角1桁でなければエラーを返す
-		if (!schoolYear.matches("^\\d{1}$") && !classNumber.matches("^\\d{1}$")) {
+		if (!ValidationUtil.isSingleDigit(schoolYear) || !ValidationUtil.isSingleDigit(classNumber)) {
 			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
 		}
 
@@ -146,6 +133,11 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(firstName, lastName, address, className, studentType)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
 				|| firstNameRuby.length() > 32 || studentType.length() > 5 || className.length() > 16) {
@@ -155,11 +147,7 @@ public class FirstSettingAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("studentNumberError") != null || request.getAttribute("agreeError") != null
-				|| request.getAttribute("rubyError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null
-				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null
-				|| request.getAttribute("numberError") != null) {
+		if (ErrorCheckUtil.hasErrorAttributes(request)) {
 			return "first-setting.jsp";
 		}
 
