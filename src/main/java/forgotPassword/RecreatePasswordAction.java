@@ -13,7 +13,10 @@ import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
+import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class RecreatePasswordAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(RecreatePasswordAction.class);
@@ -24,25 +27,19 @@ public class RecreatePasswordAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
+
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "encryptedId")) {
+			// ログイン状態が不正ならば処理を終了
+			return null;
+		}
+
 		// セッションから暗号化されたマスターキーを取り出す
 		String reEncryptedMasterkey = (String) session.getAttribute("master_key");
 		// セッションから暗号化されたIDを取り出す
 		String encryptedId = (String) session.getAttribute("encryptedId");
-		// リダイレクト用コンテキストパス
-		String contextPath = request.getContextPath();
-
-		// マスターキーやIDがnull,トークンが一致しない、またはどちらかがnullの場合はエラー
-		if (encryptedId == null || reEncryptedMasterkey == null || sessionToken == null || requestToken == null
-				|| !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
-			return null;
-		}
 
 		// 入力されたパスワードと再確認用パスワードを変数に格納
 		String password = request.getParameter("password");
@@ -53,16 +50,16 @@ public class RecreatePasswordAction extends Action {
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null || password.isEmpty()) {
-			request.setAttribute("passwordError", "パスワードの入力は必須です");
+		if (ValidationUtil.isNullOrEmpty(password)) {
+			request.setAttribute("nullError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
-		} else if (password.length() > 32) {
-			request.setAttribute("passwordError", "32文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(32, password)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
-		// パスワードエラーが発生していたら元のページに戻りやり直し
-		if (request.getAttribute("passwordError") != null) {
+		// エラーが発生している場合は元のページに戻す
+		if (ErrorCheckUtil.hasErrorAttributes(request)) {
 			return "recreate-password.jsp";
 		}
 

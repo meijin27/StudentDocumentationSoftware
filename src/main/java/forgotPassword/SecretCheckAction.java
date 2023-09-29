@@ -1,7 +1,5 @@
 package forgotPassword;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +11,10 @@ import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
+import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class SecretCheckAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(SecretCheckAction.class);
@@ -24,67 +25,49 @@ public class SecretCheckAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
+		// リダイレクト用コンテキストパス
+		String contextPath = request.getContextPath();
+
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "encryptedId", "secretQuestion")) {
+			// ログイン状態が不正ならば処理を終了
+			return null;
+		}
+
 		// セッションから秘密の質問を取り出す
 		String secretQuestion = (String) session.getAttribute("secretQuestion");
 		// セッションから暗号化されたIDを取り出す
 		String encryptedId = (String) session.getAttribute("encryptedId");
-		// リダイレクト用コンテキストパス
-		String contextPath = request.getContextPath();
-
-		// 秘密の質問やIDがNULL、トークンが一致しない、またはどちらかがnullの場合はエラー
-		if (encryptedId == null || secretQuestion == null || sessionToken == null || requestToken == null
-				|| !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。最初からやり直してください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
-			return null;
-		}
-
 		// 入力された値の変数への格納
 		String secretAnswer = request.getParameter("secretAnswer");
 		String birthYear = request.getParameter("birthYear");
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// もしも入力値が無し、もしくは空の場合はエラーを返す
-		if (secretAnswer == null || birthYear == null || birthMonth == null || birthDay == null
-				|| secretAnswer.isEmpty() || birthYear.isEmpty() || birthMonth.isEmpty()
-				|| birthDay.isEmpty()) {
-			request.setAttribute("secretError", "未入力項目があります。");
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(secretAnswer, birthYear, birthMonth, birthDay)) {
+			request.setAttribute("nullError", "未入力項目があります。");
 			return "secret-check.jsp";
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。		
-		if (secretAnswer.length() > 32) {
-			request.setAttribute("secretError", "32文字以下で入力してください。");
-			return "secret-check.jsp";
+		if (!ValidationUtil.areValidLengths(32, secretAnswer)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
-		// 生年月日が数字か確認する
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!birthYear.matches("^\\d{4}$")
-					|| !birthMonth.matches("^\\d{1,2}$")
-					|| !birthDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-				return "secret-check.jsp";
-			} else {
-				int year = Integer.parseInt(birthYear);
-				int month = Integer.parseInt(birthMonth);
-				int day = Integer.parseInt(birthDay);
-
-				// 正しい日付かどうか確認する
-				LocalDate date = LocalDate.of(year, month, day);
+		// 生年月日が存在しない日付の場合はエラーにする
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (!ValidationUtil.isFourDigit(birthYear) ||
+				!ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (!ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("secretError", "生年月日は数字で入力してください。");
-			return "secret-check.jsp";
-		} catch (DateTimeException e) {
-			request.setAttribute("secretError", "有効な日付を入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (ErrorCheckUtil.hasErrorAttributes(request)) {
 			return "secret-check.jsp";
 		}
 
@@ -101,7 +84,7 @@ public class SecretCheckAction extends Action {
 			String CheckBirthMonth = dao.getBirthMonth(id);
 			String CheckBirthDay = dao.getBirthDay(id);
 			// 秘密の質問の答えの一致確認		
-			if (secretAnswer.length() <= 32 && PasswordUtil.isPasswordMatch(secretAnswer, CheckSecretAnswer)) {
+			if (PasswordUtil.isPasswordMatch(secretAnswer, CheckSecretAnswer)) {
 				// データベースからセカンドマスターキーの取り出し
 				String reEncryptedSecondMasterKey = dao.getSecondMasterKey(id);
 				// セカンドマスターキーの共通暗号からの復号
