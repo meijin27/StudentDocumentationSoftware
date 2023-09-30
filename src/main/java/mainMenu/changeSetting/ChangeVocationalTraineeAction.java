@@ -1,6 +1,5 @@
 package mainMenu.changeSetting;
 
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +14,8 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class ChangeVocationalTraineeAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangeVocationalTraineeAction.class);
@@ -22,21 +23,15 @@ public class ChangeVocationalTraineeAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -46,48 +41,47 @@ public class ChangeVocationalTraineeAction extends Action {
 		String attendanceNumber = request.getParameter("attendanceNumber");
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
+		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
+		if (ValidationUtil.isNullOrEmpty(namePESO, attendanceNumber, employmentInsurance)) {
+			request.setAttribute("nullError", "未入力項目があります。");
+			return "vocational-trainee-setting.jsp";
 		}
 
-		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
-		if (namePESO == null
-				|| attendanceNumber == null || employmentInsurance == null || namePESO.isEmpty()
-				|| attendanceNumber.isEmpty() || employmentInsurance.isEmpty()) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-vocational-trainee.jsp";
-		}
+		// 入力された値をリクエストに格納
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 雇用保険「有」の場合は支給番号を記載する必要あり
-		else if (employmentInsurance.equals("有") && (supplyNumber == null || supplyNumber.isEmpty())) {
+		if (employmentInsurance.equals("有") && ValidationUtil.isNullOrEmpty(supplyNumber)) {
 			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
-			return "change-vocational-trainee.jsp";
+			return "vocational-trainee-setting.jsp";
 		}
 		// 雇用保険「無」の場合で支給番号を記載している場合は支給番号を強制的に下記文字列にする。
 		else if (employmentInsurance.equals("無")) {
 			supplyNumber = "支給番号無し";
+			session.setAttribute("supplyNumber", supplyNumber);
 		}
 		// 雇用保険が「有」「無」以外の場合はエラーを返す
 		else if (!(employmentInsurance.equals("有") || employmentInsurance.equals("無"))) {
-			request.setAttribute("innerError", "雇用保険は「有」「無」から選択してください");
+			request.setAttribute("employmentInsuranceError", "雇用保険は「有」「無」から選択してください");
 		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す
-		if (!attendanceNumber.matches("^\\d{1,2}$")) {
+		if (!ValidationUtil.isOneOrTwoDigit(attendanceNumber)) {
 			request.setAttribute("attendanceNumberError", "出席番号は半角数字2桁以下で入力してください。");
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。
-		if (namePESO.length() > 32 || supplyNumber.length() > 32) {
+		if (!ValidationUtil.areValidLengths(32, namePESO, supplyNumber)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(namePESO, supplyNumber)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("attendanceNumberError") != null || request.getAttribute("valueLongError") != null
-				|| request.getAttribute("innerError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-vocational-trainee.jsp";
 		}
 

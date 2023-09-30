@@ -13,7 +13,6 @@ import dao.UserDAO;
 import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
-import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
 import tool.RequestAndSessionUtil;
 import tool.ValidationUtil;
@@ -55,7 +54,7 @@ public class CreatePasswordAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (ErrorCheckUtil.hasErrorAttributes(request)) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "create-password.jsp";
 		}
 

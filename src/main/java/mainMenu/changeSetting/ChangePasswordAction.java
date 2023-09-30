@@ -16,6 +16,8 @@ import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class ChangePasswordAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangePasswordAction.class);
@@ -23,21 +25,15 @@ public class ChangePasswordAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -48,16 +44,16 @@ public class ChangePasswordAction extends Action {
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (oldPassword == null || oldPassword.isEmpty() || newPassword == null || newPassword.isEmpty()) {
-			request.setAttribute("passwordError", "パスワードの入力は必須です");
+		if (ValidationUtil.isNullOrEmpty(oldPassword, newPassword, passwordCheck)) {
+			request.setAttribute("nullError", "パスワードの入力は必須です");
 		} else if (!newPassword.equals(passwordCheck)) {
-			request.setAttribute("passwordError", "新パスワードと確認用パスワードが一致しません。再度入力してください。");
-		} else if (oldPassword.length() > 32 || newPassword.length() > 32) {
-			request.setAttribute("passwordError", "32文字以下で入力してください。");
+			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
+		} else if (!ValidationUtil.areValidLengths(32, newPassword)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
-		// パスワードエラーが発生していたら元のページに戻りやり直し
-		if (request.getAttribute("passwordError") != null) {
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-password.jsp";
 		}
 

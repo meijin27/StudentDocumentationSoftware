@@ -12,7 +12,6 @@ import tool.Action;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
-import tool.ErrorCheckUtil;
 import tool.RequestAndSessionUtil;
 import tool.ValidationUtil;
 
@@ -124,7 +123,7 @@ public class FirstSettingAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (ErrorCheckUtil.hasErrorAttributes(request)) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "first-setting.jsp";
 		}
 

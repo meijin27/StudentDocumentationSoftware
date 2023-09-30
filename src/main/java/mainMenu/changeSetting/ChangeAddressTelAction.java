@@ -1,6 +1,5 @@
 package mainMenu.changeSetting;
 
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +14,7 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
 import tool.ValidationUtil;
 
 public class ChangeAddressTelAction extends Action {
@@ -23,21 +23,15 @@ public class ChangeAddressTelAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -46,33 +40,27 @@ public class ChangeAddressTelAction extends Action {
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 未入力項目があればエラーを返す
-		if (tel == null || postCode == null || address == null || tel.isEmpty() || postCode.isEmpty()
-				|| address.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(tel, postCode, address)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "change-address-tel.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (!tel.matches("^\\d{10,11}$")) {
+		if (!ValidationUtil.isTenOrElevenDigit(tel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
 		// 郵便番号が半角7桁でなければエラーを返す
-		if (!postCode.matches("^\\d{7}$")) {
+		if (!ValidationUtil.isSevenDigit(postCode)) {
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す
-		if (address.length() > 64) {
+		if (!ValidationUtil.areValidLengths(64, address)) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
@@ -82,8 +70,7 @@ public class ChangeAddressTelAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("validationError") != null || request.getAttribute("valueLongError") != null
-				|| request.getAttribute("telError") != null || request.getAttribute("postCodeError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-address-tel.jsp";
 		}
 

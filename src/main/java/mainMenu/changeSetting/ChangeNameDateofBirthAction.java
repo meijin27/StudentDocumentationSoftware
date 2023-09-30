@@ -1,8 +1,5 @@
 package mainMenu.changeSetting;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +14,7 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
 import tool.ValidationUtil;
 
 public class ChangeNameDateofBirthAction extends Action {
@@ -25,21 +23,15 @@ public class ChangeNameDateofBirthAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -52,14 +44,6 @@ public class ChangeNameDateofBirthAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 未入力項目があればエラーを返す
 		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, birthYear, birthMonth,
 				birthDay)) {
@@ -67,35 +51,27 @@ public class ChangeNameDateofBirthAction extends Action {
 			return "change-name-date-of-birth.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
 		if (!ValidationUtil.isHiragana(lastNameRuby, firstNameRuby)) {
 			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
 		}
 
 		// 生年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!birthYear.matches("^\\d{4}$")
-					|| !birthMonth.matches("^\\d{1,2}$")
-					|| !birthDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int year = Integer.parseInt(birthYear);
-				int month = Integer.parseInt(birthMonth);
-				int day = Integer.parseInt(birthDay);
-
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(year, month, day);
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (!ValidationUtil.isFourDigit(birthYear) ||
+				!ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (!ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。
-		if (lastName.length() > 32 || firstName.length() > 32 || lastNameRuby.length() > 32
-				|| firstNameRuby.length() > 32) {
+		if (!ValidationUtil.areValidLengths(32, lastName, firstName, lastNameRuby, firstNameRuby)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
@@ -105,9 +81,7 @@ public class ChangeNameDateofBirthAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("validationError") != null || request.getAttribute("rubyError") != null
-				|| request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-name-date-of-birth.jsp";
 		}
 

@@ -15,8 +15,8 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
-import tool.ErrorCheckUtil;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
 import tool.ValidationUtil;
 
 public class ChangeSecretAction extends Action {
@@ -25,21 +25,15 @@ public class ChangeSecretAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -48,22 +42,24 @@ public class ChangeSecretAction extends Action {
 		String secretQuestion = request.getParameter("secretQuestion");
 		String secretAnswer = request.getParameter("secretAnswer");
 
-		// パスワードの入力チェック
-		// 未入力及び不一致はエラー処理		
-		if (password == null || password.isEmpty()) {
-			request.setAttribute("secretError", "パスワードの入力は必須です");
-		} else if (secretQuestion == null || secretQuestion.isEmpty() || secretAnswer == null
-				|| secretAnswer.isEmpty()) {
-			request.setAttribute("secretError", "未選択・未入力項目があります。");
-		} else if (password.length() > 32 || secretAnswer.length() > 32 || secretQuestion.length() > 32) {
-			request.setAttribute("secretError", "32文字以下で入力してください。");
-			// 入力値に特殊文字が入っていないか確認する
-		} else if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
+		// 未入力はエラー処理		
+		if (ValidationUtil.isNullOrEmpty(password, secretQuestion, secretAnswer)) {
+			request.setAttribute("nullError", "未選択・未入力項目があります。");
+			return "change-secret.jsp";
+		}
+
+		// 文字数が多い場合はエラーを返す。
+		if (!ValidationUtil.areValidLengths(32, password, secretAnswer, secretQuestion)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		}
+
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
 			request.setAttribute("secretError", "使用できない特殊文字が含まれています");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (ErrorCheckUtil.hasErrorAttributes(request)) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-secret.jsp";
 		}
 

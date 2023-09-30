@@ -1,8 +1,5 @@
 package mainMenu.changeSetting;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +14,8 @@ import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class ChangeStudentInfoAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ChangeStudentInfoAction.class);
@@ -24,21 +23,15 @@ public class ChangeStudentInfoAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -52,65 +45,46 @@ public class ChangeStudentInfoAction extends Action {
 		String admissionMonth = request.getParameter("admissionMonth");
 		String admissionDay = request.getParameter("admissionDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 未入力項目があればエラーを返す
-		if (studentType == null || className == null || studentNumber == null || schoolYear == null
-				|| classNumber == null || admissionYear == null
-				|| admissionMonth == null || admissionDay == null || studentType.isEmpty() || className.isEmpty()
-				|| studentNumber.isEmpty()
-				|| schoolYear.isEmpty()
-				|| classNumber.isEmpty() || admissionYear.isEmpty()
-				|| admissionMonth.isEmpty() || admissionDay.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(studentType, className, studentNumber, schoolYear, classNumber, admissionYear,
+				admissionMonth, admissionDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-student-info.jsp";
+			return "change-address-tel.jsp";
 		}
 
-		// 入学年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!admissionYear.matches("^\\d{4}$")
-					|| !admissionMonth.matches("^\\d{1,2}$")
-					|| !admissionDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int year = Integer.parseInt(admissionYear);
-				int month = Integer.parseInt(admissionMonth);
-				int day = Integer.parseInt(admissionDay);
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(year, month, day);
+		// 生年月日が存在しない日付の場合はエラーにする
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (!ValidationUtil.isFourDigit(admissionYear) ||
+				!ValidationUtil.isOneOrTwoDigit(admissionMonth, admissionDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (!ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 学籍番号が半角6桁でなければエラーを返す
-		if (!studentNumber.matches("^\\d{6}$")) {
+		if (!ValidationUtil.isSixDigit(studentNumber)) {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
 		// 学年・クラスが半角1桁でなければエラーを返す
-		if (!schoolYear.matches("^\\d{1}$") && !classNumber.matches("^\\d{1}$")) {
+		if (!ValidationUtil.isSingleDigit(schoolYear, classNumber)) {
 			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
 		}
 
-		// セレクトボックスの有効範囲画外の場合はエラーを返す。
-		if (studentType.length() > 5 || className.length() > 16) {
-			request.setAttribute("valueLongError", "16文字以下で入力してください。");
+		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (!ValidationUtil.areValidLengths(5, studentType)) {
+			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
+		} else if (!ValidationUtil.areValidLengths(16, className)) {
+			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null
-				|| request.getAttribute("studentNumberError") != null || request.getAttribute("numberError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "change-student-info.jsp";
 		}
 

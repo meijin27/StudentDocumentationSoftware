@@ -13,6 +13,8 @@ import tool.Action;
 import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.PasswordUtil;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class DeleteAccountAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(DeleteAccountAction.class);
@@ -20,36 +22,31 @@ public class DeleteAccountAction extends Action {
 	@Override
 	public String execute(
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
+
 		// 入力されたパスワードを変数に格納
 		String password = request.getParameter("password");
 
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
-		if (password == null || password.isEmpty()) {
-			request.setAttribute("passwordError", "パスワードの入力は必須です");
-		} else if (password.length() > 32) {
-			request.setAttribute("passwordError", "32文字以下で入力してください。");
+		if (ValidationUtil.isNullOrEmpty(password)) {
+			request.setAttribute("nullError", "パスワードの入力は必須です");
+		} else if (!ValidationUtil.areValidLengths(32, password)) {
+			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
-		// パスワードエラーが発生していたら元のページに戻りやり直し
-		if (request.getAttribute("passwordError") != null) {
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "delete-account.jsp";
 		}
 
@@ -88,7 +85,7 @@ public class DeleteAccountAction extends Action {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("passwordError", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "delete-account.jsp";
 		}
 	}
