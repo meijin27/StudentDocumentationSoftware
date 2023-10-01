@@ -29,7 +29,7 @@ public class DeleteAccountAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -41,7 +41,7 @@ public class DeleteAccountAction extends Action {
 		// 未入力及び不一致はエラー処理		
 		if (ValidationUtil.isNullOrEmpty(password)) {
 			request.setAttribute("nullError", "パスワードの入力は必須です");
-		} else if (!ValidationUtil.areValidLengths(32, password)) {
+		} else if (ValidationUtil.areValidLengths(32, password)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

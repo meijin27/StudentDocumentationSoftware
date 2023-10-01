@@ -1,8 +1,5 @@
 package mainMenu.generalStudent;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class CertificateIssuanceAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(CertificateIssuanceAction.class);
@@ -30,19 +28,12 @@ public class CertificateIssuanceAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -76,13 +67,14 @@ public class CertificateIssuanceAction extends Action {
 		String applicationForm = request.getParameter("applicationForm");
 		String overseasRemittanceCalculator = request.getParameter("overseasRemittanceCalculator");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, use, propose, immigrationBureau)) {
+			request.setAttribute("nullError", "未入力項目があります。");
+			return "certificate-issuance.jsp";
 		}
+
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
 		// 印刷項目確認用変数
 		boolean checkCredentials = false;
@@ -90,142 +82,94 @@ public class CertificateIssuanceAction extends Action {
 		boolean checkReissue = false;
 		boolean checkOther = false;
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (requestYear == null || requestMonth == null || requestDay == null
-				|| use == null || propose == null || immigrationBureau == null
-				|| requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()
-				|| use.isEmpty() || propose.isEmpty()
-				|| immigrationBureau.isEmpty()
-
-		) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-issuance.jsp";
-		}
-
 		// 証明書の入力のチェック
 		// すべてが空の場合はスルー
-		if ((proofOfStudent == null || proofOfStudent.isEmpty())
-				&& (attendanceRate == null || attendanceRate.isEmpty())
-				&& (results == null || results.isEmpty())
-				&& (expectedGraduation == null || expectedGraduation.isEmpty())
-				&& (diploma == null || diploma.isEmpty())
-				&& (certificateCompletion == null || certificateCompletion.isEmpty())
-				&& (enrollmentCertificate == null || enrollmentCertificate.isEmpty())
-				&& (healthCertificate == null || healthCertificate.isEmpty())
-				&& (closedPeriod == null || closedPeriod.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(proofOfStudent, attendanceRate, results, expectedGraduation, diploma,
+				certificateCompletion, enrollmentCertificate, healthCertificate, closedPeriod)) {
 		} else {
 			// 何か入力されている場合	
-			// 入力チェックをtrueにする
-			checkCredentials = true;
-			// 入力されている証明書のバリデーションチェック
-			if ((!proofOfStudent.isEmpty() && !proofOfStudent.matches("^\\d{1}$"))
-					&& (!attendanceRate.isEmpty() && !attendanceRate.matches("^\\d{1}$"))
-					&& (!results.isEmpty() && !results.matches("^\\d{1}$"))
-					&& (!expectedGraduation.isEmpty() && !expectedGraduation.matches("^\\d{1}$"))
-					&& (!diploma.isEmpty() && !diploma.matches("^\\d{1}$"))
-					&& (!certificateCompletion.isEmpty() && !certificateCompletion.matches("^\\d{1}$"))
-					&& (!enrollmentCertificate.isEmpty() && !enrollmentCertificate.matches("^\\d{1}$"))
-					&& (!healthCertificate.isEmpty() && !healthCertificate.matches("^\\d{1}$"))
-					&& (!closedPeriod.isEmpty() && !closedPeriod.matches("^\\d{1}$"))) {
+			// 入力されている証明書が半角1桁でなければエラーを返す
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent, attendanceRate, results,
+					expectedGraduation, diploma,
+					certificateCompletion, enrollmentCertificate, healthCertificate, closedPeriod)) {
 				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
 			}
+			// 入力チェックをtrueにする
+			checkCredentials = true;
 		}
 
 		// 英文の証明書の入力のチェック
 		// すべてが空の場合はスルー
-		if ((englishProofOfStudent == null || englishProofOfStudent.isEmpty())
-				&& (englishResults == null || englishResults.isEmpty())
-				&& (englishDiploma == null || englishDiploma.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(englishProofOfStudent, englishResults, englishDiploma)) {
 		} else {
 			// 何か入力されている場合
 			// 英語の姓と名のチェック
-			if ((englishLastName == null || englishLastName.isEmpty())
-					&& (englishFirstName == null || englishFirstName.isEmpty())) {
-				// すべてが空の場合はエラーを返す
-				request.setAttribute("nameError", "英文証明書は英語の姓と名を入力してください。");
-			} else if (englishLastName == null || englishLastName.isEmpty() || englishFirstName == null
-					|| englishFirstName.isEmpty()) {
-				// 何か一つだけ入力されている場合
-				request.setAttribute("nameError", "英語の姓と名を全て入力してください。");
-			} else if (englishLastName.length() > 32 || englishFirstName.length() > 32) {
-				request.setAttribute("nameError", "氏名は32文字以下で入力してください。");
-			} else if (!englishLastName.matches("^[a-zA-Z\\s]*$") || !englishFirstName.matches("^[a-zA-Z\\s]*$")) {
-				request.setAttribute("nameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
+			if (ValidationUtil.isNullOrEmpty(englishLastName, englishFirstName)) {
+				// 姓名のどちらかに未入力がある場合はエラーを返す
+				request.setAttribute("englishNameError", "英文証明書は英語の姓と名を入力してください。");
+			} else if (ValidationUtil.areValidLengths(32, englishLastName, englishFirstName)) {
+				// 姓名の文字列長が長い場合はエラーを返す
+				request.setAttribute("englishNameError", "英語の氏名は32文字以下で入力してください。");
+			} else if (ValidationUtil.isEnglish(englishLastName, englishFirstName)) {
+				// 姓名が英語以外で入力された場合はエラーを返す
+				request.setAttribute("englishNameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
+			} else if (ValidationUtil.isValidSingleDigitOrNullEmpty(englishProofOfStudent,
+					englishResults, englishDiploma)) {
+				// 入力されている証明書が半角1桁でなければエラーを返す
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
 			}
 			// 入力チェックをtrueにする
 			checkEnglish = true;
-			// 入力されている証明書のバリデーションチェック
-			if ((!englishProofOfStudent.isEmpty() && !englishProofOfStudent.matches("^\\d{1}$"))
-					&& (!englishResults.isEmpty() && !englishResults.matches("^\\d{1}$"))
-					&& (!englishDiploma.isEmpty() && !englishDiploma.matches("^\\d{1}$"))) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
-			}
 		}
 
 		// 再発行の証明書の入力のチェック
 		// すべてが空の場合はスルー
-		if ((reissueBrokenStudentID == null || reissueBrokenStudentID.isEmpty())
-				&& (reissueLostStudentID == null || reissueLostStudentID.isEmpty())
-				&& (reissueTemporaryIdentification == null || reissueTemporaryIdentification.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(reissueBrokenStudentID, reissueLostStudentID,
+				reissueTemporaryIdentification)) {
 		} else {
+
+			// 入力されている証明書が半角1桁でなければエラーを返す
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(reissueBrokenStudentID, reissueLostStudentID,
+					reissueTemporaryIdentification)) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkReissue = true;
-			// 入力されている証明書のバリデーションチェック
-			if ((!reissueBrokenStudentID.isEmpty() && !reissueBrokenStudentID.matches("^\\d{1}$"))
-					&& (!reissueLostStudentID.isEmpty() && !reissueLostStudentID.matches("^\\d{1}$"))
-					&& (!reissueTemporaryIdentification.isEmpty()
-							&& !reissueTemporaryIdentification.matches("^\\d{1}$"))) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
-			}
 		}
 
 		// その他の書類の入力のチェック
 		// すべてが空の場合はスルー
-		if ((internationalRemittanceRequest == null || internationalRemittanceRequest.isEmpty())
-				&& (applicationForm == null || applicationForm.isEmpty())
-				&& (overseasRemittanceCalculator == null || overseasRemittanceCalculator.isEmpty())) {
+		if (ValidationUtil
+				.areAllNullOrEmpty(internationalRemittanceRequest, applicationForm, overseasRemittanceCalculator)) {
 		} else {
+
+			// 入力されている証明書が半角1桁でなければエラーを返す
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(internationalRemittanceRequest, applicationForm,
+					overseasRemittanceCalculator)) {
+				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			}
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkOther = true;
-			// 入力されている証明書のバリデーションチェック
-			if ((!internationalRemittanceRequest.isEmpty() && !internationalRemittanceRequest.matches("^\\d{1}$"))
-					&& (!applicationForm.isEmpty() && !applicationForm.matches("^\\d{1}$"))
-					&& (!overseasRemittanceCalculator.isEmpty() && !overseasRemittanceCalculator.matches("^\\d{1}$"))) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
-			}
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{1,2}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear) + 2018;
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-
-				// 届出年月日の日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 文字数が18文字より多い場合はエラーを返す。
-		if (propose.length() > 18) {
+		if (ValidationUtil.areValidLengths(18, propose)) {
 			request.setAttribute("valueLongError", "提出先は18文字以下で入力してください。");
 		}
 
 		// 文字数が8文字より多い場合はエラーを返す。
-		if (use.length() > 18) {
+		if (ValidationUtil.areValidLengths(8, use)) {
 			request.setAttribute("valueLongError", "用途は8文字以下で入力してください。");
 		}
 
@@ -242,10 +186,7 @@ public class CertificateIssuanceAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nameError") != null || request.getAttribute("inputError") != null
-				|| request.getAttribute("valueLongError") != null
-				|| request.getAttribute("dayError") != null || request.getAttribute("numberError") != null
-				|| request.getAttribute("innerError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-issuance.jsp";
 		}
 
@@ -257,36 +198,60 @@ public class CertificateIssuanceAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// 電話番号のデータベースからの取り出し
+			String reEncryptedTel = dao.getTel(id);
+			String tel = decrypt.getDecryptedDate(result, reEncryptedTel);
+
+			// 郵便番号のデータベースからの取り出し
+			String reEncryptedPostCode = dao.getPostCode(id);
+			String postCode = decrypt.getDecryptedDate(result, reEncryptedPostCode);
+
+			// 住所のデータベースからの取り出し
+			String reEncryptedAddress = dao.getAddress(id);
+			String address = decrypt.getDecryptedDate(result, reEncryptedAddress);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+			// 学年のデータベースからの取り出し
+			String reEncryptedSchoolYear = dao.getSchoolYear(id);
+			String schoolYear = decrypt.getDecryptedDate(result, reEncryptedSchoolYear);
+			// クラス番号のデータベースからの取り出し
+			String reEncryptedClassNumber = dao.getClassNumber(id);
+			String classNumber = decrypt.getDecryptedDate(result, reEncryptedClassNumber);
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+			// 誕生年のデータベースからの取り出し
+			String reEncryptedBirthYear = dao.getBirthYear(id);
+			String birthYear = decrypt.getDecryptedDate(result, reEncryptedBirthYear);
+			// 誕生月のデータベースからの取り出し
+			String reEncryptedBirthMonth = dao.getBirthMonth(id);
+			String birthMonth = decrypt.getDecryptedDate(result, reEncryptedBirthMonth);
+			// 誕生日のデータベースからの取り出し
+			String reEncryptedBirthDay = dao.getBirthDay(id);
+			String birthDay = decrypt.getDecryptedDate(result, reEncryptedBirthDay);
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, tel, postCode, address, className, schoolYear,
+					classNumber, studentNumber, birthYear, birthMonth, birthDay)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
-
-			String name = lastName + " " + firstName;
-			// 電話番号のデータベースからの取り出し
-			String reEncryptedTel = dao.getTel(id);
-			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
-			String tel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
 
 			// 電話番号を3分割してハイフンをつけてくっつける
 			String firstTel = null;
 			String secondTel = null;
 			String lastTel = null;
+
 			if (tel.length() == 11) {
 				firstTel = tel.substring(0, 3);
 				secondTel = tel.substring(3, 7);
@@ -297,48 +262,12 @@ public class CertificateIssuanceAction extends Action {
 				lastTel = tel.substring(6, 10);
 			}
 
-			// 郵便番号のデータベースからの取り出し
-			String reEncryptedPostCode = dao.getPostCode(id);
-			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
-			String postCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
 			// 郵便番号を２つに分割する
 			String FirstPostCode = postCode.substring(0, 3);
 			String LastPostCode = postCode.substring(3, 7);
 
-			// 住所のデータベースからの取り出し
-			String reEncryptedAddress = dao.getAddress(id);
-			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
-			String address = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// 学年のデータベースからの取り出し
-			String reEncryptedSchoolYear = dao.getSchoolYear(id);
-			String encryptedSchoolYear = CipherUtil.commonDecrypt(reEncryptedSchoolYear);
-			String schoolYear = CipherUtil.decrypt(masterKey, iv, encryptedSchoolYear);
-			// クラス番号のデータベースからの取り出し
-			String reEncryptedClassNumber = dao.getClassNumber(id);
-			String encryptedClassNumber = CipherUtil.commonDecrypt(reEncryptedClassNumber);
-			String classNumber = CipherUtil.decrypt(masterKey, iv, encryptedClassNumber);
-			// 学籍番号のデータベースからの取り出し
-			String reEncryptedStudentNumber = dao.getStudentNumber(id);
-			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
-			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
-			// 誕生年のデータベースからの取り出し
-			String reEncryptedBirthYear = dao.getBirthYear(id);
-			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
-			String birthYear = CipherUtil.decrypt(masterKey, iv, encryptedBirthYear);
-			// 誕生月のデータベースからの取り出し
-			String reEncryptedBirthMonth = dao.getBirthMonth(id);
-			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
-			String birthMonth = CipherUtil.decrypt(masterKey, iv, encryptedBirthMonth);
-			// 誕生日のデータベースからの取り出し
-			String reEncryptedBirthDay = dao.getBirthDay(id);
-			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
-			String birthDay = CipherUtil.decrypt(masterKey, iv, encryptedBirthDay);
-
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/generalStudentPDF/証明書交付願.pdf";
 			String fontPath = "/font/MS-Mincho-01.ttf";

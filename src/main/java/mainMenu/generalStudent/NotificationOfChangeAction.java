@@ -1,8 +1,5 @@
 package mainMenu.generalStudent;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class NotificationOfChangeAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(NotificationOfChangeAction.class);
@@ -30,21 +28,15 @@ public class NotificationOfChangeAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
+
 		// 入力された値を変数に格納
 		String requestYear = request.getParameter("requestYear");
 		String requestMonth = request.getParameter("requestMonth");
@@ -60,126 +52,93 @@ public class NotificationOfChangeAction extends Action {
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 更新項目確認用変数
 		boolean changeAddress = false;
 		boolean changeTel = false;
 		boolean changeResidentCard = false;
 		boolean changeName = false;
 
-		// 未入力項目があればエラーを返す
-		if (requestYear == null || requestMonth == null || requestDay == null
-				|| changeSubject == null
-				|| requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()
-				|| changeSubject.isEmpty()
-
-		) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, changeSubject)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "notification-of-change.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 姓と名のチェック
-		if ((lastName == null || lastName.isEmpty()) && (firstName == null || firstName.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(lastName, firstName)) {
 			// すべてが空の場合は問題なし
 		} else if (lastName == null || lastName.isEmpty() || firstName == null || firstName.isEmpty()) {
 			// 何か一つだけ入力されている場合
 			request.setAttribute("nameError", "姓と名を全て入力してください。");
-		} else if (lastName.length() > 32 || firstName.length() > 32) {
-			request.setAttribute("nameError", "名前は32文字以下で入力してください。");
+		} else if (ValidationUtil.areValidLengths(32, lastName, firstName)) {
+			request.setAttribute("valueLongError", "名前は32文字以下で入力してください。");
 		} else {
 			changeName = true;
 		}
 
 		// 郵便番号と住所のチェック
-		if ((postCode == null || postCode.isEmpty()) && (address == null || address.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(postCode, address)) {
 			// どちらも空の場合は問題なし
 		} else if (postCode == null || postCode.isEmpty() || address == null || address.isEmpty()) {
 			// どちらかだけ入力されている場合
 			request.setAttribute("addressError", "郵便番号と住所は両方とも入力してください。");
-		} else if (address.length() > 64) {
+		} else if (ValidationUtil.areValidLengths(64, address)) {
 			// 文字数が64文字より多い場合はエラーを返す
 			request.setAttribute("addressError", "住所は64文字以下で入力してください。");
-		} else if (!postCode.matches("^\\d{7}$")) {
+		} else if (ValidationUtil.isSevenDigit(postCode)) {
 			// 郵便番号が半角7桁でなければエラーを返す
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		} else {
 			changeAddress = true;
 		}
 
-		// 電話番号が半角10~11桁でなければエラーを返す
-		if (tel != null && !tel.isEmpty() && !tel.matches("^\\d{10,11}$")) {
+		// 電話番号のチェック
+		if (ValidationUtil.areAllNullOrEmpty(tel)) {
+			// 空の場合は問題なし
+		} else if (ValidationUtil.isTenOrElevenDigit(tel)) {
+			// 電話番号が半角10~11桁でなければエラーを返す
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
-		} else if (tel != null && !tel.isEmpty()) {
+		} else {
 			changeTel = true;
 		}
 
 		// 在留カードの記号番号と期間満了年月日のチェック
-		if ((residentCard == null || residentCard.isEmpty()) && (endYear == null || endYear.isEmpty())
-				&& (endMonth == null || endMonth.isEmpty()) && (endDay == null || endDay.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(residentCard, endYear, endMonth, endDay)) {
 			// どちらも空の場合は問題なし
 		} else if (residentCard == null || residentCard.isEmpty() || endYear == null || endYear.isEmpty()
 				|| endMonth == null || endMonth.isEmpty() || endDay == null || endDay.isEmpty()) {
 			// どちらかだけ入力されている場合
 			request.setAttribute("residentCardError", "記号・番号と期間満了年月日は全て入力してください。");
-		} else if (residentCard.length() != 12) {
-			// 文字数が12文字でない場合はエラーを返す
-			request.setAttribute("residentCardError", "記号・番号は12文字で入力してください。");
-		} else if (!residentCard.matches("^[A-Z]{2}\\d{8}[A-Z]{2}$")) {
+		} else if (ValidationUtil.isResidentCard(residentCard)) {
 			// 記号番号の最初と最後の２桁が大文字のアルファベット、間が半角数字8桁でなければエラーを返す
-			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字8桁で入力してください。");
-		} else if (!endYear.matches("^\\d{4}$")
-				|| !endMonth.matches("^\\d{1,2}$")
-				|| !endDay.matches("^\\d{1,2}$")) {
+			request.setAttribute("residentCardError", "記号番号の最初と最後の２桁は大文字のアルファベット、間は半角数字８桁で入力してください。");
+		} else if (ValidationUtil.isFourDigit(endYear) || ValidationUtil.isOneOrTwoDigit(endMonth, endDay)) {
 			request.setAttribute("residentCardError", "年月日は正規の桁数で入力してください。");
+		} else if (ValidationUtil.validateDate(endYear, endMonth, endDay)) {
+			request.setAttribute("residentCardError", "存在しない日付です。");
 		} else {
 			changeResidentCard = true;
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{4}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear);
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-
-				// 届出年月日の日付の妥当性チェック
-				LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				if (changeResidentCard) {
-					checkYear = Integer.parseInt(endYear);
-					checkMonth = Integer.parseInt(endMonth);
-					checkDay = Integer.parseInt(endDay);
-					// 在留カード期間満了年月日の日付の妥当性チェック
-					LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
-					// 届出年月日と在留カード期間満了年月日の比較
-					if (endDate.isBefore(requestDate)) {
-						request.setAttribute("dayError", "期間満了年月日は届出年月日より後の日付でなければなりません。");
-					}
-				}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isFourDigit(requestYear) || ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
+			} else if (changeResidentCard
+					&& ValidationUtil.isBefore(requestYear, requestMonth, requestDay, endYear, endMonth, endDay)) {
+				// 在留カードの期限が入力されている場合は期間の順序をチェックする
+				request.setAttribute("dayError", "期間満了年月日は届出年月日より後の日付でなければなりません。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (changeSubject.length() > 3) {
-			request.setAttribute("valueLongError", "入力にはセレクトボックスを使用してください。");
+		if (ValidationUtil.areValidLengths(3, changeSubject)) {
+			request.setAttribute("valueLongError", "変更対象者は３文字以下で入力してください");
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
@@ -190,11 +149,7 @@ public class NotificationOfChangeAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nameError") != null || request.getAttribute("inputError") != null
-				|| request.getAttribute("addressError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("postCodeError") != null || request.getAttribute("telError") != null
-				|| request.getAttribute("residentCardError") != null
-				|| request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "notification-of-change.jsp";
 		}
 
@@ -206,44 +161,34 @@ public class NotificationOfChangeAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String oldLastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String oldFirstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+			// 学年のデータベースからの取り出し
+			String reEncryptedSchoolYear = dao.getSchoolYear(id);
+			String schoolYear = decrypt.getDecryptedDate(result, reEncryptedSchoolYear);
+			// クラス番号のデータベースからの取り出し
+			String reEncryptedClassNumber = dao.getClassNumber(id);
+			String classNumber = decrypt.getDecryptedDate(result, reEncryptedClassNumber);
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, schoolYear, classNumber, studentNumber)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String oldLastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String oldFirstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
+			// 姓名を結合する
 			String name = oldLastName + " " + oldFirstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// 学年のデータベースからの取り出し
-			String reEncryptedSchoolYear = dao.getSchoolYear(id);
-			String encryptedSchoolYear = CipherUtil.commonDecrypt(reEncryptedSchoolYear);
-			String schoolYear = CipherUtil.decrypt(masterKey, iv, encryptedSchoolYear);
-			// クラス番号のデータベースからの取り出し
-			String reEncryptedClassNumber = dao.getClassNumber(id);
-			String encryptedClassNumber = CipherUtil.commonDecrypt(reEncryptedClassNumber);
-			String classNumber = CipherUtil.decrypt(masterKey, iv, encryptedClassNumber);
-			// 学籍番号のデータベースからの取り出し
-			String reEncryptedStudentNumber = dao.getStudentNumber(id);
-			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
-			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/generalStudentPDF/変更届.pdf";

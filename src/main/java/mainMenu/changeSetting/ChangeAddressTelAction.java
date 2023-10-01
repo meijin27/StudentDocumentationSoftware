@@ -30,7 +30,7 @@ public class ChangeAddressTelAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -50,17 +50,17 @@ public class ChangeAddressTelAction extends Action {
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (!ValidationUtil.isTenOrElevenDigit(tel)) {
+		if (ValidationUtil.isTenOrElevenDigit(tel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
 		// 郵便番号が半角7桁でなければエラーを返す
-		if (!ValidationUtil.isSevenDigit(postCode)) {
+		if (ValidationUtil.isSevenDigit(postCode)) {
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す
-		if (!ValidationUtil.areValidLengths(64, address)) {
+		if (ValidationUtil.areValidLengths(64, address)) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 

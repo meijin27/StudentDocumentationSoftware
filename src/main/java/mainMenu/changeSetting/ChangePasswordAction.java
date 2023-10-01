@@ -32,7 +32,7 @@ public class ChangePasswordAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -48,7 +48,7 @@ public class ChangePasswordAction extends Action {
 			request.setAttribute("nullError", "パスワードの入力は必須です");
 		} else if (!newPassword.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
-		} else if (!ValidationUtil.areValidLengths(32, newPassword)) {
+		} else if (ValidationUtil.areValidLengths(32, newPassword)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

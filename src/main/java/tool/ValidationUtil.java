@@ -10,6 +10,10 @@ public class ValidationUtil {
 	private static final String FORBIDDEN_CHARS = ".*[!@#$%^&*()_+={}:;<>,.?~].*";
 	// ひらがなのUnicode範囲
 	private static final Pattern HIRAGANA_PATTERN = Pattern.compile("^[\u3040-\u309F]+$");
+	// 英語のUnicode範囲
+	private static final Pattern ENGLISH_PATTERN = Pattern.compile("^[a-zA-Z\\s]+$");
+	// 在留カードのUnicode範囲と記載パターン
+	private static final Pattern RESIDENTCARD_PATTERN = Pattern.compile("^[A-Z]{2}\\d{8}[A-Z]{2}$");
 
 	// 入力値がnullまたは空であるかを確認するメソッド
 	public static boolean isNullOrEmpty(String... inputs) {
@@ -19,6 +23,22 @@ public class ValidationUtil {
 			}
 		}
 		return false;
+	}
+
+	// 全ての入力値がnullまたは空であるかを確認するメソッド
+	public static boolean areAllNullOrEmpty(String... inputs) {
+		// 入力が一つもない場合は true を返す
+		if (inputs.length == 0)
+			return true;
+
+		for (String input : inputs) {
+			// もし一つでも null または空でない文字列があれば、false を返す
+			if (input != null && !input.isEmpty()) {
+				return false;
+			}
+		}
+		// 全ての入力が null または空の場合は true を返す
+		return true;
 	}
 
 	// 入力値に使用禁止文字が含まれているか確認するメソッド
@@ -35,10 +55,30 @@ public class ValidationUtil {
 	public static boolean isHiragana(String... inputs) {
 		for (String input : inputs) {
 			if (input == null || !HIRAGANA_PATTERN.matcher(input).matches()) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
+	}
+
+	// 英語のみで記載されているか確認するメソッド
+	public static boolean isEnglish(String... inputs) {
+		for (String input : inputs) {
+			if (input == null || !ENGLISH_PATTERN.matcher(input).matches()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// 在留カードの記載内容が正しいか確認するメソッド
+	public static boolean isResidentCard(String... inputs) {
+		for (String input : inputs) {
+			if (input == null || !RESIDENTCARD_PATTERN.matcher(input).matches()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// 半角数字での桁数チェック
@@ -46,10 +86,10 @@ public class ValidationUtil {
 	private static boolean areValidDigits(int min, int max, String... inputs) {
 		for (String input : inputs) {
 			if (input == null || !input.matches("^\\d{" + min + "," + max + "}$")) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	// 半角1桁の数字チェック
@@ -82,19 +122,60 @@ public class ValidationUtil {
 		return areValidDigits(10, 11, inputs);
 	}
 
+	// 可変長引数を使用して、複数の文字列に対してnullか空文字でない場合に半角1桁の数字チェックを行うメソッド
+	public static boolean isValidSingleDigitOrNullEmpty(String... inputs) {
+		for (String input : inputs) {
+			if (input != null && !input.isEmpty() && !input.matches("^\\d{1}$")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// 年月日が存在しない日付か確認する
 	public static boolean validateDate(String yearStr, String monthStr, String dayStr) {
 		try {
+
 			int year = Integer.parseInt(yearStr);
 			int month = Integer.parseInt(monthStr);
 			int day = Integer.parseInt(dayStr);
+
+			// 年が一桁か二桁の場合（和暦の場合）、数字に2018を加える
+			if (isOneOrTwoDigit(yearStr)) {
+				year += 2018;
+			}
+
 			LocalDate date = LocalDate.of(year, month, day); // 日付の妥当性チェック
-			return true;
+			return false;
 		} catch (NumberFormatException e) {
-			return false; // 数字でない場合はfalse
+			return true; // 数字でない場合はfalse
 		} catch (DateTimeException e) {
-			return false; // 存在しない日付の場合はfalse
+			return true; // 存在しない日付の場合はfalse
 		}
+	}
+
+	// 年月日の順序が正しいか確認する
+	public static boolean isBefore(String beforeYear, String beforeMonth, String beforeDay, String afterYear,
+			String afterMonth, String afterDay) {
+
+		int year = Integer.parseInt(beforeYear);
+		int month = Integer.parseInt(beforeMonth);
+		int day = Integer.parseInt(beforeDay);
+
+		// 届出年月日の日付の妥当性チェック
+		LocalDate beforeDate = LocalDate.of(year, month, day);
+
+		year = Integer.parseInt(afterYear);
+		month = Integer.parseInt(afterMonth);
+		day = Integer.parseInt(afterDay);
+		// 在留カード期間満了年月日の日付の妥当性チェック
+		LocalDate afterDate = LocalDate.of(year, month, day);
+
+		// 届出年月日と在留カード期間満了年月日の比較
+		if (afterDate.isBefore(beforeDate)) {
+			return true;
+		}
+		return false;
 	}
 
 	// 指定された最大長以下であることを確認する
@@ -106,10 +187,10 @@ public class ValidationUtil {
 	public static boolean areValidLengths(int maxLength, String... strs) {
 		for (String str : strs) {
 			if (!isValidLength(str, maxLength)) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 }

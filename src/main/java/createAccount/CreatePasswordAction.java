@@ -31,7 +31,7 @@ public class CreatePasswordAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及び暗号化されたアカウント名の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "encryptedAccount")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "encryptedAccount")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -49,7 +49,7 @@ public class CreatePasswordAction extends Action {
 			request.setAttribute("nullError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
-		} else if (!ValidationUtil.areValidLengths(32, password)) {
+		} else if (ValidationUtil.areValidLengths(32, password)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

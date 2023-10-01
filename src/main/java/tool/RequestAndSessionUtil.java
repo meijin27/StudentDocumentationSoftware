@@ -43,7 +43,7 @@ public class RequestAndSessionUtil {
 			session.setAttribute("otherError", "セッションエラーが発生しました。");
 			// ログインページにリダイレクト
 			response.sendRedirect(contextPath + "/login/login.jsp");
-			return false;
+			return true;
 		}
 
 		// その他の指定されたセッション属性がnullの場合はエラーとして処理
@@ -52,10 +52,10 @@ public class RequestAndSessionUtil {
 				session.setAttribute("otherError", "セッションエラーが発生しました。");
 				// ログインページにリダイレクト
 				response.sendRedirect(contextPath + "/login/login.jsp");
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	// 全リクエスト名の末尾に[Error]という文字が含まれているかチェックするメソッド

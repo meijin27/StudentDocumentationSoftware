@@ -30,7 +30,7 @@ public class VocationalTraineeSettingCheckAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "vocationalSetting",
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "vocationalSetting",
 				"vocationalSettingCheck")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;

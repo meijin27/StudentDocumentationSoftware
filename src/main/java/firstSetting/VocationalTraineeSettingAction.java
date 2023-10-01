@@ -28,7 +28,7 @@ public class VocationalTraineeSettingAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "vocationalSetting")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id", "vocationalSetting")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -64,12 +64,12 @@ public class VocationalTraineeSettingAction extends Action {
 		}
 
 		// 出席番号が半角2桁以下でなければエラーを返す
-		if (!ValidationUtil.isOneOrTwoDigit(attendanceNumber)) {
+		if (ValidationUtil.isOneOrTwoDigit(attendanceNumber)) {
 			request.setAttribute("attendanceNumberError", "出席番号は半角数字2桁以下で入力してください。");
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。
-		if (!ValidationUtil.areValidLengths(32, namePESO, supplyNumber)) {
+		if (ValidationUtil.areValidLengths(32, namePESO, supplyNumber)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 

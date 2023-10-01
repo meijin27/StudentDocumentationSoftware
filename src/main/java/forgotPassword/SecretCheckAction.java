@@ -28,7 +28,7 @@ public class SecretCheckAction extends Action {
 		String contextPath = request.getContextPath();
 
 		// トークン及びログイン状態の確認
-		if (!RequestAndSessionUtil.validateSession(request, response, "encryptedId", "secretQuestion")) {
+		if (RequestAndSessionUtil.validateSession(request, response, "encryptedId", "secretQuestion")) {
 			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
@@ -50,17 +50,17 @@ public class SecretCheckAction extends Action {
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。		
-		if (!ValidationUtil.areValidLengths(32, secretAnswer)) {
+		if (ValidationUtil.areValidLengths(32, secretAnswer)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// 生年月日が存在しない日付の場合はエラーにする
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (!ValidationUtil.isFourDigit(birthYear) ||
-				!ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+		if (ValidationUtil.isFourDigit(birthYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
 			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
 		} else {
-			if (!ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
 				request.setAttribute("dayError", "存在しない日付です。");
 			}
 		}
