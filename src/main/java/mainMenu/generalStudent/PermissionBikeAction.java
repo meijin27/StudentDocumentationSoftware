@@ -1,8 +1,5 @@
 package mainMenu.generalStudent;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class PermissionBikeAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(PermissionBikeAction.class);
@@ -30,19 +28,12 @@ public class PermissionBikeAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -62,78 +53,35 @@ public class PermissionBikeAction extends Action {
 		String registrationNumber = request.getParameter("registrationNumber");
 		String modelAndColor = request.getParameter("modelAndColor");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (requestYear == null || requestMonth == null || requestDay == null
-				|| patron == null || patronTel == null
-				|| startYear == null || startMonth == null || startDay == null || classification == null
-				|| endYear == null || endMonth == null || endDay == null || registrationNumber == null
-				|| modelAndColor == null
-				|| requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()
-				|| patron.isEmpty() || patronTel.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
-				|| startDay.isEmpty() || classification.isEmpty()
-				|| endYear.isEmpty() || endMonth.isEmpty()
-				|| endDay.isEmpty() || registrationNumber.isEmpty() || modelAndColor.isEmpty()
-
-		) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, patron, patronTel, startYear,
+				startMonth, startDay, classification, endYear, endMonth, endDay, registrationNumber, modelAndColor)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "permission-bike.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{1,2}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$") || !startYear.matches("^\\d{1,2}$")
-					|| !startMonth.matches("^\\d{1,2}$")
-					|| !startDay.matches("^\\d{1,2}$") || !endYear.matches("^\\d{1,2}$")
-					|| !endMonth.matches("^\\d{1,2}$")
-					|| !endDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear) + 2018;
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
-				// 願出年月日の日付の妥当性チェック
-				LocalDate requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				checkYear = Integer.parseInt(startYear) + 2018;
-				checkMonth = Integer.parseInt(startMonth);
-				checkDay = Integer.parseInt(startDay);
-				// 期間年月日（自）の日付の妥当性チェック
-				LocalDate startDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				checkYear = Integer.parseInt(endYear) + 2018;
-				checkMonth = Integer.parseInt(endMonth);
-				checkDay = Integer.parseInt(endDay);
-				// 期間年月日（至）の日付の妥当性チェック
-				LocalDate endDate = LocalDate.of(checkYear, checkMonth, checkDay);
-
+		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay, startYear, startMonth, startDay,
+				endYear, endMonth, endDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
+					|| ValidationUtil.validateDate(startYear, startMonth, startDay)
+					|| ValidationUtil.validateDate(endYear, endMonth, endDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 				// 申請日と申請期間の比較
-				if (startDate.isBefore(requestDate)) {
-					request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
-				} else if (endDate.isBefore(startDate)) {
-					request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
-				}
+			} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, endYear, endMonth, endDay)) {
+				request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+			} else if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
+				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (!patronTel.matches("^\\d{10,11}$")) {
+		if (ValidationUtil.isTenOrElevenDigit(patronTel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
@@ -143,16 +91,13 @@ public class PermissionBikeAction extends Action {
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。
-		if (patron.length() > 32 || registrationNumber.length() > 32
-				|| modelAndColor.length() > 32) {
+		if (ValidationUtil.areValidLengths(32, patron, registrationNumber, modelAndColor)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nullError") != null || request.getAttribute("telError") != null
-				|| request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null || request.getAttribute("innerError") != null) {
-			return "permission-bike.jsp";
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "first-setting.jsp";
 		}
 
 		try {
@@ -163,37 +108,48 @@ public class PermissionBikeAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// 電話番号のデータベースからの取り出し
+			String reEncryptedTel = dao.getTel(id);
+			String tel = decrypt.getDecryptedDate(result, reEncryptedTel);
+
+			// 郵便番号のデータベースからの取り出し
+			String reEncryptedPostCode = dao.getPostCode(id);
+			String postCode = decrypt.getDecryptedDate(result, reEncryptedPostCode);
+
+			// 住所のデータベースからの取り出し
+			String reEncryptedAddress = dao.getAddress(id);
+			String address = decrypt.getDecryptedDate(result, reEncryptedAddress);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, tel, postCode, address, className,
+					studentNumber)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
-
-			String name = lastName + " " + firstName;
-
-			// 電話番号のデータベースからの取り出し
-			String reEncryptedTel = dao.getTel(id);
-			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
-			String tel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
 
 			// 電話番号を3分割してハイフンをつけてくっつける
 			String firstTel = null;
 			String secondTel = null;
 			String lastTel = null;
+
 			if (tel.length() == 11) {
 				firstTel = tel.substring(0, 3);
 				secondTel = tel.substring(3, 7);
@@ -204,28 +160,12 @@ public class PermissionBikeAction extends Action {
 				lastTel = tel.substring(6, 10);
 			}
 
-			// 郵便番号のデータベースからの取り出し
-			String reEncryptedPostCode = dao.getPostCode(id);
-			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
-			String postCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
-			// 郵便番号をに分割する
+			// 郵便番号を２つに分割する
 			String FirstPostCode = postCode.substring(0, 3);
 			String LastPostCode = postCode.substring(3, 7);
 
-			// 住所のデータベースからの取り出し
-			String reEncryptedAddress = dao.getAddress(id);
-			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
-			String address = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-
-			// 学籍番号のデータベースからの取り出し
-			String reEncryptedStudentNumber = dao.getStudentNumber(id);
-			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
-			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
+			// 姓名を結合する			
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/generalStudentPDF/自転車等通学許可願.pdf";
