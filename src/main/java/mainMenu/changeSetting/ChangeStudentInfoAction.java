@@ -55,7 +55,6 @@ public class ChangeStudentInfoAction extends Action {
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 生年月日が存在しない日付の場合はエラーにする
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
 		if (ValidationUtil.isFourDigit(admissionYear) ||
 				ValidationUtil.isOneOrTwoDigit(admissionMonth, admissionDay)) {
@@ -81,6 +80,11 @@ public class ChangeStudentInfoAction extends Action {
 			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
 		} else if (ValidationUtil.areValidLengths(16, className)) {
 			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
+		}
+
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(studentType, className)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		}
 
 		// エラーが発生している場合は元のページに戻す

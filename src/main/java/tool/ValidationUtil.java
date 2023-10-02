@@ -102,6 +102,11 @@ public class ValidationUtil {
 		return areValidDigits(1, 2, inputs);
 	}
 
+	// 半角1~3桁の数字チェック
+	public static boolean isOneOrTwoOrThreeDigit(String... inputs) {
+		return areValidDigits(1, 3, inputs);
+	}
+
 	// 半角4桁の数字チェック
 	public static boolean isFourDigit(String... inputs) {
 		return areValidDigits(4, 4, inputs);

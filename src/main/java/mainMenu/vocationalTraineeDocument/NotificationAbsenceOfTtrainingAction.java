@@ -1,11 +1,9 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,11 +18,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class NotificationAbsenceOfTtrainingAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(NotificationAbsenceOfTtrainingAction.class);
@@ -57,19 +56,12 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -77,20 +69,14 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 		String subjectYear = request.getParameter("subjectYear");
 		String subjectMonth = request.getParameter("subjectMonth");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (subjectYear == null || subjectMonth == null
-				|| subjectYear.isEmpty() || subjectMonth.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectYear, subjectMonth)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "notification-absence-of-training.jsp";
 		}
+
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
 		// 入力値の数が不明なため、自動計算される値はMAPに格納する
 		Map<String, String> parameters = new HashMap<>();
@@ -118,12 +104,8 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			String attachmentOfCertificate = request.getParameter("attachmentOfCertificate" + num);
 
 			// 未入力項目があればエラーを返す
-			if (attachmentOfCertificate == null || restedDayStart == null
-					|| restedDayEnd == null || reason == null || allDayOff == null
-					|| attachmentOfCertificate.isEmpty()
-					|| restedDayStart.isEmpty() || restedDayEnd.isEmpty()
-					|| reason.isEmpty()
-					|| allDayOff.isEmpty()) {
+			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate, restedDayStart, restedDayEnd, reason,
+					allDayOff)) {
 				// 最初の行(1行目)が空ならばエラーを返す
 				if (i == 1) {
 					request.setAttribute("nullError", "未入力項目があります。");
@@ -135,74 +117,86 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 
 			// 全日休みは「はい」「いいえ」以外の場合はエラーを返す
 			if (!(allDayOff.equals("はい") || allDayOff.equals("いいえ"))) {
-				request.setAttribute("innerError", "全日休確認は「はい」「いいえ」から選択してください");
+				request.setAttribute("allDayOffError", "全日休確認は「はい」「いいえ」から選択してください");
+				return "notification-absence-of-training.jsp";
 			}
 
 			// 証明添付有無は「有」「無」以外の場合はエラーを返す
 			if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
-				request.setAttribute("innerError", "証明添付有無は「有」「無」から選択してください");
+				request.setAttribute("attachmentOfCertificateError", "証明添付有無は「有」「無」から選択してください");
 			}
 
-			// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
-			if (allDayOff.equals("はい") && (deadTime == null || deadTime.isEmpty())) {
-				request.setAttribute("nullError", "欠席期間時限数を入力してください。");
-			} else if (allDayOff.equals("いいえ") && ((latenessTime == null || latenessTime.isEmpty())
-					&& (leaveEarlyTime == null || leaveEarlyTime.isEmpty()))) {
-				request.setAttribute("nullError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
-				// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
-			} else if (allDayOff.equals("いいえ") && !restedDayStart.equals(restedDayEnd)) {
-				request.setAttribute("logicalError", "複数の日付をまたぐ場合は終日休業になります。");
-				// 終日休業が「はい」かつ休業時限数が数字以外の場合はエラーを返す
-			} else if (allDayOff.equals("はい") && !deadTime.matches("^\\d{1,3}$")) {
-				request.setAttribute("numberError", "時間は半角数字で入力してください。");
-				// 終日休業が「はい」ならば欠席時限数を累計時限に追加する
-			} else if (allDayOff.equals("いいえ")
-					&& (!latenessTime.matches("^\\d{1,2}$") || !leaveEarlyTime.matches("^\\d{1,2}$"))) {
-				totalHours += Integer.parseInt(deadTime);
-				// 終日休業が「いいえ」かつ遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
-				request.setAttribute("numberError", "時間は半角数字で入力してください。");
-				// 終日休業が「いいえ」ならば遅刻時限及び早退時限の入力されている値を累計時限に追加する
-			} else if (allDayOff.equals("いいえ")) {
-				// 遅刻時限数が入力されていた場合
-				if (latenessTime != null && !latenessTime.isEmpty()) {
-					totalHours += Integer.parseInt(latenessTime);
-				}
-				// 早退時限数が入力されていた場合
-				if (leaveEarlyTime != null && !leaveEarlyTime.isEmpty()) {
-					totalHours += Integer.parseInt(leaveEarlyTime);
+			// 終日休業が「はい」の場合の処理
+			if (allDayOff.equals("はい")) {
+				// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
+				if (ValidationUtil.isNullOrEmpty(deadTime)) {
+					request.setAttribute("deadTimeError", "欠席期間時限数を入力してください。");
+					// 終日休業が「はい」かつ休業時限数が数字以外の場合はエラーを返す
+				} else if (ValidationUtil.isOneOrTwoOrThreeDigit(deadTime)) {
+					request.setAttribute("numberError", "時間は半角数字3桁以下で入力してください。");
+					// 終日休業が「はい」ならば欠席時限数を累計時限に追加する
+				} else {
+					totalHours += Integer.parseInt(deadTime);
 				}
 			}
 
-			// 年月日が存在しない日付の場合はエラーにする
-			try {
-				int checkYear = Integer.parseInt(subjectYear) + 2018;
-				int checkMonth = Integer.parseInt(subjectMonth);
-
-				int checkStartDay = Integer.parseInt(restedDayStart);
-				int checkEndDay = Integer.parseInt(restedDayEnd);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkStartDay);
-
-				// 休業開始日が休業終了日よりも前かどうかをチェックする
-				if (checkStartDay > checkEndDay) {
-					request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
+			// 終日休業が「いいえ」の場合の処理
+			if (allDayOff.equals("いいえ")) {
+				// 遅刻時限もしくは早退時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
+				if (ValidationUtil.areAllNullOrEmpty(latenessTime, leaveEarlyTime)) {
+					request.setAttribute("timeError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
+					// 遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
+				} else if (!ValidationUtil.isNullOrEmpty(latenessTime)
+						&& ValidationUtil.isOneOrTwoDigit(latenessTime)) {
+					request.setAttribute("numberError", "時間は半角数字で入力してください。");
+				} else if (!ValidationUtil.isNullOrEmpty(leaveEarlyTime)
+						&& ValidationUtil.isOneOrTwoDigit(leaveEarlyTime)) {
+					// 遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
+					request.setAttribute("numberError", "時間は半角数字で入力してください。");
+					// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
+				} else if (!restedDayStart.equals(restedDayEnd)) {
+					request.setAttribute("logicalError", "複数の日付をまたぐ場合は終日休業になります。");
+				} else {
+					// 遅刻時限数が入力されていた場合
+					if (!ValidationUtil.isNullOrEmpty(latenessTime)) {
+						totalHours += Integer.parseInt(latenessTime);
+					}
+					// 早退時限数が入力されていた場合
+					if (!ValidationUtil.isNullOrEmpty(leaveEarlyTime)) {
+						totalHours += Integer.parseInt(leaveEarlyTime);
+					}
 				}
+			}
 
-			} catch (NumberFormatException e) {
-				request.setAttribute("dayError", "年月日は数字で入力してください。");
-			} catch (DateTimeException e) {
-				request.setAttribute("dayError", "存在しない日付です。");
+			// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+			if (ValidationUtil.isOneOrTwoDigit(subjectYear, subjectMonth, restedDayStart, restedDayEnd)) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				if (ValidationUtil.validateDate(subjectYear, subjectYear, restedDayStart)
+						|| ValidationUtil.validateDate(subjectYear, subjectYear, restedDayEnd)) {
+					request.setAttribute("dayError", "存在しない日付です。");
+				} else {
+					int checkStartDay = Integer.parseInt(restedDayStart);
+					int checkEndDay = Integer.parseInt(restedDayEnd);
+					// 休業開始日が休業終了日よりも前かどうかをチェックする
+					if (checkStartDay > checkEndDay) {
+						request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
+					}
+				}
 			}
 
 			// 文字数が22文字より多い場合はエラーを返す
-			if (reason.length() > 22) {
+			if (ValidationUtil.areValidLengths(22, reason)) {
 				request.setAttribute("valueLongError", "22文字以下で入力してください。");
 			}
 
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(reason)) {
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
+
 			// エラーが発生している場合は元のページに戻す
-			if (request.getAttribute("nullError") != null || request.getAttribute("logicalError") != null
-					|| request.getAttribute("dayError") != null
-					|| request.getAttribute("valueLongError") != null || request.getAttribute("numberError") != null) {
+			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 				return "notification-absence-of-training.jsp";
 			}
 
@@ -240,65 +234,55 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, studentType)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "notification-absence-of-training.jsp";
 			}
 
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
+			// 出席番号のデータベースからの取り出し
+			String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
+			String attendanceNumber = decrypt.getDecryptedDate(result, reEncryptedAttendanceNumber);
+			// 雇用保険のデータベースからの取り出し
+			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
+			String employmentInsurance = decrypt.getDecryptedDate(result, reEncryptedEmploymentInsurance);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			// 職業訓練生情報のデータベースへの登録とそれ以外の情報の登録が異なるためnullチェックを分ける
+			if (ValidationUtil.isNullOrEmpty(attendanceNumber, employmentInsurance)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
 
-			// 出席番号のデータベースからの取り出し
-			String reEncryptedAttendanceNumber = dao.getAttendanceNumber(id);
-			String encryptedAttendanceNumber = CipherUtil.commonDecrypt(reEncryptedAttendanceNumber);
-			String attendanceNumber = CipherUtil.decrypt(masterKey, iv, encryptedAttendanceNumber);
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 
-			// 雇用保険のデータベースからの取り出し
-			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
-			String encryptedEmploymentInsurance = CipherUtil.commonDecrypt(reEncryptedEmploymentInsurance);
-			String employmentInsurance = CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance);
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
+			}
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/委託訓練欠席（遅刻・早退）届.pdf";

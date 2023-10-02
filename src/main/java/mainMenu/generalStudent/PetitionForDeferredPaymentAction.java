@@ -1,10 +1,7 @@
 package mainMenu.generalStudent;
 
 import java.text.NumberFormat;
-import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +14,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class PetitionForDeferredPaymentAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(PetitionForDeferredPaymentAction.class);
@@ -32,19 +30,12 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -72,61 +63,39 @@ public class PetitionForDeferredPaymentAction extends Action {
 		// 入力された金額をカンマ付きに変更するメソッド
 		NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (requestYear == null || requestMonth == null || requestDay == null
-				|| requestYear.isEmpty() || requestMonth.isEmpty() || requestDay.isEmpty()
-				|| reason == null || reason.isEmpty()
-				|| howToRaiseFunds == null || howToRaiseFunds.isEmpty()
-				|| amountPayable == null || amountPayable.isEmpty()
-				|| generalDeliveryYear == null || generalDeliveryYear.isEmpty()
-				|| generalDeliveryMonth == null || generalDeliveryMonth.isEmpty()
-				|| generalDeliveryDay == null || generalDeliveryDay.isEmpty()
-				|| tuitionFeePaid == null || tuitionFeePaid.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, reason, howToRaiseFunds, amountPayable,
+				generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay, tuitionFeePaid)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "petition-for-deferred-payment.jsp";
 		}
+
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 各種日付の整合確認用
 		LocalDate requestDate = null;
 		LocalDate generalDeliveryDate = null;
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{1,2}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$") || !generalDeliveryYear.matches("^\\d{1,2}$")
-					|| !generalDeliveryMonth.matches("^\\d{1,2}$")
-					|| !generalDeliveryDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear) + 2018;
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-				// 日付の妥当性チェック
-				requestDate = LocalDate.of(checkYear, checkMonth, checkDay);
 
-				checkYear = Integer.parseInt(generalDeliveryYear) + 2018;
-				checkMonth = Integer.parseInt(generalDeliveryMonth);
-				checkDay = Integer.parseInt(generalDeliveryDay);
-				// 日付の妥当性チェック
-				generalDeliveryDate = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay, generalDeliveryYear,
+				generalDeliveryMonth, generalDeliveryDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
+					|| ValidationUtil.validateDate(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す。
-		if (reason.length() > 64 || howToRaiseFunds.length() > 64) {
+		if (ValidationUtil.areValidLengths(64, reason, howToRaiseFunds)) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		}
+
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(reason, howToRaiseFunds)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		}
 
 		// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
@@ -142,11 +111,10 @@ public class PetitionForDeferredPaymentAction extends Action {
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("numberError") != null
-				|| request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "petition-for-deferred-payment.jsp";
 		}
+
 		// 作成する行数のカウント
 		int count = 0;
 
@@ -162,12 +130,8 @@ public class PetitionForDeferredPaymentAction extends Action {
 			String deliveryDay = request.getParameter("deliveryDay" + num);
 			String deferredPaymentAmount = request.getParameter("deferredPaymentAmount" + num);
 
-			// 未入力項目があればエラーを返す
-			if (deliveryYear == null
-					|| deliveryMonth == null || deliveryDay == null || deferredPaymentAmount == null
-					|| deliveryYear.isEmpty() || deliveryMonth.isEmpty()
-					|| deliveryDay.isEmpty()
-					|| deferredPaymentAmount.isEmpty()) {
+			// 必須項目に未入力項目があればエラーを返すかブレークする
+			if (ValidationUtil.isNullOrEmpty(deliveryYear, deliveryMonth, deliveryDay, deferredPaymentAmount)) {
 				// 最初の行(1行目)が空ならばエラーを返す
 				if (i == 1) {
 					request.setAttribute("nullError", "未入力項目があります。");
@@ -178,36 +142,20 @@ public class PetitionForDeferredPaymentAction extends Action {
 				}
 			}
 
-			// 年月日が存在しない日付の場合はエラーにする
-			try {
-				// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-				if (!deliveryYear.matches("^\\d{1,2}$")
-						|| !deliveryMonth.matches("^\\d{1,2}$")
-						|| !deliveryDay.matches("^\\d{1,2}$")) {
-					request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-				} else {
-					int checkYear = Integer.parseInt(deliveryYear) + 2018;
-					int checkMonth = Integer.parseInt(deliveryMonth);
-					int checkDay = Integer.parseInt(deliveryDay);
-					// 日付の妥当性チェック
-					LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-					// 土日のチェック
-					if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-						request.setAttribute("dayError", "選択した日付は土日です。納付期限は土日祝日にならないようにしてください。");
-					}
-					// 納付期限が申請日より後の日付かどうかを確認
-					if (!date.isAfter(requestDate)) {
-						request.setAttribute("dayError", "納付期限は願出年月日より後の日付にしてください。");
-					}
-					// 納付期限が通常納期内納付学費等より後の日付かどうかを確認
-					if (!date.isAfter(generalDeliveryDate)) {
-						request.setAttribute("dayError", "納付期限は通常納期内納付学費等より後の日付にしてください。");
-					}
+			// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+			if (ValidationUtil.isOneOrTwoDigit(deliveryYear, deliveryMonth, deliveryDay)) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				if (ValidationUtil.validateDate(deliveryYear, deliveryMonth, deliveryDay)) {
+					request.setAttribute("dayError", "存在しない日付です。");
+					// 申請日と申請期間の比較
+				} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
+						deliveryDay)) {
+					request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+				} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
+						deliveryYear, deliveryMonth, deliveryDay)) {
+					request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
 				}
-			} catch (NumberFormatException e) {
-				request.setAttribute("dayError", "年月日は数字で入力してください。");
-			} catch (DateTimeException e) {
-				request.setAttribute("dayError", "存在しない日付です。");
 			}
 
 			// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
@@ -219,8 +167,7 @@ public class PetitionForDeferredPaymentAction extends Action {
 			}
 
 			// エラーが発生している場合は元のページに戻す
-			if (request.getAttribute("dayError") != null
-					|| request.getAttribute("numberError") != null) {
+			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 				return "petition-for-deferred-payment.jsp";
 			}
 
@@ -241,93 +188,88 @@ public class PetitionForDeferredPaymentAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学年のデータベースからの取り出し
+			String reEncryptedSchoolYear = dao.getSchoolYear(id);
+			String schoolYear = decrypt.getDecryptedDate(result, reEncryptedSchoolYear);
+			// クラス番号のデータベースからの取り出し
+			String reEncryptedClassNumber = dao.getClassNumber(id);
+			String classNumber = decrypt.getDecryptedDate(result, reEncryptedClassNumber);
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, schoolYear, classNumber, studentNumber,
+					studentType)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-			// 学年のデータベースからの取り出し
-			String reEncryptedSchoolYear = dao.getSchoolYear(id);
-			String encryptedSchoolYear = CipherUtil.commonDecrypt(reEncryptedSchoolYear);
-			String schoolYear = CipherUtil.decrypt(masterKey, iv, encryptedSchoolYear);
-			// クラス番号のデータベースからの取り出し
-			String reEncryptedClassNumber = dao.getClassNumber(id);
-			String encryptedClassNumber = CipherUtil.commonDecrypt(reEncryptedClassNumber);
-			String classNumber = CipherUtil.decrypt(masterKey, iv, encryptedClassNumber);
-			// 学籍番号のデータベースからの取り出し
-			String reEncryptedStudentNumber = dao.getStudentNumber(id);
-			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
-			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// 学生種別が留学生の場合は記入必須項目の確認を行う。
 			if (studentType.equals("留学生")) {
 				// 母国からの送金が入力されていない場合はエラーを返す
-				if (remittanceFromCountry == null || remittanceFromCountry.isEmpty()) {
+				if (ValidationUtil.isNullOrEmpty(remittanceFromCountry)) {
 					request.setAttribute("exchangeStudentError", "母国からの送金有無を選択してください");
 					// 母国からの送金が入力されている場合で「有」「無」以外の入力値の場合はエラーを返す
 				} else if (!(remittanceFromCountry.equals("有") || remittanceFromCountry.equals("無"))) {
 					request.setAttribute("exchangeStudentError", "母国からの送金有無は「有」「無」から選択してください");
 					// 母国からの送金が「無」で理由未記載の場合はエラーを返す。
 				} else if (remittanceFromCountry.equals("無")
-						&& (reasonNoRemittance == null || reasonNoRemittance.isEmpty())) {
+						&& ValidationUtil.isNullOrEmpty(reasonNoRemittance)) {
 					request.setAttribute("exchangeStudentError", "母国からの送金がない場合は理由を記載してください。");
+					// 母国からの送金が「無」で文字数が64文字より多い場合はエラーを返す。
+				} else if (remittanceFromCountry.equals("無")
+						&& ValidationUtil.areValidLengths(64, reasonNoRemittance)) {
+					request.setAttribute("exchangeStudentError", "母国からの送金がない理由は64文字以下で入力してください。");
+					// 入力値に特殊文字が入っていないか確認する
+				} else if (remittanceFromCountry.equals("無")
+						&& ValidationUtil.containsForbiddenChars(reasonNoRemittance)) {
+					request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 					// 母国からの送金が「有」ならばinvoiceの日時を記載を確認する
 				} else if (remittanceFromCountry.equals("有")
-						&& (invoiceYear == null || invoiceMonth == null || invoiceDay == null
-								|| invoiceYear.isEmpty() || invoiceMonth.isEmpty() || invoiceDay.isEmpty())) {
+						&& ValidationUtil.isNullOrEmpty(invoiceYear, invoiceMonth, invoiceDay)) {
 					request.setAttribute("exchangeStudentError", "母国からの送金がある場合は海外送金依頼書INVOICE交付申請年月日を記載してください。");
 				} else if (remittanceFromCountry.equals("有")) {
-					try {
-						int checkYear = Integer.parseInt(invoiceYear);
-						int checkMonth = Integer.parseInt(invoiceMonth);
-						int checkDay = Integer.parseInt(invoiceDay);
-						// 日付の妥当性チェック
-						LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-					} catch (NumberFormatException e) {
-						request.setAttribute("exchangeStudentError", "invoiceの年月日は数字で入力してください。");
-					} catch (DateTimeException e) {
-						request.setAttribute("exchangeStudentError", "invoiceが存在しない日付です。");
+					// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+					if (ValidationUtil.isFourDigit(invoiceYear) ||
+							ValidationUtil.isOneOrTwoDigit(invoiceMonth, invoiceDay)) {
+						request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+					} else {
+						if (ValidationUtil.validateDate(invoiceYear, invoiceMonth, invoiceDay)) {
+							request.setAttribute("dayError", "存在しない日付です。");
+						}
 					}
 				}
 
-				// 文字数が64文字より多い場合はエラーを返す。セレクトボックス・ラジオボタンの有効範囲画外の場合もエラーを返す。
-				if (reasonNoRemittance.length() > 64 || invoiceYear.length() > 4
-						|| invoiceMonth.length() > 2 || invoiceDay.length() > 2 || remittanceFromCountry.length() > 1) {
-					request.setAttribute("exchangeStudentError", "母国からの送金がない理由は64文字以下で入力してください。");
-				}
-
 				// エラーが発生している場合は元のページに戻す
-				if (request.getAttribute("exchangeStudentError") != null) {
+				if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 					return "petition-for-deferred-payment.jsp";
 				}
+			}
+
+			// 姓名を結合する			
+			String name = lastName + " " + firstName;
+
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
 			}
 
 			// PDFとフォントのパス作成

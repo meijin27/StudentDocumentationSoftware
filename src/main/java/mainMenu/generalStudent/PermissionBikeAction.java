@@ -87,7 +87,7 @@ public class PermissionBikeAction extends Action {
 
 		// 種別が「自転車」「原動機付自転車」以外の場合はエラーを返す
 		if (!(classification.equals("自転車") || classification.equals("原動機付自転車"))) {
-			request.setAttribute("innerError", "種別は「自転車」「原動機付自転車」から選択してください");
+			request.setAttribute("classificationError", "種別は「自転車」「原動機付自転車」から選択してください");
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す。
@@ -95,9 +95,14 @@ public class PermissionBikeAction extends Action {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(patron, registrationNumber, modelAndColor)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-			return "first-setting.jsp";
+			return "permission-bike.jsp";
 		}
 
 		try {

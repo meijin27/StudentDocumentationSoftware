@@ -173,6 +173,11 @@ public class CertificateIssuanceAction extends Action {
 			request.setAttribute("valueLongError", "用途は8文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(propose, use)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// 提出先が「はい」「いいえ」以外の場合はエラーを返す
 		if (!(immigrationBureau.equals("はい") || immigrationBureau.equals("いいえ"))) {
 			request.setAttribute("innerError", "提出先は「はい」「いいえ」から選択してください");

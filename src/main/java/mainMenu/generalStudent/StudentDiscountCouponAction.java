@@ -1,9 +1,7 @@
 package mainMenu.generalStudent;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +19,8 @@ import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class StudentDiscountCouponAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(StudentDiscountCouponAction.class);
@@ -31,19 +31,12 @@ public class StudentDiscountCouponAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -52,40 +45,23 @@ public class StudentDiscountCouponAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 未入力項目があればエラーを返す
-		if (requestYear == null || requestMonth == null || requestDay == null
-				|| requestYear.isEmpty()
-				|| requestMonth.isEmpty() || requestDay.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "student-discount-coupon.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{4}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear);
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isFourDigit(requestYear) ||
+				ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 作成する行数のカウント
@@ -105,11 +81,7 @@ public class StudentDiscountCouponAction extends Action {
 			String reason = request.getParameter("reason" + num);
 
 			// 未入力項目があればエラーを返す
-			if (sheetsRequired == null
-					|| startingStation == null || arrivalStation == null || intendedUse == null
-					|| sheetsRequired.isEmpty() || startingStation.isEmpty()
-					|| arrivalStation.isEmpty()
-					|| intendedUse.isEmpty()) {
+			if (ValidationUtil.isNullOrEmpty(sheetsRequired, startingStation, arrivalStation, intendedUse)) {
 				// 最初の行(1行目)が空ならばエラーを返す
 				if (i == 1) {
 					request.setAttribute("nullError", "未入力項目があります。");
@@ -120,25 +92,38 @@ public class StudentDiscountCouponAction extends Action {
 			}
 
 			// 使用目的がその他で理由未記載の場合はエラーを返す。
-			if (intendedUse.equals("その他") && (reason == null || reason.isEmpty())) {
-				request.setAttribute("nullError", "使用目的がその他の場合は理由を記載してください。");
+			if (intendedUse.equals("その他")) {
+				if (ValidationUtil.isNullOrEmpty(reason)) {
+					request.setAttribute("nullError", "使用目的がその他の場合は理由を記載してください。");
+				} else if (ValidationUtil.areValidLengths(18, reason)) {
+					request.setAttribute("valueLongError", "18文字以下で入力してください。");
+				} else if (ValidationUtil.containsForbiddenChars(reason)) {
+					request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+				}
 			}
 
 			// 必要枚数は半角1桁でなければエラーを返す
-			if (!sheetsRequired.matches("^\\d{1}$")) {
-				request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
+			if (!(sheetsRequired.equals("1") || sheetsRequired.equals("2"))) {
+				request.setAttribute("numberError", "必要枚数は1枚・2枚から選択してください。");
 			}
 
-			// 文字数が18文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-			if (startingStation.length() > 18 || arrivalStation.length() > 18 || reason.length() > 18
-					|| intendedUse.length() > 3) {
+			// 文字数が18文字より多い場合はエラーを返す。
+			if (ValidationUtil.areValidLengths(18, startingStation, arrivalStation)) {
 				request.setAttribute("valueLongError", "18文字以下で入力してください。");
 			}
 
+			// 文字数が3文字より多い場合はエラーを返す。
+			if (ValidationUtil.areValidLengths(3, intendedUse)) {
+				request.setAttribute("valueLongError", "3文字以下で入力してください。");
+			}
+
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(startingStation, arrivalStation, intendedUse)) {
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
+
 			// エラーが発生している場合は元のページに戻す
-			if (request.getAttribute("nullError") != null
-					|| request.getAttribute("dayError") != null || request.getAttribute("numberError") != null
-					|| request.getAttribute("valueLongError") != null) {
+			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 				return "student-discount-coupon.jsp";
 			}
 
@@ -154,37 +139,64 @@ public class StudentDiscountCouponAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+			// 電話番号のデータベースからの取り出し
+			String reEncryptedTel = dao.getTel(id);
+			String tel = decrypt.getDecryptedDate(result, reEncryptedTel);
+			// 郵便番号のデータベースからの取り出し
+			String reEncryptedPostCode = dao.getPostCode(id);
+			String postCode = decrypt.getDecryptedDate(result, reEncryptedPostCode);
+			// 住所のデータベースからの取り出し
+			String reEncryptedAddress = dao.getAddress(id);
+			String address = decrypt.getDecryptedDate(result, reEncryptedAddress);
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+			// 学年のデータベースからの取り出し
+			String reEncryptedSchoolYear = dao.getSchoolYear(id);
+			String schoolYear = decrypt.getDecryptedDate(result, reEncryptedSchoolYear);
+			// クラス番号のデータベースからの取り出し
+			String reEncryptedClassNumber = dao.getClassNumber(id);
+			String classNumber = decrypt.getDecryptedDate(result, reEncryptedClassNumber);
+			// 学籍番号のデータベースからの取り出し
+			String reEncryptedStudentNumber = dao.getStudentNumber(id);
+			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+			// 誕生年のデータベースからの取り出し
+			String reEncryptedBirthYear = dao.getBirthYear(id);
+			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
+			String birthYear = decrypt.getDecryptedDate(result, reEncryptedBirthYear);
+			// 誕生月のデータベースからの取り出し
+			String reEncryptedBirthMonth = dao.getBirthMonth(id);
+			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
+			String birthMonth = decrypt.getDecryptedDate(result, reEncryptedBirthMonth);
+			// 誕生日のデータベースからの取り出し
+			String reEncryptedBirthDay = dao.getBirthDay(id);
+			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
+			String birthDay = decrypt.getDecryptedDate(result, reEncryptedBirthDay);
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, tel, postCode, address, className, schoolYear,
+					classNumber,
+					studentNumber, birthYear, birthMonth, birthDay)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// 電話番号のデータベースからの取り出し
-			String reEncryptedTel = dao.getTel(id);
-			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
-			String tel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
-
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
+			}
 			// 電話番号を3分割してハイフンをつけてくっつける
 			String firstTel = null;
 			String secondTel = null;
 			String lastTel = null;
+
 			if (tel.length() == 11) {
 				firstTel = tel.substring(0, 3);
 				secondTel = tel.substring(3, 7);
@@ -195,52 +207,12 @@ public class StudentDiscountCouponAction extends Action {
 				lastTel = tel.substring(6, 10);
 			}
 
-			// 郵便番号のデータベースからの取り出し
-			String reEncryptedPostCode = dao.getPostCode(id);
-			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
-			String postCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
 			// 郵便番号を２つに分割する
 			String FirstPostCode = postCode.substring(0, 3);
 			String LastPostCode = postCode.substring(3, 7);
 
-			// 住所のデータベースからの取り出し
-			String reEncryptedAddress = dao.getAddress(id);
-			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
-			String address = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-			// 学年のデータベースからの取り出し
-			String reEncryptedSchoolYear = dao.getSchoolYear(id);
-			String encryptedSchoolYear = CipherUtil.commonDecrypt(reEncryptedSchoolYear);
-			String schoolYear = CipherUtil.decrypt(masterKey, iv, encryptedSchoolYear);
-			// クラス番号のデータベースからの取り出し
-			String reEncryptedClassNumber = dao.getClassNumber(id);
-			String encryptedClassNumber = CipherUtil.commonDecrypt(reEncryptedClassNumber);
-			String classNumber = CipherUtil.decrypt(masterKey, iv, encryptedClassNumber);
-			// 学籍番号のデータベースからの取り出し
-			String reEncryptedStudentNumber = dao.getStudentNumber(id);
-			String encryptedStudentNumber = CipherUtil.commonDecrypt(reEncryptedStudentNumber);
-			String studentNumber = CipherUtil.decrypt(masterKey, iv, encryptedStudentNumber);
-			// 誕生年のデータベースからの取り出し
-			String reEncryptedBirthYear = dao.getBirthYear(id);
-			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
-			String birthYear = CipherUtil.decrypt(masterKey, iv, encryptedBirthYear);
-			// 誕生月のデータベースからの取り出し
-			String reEncryptedBirthMonth = dao.getBirthMonth(id);
-			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
-			String birthMonth = CipherUtil.decrypt(masterKey, iv, encryptedBirthMonth);
-			// 誕生日のデータベースからの取り出し
-			String reEncryptedBirthDay = dao.getBirthDay(id);
-			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
-			String birthDay = CipherUtil.decrypt(masterKey, iv, encryptedBirthDay);
-
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 			// 生年月日と申請日をLocalDate形式に変換
 			int year = Integer.parseInt(requestYear);
 			int month = Integer.parseInt(requestMonth);

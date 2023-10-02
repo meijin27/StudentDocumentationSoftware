@@ -70,11 +70,13 @@ public class NotificationOfChangeAction extends Action {
 		// 姓と名のチェック
 		if (ValidationUtil.areAllNullOrEmpty(lastName, firstName)) {
 			// すべてが空の場合は問題なし
-		} else if (lastName == null || lastName.isEmpty() || firstName == null || firstName.isEmpty()) {
+		} else if (ValidationUtil.isNullOrEmpty(lastName, firstName)) {
 			// 何か一つだけ入力されている場合
 			request.setAttribute("nameError", "姓と名を全て入力してください。");
 		} else if (ValidationUtil.areValidLengths(32, lastName, firstName)) {
 			request.setAttribute("valueLongError", "名前は32文字以下で入力してください。");
+		} else if (ValidationUtil.containsForbiddenChars(lastName, firstName)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		} else {
 			changeName = true;
 		}
@@ -82,7 +84,7 @@ public class NotificationOfChangeAction extends Action {
 		// 郵便番号と住所のチェック
 		if (ValidationUtil.areAllNullOrEmpty(postCode, address)) {
 			// どちらも空の場合は問題なし
-		} else if (postCode == null || postCode.isEmpty() || address == null || address.isEmpty()) {
+		} else if (ValidationUtil.isNullOrEmpty(postCode, address)) {
 			// どちらかだけ入力されている場合
 			request.setAttribute("addressError", "郵便番号と住所は両方とも入力してください。");
 		} else if (ValidationUtil.areValidLengths(64, address)) {
@@ -91,6 +93,8 @@ public class NotificationOfChangeAction extends Action {
 		} else if (ValidationUtil.isSevenDigit(postCode)) {
 			// 郵便番号が半角7桁でなければエラーを返す
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
+		} else if (ValidationUtil.containsForbiddenChars(address)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		} else {
 			changeAddress = true;
 		}
@@ -108,8 +112,7 @@ public class NotificationOfChangeAction extends Action {
 		// 在留カードの記号番号と期間満了年月日のチェック
 		if (ValidationUtil.areAllNullOrEmpty(residentCard, endYear, endMonth, endDay)) {
 			// どちらも空の場合は問題なし
-		} else if (residentCard == null || residentCard.isEmpty() || endYear == null || endYear.isEmpty()
-				|| endMonth == null || endMonth.isEmpty() || endDay == null || endDay.isEmpty()) {
+		} else if (ValidationUtil.isNullOrEmpty(residentCard, endYear, endMonth, endDay)) {
 			// どちらかだけ入力されている場合
 			request.setAttribute("residentCardError", "記号・番号と期間満了年月日は全て入力してください。");
 		} else if (ValidationUtil.isResidentCard(residentCard)) {
@@ -139,6 +142,11 @@ public class NotificationOfChangeAction extends Action {
 		// セレクトボックスの有効範囲画外の場合もエラーを返す。
 		if (ValidationUtil.areValidLengths(3, changeSubject)) {
 			request.setAttribute("valueLongError", "変更対象者は３文字以下で入力してください");
+		}
+
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(changeSubject)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
@@ -181,7 +189,8 @@ public class NotificationOfChangeAction extends Action {
 			String reEncryptedStudentNumber = dao.getStudentNumber(id);
 			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
 			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
-			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, schoolYear, classNumber, studentNumber)) {
+			if (ValidationUtil.isNullOrEmpty(oldLastName, oldFirstName, className, schoolYear, classNumber,
+					studentNumber)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
