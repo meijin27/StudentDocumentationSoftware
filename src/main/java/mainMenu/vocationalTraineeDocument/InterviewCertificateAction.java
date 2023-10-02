@@ -1,8 +1,5 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class InterviewCertificateAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(InterviewCertificateAction.class);
@@ -30,19 +28,12 @@ public class InterviewCertificateAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -58,58 +49,40 @@ public class InterviewCertificateAction extends Action {
 		String startForenoonOrMidday = "";
 		String endForenoonOrMidday = "";
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (jobSearch == null || jobSearch.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(jobSearch)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "interview-certificate.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 日付に未入力項目がある場合は、印刷する書類に日時を記入しない
-		if (year == null || month == null || day == null ||
-				year.isEmpty() || month.isEmpty() || day.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(year, month, day)) {
 			year = "";
 			month = "";
 			day = "";
 			startHour = "";
 			endHour = "";
 		} else {
-			// 年月日が存在しない日付の場合はエラーにする
-			try {
-				// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-				if (!year.matches("^\\d{1,2}$") || !month.matches("^\\d{1,2}$")
-						|| !day.matches("^\\d{1,2}$")) {
-					request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-				} else {
-					int checkYear = Integer.parseInt(year) + 2018;
-					int checkMonth = Integer.parseInt(month);
-					int checkDay = Integer.parseInt(day);
-
-					// 日付の妥当性チェック
-					LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+			// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+			if (ValidationUtil.isOneOrTwoDigit(year, month, day)) {
+				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			} else {
+				if (ValidationUtil.validateDate(year, month, day)) {
+					request.setAttribute("dayError", "存在しない日付です。");
 				}
-			} catch (NumberFormatException e) {
-				request.setAttribute("dayError", "年月日は数字で入力してください。");
-			} catch (DateTimeException e) {
-				request.setAttribute("dayError", "存在しない日付です。");
 			}
 		}
 
 		// 開始終了時刻に未記載がある場合は、印刷する書類に時間を記入しない
-		if (startHour == null
-				|| endHour == null || startHour.isEmpty() || endHour.isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(startHour, endHour)) {
 			startHour = "";
 			endHour = "";
 			// 時間は半角2桁以下でなければエラーを返す
-		} else if (!startHour.matches("^\\d{1,2}$") || !endHour.matches("^\\d{1,2}$")) {
-			request.setAttribute("numberError", "時間は半角数字２桁以下で入力してください。");
+		} else if (ValidationUtil.isOneOrTwoDigit(startHour, endHour)) {
+			request.setAttribute("timeError", "時間は半角数字２桁以下で入力してください。");
 		} else {
 			// 開始時刻が終了時刻よりも前かどうかをチェックする
 			int checkStartHour = Integer.parseInt(startHour);
@@ -136,13 +109,17 @@ public class InterviewCertificateAction extends Action {
 		}
 
 		// 文字数が32文字より多い場合はエラーを返す
-		if (jobSearch.length() > 32) {
+		if (ValidationUtil.areValidLengths(32, jobSearch)) {
 			request.setAttribute("valueLongError", "32文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(jobSearch)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null || request.getAttribute("numberError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "interview-certificate.jsp";
 		}
 
@@ -154,53 +131,41 @@ public class InterviewCertificateAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// 公共職業安定所名のデータベースからの取り出し
+			String reEncryptedNamePESO = dao.getNamePESO(id);
+			String namePESO = decrypt.getDecryptedDate(result, reEncryptedNamePESO);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className, namePESO)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "interview-certificate.jsp";
 			}
 
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
-			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/面接証明書.pdf";

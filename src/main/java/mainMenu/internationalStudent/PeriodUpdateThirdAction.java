@@ -1,7 +1,6 @@
 package mainMenu.internationalStudent;
 
 import java.text.NumberFormat;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,11 +13,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class PeriodUpdateThirdAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(PeriodUpdateThirdAction.class);
@@ -29,19 +29,12 @@ public class PeriodUpdateThirdAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -66,46 +59,57 @@ public class PeriodUpdateThirdAction extends Action {
 		String afterGraduationOtherContents = request.getParameter("afterGraduationOtherContents");
 
 		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
 		// 入力された金額をカンマ付きに変更するメソッド
 		NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
 		// 申請人との関係がその他の場合で詳細記入がなければエラーを返す
-		if (relationship.equals("その他") && (relationshipOtherContents == null || relationshipOtherContents.isEmpty())) {
-			request.setAttribute("otherError", "申請人との関係でその他を選択した場合は詳細も入力してください。");
-		} else if (relationshipOtherContents.length() > 16 || relationship.length() > 16) {
-			// 文字数が16文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-			request.setAttribute("otherError", "その他の詳細は16文字以下で入力してください。");
+		if (relationship.equals("その他")) {
+			if (ValidationUtil.isNullOrEmpty(relationshipOtherContents)) {
+				request.setAttribute("otherError", "申請人との関係でその他を選択した場合は詳細も入力してください。");
+			} else if (ValidationUtil.areValidLengths(16, relationshipOtherContents, relationship)) {
+				// 文字数が16文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+				request.setAttribute("otherError", "その他の詳細は16文字以下で入力してください。");
+			} else if (ValidationUtil.containsForbiddenChars(relationshipOtherContents, relationship)) {
+				// 入力値に特殊文字が入っていないか確認する
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
 		}
 
-		// 奨学金支給機関が公益社団法人又は公益財団法人の場合で詳細記入がなければエラーを返す
-		if ((publicInterest != null && !publicInterest.isEmpty())
-				&& (organizationpublicInterestContents == null || organizationpublicInterestContents.isEmpty())) {
-			request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人を選択した場合は詳細も入力してください。");
-		} else if (organizationpublicInterestContents.length() > 16) {
-			// 文字数が16文字より多い場合はエラーを返す
-			request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人の詳細は16文字以下で入力してください。");
-		} else if ((foreignGovernment != null && foreignGovernment.length() > 18)
-				|| (japaneseGovernment != null && japaneseGovernment.length() > 18)
-				|| (localGovernment != null && localGovernment.length() > 18)
-				|| (otherOrganization != null && otherOrganization.length() > 18)
-				|| (publicInterest != null && publicInterest.length() > 18)) {
+		// 奨学金支給機関名は18文字以下
+		if (ValidationUtil.areValidLengths(18, foreignGovernment)
+				|| ValidationUtil.areValidLengths(18, japaneseGovernment)
+				|| ValidationUtil.areValidLengths(18, localGovernment)
+				|| ValidationUtil.areValidLengths(18, otherOrganization)
+				|| ValidationUtil.areValidLengths(18, publicInterest)) {
 			request.setAttribute("publicInterestError", " 奨学金支給機関名は18文字以下で入力してください。");
 		}
 
+		// 奨学金支給機関が公益社団法人又は公益財団法人の場合で詳細記入がなければエラーを返す
+		if (!ValidationUtil.isNullOrEmpty(publicInterest)) {
+			if (ValidationUtil.isNullOrEmpty(organizationpublicInterestContents)) {
+				request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人を選択した場合は詳細も入力してください。");
+			} else if (ValidationUtil.areValidLengths(16, organizationpublicInterestContents)) {
+				// 文字数が16文字より多い場合はエラーを返す
+				request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人の詳細は16文字以下で入力してください。");
+			} else if (ValidationUtil.containsForbiddenChars(organizationpublicInterestContents)) {
+				// 入力値に特殊文字が入っていないか確認する
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
+		}
+
 		// 奨学金支給機関がその他の場合で詳細記入がなければエラーを返す
-		if ((otherOrganization != null && !otherOrganization.isEmpty())
-				&& (organizationOtherContents == null || organizationOtherContents.isEmpty())) {
-			request.setAttribute("otherOrganizationError", "奨学金支給機関でその他を選択した場合は詳細も入力してください。");
-		} else if (organizationOtherContents.length() > 16) {
-			// 文字数が16文字より多い場合はエラーを返す
-			request.setAttribute("otherOrganizationError", "その他の詳細は16文字以下で入力してください。");
+		if (!ValidationUtil.isNullOrEmpty(otherOrganization)) {
+			if (ValidationUtil.isNullOrEmpty(organizationOtherContents)) {
+				request.setAttribute("otherOrganizationError", "奨学金支給機関でその他を選択した場合は詳細も入力してください。");
+			} else if (ValidationUtil.areValidLengths(16, organizationOtherContents)) {
+				// 文字数が16文字より多い場合はエラーを返す
+				request.setAttribute("otherOrganizationError", "その他の詳細は16文字以下で入力してください。");
+			} else if (ValidationUtil.containsForbiddenChars(organizationOtherContents)) {
+				// 入力値に特殊文字が入っていないか確認する
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
 		}
 
 		// 更新項目確認用変数
@@ -119,24 +123,22 @@ public class PeriodUpdateThirdAction extends Action {
 
 		// 資格外活動の有無が有の場合で内容等が全て未入力なら問題なし
 		if (otherActivity.equals("有")) {
-			if ((work == null || work.isEmpty()) &&
-					(employment == null || employment.isEmpty()) &&
-					(workPhone == null || workPhone.isEmpty()) &&
-					(workTimePerWeek == null || workTimePerWeek.isEmpty()) &&
-					(salary == null || salary.isEmpty()) &&
-					(monthlyOrDaily == null || monthlyOrDaily.isEmpty())) {
-			} else if (work == null || work.isEmpty() ||
-					employment == null || employment.isEmpty() ||
-					workPhone == null || workPhone.isEmpty() ||
-					workTimePerWeek == null || workTimePerWeek.isEmpty() ||
-					salary == null || salary.isEmpty() ||
-					monthlyOrDaily == null || monthlyOrDaily.isEmpty()) {
+			if (ValidationUtil.areAllNullOrEmpty(work, employment, workPhone, workTimePerWeek,
+					salary, monthlyOrDaily)) {
+			} else if (ValidationUtil.isNullOrEmpty(work, employment, workPhone, workTimePerWeek,
+					salary, monthlyOrDaily)) {
 				// どれかだけ入力されている場合
 				request.setAttribute("otherActivityError", "資格外活動の内容を入力する場合は(1)～(4)の全項目を入力してください。");
-			} else if (work.length() > 32 || employment.length() > 32 || monthlyOrDaily.length() > 2) {
+			} else if (ValidationUtil.areValidLengths(32, work, employment)) {
 				// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 				request.setAttribute("otherActivityError", "32文字以下で入力してください。");
-			} else if (!workPhone.matches("^\\d{10,11}$")) {
+			} else if (!(monthlyOrDaily.equals("月額") || monthlyOrDaily.equals("日額"))) {
+				// セレクトボックスの選択肢外の場合はエラーを返す。
+				request.setAttribute("otherActivityError", "セレクトボックスの選択肢から選んでください");
+			} else if (ValidationUtil.containsForbiddenChars(work, employment)) {
+				// 入力値に特殊文字が入っていないか確認する
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			} else if (ValidationUtil.isTenOrElevenDigit(workPhone)) {
 				// 電話番号が半角10~11桁でなければエラーを返す
 				request.setAttribute("otherActivityError", "電話番号は半角数字10桁～11桁で入力してください。");
 			} else if (!workTimePerWeek.matches("\\d+") || workTimePerWeek.length() > 3 || !salary.matches("\\d+")
@@ -158,20 +160,29 @@ public class PeriodUpdateThirdAction extends Action {
 			}
 		}
 
+		if (ValidationUtil.areValidLengths(6, afterGraduation)) {
+			// 文字数が6文字より多い場合はエラーを返す。。
+			request.setAttribute("afterGraduationError", "卒業後の予定は6文字以下で入力してください。");
+		} else if (ValidationUtil.containsForbiddenChars(afterGraduation)) {
+			// 入力値に特殊文字が入っていないか確認する
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// 卒業後の予定がその他の場合で詳細記入がなければエラーを返す
-		if (afterGraduation.equals("その他")
-				&& (afterGraduationOtherContents == null || afterGraduationOtherContents.isEmpty())) {
-			request.setAttribute("afterGraduationError", "卒業後の予定でその他を選択した場合は詳細も入力してください。");
-		} else if (afterGraduationOtherContents.length() > 32 || afterGraduation.length() > 6) {
-			// 文字数が21文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-			request.setAttribute("afterGraduationError", "卒業後の予定のその他の詳細は32文字以下で入力してください。");
+		if (afterGraduation.equals("その他")) {
+			if (ValidationUtil.isNullOrEmpty(afterGraduationOtherContents)) {
+				request.setAttribute("afterGraduationError", "卒業後の予定でその他を選択した場合は詳細も入力してください。");
+			} else if (ValidationUtil.areValidLengths(32, afterGraduationOtherContents)) {
+				// 文字数が21文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
+				request.setAttribute("afterGraduationError", "卒業後の予定のその他の詳細は32文字以下で入力してください。");
+			} else if (ValidationUtil.containsForbiddenChars(afterGraduationOtherContents)) {
+				// 入力値に特殊文字が入っていないか確認する
+				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("otherError") != null || request.getAttribute("publicInterestError") != null
-				|| request.getAttribute("otherOrganizationError") != null
-				|| request.getAttribute("otherActivityError") != null
-				|| request.getAttribute("afterGraduationError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "period-update-third.jsp";
 		}
 
@@ -183,21 +194,18 @@ public class PeriodUpdateThirdAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 学生種類のデータベースからの取り出し
 			String reEncryptedStudentType = dao.getStudentType(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedStudentType == null) {
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(studentType)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+
 			// もし学生種類が留学生でなければエラーを返す
 			if (!studentType.equals("留学生")) {
 				request.setAttribute("exchangeStudentError", "当該書類は留学生のみが発行可能です。");

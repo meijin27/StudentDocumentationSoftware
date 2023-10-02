@@ -114,11 +114,17 @@ public class FirstSettingAction extends Action {
 		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
 		if (ValidationUtil.areValidLengths(32, lastName, firstName, lastNameRuby, firstNameRuby)) {
 			request.setAttribute("valueLongError", "名前およびふりがなは32文字以下で入力してください。");
-		} else if (ValidationUtil.areValidLengths(64, address)) {
+		}
+
+		if (ValidationUtil.areValidLengths(64, address)) {
 			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
-		} else if (ValidationUtil.areValidLengths(5, studentType)) {
+		}
+
+		if (ValidationUtil.areValidLengths(5, studentType)) {
 			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
-		} else if (ValidationUtil.areValidLengths(16, className)) {
+		}
+
+		if (ValidationUtil.areValidLengths(16, className)) {
 			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
 		}
 
@@ -140,7 +146,7 @@ public class FirstSettingAction extends Action {
 			String reEncryptedSecretQuestion = dao.getSecretQuestion(id);
 			// データベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
 			if (reEncryptedSecretQuestion == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				session.setAttribute("otherError", "秘密の質問の設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}

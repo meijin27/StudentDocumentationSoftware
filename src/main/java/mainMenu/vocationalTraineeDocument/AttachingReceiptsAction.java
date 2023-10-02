@@ -12,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class AttachingReceiptsAction extends Action {
 
@@ -28,19 +29,12 @@ public class AttachingReceiptsAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -52,51 +46,42 @@ public class AttachingReceiptsAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
-			// 姓のデータベースからの取り出し
+			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-			// クラス名がnullになった場合はエラーを返す
-			if (className.length() == 0) {
-				request.setAttribute("innerError", "クラス名が不正です。クラス名を修正してください。");
-				return "attaching-receipts.jsp";
-			}
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "attaching-receipts.jsp";
 			}
+
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
+			}
+
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/別紙　領収書添付用.pdf";

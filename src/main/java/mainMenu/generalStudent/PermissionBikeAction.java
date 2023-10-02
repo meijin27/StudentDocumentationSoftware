@@ -73,7 +73,8 @@ public class PermissionBikeAction extends Action {
 					|| ValidationUtil.validateDate(endYear, endMonth, endDay)) {
 				request.setAttribute("dayError", "存在しない日付です。");
 				// 申請日と申請期間の比較
-			} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, endYear, endMonth, endDay)) {
+			} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
+					startDay)) {
 				request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
 			} else if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
 				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");

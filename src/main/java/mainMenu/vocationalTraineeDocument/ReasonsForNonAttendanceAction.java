@@ -1,10 +1,8 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +15,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class ReasonsForNonAttendanceAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(ReasonsForNonAttendanceAction.class);
@@ -32,19 +31,12 @@ public class ReasonsForNonAttendanceAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -65,97 +57,54 @@ public class ReasonsForNonAttendanceAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
-				|| relativeAddress == null || requestYear == null
-				|| requestMonth == null || requestDay == null || nonAttendanceReason == null || startYear == null
-				|| startMonth == null || startDay == null || endYear == null || endMonth == null || endDay == null
-				|| relativeName.isEmpty() || birthYear.isEmpty()
-				|| birthMonth.isEmpty() || birthDay.isEmpty()
-				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty() || nonAttendanceReason.isEmpty() || startYear.isEmpty() || startMonth.isEmpty()
-				|| startDay.isEmpty()
-				|| endYear.isEmpty() || endMonth.isEmpty()
-				|| endDay.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(relativeName, birthYear, birthMonth, birthDay, relativeAddress, requestYear,
+				requestMonth, requestDay, nonAttendanceReason, startYear, startMonth, startDay, endYear, endMonth,
+				endDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
-			return "reasons-for-non-attendance.jsp";
+			return "certificate-issuance.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!birthYear.matches("^\\d{4}$") || !birthMonth.matches("^\\d{1,2}$")
-					|| !birthDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{4}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$") ||
-					!startYear.matches("^\\d{4}$") || !startMonth.matches("^\\d{1,2}$")
-					|| !startDay.matches("^\\d{1,2}$") || !endYear.matches("^\\d{4}$")
-					|| !endMonth.matches("^\\d{1,2}$")
-					|| !endDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
-				int checkYear = Integer.parseInt(birthYear);
-				int checkMonth = Integer.parseInt(birthMonth);
-				int checkDay = Integer.parseInt(birthDay);
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				checkYear = Integer.parseInt(requestYear);
-				checkMonth = Integer.parseInt(requestMonth);
-				checkDay = Integer.parseInt(requestDay);
-				// 日付の妥当性チェック
-				date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				int checkStartYear = Integer.parseInt(startYear);
-				int checkStartMonth = Integer.parseInt(startMonth);
-				int checkStartDay = Integer.parseInt(startDay);
-
-				// 日付の妥当性チェック
-				date = LocalDate.of(checkStartYear, checkStartMonth, checkStartDay);
-
-				int checkEndYear = Integer.parseInt(endYear);
-				int checkEndMonth = Integer.parseInt(endMonth);
-				int checkEndDay = Integer.parseInt(endDay);
-
-				// 日付の妥当性チェック
-				date = LocalDate.of(checkEndYear, checkEndMonth, checkEndDay);
-
-				// 開始時刻が終了時刻よりも前かどうかをチェックする
-				// 年度が整合とれるか確認する
-				if (checkStartYear > checkEndYear) {
-					request.setAttribute("logicalError", "開始年は終了年よりも前でなければなりません。");
-					// 月が整合取れるか確認する
-				} else if (checkStartYear == checkEndYear && checkStartMonth > checkEndMonth) {
-					request.setAttribute("logicalError", "開始月は終了月よりも前でなければなりません。");
-					// 日付が整合取れるか確認する
-				} else if (checkStartYear == checkEndYear && checkStartMonth == checkEndMonth
-						&& checkStartDay > checkEndDay) {
-					request.setAttribute("logicalError", "開始日は終了日よりも前でなければなりません。");
-				}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isFourDigit(birthYear, requestYear, startYear, endYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay, requestMonth, requestDay, startMonth, startDay,
+						endMonth, endDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay) ||
+					ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
+					|| ValidationUtil.validateDate(startYear, startMonth, startDay) ||
+					ValidationUtil.validateDate(endYear, endMonth, endDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
+			} else if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
+				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (relativeName.length() > 32 || relativeAddress.length() > 64 || nonAttendanceReason.length() > 5) {
-			request.setAttribute("valueLongError", "名前は32文字以下、住所は64文字以下で入力してください。");
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(relativeName, relativeAddress, nonAttendanceReason)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
+		// 文字数が多い場合はエラーを返す。
+		if (ValidationUtil.areValidLengths(32, relativeName)) {
+			request.setAttribute("valueLongError", "名前は32文字以下で入力してください。");
+		}
+
+		if (ValidationUtil.areValidLengths(64, relativeAddress)) {
+			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
+		}
+
+		// セレクトボックスの有効範囲画外の場合もエラーを返す。
+		if (ValidationUtil.areValidLengths(5, nonAttendanceReason)) {
+			request.setAttribute("valueLongError", "欠席理由は5文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("logicalError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "reasons-for-non-attendance.jsp";
 		}
 
@@ -175,62 +124,48 @@ public class ReasonsForNonAttendanceAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// 公共職業安定所名のデータベースからの取り出し
+			String reEncryptedNamePESO = dao.getNamePESO(id);
+			String namePESO = decrypt.getDecryptedDate(result, reEncryptedNamePESO);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, studentType,
+					namePESO)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-			// クラス名がnullになった場合はエラーを返す
-			if (className.length() == 0) {
-				request.setAttribute("innerError", "クラス名が不正です。クラス名を修正してください。");
-				return "reasons-for-non-attendance.jsp";
-			}
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "reasons-for-non-attendance.jsp";
 			}
 
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
 			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
+
+			// 姓名を結合する			
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/欠席理由申立書.pdf";

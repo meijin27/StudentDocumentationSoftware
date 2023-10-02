@@ -1,8 +1,5 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class CertificateIssuanceAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(CertificateIssuanceAction.class);
@@ -30,19 +28,12 @@ public class CertificateIssuanceAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -56,65 +47,49 @@ public class CertificateIssuanceAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (reason == null || propose == null || requestYear == null
-				|| requestMonth == null || requestDay == null || reason.isEmpty() || propose.isEmpty()
-				|| requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, reason, propose)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "certificate-issuance.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 証明書の必要部数を全て選択していない場合、エラーを返す
-		if (proofOfStudent.isEmpty() && certificateOfCompletion.isEmpty()
-				&& certificateOfExpectedCompletion.isEmpty()) {
+		if (ValidationUtil.areAllNullOrEmpty(proofOfStudent, certificateOfCompletion,
+				certificateOfExpectedCompletion)) {
 			request.setAttribute("nullError", "証明書は1種類以上発行する必要があります。");
 			return "certificate-issuance.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
-			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-			if (!requestYear.matches("^\\d{1,2}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(requestYear) + 2018;
-				int checkMonth = Integer.parseInt(requestMonth);
-				int checkDay = Integer.parseInt(requestDay);
-
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 必要枚数は半角1桁でなければエラーを返す
-		if ((proofOfStudent != null && !proofOfStudent.matches("^\\d{1}$"))
-				|| (certificateOfCompletion != null && !certificateOfCompletion.matches("^\\d{1}$"))
-				|| (certificateOfExpectedCompletion != null && !certificateOfExpectedCompletion.matches("^\\d{1}$"))) {
+		if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent, certificateOfCompletion,
+				certificateOfExpectedCompletion)) {
 			request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
 		}
 
 		// 文字数が64文字より多い場合はエラーを返す。
-		if (reason.length() > 64 || propose.length() > 64) {
+		if (ValidationUtil.areValidLengths(64, reason, propose)) {
 			request.setAttribute("valueLongError", "64文字以下で入力してください。");
 		}
 
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(reason, propose)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-issuance.jsp";
 		}
 
@@ -126,81 +101,42 @@ public class CertificateIssuanceAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
-			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
 			// 名のデータベースからの取り出し
 			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// 姓（ふりがな）のデータベースからの取り出し
+			// 姓のふりがなの取り出し
 			String reEncryptedLastNameRuby = dao.getLastNameRuby(id);
-			String encryptedLastNameRuby = CipherUtil.commonDecrypt(reEncryptedLastNameRuby);
-			String lastNameRuby = CipherUtil.decrypt(masterKey, iv, encryptedLastNameRuby);
-			// 名（ふりがな）のデータベースからの取り出し
+			String lastNameRuby = decrypt.getDecryptedDate(result, reEncryptedLastNameRuby);
+			// 名のふりがなの取り出し
 			String reEncryptedFirstNameRuby = dao.getFirstNameRuby(id);
-			String encryptedFirstNameRuby = CipherUtil.commonDecrypt(reEncryptedFirstNameRuby);
-			String firstNameRuby = CipherUtil.decrypt(masterKey, iv, encryptedFirstNameRuby);
-
-			String nameRuby = lastNameRuby + "  " + firstNameRuby;
+			String firstNameRuby = decrypt.getDecryptedDate(result, reEncryptedFirstNameRuby);
 
 			// 電話番号のデータベースからの取り出し
 			String reEncryptedTel = dao.getTel(id);
-			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
-			String tel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
-
-			// 電話番号を3分割する
-			String firstTel = null;
-			String secondTel = null;
-			String lastTel = null;
-			if (tel.length() == 11) {
-				firstTel = tel.substring(0, 3);
-				secondTel = tel.substring(3, 7);
-				lastTel = tel.substring(7, 11);
-			} else {
-				firstTel = tel.substring(0, 3);
-				secondTel = tel.substring(3, 6);
-				lastTel = tel.substring(6, 10);
-			}
+			String tel = decrypt.getDecryptedDate(result, reEncryptedTel);
 
 			// 郵便番号のデータベースからの取り出し
 			String reEncryptedPostCode = dao.getPostCode(id);
-			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
-			String postCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
-			// 郵便番号をに分割する
-			String firstPostCode = postCode.substring(0, 3);
-			String lastPostCode = postCode.substring(3, 7);
+			String postCode = decrypt.getDecryptedDate(result, reEncryptedPostCode);
+
 			// 住所のデータベースからの取り出し
 			String reEncryptedAddress = dao.getAddress(id);
-			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
-			String address = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
+			String address = decrypt.getDecryptedDate(result, reEncryptedAddress);
+
 			// 誕生年のデータベースからの取り出し
 			String reEncryptedBirthYear = dao.getBirthYear(id);
-			String encryptedBirthYear = CipherUtil.commonDecrypt(reEncryptedBirthYear);
-			String birthYear = CipherUtil.decrypt(masterKey, iv, encryptedBirthYear);
+			String birthYear = decrypt.getDecryptedDate(result, reEncryptedBirthYear);
 			// 誕生月のデータベースからの取り出し
 			String reEncryptedBirthMonth = dao.getBirthMonth(id);
-			String encryptedBirthMonth = CipherUtil.commonDecrypt(reEncryptedBirthMonth);
-			String birthMonth = CipherUtil.decrypt(masterKey, iv, encryptedBirthMonth);
+			String birthMonth = decrypt.getDecryptedDate(result, reEncryptedBirthMonth);
 			// 誕生日のデータベースからの取り出し
 			String reEncryptedBirthDay = dao.getBirthDay(id);
-			String encryptedBirthDay = CipherUtil.commonDecrypt(reEncryptedBirthDay);
-			String birthDay = CipherUtil.decrypt(masterKey, iv, encryptedBirthDay);
+			String birthDay = decrypt.getDecryptedDate(result, reEncryptedBirthDay);
 
 			// 生年月日から和暦を算出する
 			int year = Integer.parseInt(birthYear);
@@ -222,40 +158,65 @@ public class CertificateIssuanceAction extends Action {
 
 			// 入学年のデータベースからの取り出し
 			String reEncryptedAdmissionYear = dao.getAdmissionYear(id);
-			String encryptedAdmissionYear = CipherUtil.commonDecrypt(reEncryptedAdmissionYear);
-			String admissionYear = CipherUtil.decrypt(masterKey, iv, encryptedAdmissionYear);
+			String admissionYear = decrypt.getDecryptedDate(result, reEncryptedAdmissionYear);
 			String JapaneseAdmissionYear = String.valueOf(Integer.parseInt(admissionYear) - 2018);
 			// 入学月のデータベースからの取り出し
 			String reEncryptedAdmissionMonth = dao.getAdmissionMonth(id);
-			String encryptedAdmissionMonth = CipherUtil.commonDecrypt(reEncryptedAdmissionMonth);
-			String admissionMonth = CipherUtil.decrypt(masterKey, iv, encryptedAdmissionMonth);
+			String admissionMonth = decrypt.getDecryptedDate(result, reEncryptedAdmissionMonth);
 			// 入学日のデータベースからの取り出し
 			String reEncryptedAdmissionDay = dao.getAdmissionDay(id);
-			String encryptedAdmissionDay = CipherUtil.commonDecrypt(reEncryptedAdmissionDay);
-			String admissionDay = CipherUtil.decrypt(masterKey, iv, encryptedAdmissionDay);
+			String admissionDay = decrypt.getDecryptedDate(result, reEncryptedAdmissionDay);
 			// クラス名のデータベースからの取り出し
 			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// クラス名の末尾に「科」がついていた場合は削除する
-			if (className.endsWith("科")) {
-				className = className.substring(0, className.length() - 1);
-			}
-			// クラス名がnullになった場合はエラーを返す
-			if (className.length() == 0) {
-				request.setAttribute("innerError", "クラス名が不正です。クラス名を修正してください。");
-				return "certificate-issuance.jsp";
-			}
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
 
 			// 学生種類のデータベースからの取り出し
 			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, tel, birthYear,
+					birthMonth,
+					birthDay, admissionYear, admissionMonth, admissionDay, studentType, className)) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
+
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "certificate-issuance.jsp";
 			}
+
+			// クラス名の末尾に「科」がついていた場合は削除する
+			if (className.endsWith("科")) {
+				className = className.substring(0, className.length() - 1);
+			}
+
+			// 電話番号を3分割してハイフンをつけてくっつける
+			String firstTel = null;
+			String secondTel = null;
+			String lastTel = null;
+
+			if (tel.length() == 11) {
+				firstTel = tel.substring(0, 3);
+				secondTel = tel.substring(3, 7);
+				lastTel = tel.substring(7, 11);
+			} else {
+				firstTel = tel.substring(0, 3);
+				secondTel = tel.substring(3, 6);
+				lastTel = tel.substring(6, 10);
+			}
+
+			// 郵便番号を２つに分割する
+			String firstPostCode = postCode.substring(0, 3);
+			String lastPostCode = postCode.substring(3, 7);
+
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
+			// ふりがなを結合する
+			String nameRuby = lastNameRuby + "  " + firstNameRuby;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/証明書交付願.pdf";

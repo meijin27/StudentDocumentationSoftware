@@ -1,8 +1,5 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class PetitionForRelativesAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(PetitionForRelativesAction.class);
@@ -30,19 +28,12 @@ public class PetitionForRelativesAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -56,62 +47,43 @@ public class PetitionForRelativesAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (relativeName == null || birthYear == null || birthMonth == null || birthDay == null
-				|| relativeAddress == null || requestYear == null
-				|| requestMonth == null || requestDay == null || relativeName.isEmpty() || birthYear.isEmpty()
-				|| birthMonth.isEmpty() || birthDay.isEmpty()
-				|| relativeAddress.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(relativeName, birthYear, birthMonth, birthDay, relativeAddress, requestYear,
+				requestMonth, requestDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "petition-for-relatives.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
-			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-			if (!birthYear.matches("^\\d{4}$") || !birthMonth.matches("^\\d{1,2}$")
-					|| !birthDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{4}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-
-				int checkYear = Integer.parseInt(birthYear);
-				int checkMonth = Integer.parseInt(birthMonth);
-				int checkDay = Integer.parseInt(birthDay);
-
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				checkYear = Integer.parseInt(requestYear);
-				checkMonth = Integer.parseInt(requestMonth);
-				checkDay = Integer.parseInt(requestDay);
-
-				date = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isFourDigit(birthYear, requestYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay, requestMonth, requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay) ||
+					ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
-		// 文字数が多い場合はエラーを返す
-		if (relativeName.length() > 32 || relativeAddress.length() > 64) {
-			request.setAttribute("valueLongError", "名前は32文字以下、住所は64文字以下で入力してください。");
+		// 入力値に特殊文字が入っていないか確認する
+		if (ValidationUtil.containsForbiddenChars(relativeName, relativeAddress)) {
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		}
+
+		// 文字数が多い場合はエラーを返す。
+		if (ValidationUtil.areValidLengths(32, relativeName)) {
+			request.setAttribute("valueLongError", "名前は32文字以下で入力してください。");
+		}
+
+		if (ValidationUtil.areValidLengths(64, relativeAddress)) {
+			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("dayError") != null || request.getAttribute("valueLongError") != null) {
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "petition-for-relatives.jsp";
 		}
 
@@ -123,57 +95,46 @@ public class PetitionForRelativesAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// 公共職業安定所名のデータベースからの取り出し
+			String reEncryptedNamePESO = dao.getNamePESO(id);
+			String namePESO = decrypt.getDecryptedDate(result, reEncryptedNamePESO);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className, namePESO)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
+			// もし学生種類が職業訓練生でなければエラーを返す
+			if (!studentType.equals("職業訓練生")) {
+				request.setAttribute("studentTypeError", "当該書類は職業訓練生のみが発行可能です。");
+				return "petition-for-relatives.jsp";
+			}
 
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
 			// クラス名の末尾に「科」がついていた場合は削除する
 			if (className.endsWith("科")) {
 				className = className.substring(0, className.length() - 1);
 			}
 
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
-			// もし学生種類が職業訓練生でなければエラーを返す
-			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
-				return "petition-for-relatives.jsp";
-			}
-
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
-			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/親族続柄申立書.pdf";

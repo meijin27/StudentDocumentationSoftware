@@ -1,8 +1,5 @@
 package mainMenu.vocationalTraineeDocument;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,11 +12,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class NotificationOfChangeAction extends Action {
 	private static final Logger logger = CustomLogger.getLogger(NotificationOfChangeAction.class);
@@ -30,19 +28,12 @@ public class NotificationOfChangeAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -59,106 +50,84 @@ public class NotificationOfChangeAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
 		// 更新項目確認用変数
 		boolean changeName = false;
 		boolean changeAddress = false;
 		boolean changeTel = false;
 
-		// 未入力項目があればエラーを返す
-		if (changeYear == null || changeMonth == null || changetDay == null || requestYear == null
-				|| requestMonth == null || requestDay == null || changeYear.isEmpty() || changeMonth.isEmpty()
-				|| changetDay.isEmpty() || requestYear.isEmpty() || requestMonth.isEmpty()
-				|| requestDay.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(changeYear, changeMonth, changetDay, requestYear, requestMonth, requestDay)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "notification-of-change.jsp";
 		}
 
-		// 年月日が存在しない日付の場合はエラーにする
-		try {
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
 
-			// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
-			if (!changeYear.matches("^\\d{1,2}$") || !changeMonth.matches("^\\d{1,2}$")
-					|| !changetDay.matches("^\\d{1,2}$") || !requestYear.matches("^\\d{1,2}$")
-					|| !requestMonth.matches("^\\d{1,2}$")
-					|| !requestDay.matches("^\\d{1,2}$")) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				int checkYear = Integer.parseInt(changeYear);
-				int checkMonth = Integer.parseInt(changeMonth);
-				int checkDay = Integer.parseInt(changetDay);
-
-				// 日付の妥当性チェック
-				LocalDate date = LocalDate.of(checkYear, checkMonth, checkDay);
-
-				checkYear = Integer.parseInt(requestYear);
-				checkMonth = Integer.parseInt(requestMonth);
-				checkDay = Integer.parseInt(requestDay);
-
-				date = LocalDate.of(checkYear, checkMonth, checkDay);
+		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
+		if (ValidationUtil.isOneOrTwoDigit(changeYear, changeMonth, changetDay, requestYear, requestMonth,
+				requestDay)) {
+			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+		} else {
+			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
+					|| ValidationUtil.validateDate(changeYear, changeMonth, changetDay)) {
+				request.setAttribute("dayError", "存在しない日付です。");
 			}
-
-		} catch (NumberFormatException e) {
-			request.setAttribute("dayError", "年月日は数字で入力してください。");
-		} catch (DateTimeException e) {
-			request.setAttribute("dayError", "存在しない日付です。");
 		}
 
 		// 姓と名のチェック
-		if ((lastName == null || lastName.isEmpty()) && (firstName == null || firstName.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(lastName, firstName)) {
 			// すべてが空の場合は問題なし
-		} else if (lastName == null || lastName.isEmpty() || firstName == null || firstName.isEmpty()) {
+		} else if (ValidationUtil.isNullOrEmpty(lastName, firstName)) {
 			// 何か一つだけ入力されている場合
 			request.setAttribute("nameError", "姓と名を全て入力してください。");
-		} else if (lastName.length() > 32 || firstName.length() > 32) {
+		} else if (ValidationUtil.areValidLengths(32, lastName, firstName)) {
+			// 姓名の文字列長が長い場合はエラーを返す
 			request.setAttribute("nameError", "名前は32文字以下で入力してください。");
+		} else if (ValidationUtil.containsForbiddenChars(lastName, firstName)) {
+			// 入力値に特殊文字が入っていないか確認する	
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		} else {
 			changeName = true;
 		}
 
 		// 郵便番号と住所のチェック
-		if ((postCode == null || postCode.isEmpty()) && (address == null || address.isEmpty())) {
+		if (ValidationUtil.areAllNullOrEmpty(postCode, address)) {
 			// どちらも空の場合は問題なし
-		} else if (postCode == null || postCode.isEmpty() || address == null || address.isEmpty()) {
+		} else if (ValidationUtil.isNullOrEmpty(postCode, address)) {
 			// どちらかだけ入力されている場合
 			request.setAttribute("addressError", "郵便番号と住所は両方とも入力してください。");
-		} else if (address.length() > 64) {
+		} else if (ValidationUtil.areValidLengths(64, address)) {
 			// 文字数が64文字より多い場合はエラーを返す
 			request.setAttribute("addressError", "住所は64文字以下で入力してください。");
-		} else if (!postCode.matches("^\\d{7}$")) {
+		} else if (ValidationUtil.isSevenDigit(postCode)) {
 			// 郵便番号が半角7桁でなければエラーを返す
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
+		} else if (ValidationUtil.containsForbiddenChars(address)) {
+			// 入力値に特殊文字が入っていないか確認する	
+			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		} else {
 			changeAddress = true;
 		}
 
-		// 電話番号が半角10~11桁でなければエラーを返す
-		if (tel != null && !tel.isEmpty() && !tel.matches("^\\d{10,11}$")) {
+		// 電話番号のチェック
+		if (ValidationUtil.areAllNullOrEmpty(tel)) {
+			// 空の場合は問題なし		
+		} else if (ValidationUtil.isTenOrElevenDigit(tel)) {
+			// 電話番号が半角10~11桁でなければエラーを返す
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
-		} else if (tel != null && !tel.isEmpty()) {
+		} else {
 			changeTel = true;
 		}
 
-		// 少なくとも1つの項目が入力されている必要がある
-		if ((lastName == null || lastName.isEmpty()) &&
-				(firstName == null || firstName.isEmpty()) &&
-				(postCode == null || postCode.isEmpty()) &&
-				(address == null || address.isEmpty()) &&
-				(tel == null || tel.isEmpty())) {
-			request.setAttribute("inputError", "変更する項目を入力してください。");
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "notification-of-change.jsp";
 		}
 
-		// エラーが発生している場合は元のページに戻す
-		if (request.getAttribute("nameError") != null || request.getAttribute("inputError") != null
-				|| request.getAttribute("addressError") != null || request.getAttribute("dayError") != null
-				|| request.getAttribute("postCodeError") != null || request.getAttribute("telError") != null) {
+		// 少なくとも1つの項目が入力されている必要がある
+		if (changeName || changeAddress || changeTel) {
+			request.setAttribute("inputError", "変更する項目を入力してください。");
 			return "notification-of-change.jsp";
 		}
 
@@ -170,35 +139,57 @@ public class NotificationOfChangeAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String oldLastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String oldFirstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// 電話番号のデータベースからの取り出し
+			String reEncryptedTel = dao.getTel(id);
+			String oldTel = decrypt.getDecryptedDate(result, reEncryptedTel);
+
+			// 郵便番号のデータベースからの取り出し
+			String reEncryptedPostCode = dao.getPostCode(id);
+			String oldPostCode = decrypt.getDecryptedDate(result, reEncryptedPostCode);
+
+			// 住所のデータベースからの取り出し
+			String reEncryptedAddress = dao.getAddress(id);
+			String oldAddress = decrypt.getDecryptedDate(result, reEncryptedAddress);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(oldLastName, oldFirstName, oldTel, oldPostCode, oldAddress, studentType,
+					className)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String oldLastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String oldFirstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = oldLastName + " " + oldFirstName;
-			if (changeName) {
-				name = lastName + " " + firstName;
+			// もし学生種類が職業訓練生でなければエラーを返す
+			if (!studentType.equals("職業訓練生")) {
+				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
+				return "notification-of-change.jsp";
 			}
 
-			// 電話番号のデータベースからの取り出し
-			String reEncryptedTel = dao.getTel(id);
-			String encryptedTel = CipherUtil.commonDecrypt(reEncryptedTel);
-			String oldTel = CipherUtil.decrypt(masterKey, iv, encryptedTel);
+			// 郵便番号を分割する
+			String oldFirstPostCode = oldPostCode.substring(0, 3);
+			String oldLastPostCode = oldPostCode.substring(3, 7);
+			oldPostCode = oldFirstPostCode + "-" + oldLastPostCode;
+			if (changeAddress) {
+				String firstPostCode = postCode.substring(0, 3);
+				String lastPostCode = postCode.substring(3, 7);
+				postCode = firstPostCode + "-" + lastPostCode;
+			}
 
 			// 電話番号を3分割してハイフンをつけてくっつける
 			String firstTel = null;
@@ -228,46 +219,9 @@ public class NotificationOfChangeAction extends Action {
 				tel = firstTel + "-" + secondTel + "-" + lastTel;
 			}
 
-			// 郵便番号のデータベースからの取り出し
-			String reEncryptedPostCode = dao.getPostCode(id);
-			String encryptedPostCode = CipherUtil.commonDecrypt(reEncryptedPostCode);
-			String oldPostCode = CipherUtil.decrypt(masterKey, iv, encryptedPostCode);
-			// 郵便番号をに分割する
-			String oldFirstPostCode = oldPostCode.substring(0, 3);
-			String oldLastPostCode = oldPostCode.substring(3, 7);
-			oldPostCode = oldFirstPostCode + "-" + oldLastPostCode;
-			if (changeAddress) {
-				String firstPostCode = postCode.substring(0, 3);
-				String lastPostCode = postCode.substring(3, 7);
-				postCode = firstPostCode + "-" + lastPostCode;
-			}
-			// 住所のデータベースからの取り出し
-			String reEncryptedAddress = dao.getAddress(id);
-			String encryptedAddress = CipherUtil.commonDecrypt(reEncryptedAddress);
-			String oldAddress = CipherUtil.decrypt(masterKey, iv, encryptedAddress);
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
-			// もし学生種類が職業訓練生でなければエラーを返す
-			if (!studentType.equals("職業訓練生")) {
-				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
-				return "notification-of-change.jsp";
-			}
-
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
+			String name = oldLastName + " " + oldFirstName;
+			if (changeName) {
+				name = lastName + " " + firstName;
 			}
 
 			// PDFとフォントのパス作成

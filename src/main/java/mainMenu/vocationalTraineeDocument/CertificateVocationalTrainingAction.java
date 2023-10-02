@@ -1,7 +1,6 @@
 package mainMenu.vocationalTraineeDocument;
 
 import java.time.YearMonth;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,11 +15,12 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font;
 
 import dao.UserDAO;
 import tool.Action;
-import tool.CipherUtil;
 import tool.CustomLogger;
 import tool.Decrypt;
 import tool.DecryptionResult;
 import tool.EditPDF;
+import tool.RequestAndSessionUtil;
+import tool.ValidationUtil;
 
 public class CertificateVocationalTrainingAction extends Action {
 
@@ -32,19 +32,12 @@ public class CertificateVocationalTrainingAction extends Action {
 
 		// セッションの作成
 		HttpSession session = request.getSession();
-		// セッションからトークンを取得
-		String sessionToken = (String) session.getAttribute("csrfToken");
-		// リクエストパラメータからトークンを取得
-		String requestToken = request.getParameter("csrfToken");
 		// リダイレクト用コンテキストパス
 		String contextPath = request.getContextPath();
 
-		// IDやマスターキーのセッションがない、トークンが一致しない、またはセッションの有効期限切れの場合はエラーとして処理
-		if (session.getAttribute("master_key") == null || session.getAttribute("id") == null || sessionToken == null
-				|| requestToken == null || !sessionToken.equals(requestToken)) {
-			// ログインページにリダイレクト
-			session.setAttribute("otherError", "セッションエラーが発生しました。ログインしてください。");
-			response.sendRedirect(contextPath + "/login/login.jsp");
+		// トークン及びログイン状態の確認
+		if (RequestAndSessionUtil.validateSession(request, response, "master_key", "id")) {
+			// ログイン状態が不正ならば処理を終了
 			return null;
 		}
 
@@ -54,24 +47,17 @@ public class CertificateVocationalTrainingAction extends Action {
 		String problems = request.getParameter("problems");
 		String income = request.getParameter("income");
 
-		// 入力された値をリクエストに格納	
-		Enumeration<String> parameterNames = request.getParameterNames();
-		while (parameterNames.hasMoreElements()) {
-			String paramName = parameterNames.nextElement();
-			String paramValue = request.getParameter(paramName);
-			request.setAttribute(paramName, paramValue);
-		}
-
-		// 未入力項目があればエラーを返す
-		if (subjectYear == null || subjectMonth == null || problems == null
-				|| income == null || subjectYear.isEmpty() || subjectMonth.isEmpty() || problems.isEmpty()
-				|| income.isEmpty()) {
+		// 必須項目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectYear, subjectMonth, problems, income)) {
 			request.setAttribute("nullError", "未入力項目があります。");
 			return "certificate-vocational-training.jsp";
 		}
 
+		// 入力された値をリクエストに格納	
+		RequestAndSessionUtil.storeParametersInRequest(request);
+
 		// 証明書対象期間は半角2桁以下でなければエラーを返す
-		if (!subjectYear.matches("^\\d{1,2}$") || !subjectMonth.matches("^\\d{1,2}$")) {
+		if (ValidationUtil.isOneOrTwoDigit(subjectYear, subjectMonth)) {
 			request.setAttribute("numberError", "証明書対象期間は半角2桁以下で入力してください。");
 			return "certificate-vocational-training.jsp";
 		}
@@ -101,11 +87,15 @@ public class CertificateVocationalTrainingAction extends Action {
 		// ラジオボタンの入力値チェック
 		// 就労有無が「した」「しない」以外の場合はエラーを返す
 		if (!(problems.equals("した") || problems.equals("しない"))) {
-			request.setAttribute("innerError", "就労有無は「した」「しない」から選択してください");
-			return "certificate-vocational-training.jsp";
-			// 収入有無が「得た」「得ない」以外の場合はエラーを返す
-		} else if (!(income.equals("得た") || income.equals("得ない"))) {
-			request.setAttribute("innerError", "収入有無は「得た」「得ない」から選択してください");
+			request.setAttribute("problemsError", "就労有無は「した」「しない」から選択してください");
+		}
+		// 収入有無が「得た」「得ない」以外の場合はエラーを返す
+		if (!(income.equals("得た") || income.equals("得ない"))) {
+			request.setAttribute("incomeError", "収入有無は「得た」「得ない」から選択してください");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-vocational-training.jsp";
 		}
 
@@ -117,65 +107,54 @@ public class CertificateVocationalTrainingAction extends Action {
 			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
 			// IDの取り出し
 			String id = result.getId();
-			// マスターキーの取り出し			
-			String masterKey = result.getMasterKey();
-			// ivの取り出し
-			String iv = result.getIv();
 
 			// 姓のデータベース空の取り出し
 			String reEncryptedLastName = dao.getLastName(id);
-			// 最初にデータベースから取り出したデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedLastName == null) {
+			String lastName = decrypt.getDecryptedDate(result, reEncryptedLastName);
+			// 名のデータベースからの取り出し
+			String reEncryptedFirstName = dao.getFirstName(id);
+			String firstName = decrypt.getDecryptedDate(result, reEncryptedFirstName);
+
+			// クラス名のデータベースからの取り出し
+			String reEncryptedClassName = dao.getClassName(id);
+			String className = decrypt.getDecryptedDate(result, reEncryptedClassName);
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// 公共職業安定所名のデータベースからの取り出し
+			String reEncryptedNamePESO = dao.getNamePESO(id);
+			String namePESO = decrypt.getDecryptedDate(result, reEncryptedNamePESO);
+			// 支給番号のデータベースからの取り出し
+			String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
+			String supplyNumber = decrypt.getDecryptedDate(result, reEncryptedSupplyNumber);
+			// 雇用保険のデータベースからの取り出し
+			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
+			String employmentInsurance = decrypt.getDecryptedDate(result, reEncryptedEmploymentInsurance);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className, namePESO, supplyNumber,
+					employmentInsurance)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			}
-			String encryptedLastName = CipherUtil.commonDecrypt(reEncryptedLastName);
-			String lastName = CipherUtil.decrypt(masterKey, iv, encryptedLastName);
-			// 名のデータベースからの取り出し
-			String reEncryptedFirstName = dao.getFirstName(id);
-			String encryptedFirstName = CipherUtil.commonDecrypt(reEncryptedFirstName);
-			String firstName = CipherUtil.decrypt(masterKey, iv, encryptedFirstName);
 
-			String name = lastName + " " + firstName;
-
-			// クラス名のデータベースからの取り出し
-			String reEncryptedClassName = dao.getClassName(id);
-			String encryptedClassName = CipherUtil.commonDecrypt(reEncryptedClassName);
-			String className = CipherUtil.decrypt(masterKey, iv, encryptedClassName);
-			// 学生種類のデータベースからの取り出し
-			String reEncryptedStudentType = dao.getStudentType(id);
-			String encryptedStudentType = CipherUtil.commonDecrypt(reEncryptedStudentType);
-			String studentType = CipherUtil.decrypt(masterKey, iv, encryptedStudentType);
 			// もし学生種類が職業訓練生でなければエラーを返す
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "certificate-vocational-training.jsp";
 			}
 
-			// 公共職業安定所名のデータベースからの取り出し
-			String reEncryptedNamePESO = dao.getNamePESO(id);
-			// 最初にデータベースから取り出した職業訓練生のデータがnullの場合、初期設定をしていないためログインページにリダイレクト
-			if (reEncryptedNamePESO == null) {
-				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
-				response.sendRedirect(contextPath + "/login/login.jsp");
-				return null;
-			}
-			String encryptedNamePESO = CipherUtil.commonDecrypt(reEncryptedNamePESO);
-			String namePESO = CipherUtil.decrypt(masterKey, iv, encryptedNamePESO);
-			// 支給番号のデータベースからの取り出し
-			String reEncryptedSupplyNumber = dao.getSupplyNumber(id);
-			String encryptedSupplyNumber = CipherUtil.commonDecrypt(reEncryptedSupplyNumber);
-			String supplyNumber = CipherUtil.decrypt(masterKey, iv, encryptedSupplyNumber);
-			// 雇用保険のデータベースからの取り出し
-			String reEncryptedEmploymentInsurance = dao.getEmploymentInsurance(id);
-			String encryptedEmploymentInsurance = CipherUtil.commonDecrypt(reEncryptedEmploymentInsurance);
-			String employmentInsurance = CipherUtil.decrypt(masterKey, iv, encryptedEmploymentInsurance);
 			// もし雇用保険が無ければエラーを返す
 			if (employmentInsurance.equals("無")) {
 				request.setAttribute("innerError", "当該書類は雇用保険が「有」の場合のみ発行可能です。");
 				return "certificate-vocational-training.jsp";
 			}
+
+			// 姓名を結合する
+			String name = lastName + " " + firstName;
 
 			// PDFとフォントのパス作成
 			String pdfPath = "/pdf/vocationalTraineePDF/公共職業訓練等受講証明書.pdf";
