@@ -7,7 +7,7 @@
 <!-- パスワード忘却時パスワード再設定用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
-		<form action="RecreatePassword.action" method="post">
+		<form action="RecreatePassword.action" method="post" autocomplete="off">
 			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
 
 			<!-- パスワード -->

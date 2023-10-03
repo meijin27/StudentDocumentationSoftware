@@ -11,7 +11,7 @@
         <h1>住所と電話番号の変更</h1>
     </div>
     <div class="container">
-		<form action="ChangeAddressTel.action" method="post">
+		<form action="ChangeAddressTel.action" method="post" autocomplete="off">
 	        <div class="row">
 	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-3">

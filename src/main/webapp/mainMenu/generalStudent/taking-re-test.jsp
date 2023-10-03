@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「再試験受験申請書」作成</h1><br>
     </div>			  
-		<form action="TakingReTest.action" method="post">
+		<form action="TakingReTest.action" method="post" autocomplete="off">
 	        <div class="row">
    	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-3">

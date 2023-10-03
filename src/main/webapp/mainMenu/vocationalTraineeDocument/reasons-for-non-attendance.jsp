@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「欠席理由申立書」作成</h1><br>
     </div>			  
-	<form action="ReasonsForNonAttendance.action" method="post">
+	<form action="ReasonsForNonAttendance.action" method="post" autocomplete="off">
         <div class="row">
   	            <!-- 親族氏名 -->
             <div class="col-md-6 mb-3">

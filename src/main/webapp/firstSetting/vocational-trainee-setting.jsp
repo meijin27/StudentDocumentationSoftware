@@ -14,7 +14,7 @@
 
     <h2 class="p-5">職業訓練生の設定</h2>
     <div class="content">
-	    <form action="VocationalTraineeSetting.action" method="post">
+	    <form action="VocationalTraineeSetting.action" method="post" autocomplete="off">
 	        <div class="row">
 	            <!-- 公共職業安定所名 Public Employment Security Office-->
 	            <div class="col-md-6 mb-3">

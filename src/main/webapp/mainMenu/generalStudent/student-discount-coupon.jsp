@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「学割証発行願」作成</h1><br>
     </div>			  
-	<form action="StudentDiscountCoupon.action" method="post">
+	<form action="StudentDiscountCoupon.action" method="post" autocomplete="off">
 		<div class="row">
             <!-- 申請年月日 -->
             <div class="col-md-4 mb-3">

@@ -6,7 +6,7 @@
 
 <!-- ログイン用JSP  -->
 <main class="form-login w-100 m-auto">
-    <form action="Login.action" method="post">
+    <form action="Login.action" method="post" autocomplete="off">
         <img class="mb-4 mt-3" src="<%=request.getContextPath()%>/img/docu.png" alt="" width="72" height="57">
         <h5 class="mb-1">提出書類作成ソフト</h5>
         <h1 class="h3 mb-3 big-font">ドキュメントクラフト</h1>

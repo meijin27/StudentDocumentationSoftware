@@ -11,7 +11,7 @@
         <h1>入学年月日・学生種類・学籍番号・クラス・学年・組の変更</h1>
     </div>
     <div class="container">
-		<form action="ChangeStudentInfo.action" method="post">
+		<form action="ChangeStudentInfo.action" method="post" autocomplete="off">
 	        <div class="row">
   	            <!-- 入学年月日-->
 	            <div class="col-md-4 mb-3">

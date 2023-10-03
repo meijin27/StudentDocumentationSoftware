@@ -7,7 +7,7 @@
 <!-- 新規アカウント名作成用JSP  -->
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">
-		<form action="CreateAccount.action" method="post">
+		<form action="CreateAccount.action" method="post" autocomplete="off">
 			<!-- 作成するアカウント名 -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="account">新規作成するアカウント名を入力してください</label>

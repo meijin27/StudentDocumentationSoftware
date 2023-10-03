@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「公共職業訓練等受講証明書」作成</h1><br>
     </div>			
-		<form action="CertificateVocationalTraining.action" method="post">
+		<form action="CertificateVocationalTraining.action" method="post" autocomplete="off">
 	        <div class="row">
   		    	<label class="form-label">日付ごとに該当する印を選択してください。</label>
    		    	<label class="form-label left-align">①公共職業訓練等を受けた日　無印</label>

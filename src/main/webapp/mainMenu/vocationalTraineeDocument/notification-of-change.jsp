@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「氏名・住所等変更届」作成</h1><br>
     </div>			  
-	<form action="NotificationOfChange.action" method="post">
+	<form action="NotificationOfChange.action" method="post" autocomplete="off">
         <div class="row">
             <p class="left-align">・変更した項目を入力してください。</p>
             <p class="left-align">・氏名変更した場合は姓・名を全て入力してください。</p>

@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「就労証明書」作成</h1><br>
     </div>			
-		<form action="CertificateOfEmployment.action" method="post">
+		<form action="CertificateOfEmployment.action" method="post" autocomplete="off">
 			<p class="text-start text-center" style="color: red;"><strong>当該書類は印刷後、就労先にて太枠内の記入をお願いします。</strong></p>
 
 	        <div class="row">

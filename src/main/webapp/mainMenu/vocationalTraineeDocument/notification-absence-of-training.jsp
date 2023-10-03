@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
     </div>			  
-	<form action="NotificationAbsenceOfTtraining.action" method="post">
+	<form action="NotificationAbsenceOfTtraining.action" method="post" autocomplete="off">
         <div class="row">
   	            <!-- 対象年月 -->
             <div class="col-md-4 mb-3">

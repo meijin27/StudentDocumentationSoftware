@@ -11,7 +11,7 @@
         <h1>アカウントの削除</h1>
     </div>
     <div class="container">
-		<form action="DeleteAccount.action" method="post">
+		<form action="DeleteAccount.action" method="post" autocomplete="off">
 			<!-- パスワード -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="password">現在のパスワードを入力してください</label>

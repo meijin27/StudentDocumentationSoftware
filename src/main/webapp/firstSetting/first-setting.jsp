@@ -14,7 +14,7 @@
 
     <h2 class="p-5 text-center">初期設定</h2>
     <div class="content">
-	    <form action="FirstSetting.action" method="post">
+	    <form action="FirstSetting.action" method="post" autocomplete="off">
 	        <div class="row">
        			<p class="border-bottom"></p>
 	            <!-- 姓 -->

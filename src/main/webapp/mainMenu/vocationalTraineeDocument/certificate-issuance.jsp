@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「証明書交付願」作成</h1><br>
     </div>			  
-		<form action="CertificateIssuance.action" method="post">
+		<form action="CertificateIssuance.action" method="post" autocomplete="off">
 	        <div class="row">
    	            <!-- 申請理由（具体的に） -->
 	            <div class="col-md-12 mb-5">

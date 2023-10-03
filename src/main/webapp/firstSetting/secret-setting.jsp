@@ -7,7 +7,7 @@
 <!-- 秘密の質問と答え登録用JSP  -->
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
 	<div class="container">
-        <form action="SecretSetting.action" method="post">
+        <form action="SecretSetting.action" method="post" autocomplete="off">
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
                  <label class="form-label" for="secretQuestion">秘密の質問を選択してください。</label>

@@ -7,7 +7,7 @@
 <main class="form-firstSetting col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
  	    <h2 class="p-5">入力内容確認</h2><br>
-        <form action="FirstSettingCheck.action" method="post">
+        <form action="FirstSettingCheck.action" method="post" autocomplete="off">
 		    <div class="data-row-marginbottom-0">
 		        <div class="data-label "><p class="form-label">ふ り が な: </p></div>
 		        <div class="data-value  width-150"><p class="form-label"><c:out value='${lastNameRuby}'/></p></div>

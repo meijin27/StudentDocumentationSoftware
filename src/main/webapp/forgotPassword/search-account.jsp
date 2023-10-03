@@ -7,7 +7,7 @@
 <!-- パスワード忘却時アカウント検索用JSP  -->
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
     <div class="container">
-	    <form action="SearchAccount.action" method="post">
+	    <form action="SearchAccount.action" method="post" autocomplete="off">
 	        <!-- アカウント名 -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="account">パスワードを再発行するアカウント名を入力してください</label>

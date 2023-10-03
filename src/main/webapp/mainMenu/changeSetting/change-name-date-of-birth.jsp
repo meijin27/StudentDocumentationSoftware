@@ -11,7 +11,7 @@
         <h1>氏名・生年月日の変更</h1>
     </div>
     <div class="container">
-		<form action="ChangeNameDateofBirth.action" method="post">
+		<form action="ChangeNameDateofBirth.action" method="post" autocomplete="off">
 	        <div class="row">
 	            <!-- 姓 -->
 	            <div class="col-md-6 mb-3">

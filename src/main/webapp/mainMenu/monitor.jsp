@@ -9,7 +9,7 @@
 <main class="form-mainMenu col-md-9 ms-sm-auto col-lg-10  w-100 m-auto flex-shrink-0 px-md-4 mt-5">
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">現在の登録状況</h1><br>
-		<form action="Monitor.action" method="post">
+		<form action="Monitor.action" method="post" autocomplete="off">
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">
 			<!-- 登録情報の取得ボタン -->

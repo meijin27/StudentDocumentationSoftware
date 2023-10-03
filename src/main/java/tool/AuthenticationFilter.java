@@ -120,10 +120,10 @@ public class AuthenticationFilter implements Filter {
 						chain.doFilter(request, response);
 					} else if (session.getAttribute("secretSetting") != null) {
 						httpResponse.sendRedirect(contextPath + "/firstSetting/secret-setting.jsp");
-						// 秘密の質問が登録状態ではアクセス不許可、メインページに遷移する
+						// 秘密の質問が登録状態ではアクセス不許可、初期登録ページに遷移する
 					} else if ((uri.endsWith("/secret-setting.jsp") || uri.endsWith("/SecretSetting.action"))
 							&& session.getAttribute("secretSetting") == null) {
-						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+						httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
 						// 初期設定未登録情報のセッションがある場合は初期登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
 					} else if ((uri.endsWith("/first-setting.jsp") || uri.endsWith("/FirstSetting.action"))
 							&& session.getAttribute("firstSetting") != null) {
@@ -135,11 +135,11 @@ public class AuthenticationFilter implements Filter {
 						chain.doFilter(request, response);
 					} else if (session.getAttribute("firstSetting") != null) {
 						httpResponse.sendRedirect(contextPath + "/firstSetting/first-setting.jsp");
-						//  初期設定が登録状態ではアクセス不許可、メインページに遷移する
+						//  初期設定が登録状態ではアクセス不許可、職業訓練生情報登録ページに遷移する
 					} else if ((uri.endsWith("/first-setting.jsp") || uri.endsWith("/FirstSetting.action")
 							|| uri.endsWith("/first-setting-check.jsp") || uri.endsWith("/FirstSettingCheck.action"))
 							&& session.getAttribute("firstSetting") == null) {
-						httpResponse.sendRedirect(contextPath + "/mainMenu/main-menu.jsp");
+						httpResponse.sendRedirect(contextPath + "/firstSetting/vocational-trainee-setting.jsp");
 						// 職業訓練生情報未登録情報のセッションがある場合は職業訓練生情報登録ページは許可,それ以外のページにアクセスしようとしても強制遷移
 					} else if ((uri.endsWith("/vocational-trainee-setting.jsp")
 							|| uri.endsWith("/VocationalTraineeSetting.action"))

@@ -11,7 +11,7 @@
         <h1>職業訓練生登録情報変更</h1>
     </div>
     <div class="container">
-		<form action="ChangeVocationalTrainee.action" method="post">
+		<form action="ChangeVocationalTrainee.action" method="post" autocomplete="off">
 	        <div class="row">
 	            <!-- 公共職業安定所名 Public Employment Security Office-->
 	            <div class="col-md-6 mb-3">

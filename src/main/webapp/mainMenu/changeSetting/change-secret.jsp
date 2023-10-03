@@ -11,7 +11,7 @@
         <h1>秘密の質問と答えの変更</h1>
     </div>
     <div class="container">
-		<form action="ChangeSecret.action" method="post">
+		<form action="ChangeSecret.action" method="post" autocomplete="off">
 			<!-- パスワード -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="password">現在のパスワードを入力してください</label>

@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-5 border-bottom">
         <h1>「面接証明書」作成</h1><br>
     </div>			  
-	<form action="InterviewCertificate.action" method="post">
+	<form action="InterviewCertificate.action" method="post" autocomplete="off">
         <div class="row">
   	            <!-- 求人職種 -->
             <div class="col-md-4 mb-5">

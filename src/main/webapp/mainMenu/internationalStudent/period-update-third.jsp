@@ -10,7 +10,7 @@
     <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1>「在留期間更新許可申請書　３枚目」作成</h1><br>
     </div>			  
-		<form action="PeriodUpdateThird.action" method="post">
+		<form action="PeriodUpdateThird.action" method="post" autocomplete="off">
    			<p class="text-start">・在留期間更新許可申請書は３枚組で、当該書類は３枚目です。</p>
   			<p class="text-start margin-bottom-50 mb-5">(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)</p>
    			<p class="border-bottom"></p>

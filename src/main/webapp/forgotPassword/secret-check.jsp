@@ -9,7 +9,7 @@
 	<div class="container">
 	<h2 class="p-1">秘密の質問:</h2>
 	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${secretQuestion}</strong></h2>
-        <form action="SecretCheck.action" method="post">
+        <form action="SecretCheck.action" method="post" autocomplete="off">
             <div class="row">
                 <!-- 秘密の質問の答え -->
                 <div class="col-md-12 mb-3">
