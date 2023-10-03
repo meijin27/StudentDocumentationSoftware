@@ -24,8 +24,8 @@
 	    </div>
 	    <div class="data-row">
 	        <div class="data-label"><p>名　　前: </p></div>
-	        <div class="data-value big-font width-150 top-aligned"><p><c:out value='${lastName}'/></p></div>
-	        <div class="data-value-second big-font top-aligned"><p><c:out value='${firstName}'/></p></div>
+	        <div class="data-value  ${lastName.length() >= 4 ? '' : 'big-font'}  width-150 top-aligned"><p><c:out value='${lastName}'/></p></div>
+	        <div class="data-value-second  ${firstName.length() >= 4 ? '' : 'big-font'}  top-aligned"><p><c:out value='${firstName}'/></p></div>
 	    </div> 
 
 	
