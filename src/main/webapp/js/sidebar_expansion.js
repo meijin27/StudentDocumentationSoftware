@@ -3,6 +3,7 @@ var sidebarHeadings = document.querySelectorAll('.sidebar-heading');
 sidebarHeadings.forEach(function(heading, index) {
 
     var link = heading.querySelector('a');
+    var span = heading.querySelector('span:not([data-feather])'); // ヘッダーの<span>要素を取得
     var targetId = link.getAttribute('data-bs-target').substring(1);  // '#' を取り除く
     var targetCollapse = new bootstrap.Collapse(document.getElementById(targetId), {toggle: false});
     
@@ -14,6 +15,12 @@ sidebarHeadings.forEach(function(heading, index) {
         feather.replace();
     }
 
+
+    // この部分で<span>要素にもクリックイベントを追加
+    span.addEventListener('click', function() {
+        targetCollapse.toggle();
+    });
+    
     link.addEventListener('click', function(event) {
         event.preventDefault();
         targetCollapse.toggle();
