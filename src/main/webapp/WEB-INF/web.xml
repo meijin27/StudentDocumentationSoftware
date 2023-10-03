@@ -15,7 +15,11 @@
         <secure>true</secure> <!-- HTTPSを使用する、HTTPは使用不可 -->
     </cookie-config>
   </session-config>
-
+  
+    <filter>
+      <filter-name>SecurityFilter</filter-name>
+      <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
+    </filter>
 	<filter>
 	    <filter-name>EncodingFilter</filter-name>
 	    <filter-class>tool.EncodingFilter</filter-class>
@@ -26,6 +30,10 @@
 	    <filter-class>tool.AuthenticationFilter</filter-class>
 	</filter>
 	
+	<filter-mapping>
+      <filter-name>SecurityFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
 	<filter-mapping>
 	    <filter-name>EncodingFilter</filter-name>
 	    <url-pattern>*.jsp</url-pattern>
