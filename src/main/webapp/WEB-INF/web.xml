@@ -8,6 +8,7 @@
 
   <display-name>StudentDocumentationSoftware</display-name>
 
+  <!-- セッションの設定 -->	
   <session-config>
     <session-timeout>60</session-timeout> <!-- セッションタイムアウトを1時間に設定 -->
     <cookie-config>
@@ -16,10 +17,23 @@
     </cookie-config>
   </session-config>
   
-    <filter>
-      <filter-name>SecurityFilter</filter-name>
-      <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
-    </filter>
+  
+	<!-- CORS設定 -->
+	<filter>
+	    <filter-name>CorsFilter</filter-name>
+	    <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+	    <init-param>
+	        <param-name>cors.allowed.origins</param-name>
+	        <param-value>https://studentdocusoft.ddns.net</param-value>
+	    </init-param>
+	</filter>
+
+	<!-- カスタムフィルタの設定（Content-Security-Policyを追加） -->
+	<filter>
+	    <filter-name>CustomHeaderFilter</filter-name>
+	    <filter-class>tool.CustomHeaderFilter</filter-class>
+	</filter>
+
 	<filter>
 	    <filter-name>EncodingFilter</filter-name>
 	    <filter-class>tool.EncodingFilter</filter-class>
@@ -30,10 +44,18 @@
 	    <filter-class>tool.AuthenticationFilter</filter-class>
 	</filter>
 	
+	
+  	<!-- フィルターマッピング -->	
 	<filter-mapping>
-      <filter-name>SecurityFilter</filter-name>
-      <url-pattern>/*</url-pattern>
-    </filter-mapping>
+	    <filter-name>CorsFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+		
+	<filter-mapping>
+	    <filter-name>CustomHeaderFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+		
 	<filter-mapping>
 	    <filter-name>EncodingFilter</filter-name>
 	    <url-pattern>*.jsp</url-pattern>

@@ -11,14 +11,14 @@
         <h1>「就労証明書」作成</h1><br>
     </div>			
 		<form action="CertificateOfEmployment.action" method="post" autocomplete="off">
-			<p class="text-start text-center" style="color: red;"><strong>当該書類は印刷後、就労先にて太枠内の記入をお願いします。</strong></p>
+			<p class="text-start text-center red"><strong>当該書類は印刷後、就労先にて太枠内の記入をお願いします。</strong></p>
 
 	        <div class="row">
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="firstMonth">就労した月</label>
 	                <span class="required-label">必須</span>
 	                <select id="firstMonth" name="firstMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.firstMonth}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+	                    <option value="" disabled selected class="display_none">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -30,14 +30,14 @@
   		    	<p>就労日を選択してください</p>
 				<% for (int i = 1; i <= 31; i++) { %>
 				    <div class="col-md-2 mb-1 d-flex align-items-center">
-				        <label class="me-2 mb-0" for="firstMonthDay<%= i %>" style="width: 40px;"><%= i %>日:</label>
+				        <label class="me-2 mb-0 width-40" for="firstMonthDay<%= i %>"><%= i %>日:</label>
 				        <% String dayAttribute = session.getAttribute("firstMonthDay"+i) != null ? session.getAttribute("firstMonthDay"+i).toString() : ""; %>
 				        <input class="form-check-input mt-0 mb-0" type="checkbox" id="firstMonthDay<%= i %>" name="firstMonthDay<%= i %>" value="〇" <% if ("〇".equals(dayAttribute)) { %> checked <% } %> >
 				    </div>
 				<% } %>
 			</div>
 			<div class="row">
-  		    	<p style="margin-top: 50px; color: red;">一か月分を作成する場合は下記は選択しないでください</p>
+  		    	<p class="red margin-top-50">一か月分を作成する場合は下記は選択しないでください</p>
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="secondMonth">就労した月（二か月目）</label>
 	                <select id="secondMonth" name="secondMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.secondMonth}'/>">
@@ -53,7 +53,7 @@
   		    	<p>就労日を選択してください（二か月目）</p>
 				<% for (int i = 1; i <= 31; i++) { %>
 				    <div class="col-md-2 mb-1 d-flex align-items-center">
-				        <label class="me-2 mb-0" for="secondMonthDay<%= i %>" style="width: 40px;"><%= i %>日:</label>
+				        <label class="me-2 mb-0 width-40" for="secondMonthDay<%= i %>"><%= i %>日:</label>
 				        <% String dayAttribute = session.getAttribute("secondMonthDay"+i) != null ? session.getAttribute("secondMonthDay"+i).toString() : ""; %>
 				        <input class="form-check-input mt-0 mb-0" type="checkbox" id="secondMonthDay<%= i %>" name="secondMonthDay<%= i %>" value="〇" <% if ("〇".equals(dayAttribute)) { %> checked <% } %> >
 				    </div>

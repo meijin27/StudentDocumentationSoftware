@@ -18,6 +18,11 @@
     display: none;
 }
 
+/* 色（赤） */
+.red {
+	color: red;
+}
+
 .left-align {
     text-align: left;
 }
@@ -30,6 +35,14 @@
   text-align: left;
 }
 
+.width-40 {
+	width: 40px;
+}
+
+.margin-top-50 {
+    margin-top: 50px;
+}
+
 .margin-bottom-50 {
     margin-bottom: 50px;
 }
@@ -37,6 +50,12 @@
 .margin-bottom-20 {
     margin-bottom: 20px;
 }
+
+/* マウスを上に重ねた場合にマウスの表示がポインターに変わる */
+.custom-pointer:hover {
+    cursor: pointer;
+}
+
 
 /* 文字を３倍の大きさにする */
 .big-font {
@@ -84,6 +103,11 @@ select option:first-child {
 /* セレクトボックスの選択後の文字色 */
 select option:not(:first-child) {
     color: black;
+}
+
+/* セレクトボックスの選択後に消えるオプション*/
+.display_none{
+	display:none;
 }
 
 /* パスワード入力補助用ポップアップ */

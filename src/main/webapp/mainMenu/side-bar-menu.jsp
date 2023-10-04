@@ -28,7 +28,7 @@
                     </li>
                 </ul>                
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                            <span>諸届・願出（証明書等）</span>
+                            <span class="custom-pointer">諸届・願出（証明書等）</span>
                             <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse1"
                                 aria-expanded="false" aria-controls="collapse1">
                                 <span class="expand-icon" data-feather="plus-circle"></span>
@@ -88,7 +88,7 @@
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                    <span>留学生用書類</span>
+                    <span class="custom-pointer">留学生用書類</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>
@@ -117,7 +117,7 @@
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                    <span>職業訓練用書類</span>
+                    <span class="custom-pointer">職業訓練用書類</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse3"
                         aria-expanded="false" aria-controls="collapse3">
                         <span class="expand-icon" data-feather="plus-circle"></span>
@@ -189,7 +189,7 @@
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                    <span>各種設定</span>
+                    <span class="custom-pointer">各種設定</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>
@@ -242,7 +242,7 @@
                     </ul>
                 </div>
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-                    <span>規約類</span>
+                    <span class="custom-pointer">規約類</span>
                     <a class="link-secondary" href="#" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
                         <span class="expand-icon" data-feather="plus-circle"></span>
                         <span class="collapse-icon d-none" data-feather="minus-circle"></span>

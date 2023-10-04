@@ -12,11 +12,8 @@
 <!-- アイコン追加するjs(アイコン画像はリンク参照　https://feathericons.com/)  -->
 <script src="<%=request.getContextPath()%>/js/feather.min.js"></script>
 <!-- アイコン追加  -->
-<script>
-    feather.replace();
-</script>
-
-
+<script src="<%=request.getContextPath()%>/js/feather_replace.js"></script>
+    
 <!-- セレクトボックスの入力値の自動選択 -->
 <script src="<%=request.getContextPath()%>/js/auto_select.js"></script>
 

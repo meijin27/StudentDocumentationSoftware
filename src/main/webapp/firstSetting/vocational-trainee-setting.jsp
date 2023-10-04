@@ -18,7 +18,7 @@
 	        <div class="row">
 	            <!-- 公共職業安定所名 Public Employment Security Office-->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">公共職業安定所名</label>
+	                <label class="form-label" for="namePESO">公共職業安定所名</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" id="namePESO" name="namePESO" placeholder="厚木" value="<c:out value='${namePESO}'/>" required>
 	            </div>
@@ -47,13 +47,13 @@
 	            <div class="col-md-6 mb-3"></div>
 	            <!-- 支給番号 -->
 	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="">支給番号</label>
+	                <label class="form-label" for="supplyNumber">支給番号</label>
 	                <input class="form-control" type="text" id="supplyNumber" name="supplyNumber" placeholder="22-000001-5" value="<c:out value='${supplyNumber}'/>">
 	            </div>	           
 	            <div class="col-md-6 mb-3"></div>
 	             <!-- 出席番号 -->
 	            <div class="col-md-6 mb-5">
-	                <label class="form-label" for="">出席番号</label>
+	                <label class="form-label" for="attendanceNumber">出席番号</label>
 	                <span class="required-label">必須</span>
 	                <input class="form-control" type="text" id="attendanceNumber" name="attendanceNumber" placeholder="16" value="<c:out value='${attendanceNumber}'/>" required>
 	            </div>

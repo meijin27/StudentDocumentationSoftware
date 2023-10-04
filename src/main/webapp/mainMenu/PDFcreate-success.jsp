@@ -24,18 +24,10 @@
 	    String base64Pdf = Base64.getEncoder().encodeToString(pdfData);
 		
 	%>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Create an anchor element
-            let a = document.createElement('a');
-            a.href = "data:application/pdf;base64,<%= base64Pdf %>";
-            a.download = "<%= pdfFilename %>";
-            
-            // Trigger the download by simulating a click on the anchor element
-            a.click();
-        });
-    </script>
-    
+	
+	<!-- PDFダウンロード用のjs -->
+	<div id="pdfDataContainer" data-base64pdf="<%= base64Pdf %>" data-pdffilename="<%= pdfFilename %>" class="display_none"></div>
+    <script src="<%=request.getContextPath()%>/js/PDFdownload.js"></script>
     
 	<div class="container">
 		<h3 class="pt-1 pb-5 pl-5 pr-5"><strong><c:out value="${document}を作成しました。"/></strong></h3>

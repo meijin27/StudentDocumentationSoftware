@@ -17,7 +17,7 @@
                 <label class="form-label" for="subjectYear">対象年</label>
                 <span class="required-label">必須</span>
                 <select id="subjectYear" name="subjectYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+                    <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear-2018;
                         i++){ %>
                         <option value="<%= i %>">
@@ -30,7 +30,7 @@
                 <label class="form-label" for="subjectMonth">対象月</label>
                 <span class="required-label">必須</span>
                 <select id="subjectMonth" name="subjectMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+                    <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -48,7 +48,7 @@
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
 		            <span class="required-label">必須</span>
  		            <select id="restedDayStart<%= set %>" name="restedDayStart<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
-		                <option value="" disabled selected style="display:none;">-- 日 --</option>
+		                <option value="" disabled selected class="display_none">-- 日 --</option>
 		                <% for(int i = 1; i <= 31; i++){ %>
 		                    <option value="<%= i %>">
 		                        <%= i %>日
@@ -61,7 +61,7 @@
 	                <label class="form-label" for="restedDayEnd<%= set %>">休業終了日</label>
 	                <span class="required-label">必須</span>
 	                <select id="restedDayEnd<%= set %>" name="restedDayEnd<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
-	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+	                    <option value="" disabled selected class="display_none">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -137,7 +137,7 @@
 	            </div>
 	            <!-- 証明添付有無 -->
 				<div class="col-md-12 mb-3 text-center">
-				    <label class="form-label text-center">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
+				    <label class="form-label text-center" for="attachmentOfCertificateNo<%= set %>">証明添付有無（雇用保険受給者、職業訓練受講給付金受給者のみ対象）</label>
 				    <span class="required-label">必須</span>
 				    <div class="d-flex align-items-center justify-content-center">
 				        <div class="form-check radio-spacing">

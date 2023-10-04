@@ -31,7 +31,7 @@
 	            </div>
   	            <!-- 性別 -->
   				<div class="col-md-6 mb-3 text-center">
-				    <label class="form-label">性別（Sex）</label>
+				    <label class="form-label" for="sexMale">性別（Sex）</label>
 	                <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
@@ -53,7 +53,7 @@
 	            <div class="col-md-6 mb-3"></div>	      
  	            <!-- 配偶者の有無 -->
   				<div class="col-md-6 mb-3 text-center">
-				    <label class="form-label">配偶者の有無（Marital status）</label>
+				    <label class="form-label" for="maritalStatusSingle">配偶者の有無（Marital status）</label>
 	                <span class="required-label">必須</span>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
@@ -83,7 +83,7 @@
                 <label class="form-label" for="effectiveYear">旅券有効期限（Passport expiration date）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
 	                <select id="effectiveYear" name="effectiveYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveYear}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
+	                    <option value="" disabled selected class="display_none">-- 年（Year） --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear; i <=currentYear+10;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -94,7 +94,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <select id="effectiveMonth" name="effectiveMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveMonth}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
+	                    <option value="" disabled selected class="display_none">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -104,7 +104,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <select id="effectiveDay" name="effectiveDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.effectiveDay}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
+	                    <option value="" disabled selected class="display_none">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -128,7 +128,7 @@
                 <label class="form-label" for="periodYear">在留期間の満了日（Expiration date of period of stay）<span class="required-label">必須</span></label>
 	            <div class="col-md-4 mb-3">
 	                <select id="periodYear" name="periodYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodYear}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 年（Year） --</option>
+	                    <option value="" disabled selected class="display_none">-- 年（Year） --</option>
 	                    <% for(int i=currentYear; i <=currentYear+5; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>年
@@ -138,7 +138,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <select id="periodMonth" name="periodMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodMonth}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 月（Month） --</option>
+	                    <option value="" disabled selected class="display_none">-- 月（Month） --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -148,7 +148,7 @@
 	            </div>
 	            <div class="col-md-4 mb-3">
 	                <select id="periodDay" name="periodDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.periodDay}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 日（Day） --</option>
+	                    <option value="" disabled selected class="display_none">-- 日（Day） --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -176,10 +176,10 @@
 	            </div>	            
  	            <!-- 犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）※交通違反等による処分を含む。 -->
   				<div class="col-md-12 mb-3">
-				    <label class="form-label">犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）</label>
+				    <label class="form-label" for="criminalRecordNo">犯罪を理由とする処分を受けたことの有無 （日本国外におけるものを含む。）</label>
 	                <span class="required-label">必須</span>
-  					<label class="form-label">※交通違反等による処分を含む。</label>
-  					<label class="form-label">Criminal record (in Japan / overseas)※Including dispositions due to traffic violations, etc.</label>
+  					<label class="form-label" for="criminalRecordNo">※交通違反等による処分を含む。</label>
+  					<label class="form-label" for="criminalRecordNo">Criminal record (in Japan / overseas)※Including dispositions due to traffic violations, etc.</label>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="criminalRecord" id="criminalRecordYes" value="有" 
@@ -205,9 +205,9 @@
 	            </div>		            
  	            <!-- 在日親族（父・母・配偶者・子・兄弟姉妹・祖父母・叔(伯)父・叔(伯)母など）及び同居者 -->
   				<div class="col-md-12 mb-3">
-				    <label class="form-label">在日親族（父・母・配偶者・子・兄弟姉妹・祖父母・叔(伯)父・叔(伯)母など）及び同居者</label>
+				    <label class="form-label"  for="familyInJapanNo">在日親族（父・母・配偶者・子・兄弟姉妹・祖父母・叔(伯)父・叔(伯)母など）及び同居者</label>
 	                <span class="required-label">必須</span>
-  					<label class="form-label">Family in Japan (father, mother, spouse, children, siblings,grandparents, uncle, aunt or others) and cohabitants</label>
+  					<label class="form-label"  for="familyInJapanNo">Family in Japan (father, mother, spouse, children, siblings,grandparents, uncle, aunt or others) and cohabitants</label>
 					<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 					    <div class="form-check form-check-inline mr-lg-5">
 					        <input class="form-check-input" type="radio" name="familyInJapan" id="familyInJapanYes" value="有" 
@@ -247,7 +247,7 @@
 	                <label class="form-label" for="relativeBirthYear<%= set %>">生年月日（Date of birth）<span class="required-label">必須</span></label>
 		            <div class="col-md-4 mb-3">
 		                <select id="relativeBirthYear<%= set %>" name="relativeBirthYear<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
-		                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+		                    <option value="" disabled selected class="display_none">-- 年 --</option>
 		                    <% for(int i=currentYear-110; i <=currentYear;
 		                        i++){ %>
 		                        <option value="<%= i %>">
@@ -258,7 +258,7 @@
 		            </div>
 		            <div class="col-md-4 mb-3">
 		                <select id="relativeBirthMonth<%= set %>" name="relativeBirthMonth<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
-		                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+		                    <option value="" disabled selected class="display_none">-- 月 --</option>
 		                    <% for(int i=1; i <=12; i++){ %>
 		                        <option value="<%= i %>">
 		                            <%= i %>月
@@ -268,7 +268,7 @@
 		            </div>
 		            <div class="col-md-4 mb-3">
 		                <select id="relativeBirthDay<%= set %>" name="relativeBirthDay<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" data-required="true">
-		                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+		                    <option value="" disabled selected class="display_none">-- 日 --</option>
 		                    <% for(int i=1; i <=31; i++){ %>
 		                        <option value="<%= i %>">
 		                            <%= i %>日
@@ -285,7 +285,7 @@
 	            	<div class="col-md-6 mb-3"></div>	      	            
       	            <!-- 同居の有無 -->
 	  				<div class="col-md-8 mb-3 text-center">
-					    <label class="form-label" for="livingTogether<%= set %>">同居の有無（Residing with）</label>
+					    <label class="form-label" for="livingTogetherYes<%= set %>">同居の有無（Residing with）</label>
 					    <span class="required-label">必須</span>
 						<div class="d-flex align-items-center justify-content-center margin-bottom-20">
 						    <div class="form-check form-check-inline mr-lg-5">

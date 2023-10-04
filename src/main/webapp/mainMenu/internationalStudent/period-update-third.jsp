@@ -149,7 +149,7 @@
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
 	                <span class="required-label">必須</span>
 	                <select id="afterGraduation" name="afterGraduation" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 卒業後の予定 --</option>
+	                    <option value="" disabled selected class="display_none">-- 卒業後の予定 --</option>
 	                    <option value="帰国">帰国（Return to home country）</option>
 	                    <option value="日本での進学">日本での進学（Enter a school of higher education in Japan）</option>
 	                    <option value="日本での就職">日本での就職（Find work in Japan）</option>

@@ -13,7 +13,7 @@
                  <label class="form-label" for="secretQuestion">秘密の質問を選択してください。</label>
                  <span class="required-label">必須</span>                    
                  <select id="secretQuestion" name="secretQuestion" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.secretQuestion}'/>" required>
-                    <option value="" disabled selected style="display:none;">--- 秘密の質問 ---</option>
+                    <option value="" disabled selected class="display_none">--- 秘密の質問 ---</option>
 		            <option value="好きなモビルスーツ">好きなモビルスーツ</option>
 		            <option value="一番やりこんだゲーム">一番やりこんだゲーム</option>
 		            <option value="ペットの名前">ペットの名前</option>

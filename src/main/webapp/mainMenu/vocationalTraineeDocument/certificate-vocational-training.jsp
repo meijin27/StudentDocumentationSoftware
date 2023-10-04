@@ -42,7 +42,7 @@
 	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
 	                <span class="required-label">必須</span>
 	                <select id="subjectYear" name="subjectYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 令和　年 --</option>
+	                    <option value="" disabled selected class="display_none">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -54,7 +54,7 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="subjectMonth">月</label>
 	                <select id="subjectMonth" name="subjectMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+	                    <option value="" disabled selected class="display_none">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月

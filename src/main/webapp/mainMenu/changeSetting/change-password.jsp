@@ -20,7 +20,7 @@
 				<input type="password" class="form-control" id="oldPassword" name="oldPassword" required> 
 			</div>			
 
-			<p class="text-start mb-5" style="color: red;"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
+			<p class="text-start mb-5 red"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
 
 			<!-- 新パスワード -->
 			<div class="col-md-12 mb-3">

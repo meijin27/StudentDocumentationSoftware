@@ -8,7 +8,7 @@
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
 	<h2 class="p-1">秘密の質問:</h2>
-	<h2 class="pt-1 pb-5 pl-5 pr-5" style="color: red;"><strong>${secretQuestion}</strong></h2>
+	<h2 class="pt-1 pb-5 pl-5 pr-5 red"><strong>${secretQuestion}</strong></h2>
         <form action="SecretCheck.action" method="post" autocomplete="off">
             <div class="row">
                 <!-- 秘密の質問の答え -->
@@ -22,7 +22,7 @@
 	                <label class="form-label" for="birthYear">生年月日</label>
                     <span class="required-label">必須</span>                    
 				    <select id="birthYear"  name="birthYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
-				        <option value="" disabled selected style="display:none;">--- 年 ---</option>
+				        <option value="" disabled selected class="display_none">--- 年 ---</option>
 				        <% 
 				        int currentYear = java.time.Year.now().getValue();
 				        for(int i=currentYear-60; i <= currentYear - 14; i++){ 
@@ -36,7 +36,7 @@
                 <div class="col-md-4 mb-5">				
   	                <label class="form-label invisible-text" for="birthMonth">月</label>
 				    <select id="birthMonth"  name="birthMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
-				        <option value="" disabled selected style="display:none;">--- 月 ---</option>
+				        <option value="" disabled selected class="display_none">--- 月 ---</option>
 				        <% 
 				        for(int i=1; i <= 12; i++){ 
 				        %>
@@ -49,7 +49,7 @@
                 <div class="col-md-4 mb-5">
                     <label class="form-label invisible-text" for="birthDay">日</label>
 				    <select id="birthDay" name="birthDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
-				        <option value="" disabled selected style="display:none;">--- 日 ---</option>
+				        <option value="" disabled selected class="display_none">--- 日 ---</option>
 				        <% 
 				        for(int i=1; i <= 31; i++){ 
 				        %>

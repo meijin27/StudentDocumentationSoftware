@@ -20,7 +20,7 @@
 	                <label class="form-label" for="requestYear">届出年月日</label>
 	                <span class="required-label">必須</span>
 	                <select id="requestYear" name="requestYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestYear}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+	                    <option value="" disabled selected class="display_none">-- 年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-1; i <=currentYear;
 	                        i++){ %>
 	                        <option value="<%= i %>">
@@ -32,7 +32,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestMonth">月</label>
 	                <select id="requestMonth" name="requestMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestMonth}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+	                    <option value="" disabled selected class="display_none">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>月
@@ -43,7 +43,7 @@
 	            <div class="col-md-4 mb-5">
 	                <label class="form-label invisible-text" for="requestDay">日</label>
 	                <select id="requestDay" name="requestDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestDay}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+	                    <option value="" disabled selected class="display_none">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>日
@@ -56,7 +56,7 @@
 	                <label class="form-label" for="changeSubject">変更対象者</label>
 	                <span class="required-label">必須</span>
 	                <select id="changeSubject" name="changeSubject" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.changeSubject}'/>" required>
-	                    <option value="" disabled selected style="display:none;">-- 変更対象者 --</option>
+	                    <option value="" disabled selected class="display_none">-- 変更対象者 --</option>
 	                    <option value="本人">本人</option>
 	                    <option value="保護者">保護者</option>
 	                    <option value="保証人">保証人</option>

@@ -24,7 +24,7 @@
                 <label class="form-label" for="birthYear">親族生年月日</label>
                 <span class="required-label">必須</span>
                 <select id="birthYear" name="birthYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+                    <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-110; i <=currentYear;
                         i++){ %>
                         <option value="<%= i %>">
@@ -36,7 +36,7 @@
             <div class="col-md-4 mb-3">
                 <label class="form-label invisible-text" for="birthMonth">月</label>
                 <select id="birthMonth" name="birthMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+                    <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -47,7 +47,7 @@
             <div class="col-md-4 mb-3">
                 <label class="form-label invisible-text" for="birthDay">日</label>
                 <select id="birthDay" name="birthDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+                    <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>日
@@ -65,7 +65,7 @@
                <label class="form-label" for="nonAttendanceReason">欠席理由を選択してください。<span class="required-label">必須</span></label>
             <div class="col-md-4 mb-5">
                 <select id="nonAttendanceReason" name="nonAttendanceReason" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.nonAttendanceReason}'/>" required>
-                   <option value="" disabled selected style="display:none;">--- 欠席理由 ---</option>
+                   <option value="" disabled selected class="display_none">--- 欠席理由 ---</option>
 		           <option value="看護">看護</option>
 		           <option value="危篤">危篤</option>
 		           <option value="結婚式">結婚式</option>
@@ -84,7 +84,7 @@
                 <label class="form-label" for="startYear">期間年月日（自）</label>
                 <span class="required-label">必須</span>   	                
                 <select id="startYear" name="startYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startYear}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+                    <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
                         <option value="<%= i %>">
@@ -96,7 +96,7 @@
             <div class="col-md-4 mb-3">
                 <label class="form-label invisible-text" for="startMonth">月</label>
                 <select id="startMonth" name="startMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startMonth}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+                    <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -107,7 +107,7 @@
             <div class="col-md-4 mb-3">
                 <label class="form-label invisible-text" for="startDay">日</label>
                 <select id="startDay" name="startDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startDay}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+                    <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>日
@@ -120,7 +120,7 @@
                 <label class="form-label" for="endYear">期間年月日（至）</label>
                 <span class="required-label">必須</span>   		                
                 <select id="endYear" name="endYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endYear}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+                    <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
                         <option value="<%= i %>">
@@ -132,7 +132,7 @@
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="endMonth">月</label>
                 <select id="endMonth" name="endMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endMonth}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+                    <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -143,7 +143,7 @@
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="endDay">日</label>
                 <select id="endDay" name="endDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endDay}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+                    <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>日
@@ -157,7 +157,7 @@
                 <label class="form-label" for="requestYear">申請年月日</label>
                 <span class="required-label">必須</span>
                 <select id="requestYear" name="requestYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestYear}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 年 --</option>
+                    <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
                         <option value="<%= i %>">
@@ -169,7 +169,7 @@
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="requestMonth">月</label>
                 <select id="requestMonth" name="requestMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestMonth}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 月 --</option>
+                    <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>月
@@ -180,7 +180,7 @@
             <div class="col-md-4 mb-5">
                 <label class="form-label invisible-text" for="requestDay">日</label>
                 <select id="requestDay" name="requestDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestDay}'/>" required>
-                    <option value="" disabled selected style="display:none;">-- 日 --</option>
+                    <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
                             <%= i %>日
