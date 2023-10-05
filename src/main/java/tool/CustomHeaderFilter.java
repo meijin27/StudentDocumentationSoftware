@@ -15,8 +15,12 @@ public class CustomHeaderFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletResponse httpResp = (HttpServletResponse) response;
+		// CSPヘッダーを追加
 		httpResp.setHeader("Content-Security-Policy",
 				"default-src 'self'; img-src 'self' data:; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; frame-ancestors 'self'; form-action 'self'");
+
+		// Access-Control-Allow-Origin ヘッダーを追加
+		httpResp.setHeader("Access-Control-Allow-Origin", "https://studentdocusoft.ddns.net");
 
 		chain.doFilter(request, response);
 	}
