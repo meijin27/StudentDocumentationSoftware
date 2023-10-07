@@ -18,9 +18,19 @@ public class CustomHeaderFilter implements Filter {
 		// CSPヘッダーを追加
 		httpResp.setHeader("Content-Security-Policy",
 				"default-src 'self'; img-src 'self' data:; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net; frame-ancestors 'self'; form-action 'self'");
-
+		// CSPヘッダーのframe-ancestors 'self';と同一内容だが古いブラウザのサポートを考慮する
+		httpResp.setHeader("X-Frame-Options", "SAMEORIGIN");
 		// Access-Control-Allow-Origin ヘッダーを追加
 		httpResp.setHeader("Access-Control-Allow-Origin", "https://studentdocusoft.ddns.net");
+
+		// X-Content-Type-Options ヘッダーを追加
+		httpResp.setHeader("X-Content-Type-Options", "nosniff");
+		// 次回以降のアクセスをすべてHTTPS経由でのみ行うように要求するヘッダー
+		httpResp.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+		// ブラウザにどのリファラ情報を他のオリジンへ送信するかを制御するヘッダー
+		httpResp.setHeader("Referrer-Policy", "no-referrer");
+		// ブラウザの機能（例：カメラ、マイク、位置情報など）をどのように使用するかを制御するヘッダー
+		httpResp.setHeader("Permissions-Policy", "camera 'none'; microphone 'none'; geolocation 'none'");
 
 		chain.doFilter(request, response);
 	}
