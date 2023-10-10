@@ -238,12 +238,13 @@ public class UserDAO extends DAO {
 	}
 
 	// ログイン情報登録用メソッド
-	public void addLoginLog(String userId, String ipAddress) throws Exception {
+	public void addLoginLog(String userId, String ipAddress, String result) throws Exception {
 		executeSqlOperation(con -> {
 			try (PreparedStatement st = con.prepareStatement(
-					"INSERT INTO login_logs (user_id, login_time, ip_address) VALUES (?, CURRENT_TIMESTAMP, ?)")) {
+					"INSERT INTO login_logs (user_id, login_time, ip_address, result) VALUES (?, CURRENT_TIMESTAMP, ?, ?)")) {
 				st.setString(1, userId);
 				st.setString(2, ipAddress);
+				st.setString(3, result);
 				st.executeUpdate();
 			}
 		});
