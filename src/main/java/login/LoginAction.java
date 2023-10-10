@@ -66,10 +66,19 @@ public class LoginAction extends Action {
 				dao.addLoginLog("NoAccount", ipAddress, "NoAccount");
 				return "login.jsp";
 			}
+			// ログイン失敗回数を確認
+			String num = user.getLoginFailureCount();
+			int number = Integer.parseInt(num);
+
 			// ユーザーIDを変数に格納
 			String id = user.getId();
 			// パスワードが一致しない場合の処理
 			if (!PasswordUtil.isPasswordMatch(password, user.getPassword())) {
+				// ログイン失敗回数を１回追加
+				number++;
+				num = String.valueOf(number);
+				user.setLoginFailureCount(num);
+				dao.updateLoginFailureCount(user);
 				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
 				// データベースにログイン記録を追加
 				dao.addLoginLog(id, ipAddress, "WrongPassword");
