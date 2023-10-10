@@ -57,23 +57,32 @@ public class LoginAction extends Action {
 			String encryptedAccount = CipherUtil.commonEncrypt(account);
 			// 暗号化したアカウント名でデータベースを検索
 			User user = dao.loginSearch(encryptedAccount);
-			// データベースにアカウント名が存在しない、もしくはパスワードが一致しない場合の処理
-			if (user == null || !PasswordUtil.isPasswordMatch(password, user.getPassword())) {
+			// クライアントのIPアドレスを取得
+			String ipAddress = request.getRemoteAddr();
+			// データベースにアカウント名が存在しない場合の処理
+			if (user == null) {
 				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
+				// データベースにログイン記録を追加
+				dao.addLoginLog("NoAccount", ipAddress, "NoAccount");
+				return "login.jsp";
+			}
+			// ユーザーIDを変数に格納
+			String id = user.getId();
+			// パスワードが一致しない場合の処理
+			if (!PasswordUtil.isPasswordMatch(password, user.getPassword())) {
+				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
+				// データベースにログイン記録を追加
+				dao.addLoginLog(id, ipAddress, "WrongPassword");
 				return "login.jsp";
 			}
 			// 現在のセッションを無効化
 			session.invalidate();
 			// 新しいセッションを作成
 			session = request.getSession(true);
-			// ユーザーIDを変数に格納
-			String id = user.getId();
 			// ivを変数に格納
 			String iv = user.getIv();
-			// クライアントのIPアドレスを取得
-			String ipAddress = request.getRemoteAddr();
 			// データベースにログイン記録を追加
-			dao.addLoginLog(id, ipAddress);
+			dao.addLoginLog(id, ipAddress, "LoginSuccess");
 			// マスターキーの共通暗号からの復号
 			String encryptedMasterKey = CipherUtil.commonDecrypt(user.getMasterKey());
 			// 暗号化されたマスターキーを復号する
