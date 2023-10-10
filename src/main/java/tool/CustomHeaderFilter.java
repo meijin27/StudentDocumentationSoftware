@@ -27,10 +27,8 @@ public class CustomHeaderFilter implements Filter {
 		httpResp.setHeader("X-Content-Type-Options", "nosniff");
 		// 次回以降のアクセスをすべてHTTPS経由でのみ行うように要求するヘッダー
 		httpResp.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-		// ブラウザにどのリファラ情報を他のオリジンへ送信するかを制御するヘッダー
-		httpResp.setHeader("Referrer-Policy", "no-referrer");
 		// ブラウザの機能（例：カメラ、マイク、位置情報など）をどのように使用するかを制御するヘッダー
-		httpResp.setHeader("Permissions-Policy", "camera 'none'; microphone 'none'; geolocation 'none'");
+		httpResp.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
 		chain.doFilter(request, response);
 	}
