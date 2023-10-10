@@ -75,6 +75,7 @@ public class UserDAO extends DAO {
 						user.setStudentType(rs.getString("student_type"));
 						user.setNamePESO(rs.getString("name_PESO"));
 						user.setIv(rs.getString("iv"));
+						user.setLoginFailureCount(rs.getString("login_failure_count"));
 						userRef.set(user);
 					}
 				}
@@ -379,6 +380,10 @@ public class UserDAO extends DAO {
 		return getField("supply_number", id);
 	}
 
+	public String getLoginFailureCount(String id) {
+		return getField("login_failure_count", id);
+	}
+
 	// 以下セッター
 	public int updatePassword(User user) throws Exception {
 		return updateField("password", user.getPassword(), user.getId());
@@ -486,6 +491,10 @@ public class UserDAO extends DAO {
 
 	public int updateSupplyNumber(User user) throws Exception {
 		return updateField("supply_number", user.getSupplyNumber(), user.getId());
+	}
+
+	public int updateLoginFailureCount(User user) throws Exception {
+		return updateField("login_failure_count", user.getLoginFailureCount(), user.getId());
 	}
 
 }

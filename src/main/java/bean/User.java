@@ -32,6 +32,7 @@ public class User implements java.io.Serializable {
 	private String attendanceNumber; // 職業訓練生に付与される出席番号
 	private String employmentInsurance;// 雇用保険有無
 	private String supplyNumber;// 支給番号
+	private String loginFailureCount;// ログイン失敗回数 
 
 	// 以下ゲッター
 	public String getId() {
@@ -152,6 +153,10 @@ public class User implements java.io.Serializable {
 
 	public String getSupplyNumber() {
 		return supplyNumber;
+	}
+
+	public String getLoginFailureCount() {
+		return loginFailureCount;
 	}
 
 	// 以下セッター
@@ -275,4 +280,7 @@ public class User implements java.io.Serializable {
 		this.supplyNumber = supplyNumber;
 	}
 
+	public void setLoginFailureCount(String loginFailureCount) {
+		this.loginFailureCount = loginFailureCount;
+	}
 }
