@@ -76,6 +76,7 @@ public class UserDAO extends DAO {
 						user.setNamePESO(rs.getString("name_PESO"));
 						user.setIv(rs.getString("iv"));
 						user.setLoginFailureCount(rs.getString("login_failure_count"));
+						user.setAccountLockTime(rs.getString("account_lock_time"));
 						userRef.set(user);
 					}
 				}
@@ -220,7 +221,6 @@ public class UserDAO extends DAO {
 				line[0] = st.executeUpdate();
 			}
 		});
-
 		return line[0];
 	}
 
@@ -234,7 +234,6 @@ public class UserDAO extends DAO {
 				line[0] = st.executeUpdate();
 			}
 		});
-
 		return line[0];
 	}
 
@@ -249,6 +248,19 @@ public class UserDAO extends DAO {
 				st.executeUpdate();
 			}
 		});
+	}
+
+	// アカウントロック用メソッド
+	public int accountLock(String userId) throws Exception {
+		final int[] line = { 0 };
+		executeSqlOperation(con -> {
+			try (PreparedStatement st = con.prepareStatement(
+					"UPDATE users SET account_lock_time = CURRENT_TIMESTAMP WHERE id = ?")) {
+				st.setString(1, userId);
+				line[0] = st.executeUpdate();
+			}
+		});
+		return line[0];
 	}
 
 	// 何かしらの操作をした際に記録するログ用メソッド
@@ -382,6 +394,10 @@ public class UserDAO extends DAO {
 
 	public String getLoginFailureCount(String id) {
 		return getField("login_failure_count", id);
+	}
+
+	public String getAccountLockTime(String id) {
+		return getField("account_lock_time", id);
 	}
 
 	// 以下セッター

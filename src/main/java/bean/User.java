@@ -33,6 +33,7 @@ public class User implements java.io.Serializable {
 	private String employmentInsurance;// 雇用保険有無
 	private String supplyNumber;// 支給番号
 	private String loginFailureCount;// ログイン失敗回数 
+	private String accountLockTime;// アカウントロックされた時間 
 
 	// 以下ゲッター
 	public String getId() {
@@ -159,6 +160,10 @@ public class User implements java.io.Serializable {
 		return loginFailureCount;
 	}
 
+	public String getAccountLockTime() {
+		return accountLockTime;
+	}
+
 	// 以下セッター
 	public void setId(String id) {
 		this.id = id;
@@ -282,5 +287,9 @@ public class User implements java.io.Serializable {
 
 	public void setLoginFailureCount(String loginFailureCount) {
 		this.loginFailureCount = loginFailureCount;
+	}
+
+	public void setAccountLockTime(String accountLockTime) {
+		this.accountLockTime = accountLockTime;
 	}
 }

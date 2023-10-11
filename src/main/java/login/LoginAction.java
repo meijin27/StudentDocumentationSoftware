@@ -1,5 +1,8 @@
 package login;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,18 +69,56 @@ public class LoginAction extends Action {
 				dao.addLoginLog("NoAccount", ipAddress, "NoAccount");
 				return "login.jsp";
 			}
+			// ユーザーIDを変数に格納
+			String id = user.getId();
 			// ログイン失敗回数を確認
 			String num = user.getLoginFailureCount();
 			int number = Integer.parseInt(num);
+			String accountLockTime = user.getAccountLockTime();
+			// ログイン失敗回数とアカウントロック時間を確認する
+			if (number < 10) {
+				// ログイン失敗回数が10回以下なら何もしない
+			} else if (accountLockTime == null) {
+				// アカウントロック時間がNULLなら何もしない
+			} else {
+				// 取得した時間と現在の時刻とを比較して30分経過しているか確認
+				// データベースの日付・時間のフォーマットを適切に設定する
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // このフォーマットはデータベースのフォーマットに合わせて変更してください
+				// String形式のタイムスタンプをLocalDateTimeに変換
+				LocalDateTime lockTime = LocalDateTime.parse(accountLockTime, formatter);
+				// 現在の時間を取得
+				LocalDateTime now = LocalDateTime.now();
+				// 2つのLocalDateTimeの間の差分を計算
+				Duration duration = Duration.between(lockTime, now);
+				// 差分が30分以上かどうかを返す
+				if (duration.toMinutes() < 30) {
+					// ロック時間から30分経っていなかったらエラーを返す
+					request.setAttribute("loginError", "しばらく時間をおいてからログインしてください");
+					// データベースにログイン記録を追加
+					dao.addLoginLog(id, ipAddress, "LockTimeAccsess");
+					return "login.jsp";
+				} else {
+					// ここに来ている時点でアカウントロック解除された初回ログイン
+					// アカウントロック回数を０にする
+					number = 0;
+					user.setLoginFailureCount("0");
+					// ログイン失敗回数をデータベースへ登録する
+					dao.updateLoginFailureCount(user);
 
-			// ユーザーIDを変数に格納
-			String id = user.getId();
+				}
+			}
+
 			// パスワードが一致しない場合の処理
 			if (!PasswordUtil.isPasswordMatch(password, user.getPassword())) {
 				// ログイン失敗回数を１回追加
 				number++;
 				num = String.valueOf(number);
 				user.setLoginFailureCount(num);
+				// ログイン失敗回数が10回になった場合はアカウントをロックする
+				if (number >= 10) {
+					dao.accountLock(id);
+				}
+				// ログイン失敗回数をデータベースへ登録する
 				dao.updateLoginFailureCount(user);
 				request.setAttribute("loginError", "アカウント名またはパスワードが違います");
 				// データベースにログイン記録を追加
@@ -88,6 +129,10 @@ public class LoginAction extends Action {
 			session.invalidate();
 			// 新しいセッションを作成
 			session = request.getSession(true);
+			// アカウントロック回数を０にする
+			user.setLoginFailureCount("0");
+			// ログイン失敗回数をデータベースへ登録する
+			dao.updateLoginFailureCount(user);
 			// ivを変数に格納
 			String iv = user.getIv();
 			// データベースにログイン記録を追加
