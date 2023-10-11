@@ -90,9 +90,9 @@ public class LoginAction extends Action {
 				LocalDateTime now = LocalDateTime.now();
 				// 2つのLocalDateTimeの間の差分を計算
 				Duration duration = Duration.between(lockTime, now);
-				// 差分が30分以上かどうかを返す
-				if (duration.toMinutes() < 30) {
-					// ロック時間から30分経っていなかったらエラーを返す
+				// 差分が5分以上かどうかを返す
+				if (duration.toMinutes() < 5) {
+					// ロック時間から5分経っていなかったらエラーを返す
 					request.setAttribute("loginError", "しばらく時間をおいてからログインしてください");
 					// データベースにログイン記録を追加
 					dao.addLoginLog(id, ipAddress, "LockTimeAccsess");
