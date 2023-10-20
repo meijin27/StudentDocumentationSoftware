@@ -55,7 +55,7 @@ UserDAOクラス説明書
 
 ・メソッド:addLoginLog
 説明: ユーザーのログイン情報をデータベースに記録する。
-引数: String userId, String ipAddress
+引数: String userId, String ipAddress, String result
 戻り値: なし
 
 ・メソッド:addOperationLog

@@ -1,0 +1,25 @@
+クラス説明書: CustomHeaderFilter
+
+1. 概要
+CustomHeaderFilter は、Webアプリケーションのレスポンスにセキュリティ関連のヘッダーを追加するためのフィルターです。このフィルターは、内容のセキュリティやリソースの使用方法、通信のセキュリティなどを強化する目的で設計されています。
+
+2. コード詳細
+2.1. CustomHeaderFilterクラスの定義
+CustomHeaderFilter は Filter インターフェースを実装しています。このインターフェースは、リクエストやレスポンスを加工するための方法を提供します。
+
+2.2. doFilterメソッド
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException;
+このメソッドは、実際のヘッダーの追加処理を行っています。レスポンスに対していくつかのセキュリティ関連のヘッダーを追加し、その後に他のフィルターまたはターゲットのリソースへの処理を続けるためにchain.doFilter(request, response);を呼び出しています。
+
+パラメータ:
+ServletRequest request: クライアントからのリクエスト情報を保持するオブジェクト。
+ServletResponse response: サーバーからクライアントへのレスポンス情報を保持するオブジェクト。
+FilterChain chain: 他のフィルターや最終的なリソースへの処理を続行するためのチェーン。
+
+2.3. initメソッドとdestroyメソッド
+現在、これらのメソッドは具体的な処理を実装していませんが、フィルターのライフサイクルに関連する初期化や終了時の処理を行うために提供されています。
+
+3. 使用方法
+Webアプリケーションのデプロイメントディスクリプタ（web.xml）にこのフィルターを追加して、必要なリソースやURLパターンに適用します。
+このフィルターが適用されたリソースに対するすべてのレスポンスに、定義されているセキュリティヘッダーが追加されます。
+　

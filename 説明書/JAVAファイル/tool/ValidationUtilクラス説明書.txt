@@ -1,0 +1,29 @@
+クラス説明書: ValidationUtil
+
+1. 概要
+ValidationUtilは、入力バリデーションのためのユーティリティクラスです。文字列の内容や形式をチェックする静的メソッドを多数含んでおり、文字列の正当性を簡単に判定することができます。
+
+2. コード詳細
+2.1. 定数
+・FORBIDDEN_CHARS: 使用禁止文字を定義する正規表現の文字列。
+・HIRAGANA_PATTERN, ENGLISH_PATTERN, RESIDENTCARD_PATTERN: それぞれひらがな、英語、在留カードのパターンを表す正規表現。
+
+2.2. メソッド一覧
+・isNullOrEmpty(String... inputs): 入力がnullまたは空文字であるかを確認。
+・areAllNullOrEmpty(String... inputs): 全ての入力がnullまたは空文字であるかを確認。
+・containsForbiddenChars(String... inputs): 使用禁止文字を含むかを確認。
+・isHiragana(String... inputs): 入力がひらがなであるかを確認。
+・isEnglish(String... inputs): 入力が英語であるかを確認。
+・isResidentCard(String... inputs): 在留カードの記載内容が正しいかを確認。
+・半角数字に関する複数のメソッド (例: isSingleDigit, isFourDigitなど): 入力が指定された桁数の半角数字であるかを確認。
+・validateDate(String yearStr, String monthStr, String dayStr): 年月日が実在するものかを確認。
+・isBefore(...): ２つの日付を比較して、一つ目の日付が二つ目の日付より前であるかを確認。
+・areValidLengths(int maxLength, String... strs): 文字列が指定された最大長以下であるかを確認。
+
+3. 使用方法
+バリデーションが必要な箇所で、ValidationUtilの静的メソッドを呼び出し、入力文字列を渡します。
+メソッドの戻り値を使用して、入力の正当性を判断します。
+
+4. 注意事項
+このクラスは、主に文字列の形式や内容のバリデーションを目的としています。そのため、特定のビジネスロジックに依存するバリデーションは含まれていません。
+validateDateメソッドは和暦を考慮して、1桁または2桁の年を西暦に変換するロジックが含まれています。

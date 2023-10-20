@@ -25,9 +25,11 @@ writeSymbolsOnCalendar(...):
 drawEllipse(...):
 指定された位置とサイズで、PDF上に楕円を描画します。
 
-close(String filename, HttpServletResponse response):
-PDFの編集を終了し、その内容をHTTPレスポンスの出力ストリームに保存します。これにより、クライアントにダウンロードするPDFファイルが提供されます。
-ファイル名には現在の日時を追加して、ユニークなものとしています。
+close(String filename, HttpServletRequest request, HttpServletResponse response):
+このメソッドは、PDFの編集を終了し、PDFの内容をバイト配列としてセッションに保存します。
+その後、クライアントは別のページ（PDFcreate-success.jsp）でダウンロードするPDFファイルを取得することができます。
+提供されるPDFファイル名は、現在の日時を追加してユニークなものとして生成されます。
+さらに、このファイル名とPDFデータはHTTPセッションに格納されるため、後続の処理やページで利用することができます。
 
 3. 例外処理:
 いくつかのメソッドは IOException をスローする可能性があります。
