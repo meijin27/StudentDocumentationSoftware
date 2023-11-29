@@ -171,7 +171,7 @@
 	                    <option value="デジタルビジネスデザイン科">デジタルビジネスデザイン科</option>
    	                    <option value="グローバルＩＴシステム科">グローバルＩＴシステム科</option>
 	                    <option value="グローバルＩＴビジネス科">グローバルＩＴビジネス科</option>
-	                    <option value="ロボット・ＩＯＴソフト科">ロボット・ＩＯＴソフト科</option>
+	                    <option value="ロボット・ＩｏＴソフト科">ロボット・ＩｏＴソフト科</option>
    	                    <option value="ＩＴライセンス科（通信制）">ＩＴライセンス科（通信制）</option>
 	                </select>
 	            </div>

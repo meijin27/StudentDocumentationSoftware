@@ -236,7 +236,7 @@ public class NotificationOfChangeAction extends Action {
 				editor.writeText(font, "✓", 379f, 564f, 125f, "left", 12);
 			} else if (className.equals("ＩＴライセンス科（通信制）")) {
 				editor.writeText(font, "✓", 502f, 564f, 125f, "left", 12);
-			} else if (className.equals("ロボット・ＩＯＴソフト科") && schoolYear.equals("2") && classNumber.equals("1")) {
+			} else if (className.equals("ロボット・ＩｏＴソフト科") && schoolYear.equals("2") && classNumber.equals("1")) {
 				editor.writeText(font, "✓", 318f, 539f, 125f, "left", 12);
 			} else if (className.equals("グローバルＩＴビジネス科") && schoolYear.equals("1") && classNumber.equals("1")) {
 				editor.writeText(font, "✓", 378f, 539f, 125f, "left", 12);

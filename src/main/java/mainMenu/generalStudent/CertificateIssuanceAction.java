@@ -356,7 +356,7 @@ public class CertificateIssuanceAction extends Action {
 				editor.writeText(font, "✓", 514f, 702f, 125f, "left", 8);
 			} else if (className.equals("ＩＴライセンス科（通信制）")) {
 				editor.writeText(font, "✓", 477f, 670f, 125f, "left", 8);
-			} else if (className.equals("ロボット・ＩＯＴソフト科") && schoolYear.equals("2") && classNumber.equals("1")) {
+			} else if (className.equals("ロボット・ＩｏＴソフト科") && schoolYear.equals("2") && classNumber.equals("1")) {
 				editor.writeText(font, "✓", 513f, 686f, 125f, "left", 8);
 			} else if (className.equals("グローバルＩＴビジネス科") && schoolYear.equals("1") && classNumber.equals("1")) {
 				editor.writeText(font, "✓", 387f, 670f, 125f, "left", 8);
