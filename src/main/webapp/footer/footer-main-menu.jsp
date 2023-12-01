@@ -39,5 +39,9 @@
 <!-- 未入力項目の枠線色付け用 -->
 <script src="<%=request.getContextPath()%>/js/input_invalid.js"></script>
 
+<!-- 登録情報の自動取得 -->
+<script src="<%=request.getContextPath()%>/js/auto_submit.js"></script>
+
+
 </body>
 </html>

@@ -154,6 +154,8 @@ public class MonitorAction extends Action {
 
 		// トークンの削除
 		request.getSession().removeAttribute("csrfToken");
+		// jsが作動しないようにするためのリクエストの格納
+		request.setAttribute("submitted", true);
 
 		return "monitor.jsp";
 	}
