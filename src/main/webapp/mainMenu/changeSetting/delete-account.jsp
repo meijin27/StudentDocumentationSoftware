@@ -12,12 +12,6 @@
     </div>
     <div class="container">
 		<form action="DeleteAccount.action" method="post" autocomplete="off">
-			<!-- パスワード -->
-            <div class="col-md-12 mb-5">
-                <label class="form-label" for="password">現在のパスワードを入力してください</label>
-                <span class="required-label">必須</span>
-				<input type="password" class="form-control" id="password" name="password" required> 
-			</div>				
 	        <!-- エラー表示  -->
 			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
 			    <c:set var="attrName" value="${attr}" />
@@ -29,7 +23,13 @@
 			            </div>
 			        </c:if>
 			    </c:if>
-			</c:forEach>     
+			</c:forEach>   		
+			<!-- パスワード -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="password">現在のパスワードを入力してください</label>
+                <span class="required-label">必須</span>
+				<input type="password" class="form-control" id="password" name="password" required> 
+			</div>				
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">
 			<!-- 削除の実行ボタン -->

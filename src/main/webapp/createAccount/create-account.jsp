@@ -8,13 +8,6 @@
 <main class="form-createAccount w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="CreateAccount.action" method="post" autocomplete="off">
-			<!-- 作成するアカウント名 -->
-            <div class="col-md-12 mb-5">
-                <label class="form-label" for="account">新規作成するアカウント名を入力してください</label>
-                <span class="required-label">必須</span>
-		        <input type="text" class="form-control mb-5" id="account" name="account" required>
-		    </div>
-
 	        <!-- エラー表示  -->
 			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
 			    <c:set var="attrName" value="${attr}" />
@@ -27,6 +20,13 @@
 			        </c:if>
 			    </c:if>
 			</c:forEach>     
+			<!-- 作成するアカウント名 -->
+            <div class="col-md-12 mb-5">
+                <label class="form-label" for="account">新規作成するアカウント名を入力してください</label>
+                <span class="required-label">必須</span>
+		        <input type="text" class="form-control mb-5" id="account" name="account" required>
+		    </div>
+
 		    <!-- トークンの格納  -->
 		    <input type="hidden" name="csrfToken" value="${csrfToken}">
              <!-- サブミットボタン  -->

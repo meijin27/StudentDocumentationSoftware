@@ -8,6 +8,19 @@
 <main class="form-forgotPassword w-100 m-auto flex-shrink-0">
 	<div class="container">
 		<form action="RecreatePassword.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>  
+
 			<p class="text-start mb-5 red"><strong>パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください</strong></p>
 
 			<!-- パスワード -->
@@ -31,19 +44,7 @@
                 <span class="required-label">必須</span>
 				<input type="password" class="form-control" id="passwordCheck"	name="passwordCheck" required> 
 			</div>	
-
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>     
+   
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">		    
 			<!-- 再登録ボタン  -->

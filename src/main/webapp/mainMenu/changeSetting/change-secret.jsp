@@ -12,6 +12,18 @@
     </div>
     <div class="container">
 		<form action="ChangeSecret.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>  
 			<!-- パスワード -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="password">現在のパスワードを入力してください</label>
@@ -41,18 +53,6 @@
                 <span class="required-label">必須</span>
                 <input class="form-control" type="text" id="secretAnswer" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
             </div>      
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>  
    		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">         
             <!-- 変更ボタン -->

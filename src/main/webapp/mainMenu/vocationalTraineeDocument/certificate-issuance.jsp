@@ -11,6 +11,18 @@
         <h1>「証明書交付願」作成</h1><br>
     </div>			  
 		<form action="CertificateIssuance.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>    		
 	        <div class="row">
    	            <!-- 申請理由（具体的に） -->
 	            <div class="col-md-12 mb-5">
@@ -97,18 +109,6 @@
 	                </select>
 	            </div>	        
 	        </div> 
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>    
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">			
 			<!-- 作成ボタン -->

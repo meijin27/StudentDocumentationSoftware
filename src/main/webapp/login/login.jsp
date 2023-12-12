@@ -10,15 +10,6 @@
         <img class="mb-4 mt-3" src="<%=request.getContextPath()%>/img/docu.png" alt="" width="72" height="57">
         <h5 class="mb-1">提出書類作成ソフト</h5>
         <h1 class="h3 mb-3 big-font">ドキュメントクラフト</h1>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" id="account" name="account" placeholder="Accont" required>
-            <label for="account">Account</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-            <label for="password">Password</label>
-        </div>
         <!-- エラー表示  -->
 		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
 		    <c:set var="attrName" value="${attr}" />
@@ -37,6 +28,15 @@
 	            <% session.removeAttribute("otherError"); %>
 	        </div>
 	    </c:if>
+	    
+        <div class="form-floating">
+            <input type="text" class="form-control" id="account" name="account" placeholder="Accont" required>
+            <label for="account">Account</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+            <label for="password">Password</label>
+        </div>
 	    <!-- トークンの格納  -->
 	    <input type="hidden" name="csrfToken" value="${csrfToken}">	    
 	    <!-- Loginボタン  -->

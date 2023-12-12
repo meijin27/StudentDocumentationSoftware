@@ -11,6 +11,18 @@
         <h1>「補習受講申請書」作成</h1><br>
     </div>			  
 		<form action="SupplementaryLessons.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>  		
 	        <div class="row">
    	            <!-- 申請年月日 -->
 	            <div class="col-md-4 mb-3">
@@ -96,18 +108,6 @@
 	                <input class="form-control" type="text" id="reason" name="reason" placeholder="新型コロナに罹患し、長期療養を行っていたため" value="<c:out value='${reason}'/>" required>
 	            </div>
 	        </div>	    
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>  
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">			
 			<!-- 作成ボタン -->  

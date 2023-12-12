@@ -11,6 +11,19 @@
         <h1>「公共職業訓練等受講証明書」作成</h1><br>
     </div>			
 		<form action="CertificateVocationalTraining.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach>    
+					
 	        <div class="row">
   		    	<label class="form-label">日付ごとに該当する印を選択してください。</label>
    		    	<label class="form-label left-align">①公共職業訓練等を受けた日　無印</label>
@@ -105,18 +118,6 @@
 				    </div>
 				</div>
 	        </div>
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>    
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">			
 			<!-- 作成ボタン -->

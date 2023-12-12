@@ -170,7 +170,7 @@ public class CertificateOfEmploymentAction extends Action {
 
 			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
 			if (ValidationUtil.isNullOrEmpty(lastName, firstName, birthYear, birthMonth,
-					birthDay, studentType, className, namePESO)) {
+					birthDay, studentType, className)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
@@ -180,6 +180,13 @@ public class CertificateOfEmploymentAction extends Action {
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "certificate-of-employment.jsp";
+			}
+
+			// データベースから取り出した職業訓練生データにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(namePESO)) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
 			}
 
 			// 姓名を結合する

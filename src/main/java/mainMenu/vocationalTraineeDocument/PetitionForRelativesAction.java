@@ -116,7 +116,7 @@ public class PetitionForRelativesAction extends Action {
 			String namePESO = decrypt.getDecryptedDate(result, reEncryptedNamePESO);
 
 			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
-			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className, namePESO)) {
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
@@ -126,6 +126,13 @@ public class PetitionForRelativesAction extends Action {
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("studentTypeError", "当該書類は職業訓練生のみが発行可能です。");
 				return "petition-for-relatives.jsp";
+			}
+
+			// データベースから取り出した職業訓練生データにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(namePESO)) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
 			}
 
 			// クラス名の末尾に「科」がついていた場合は削除する

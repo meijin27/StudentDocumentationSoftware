@@ -11,6 +11,18 @@
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
     </div>			  
 	<form action="NotificationAbsenceOfTtraining.action" method="post" autocomplete="off">
+        <!-- エラー表示  -->
+		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+		    <c:set var="attrName" value="${attr}" />
+		    <c:if test="${fn:endsWith(attrName, 'Error')}">
+		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="alert alert-danger text-center input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+		    </c:if>
+		</c:forEach>    	
         <div class="row">
   	            <!-- 対象年月 -->
             <div class="col-md-4 mb-3">
@@ -164,18 +176,6 @@
 	       		<% } %>
 	        </div>  
         <% } %>
-        <!-- エラー表示  -->
-		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-		    <c:set var="attrName" value="${attr}" />
-		    <c:if test="${fn:endsWith(attrName, 'Error')}">
-		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-		        <c:if test="${not empty errorMsg}">
-		            <div class="alert alert-danger text-center input-field" role="alert">
-		                <c:out value="${errorMsg}" />
-		            </div>
-		        </c:if>
-		    </c:if>
-		</c:forEach>     
 		<!-- 追加ボタン  -->
 		<button type="button" id="addSetBtn" class="w-100 btn btn-lg btn-success mb-3">行の追加（休業期間が複数ある場合）</button>
 	    <!-- トークンの格納  -->

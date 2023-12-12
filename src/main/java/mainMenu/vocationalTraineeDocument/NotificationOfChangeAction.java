@@ -127,6 +127,8 @@ public class NotificationOfChangeAction extends Action {
 
 		// 少なくとも1つの項目が入力されている必要がある
 		if (changeName || changeAddress || changeTel) {
+			// 入力されている場合は問題なし			
+		} else {
 			request.setAttribute("inputError", "変更する項目を入力してください。");
 			return "notification-of-change.jsp";
 		}

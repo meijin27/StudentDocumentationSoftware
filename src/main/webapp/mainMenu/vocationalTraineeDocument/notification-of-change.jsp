@@ -11,6 +11,18 @@
         <h1>「氏名・住所等変更届」作成</h1><br>
     </div>			  
 	<form action="NotificationOfChange.action" method="post" autocomplete="off">
+        <!-- エラー表示  -->
+		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+		    <c:set var="attrName" value="${attr}" />
+		    <c:if test="${fn:endsWith(attrName, 'Error')}">
+		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="alert alert-danger text-center input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+		    </c:if>
+		</c:forEach>   	
         <div class="row">
             <p class="left-align">・変更した項目を入力してください。</p>
             <p class="left-align">・氏名変更した場合は姓・名を全て入力してください。</p>
@@ -120,18 +132,6 @@
                 </select>
             </div>	        
         </div>   
-        <!-- エラー表示  -->
-		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-		    <c:set var="attrName" value="${attr}" />
-		    <c:if test="${fn:endsWith(attrName, 'Error')}">
-		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-		        <c:if test="${not empty errorMsg}">
-		            <div class="alert alert-danger text-center input-field" role="alert">
-		                <c:out value="${errorMsg}" />
-		            </div>
-		        </c:if>
-		    </c:if>
-		</c:forEach>     
 	    <!-- トークンの格納  -->
 		    <input type="hidden" name="csrfToken" value="${csrfToken}">	        
         <!-- 作成ボタン -->

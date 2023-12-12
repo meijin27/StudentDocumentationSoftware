@@ -134,8 +134,7 @@ public class CertificateVocationalTrainingAction extends Action {
 			String employmentInsurance = decrypt.getDecryptedDate(result, reEncryptedEmploymentInsurance);
 
 			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
-			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className, namePESO, supplyNumber,
-					employmentInsurance)) {
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, studentType, className)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
@@ -145,6 +144,13 @@ public class CertificateVocationalTrainingAction extends Action {
 			if (!studentType.equals("職業訓練生")) {
 				request.setAttribute("innerError", "当該書類は職業訓練生のみが発行可能です。");
 				return "certificate-vocational-training.jsp";
+			}
+
+			// データベースから取り出した職業訓練生データにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(namePESO, supplyNumber, employmentInsurance)) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
 			}
 
 			// もし雇用保険が無ければエラーを返す

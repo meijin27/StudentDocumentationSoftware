@@ -151,10 +151,10 @@ public class PetitionForDeferredPaymentAction extends Action {
 					// 申請日と申請期間の比較
 				} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
 						deliveryDay)) {
-					request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+					request.setAttribute("dayError", "納付期限は願出年月日より後の日付でなければなりません。");
 				} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
 						deliveryYear, deliveryMonth, deliveryDay)) {
-					request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
+					request.setAttribute("dayError", "納付期限は通常納期年月日より後の日付でなければなりません。");
 				}
 			}
 

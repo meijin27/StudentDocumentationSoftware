@@ -11,6 +11,18 @@
         <h1>「在留期間更新許可申請書　３枚目」作成</h1><br>
     </div>			  
 		<form action="PeriodUpdateThird.action" method="post" autocomplete="off">
+	        <!-- エラー表示  -->
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+			    <c:set var="attrName" value="${attr}" />
+			    <c:if test="${fn:endsWith(attrName, 'Error')}">
+			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="alert alert-danger text-center input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+			    </c:if>
+			</c:forEach> 		
    			<p class="text-start">・在留期間更新許可申請書は３枚組で、当該書類は３枚目です。</p>
   			<p class="text-start margin-bottom-50 mb-5">(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)</p>
    			<p class="border-bottom"></p>
@@ -163,18 +175,6 @@
 	                <input class="form-control" type="text" id="afterGraduationOtherContents" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
 	            </div>
 	        </div>   	    
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>     
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">			
 			<!-- 作成ボタン -->  
