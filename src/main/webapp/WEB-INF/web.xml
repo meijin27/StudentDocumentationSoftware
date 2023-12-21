@@ -69,4 +69,10 @@
 	    <url-pattern>*.action</url-pattern>
 	</filter-mapping>
 
+	<error-page>
+    	<error-code>404</error-code>
+    	<location>/login/login.jsp</location> <!-- リダイレクト先のURLを指定 -->
+	</error-page>
+	
+
 </web-app>

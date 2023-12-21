@@ -82,6 +82,7 @@
 	4.X-Content-Type-Options：ブラウザにMIMEタイプを推測しないように指示。nosniffとし、ブラウザに対して提供されるMIMEタイプをそのまま使用するよう指示。
 	5.Strict-Transport-Security (HSTS)：ブラウザにウェブサイトへのアクセスを常にHTTPSを使用して行う指示。このポリシーは1年間適用し、サブドメインにも適用する。
 	6.Permissions-Policy：カメラ、マイク、および位置情報を使用することを禁止
+・存在しないURLにアクセスした場合はログインページへリダイレクトする。	
 
 【データベース】
 ・データベース名は”student_documentation_software”
