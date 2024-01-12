@@ -8,6 +8,24 @@
 <main class="form-firstSetting w-100 m-auto flex-shrink-0">
 	<div class="container">
         <form action="SecretSetting.action" method="post" autocomplete="off">
+        
+        <c:import url="/errorMessage/errorMessage.jsp" />
+        
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+           <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+	
+	            <c:if test="${hasError}">
+	                <div class="alert alert-danger text-center input-field" role="alert">
+	                    入力エラーが発生しています
+	                </div>
+	            </c:if>        
+            </div>    
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
                  <label class="form-label" for="secretQuestion">秘密の質問を選択してください。</label>
@@ -24,25 +42,27 @@
             		<option value="はじめて買った車">はじめて買った車</option>
             		<option value="ご自由にご記載ください">ご自由にご記載ください</option>
      			</select>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['secretQuestionError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="alert alert-danger text-center input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
              </div>
             <!-- 秘密の質問の答え -->
             <div class="col-md-12 mb-5">
                 <label class="form-label" for="secretAnswer">秘密の質問の答えを入力してください</label>
                 <span class="required-label">必須</span>
-                <input class="form-control" type="text" id="secretAnswer" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
-            </div>
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>              
+				<input class="form-control" type="text" id="secretAnswer" name="secretAnswer" placeholder="RX-93-ν2 Hi-νガンダム" required>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['secretAnswerError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="alert alert-danger text-center input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+            </div>         
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">
 		    <!-- 次へボタン  -->
