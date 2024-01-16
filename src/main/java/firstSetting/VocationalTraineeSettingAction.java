@@ -39,21 +39,29 @@ public class VocationalTraineeSettingAction extends Action {
 		String attendanceNumber = request.getParameter("attendanceNumber");
 		String employmentInsurance = request.getParameter("employmentInsurance");
 
-		// 未入力項目があればエラーを返す(雇用保険「無」の場合は支給番号は未記載でOK)
-		if (ValidationUtil.isNullOrEmpty(namePESO, attendanceNumber, employmentInsurance)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "vocational-trainee-setting.jsp";
-		}
-
 		// 入力された値をセッションに格納
 		RequestAndSessionUtil.storeParametersInSession(request);
 
-		// 雇用保険「有」の場合は支給番号を記載する必要あり
-		if (employmentInsurance.equals("有") && ValidationUtil.isNullOrEmpty(supplyNumber)) {
-			request.setAttribute("nullError", "雇用保険「有」の場合は支給番号を記載してください。");
-			return "vocational-trainee-setting.jsp";
+		// 公共職業安定所名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(namePESO)) {
+			request.setAttribute("namePESOError", "入力必須項目です。");
 		}
-		// 雇用保険「無」の場合で支給番号を記載している場合は支給番号を強制的に下記文字列にする。
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(namePESO)) {
+			request.setAttribute("namePESOError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, namePESO)) {
+			request.setAttribute("namePESOError", "32文字以下で入力してください。");
+		}
+
+		// 雇用保険有無のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(employmentInsurance)) {
+			request.setAttribute("employmentInsuranceError", "入力必須項目です。");
+		}
+		// 雇用保険「無」の場合は支給番号を強制的に下記文字列にする。
 		else if (employmentInsurance.equals("無")) {
 			supplyNumber = "支給番号無し";
 			session.setAttribute("supplyNumber", supplyNumber);
@@ -63,19 +71,27 @@ public class VocationalTraineeSettingAction extends Action {
 			request.setAttribute("employmentInsuranceError", "雇用保険は「有」「無」から選択してください");
 		}
 
-		// 出席番号が半角2桁以下でなければエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(attendanceNumber)) {
-			request.setAttribute("attendanceNumberError", "出席番号は半角数字2桁以下で入力してください。");
+		// 支給番号のエラー処理
+		// 雇用保険「有」の場合は支給番号を記載する必要あり
+		if (employmentInsurance.equals("有") && ValidationUtil.isNullOrEmpty(supplyNumber)) {
+			request.setAttribute("supplyNumberError", "雇用保険「有」の場合は支給番号を記載してください。");
 		}
-
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, namePESO, supplyNumber)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
-		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(namePESO, supplyNumber)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(supplyNumber)) {
+			request.setAttribute("supplyNumberError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, supplyNumber)) {
+			request.setAttribute("supplyNumberError", "32文字以下で入力してください。");
+		}
+
+		// 出席番号のエラー処理
+		// 出席番号が半角2桁以下でなければエラーを返す
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(attendanceNumber)) {
+			request.setAttribute("attendanceNumberError", "入力必須項目です。");
+		} else if (ValidationUtil.isOneOrTwoDigit(attendanceNumber)) {
+			request.setAttribute("attendanceNumberError", "出席番号は半角数字2桁以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

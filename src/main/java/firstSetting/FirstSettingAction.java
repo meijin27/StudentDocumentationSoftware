@@ -52,80 +52,191 @@ public class FirstSettingAction extends Action {
 		String studentNumber = request.getParameter("studentNumber");
 		String schoolYear = request.getParameter("schoolYear");
 		String classNumber = request.getParameter("classNumber");
-
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, tel, birthYear, birthMonth,
-				birthDay, admissionYear, admissionMonth, admissionDay, studentType, className, studentNumber,
-				schoolYear, classNumber)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "first-setting.jsp";
-		}
+		String agree = request.getParameter("agree");
 
 		// 入力された値をセッションに格納
 		RequestAndSessionUtil.storeParametersInSession(request);
 
-		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
-		if (ValidationUtil.isHiragana(lastNameRuby, firstNameRuby)) {
-			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		// 姓のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(lastName)) {
+			request.setAttribute("lastNameError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(lastName)) {
+			request.setAttribute("lastNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, lastName)) {
+			request.setAttribute("lastNameError", "32文字以下で入力してください。");
 		}
 
+		// 名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(firstName)) {
+			request.setAttribute("firstNameError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(firstName)) {
+			request.setAttribute("firstNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, firstName)) {
+			request.setAttribute("firstNameError", "32文字以下で入力してください。");
+		}
+
+		// ふりがなのエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "入力必須項目です。");
+		}
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		else if (ValidationUtil.isHiragana(lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "32文字以下で入力してください。");
+		}
+
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "入力必須項目です。");
+		}
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		else if (ValidationUtil.isHiragana(firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "32文字以下で入力してください。");
+		}
+
+		// 電話番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(tel)) {
+			request.setAttribute("telError", "入力必須項目です。");
+		}
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (ValidationUtil.isTenOrElevenDigit(tel)) {
+		else if (ValidationUtil.isTenOrElevenDigit(tel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
+		// 郵便番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(postCode)) {
+			request.setAttribute("postCodeError", "入力必須項目です。");
+		}
 		// 郵便番号が半角7桁でなければエラーを返す
-		if (ValidationUtil.isSevenDigit(postCode)) {
+		else if (ValidationUtil.isSevenDigit(postCode)) {
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		}
 
+		// 住所のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(address)) {
+			request.setAttribute("addressError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(address)) {
+			request.setAttribute("addressError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, address)) {
+			request.setAttribute("addressError", "住所は64文字以下で入力してください。");
+		}
+
+		// 学籍番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(studentNumber)) {
+			request.setAttribute("studentNumberError", "入力必須項目です。");
+		}
 		// 学籍番号が半角6桁でなければエラーを返す
-		if (ValidationUtil.isSixDigit(studentNumber)) {
+		else if (ValidationUtil.isSixDigit(studentNumber)) {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
-		// 学年・クラスが半角1桁でなければエラーを返す
-		if (ValidationUtil.isSingleDigit(schoolYear, classNumber)) {
-			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
+		// 学年のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(schoolYear)) {
+			request.setAttribute("schoolYearError", "入力必須項目です。");
+		}
+		// 学年が半角1桁でなければエラーを返す
+		else if (ValidationUtil.isSingleDigit(schoolYear)) {
+			request.setAttribute("schoolYearError", "学年は半角数字1桁で入力してください。");
+		}
+
+		// クラスのエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(classNumber)) {
+			request.setAttribute("classNumberError", "入力必須項目です。");
+		}
+		// クラスが半角1桁でなければエラーを返すclassNumber
+		else if (ValidationUtil.isSingleDigit(classNumber)) {
+			request.setAttribute("classNumberError", "クラスは半角数字1桁で入力してください。");
 		}
 
 		// 「同意する」ボタンが押されていない場合はエラーにする。
-		if (request.getParameter("agree") == null || request.getParameter("agree").isEmpty()) {
+		if (ValidationUtil.isNullOrEmpty(agree)) {
 			request.setAttribute("agreeError", "「利用規約及びプライバシーポリシーに同意する」をチェックしない限り登録できません。");
 		}
 
-		// 生年月日が存在しない日付の場合はエラーにする
+		// 生年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "入力必須項目です。");
+		}
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(birthYear, admissionYear) ||
-				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay, admissionMonth, admissionDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay) ||
-					ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+		else if (ValidationUtil.isFourDigit(birthYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+			request.setAttribute("birthError", "年月日は正規の桁数で入力してください。");
+		}
+		// 生年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "存在しない日付です。");
 		}
 
+		// 入学年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(admissionYear, admissionMonth, admissionDay)) {
+			request.setAttribute("admissionError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(admissionYear) ||
+				ValidationUtil.isOneOrTwoDigit(admissionMonth, admissionDay)) {
+			request.setAttribute("admissionError", "年月日は正規の桁数で入力してください。");
+		}
+		// 入学年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
+			request.setAttribute("admissionError", "存在しない日付です。");
+		}
+
+		// クラス名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(className)) {
+			request.setAttribute("classNameError", "入力必須項目です。");
+		}
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(firstName, lastName, address, className, studentType)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(className)) {
+			request.setAttribute("classNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(16, className)) {
+			request.setAttribute("classNameError", "クラス名は16文字以下で入力してください。");
 		}
 
-		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (ValidationUtil.areValidLengths(32, lastName, firstName, lastNameRuby, firstNameRuby)) {
-			request.setAttribute("valueLongError", "名前およびふりがなは32文字以下で入力してください。");
+		// 学生種別のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(studentType)) {
+			request.setAttribute("studentTypeError", "入力必須項目です。");
 		}
-
-		if (ValidationUtil.areValidLengths(64, address)) {
-			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(studentType)) {
+			request.setAttribute("studentTypeError", "使用できない特殊文字が含まれています");
 		}
-
-		if (ValidationUtil.areValidLengths(5, studentType)) {
-			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
-		}
-
-		if (ValidationUtil.areValidLengths(16, className)) {
-			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(5, studentType)) {
+			request.setAttribute("studentTypeError", "学生種別は5文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

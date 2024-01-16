@@ -40,31 +40,28 @@ public class SecretSettingAction extends Action {
 		String secretQuestion = request.getParameter("secretQuestion");
 		String secretAnswer = request.getParameter("secretAnswer");
 
+		// 秘密の質問のエラー処理
 		// もしも入力値が無し、もしくは空の場合はエラーを返す
 		if (ValidationUtil.isNullOrEmpty(secretQuestion)) {
 			request.setAttribute("secretQuestionError", "秘密の質問の選択は必須です");
-			return "secret-setting.jsp";
+		}
+		// 文字数が32文字より多い場合はエラーを返す
+		else if (ValidationUtil.areValidLengths(32, secretQuestion)) {
+			request.setAttribute("secretQuestionError", "秘密の質問は選択肢から選択してください。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
+			request.setAttribute("secretQuestionError", "使用できない特殊文字が含まれています");
 		}
 
+		// 秘密の質問の答えのエラー処理
 		// もしも入力値が無し、もしくは空の場合はエラーを返す
 		if (ValidationUtil.isNullOrEmpty(secretAnswer)) {
 			request.setAttribute("secretAnswerError", "秘密の質問の答えの入力は必須です");
-			return "secret-setting.jsp";
 		}
-
 		// 文字数が32文字より多い場合はエラーを返す
-		if (ValidationUtil.areValidLengths(32, secretQuestion)) {
-			request.setAttribute("secretQuestionError", "秘密の質問は選択肢から選択してください。");
-		}
-
-		// 文字数が32文字より多い場合はエラーを返す
-		if (ValidationUtil.areValidLengths(32, secretAnswer)) {
+		else if (ValidationUtil.areValidLengths(32, secretAnswer)) {
 			request.setAttribute("secretAnswerError", "32文字以下で入力してください。");
-		}
-
-		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(secretQuestion)) {
-			request.setAttribute("secretQuestionError", "使用できない特殊文字が含まれています");
 		}
 
 		// エラーが発生している場合は元のページに戻す

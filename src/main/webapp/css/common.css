@@ -39,6 +39,7 @@
 	width: 40px;
 }
 
+/* マージン */ 
 .margin-top-50 {
     margin-top: 50px;
 }
@@ -50,6 +51,11 @@
 .margin-bottom-20 {
     margin-bottom: 20px;
 }
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
 
 /* マウスを上に重ねた場合にマウスの表示がポインターに変わる */
 .custom-pointer:hover {
@@ -66,6 +72,16 @@
 /* 文字を２倍の大きさにする */
 .big-font2 {
     font-size: 200%; /* 大きい文字サイズ */
+}
+
+/* 文字を80%の大きさにする */
+.small-font {
+    font-size: 80%; /* 小さい文字サイズ */
+}
+
+/* エラー発生時の入力枠の赤枠化 */
+.error-input {
+  border: 3px solid pink;
 }
 
 /* 幅を150pxにする */
