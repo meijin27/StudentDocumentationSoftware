@@ -3,5 +3,5 @@
 
 <!-- エラーメッセージ  -->
 <div class="alert alert-danger text-center input-field" role="alert">
-	<strong>入力エラーが発生しています。エラー個所を修正してください。</strong>
+	<strong>入力エラーが発生しています。エラー箇所を修正してください。</strong>
 </div>
