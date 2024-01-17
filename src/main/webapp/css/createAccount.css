@@ -19,7 +19,7 @@ main > .container {
 }
 
 .form-createAccount {
-  max-width: 430px;
+  max-width: 680px;
   padding: 15px;
 }
 
@@ -34,7 +34,6 @@ main > .container {
 }
 
 .form-createAccount input[type="password"] {
-  margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }

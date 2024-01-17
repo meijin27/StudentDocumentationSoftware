@@ -9,18 +9,23 @@
 	<div class="container">
         <form action="SecretSetting.action" method="post" autocomplete="off">
             <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
-           <div class="col-md-12 mb-5">
+            <div class="col-md-12 mb-5">
 				<c:set var="hasError" value="false" />
 	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
 	                <c:if test="${fn:endsWith(attr, 'Error')}">
 	                    <c:set var="hasError" value="true" />
 	                </c:if>
 	            </c:forEach>
-	
-	            <c:if test="${hasError}">
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
                     <c:import url="/errorMessage/error-message.jsp" />
-	            </c:if>        
-            </div>    
+	            </c:if>
+            </div>   
              <!-- 秘密の質問 -->
              <div class="col-md-12 mb-3">
                  <label class="form-label" for="secretQuestion">秘密の質問を選択してください。</label>

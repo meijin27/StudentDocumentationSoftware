@@ -115,7 +115,7 @@ public class SecretSettingAction extends Action {
 			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("secretError", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "secret-setting.jsp";
 		}
 	}

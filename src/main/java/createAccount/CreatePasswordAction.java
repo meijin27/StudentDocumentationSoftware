@@ -46,11 +46,13 @@ public class CreatePasswordAction extends Action {
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (ValidationUtil.isNullOrEmpty(password, passwordCheck)) {
-			request.setAttribute("nullError", "パスワードの入力は必須です");
+			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 		} else if (ValidationUtil.areValidLengths(32, password)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+			request.setAttribute("passwordError", "32文字以下で入力してください。");
+		} else if (!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
+			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
 		}
 
 		// エラーが発生している場合は元のページに戻す
@@ -58,39 +60,30 @@ public class CreatePasswordAction extends Action {
 			return "create-password.jsp";
 		}
 
-		// パスワードが英大文字・小文字・数字をすべて含み８文字以上の場合の処理
-		if (Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
-			try {
-				// 暗号化されたアカウント名を復号する
-				String account = CipherUtil.commonDecrypt(encryptedAccount);
-				// PasswordUtilクラスにてユーザー情報を自動入力する
-				//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
-				user = PasswordUtil.register(account, password);
-				// データベース操作用クラス
-				UserDAO dao = new UserDAO();
-				// データベースにアカウント登録する
-				dao.accountInsert(user);
-				// 暗号化されたアカウント名のセッションからの削除
-				request.getSession().removeAttribute("encryptedAccount");
-				// トークンの削除
-				request.getSession().removeAttribute("csrfToken");
-				// セッションにアカウント名を格納する
-				session.setAttribute("accountName", account);
-				// アカウント作成成功画面にリダイレクト
-				response.sendRedirect(contextPath + "/createAccount/create-success.jsp");
-				return null;
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage(), e);
-				request.setAttribute("passwordError", "内部エラーが発生しました。");
-				return "create-password.jsp";
-			}
-			// パスワードの入力形式が不適切ならエラー処理
-		} else {
-
-			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
+		try {
+			// 暗号化されたアカウント名を復号する
+			String account = CipherUtil.commonDecrypt(encryptedAccount);
+			// PasswordUtilクラスにてユーザー情報を自動入力する
+			//（暗号化されたアカウント、ハッシュ化されたパスワード、暗号化されたマスターキー、iv）
+			user = PasswordUtil.register(account, password);
+			// データベース操作用クラス
+			UserDAO dao = new UserDAO();
+			// データベースにアカウント登録する
+			dao.accountInsert(user);
+			// 暗号化されたアカウント名のセッションからの削除
+			request.getSession().removeAttribute("encryptedAccount");
+			// トークンの削除
+			request.getSession().removeAttribute("csrfToken");
+			// セッションにアカウント名を格納する
+			session.setAttribute("accountName", account);
+			// アカウント作成成功画面にリダイレクト
+			response.sendRedirect(contextPath + "/createAccount/create-success.jsp");
+			return null;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "create-password.jsp";
 		}
-
 	}
 
 }

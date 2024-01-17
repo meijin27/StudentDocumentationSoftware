@@ -50,22 +50,18 @@ public class RecreatePasswordAction extends Action {
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (ValidationUtil.isNullOrEmpty(password)) {
-			request.setAttribute("nullError", "パスワードの入力は必須です");
+			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (!password.equals(passwordCheck)) {
 			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 		} else if (ValidationUtil.areValidLengths(32, password)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+			request.setAttribute("passwordError", "32文字以下で入力してください。");
+		} else if (!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
+			// パスワードの入力形式が不適切ならエラーを返す
+			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
 		}
 
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-			return "recreate-password.jsp";
-		}
-
-		// パスワードが英大文字・小文字・数字をすべて含み８文字以上でない場合の処理
-		if (!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
-			// パスワードの入力形式が不適切ならエラーを返す
-			request.setAttribute("passwordError", "パスワードは英大文字・小文字・数字をすべて含み８文字以上にしてください");
 			return "recreate-password.jsp";
 		}
 
@@ -113,7 +109,7 @@ public class RecreatePasswordAction extends Action {
 			return null;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("passwordError", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "recreate-password.jsp";
 		}
 	}

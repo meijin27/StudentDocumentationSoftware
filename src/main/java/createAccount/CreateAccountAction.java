@@ -40,13 +40,11 @@ public class CreateAccountAction extends Action {
 		// アカウント名が入力されている場合の処理
 		if (ValidationUtil.isNullOrEmpty(account)) {
 			// アカウント名未入力の場合は元のページに戻す
-			request.setAttribute("nullError", "アカウント名の入力は必須です。");
-			return "create-account.jsp";
+			request.setAttribute("accountError", "アカウント名の入力は必須です。");
 		}
-
 		// 文字数が32文字より多い場合はエラーを返す
-		if (ValidationUtil.areValidLengths(32, account)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		else if (ValidationUtil.areValidLengths(32, account)) {
+			request.setAttribute("accountError", "32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

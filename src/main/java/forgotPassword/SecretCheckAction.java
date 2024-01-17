@@ -43,26 +43,29 @@ public class SecretCheckAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
+		// 秘密の質問の答えのエラー処理
+		// もしも入力値が無し、もしくは空の場合はエラーを返す
+		if (ValidationUtil.isNullOrEmpty(secretAnswer)) {
+			request.setAttribute("secretAnswerError", "秘密の質問の答えの入力は必須です");
+		}
+		// 文字数が32文字より多い場合はエラーを返す
+		else if (ValidationUtil.areValidLengths(32, secretAnswer)) {
+			request.setAttribute("secretAnswerError", "32文字以下で入力してください。");
+		}
+
+		// 生年月日のエラー処理
 		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(secretAnswer, birthYear, birthMonth, birthDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "secret-check.jsp";
+		if (ValidationUtil.isNullOrEmpty(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "入力必須項目です。");
 		}
-
-		// 文字数が32文字より多い場合はエラーを返す。		
-		if (ValidationUtil.areValidLengths(32, secretAnswer)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
-		}
-
-		// 生年月日が存在しない日付の場合はエラーにする
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(birthYear) ||
+		else if (ValidationUtil.isFourDigit(birthYear) ||
 				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+			request.setAttribute("birthError", "年月日は正規の桁数で入力してください。");
+		}
+		// 生年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "存在しない日付です。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
@@ -124,7 +127,7 @@ public class SecretCheckAction extends Action {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("secretError", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "secret-check.jsp";
 		}
 		// 入力された値が間違っていた場合は元のページに戻す

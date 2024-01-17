@@ -39,7 +39,7 @@ public class SearchAccountAction extends Action {
 		// アカウント名が入力されている場合の処理		
 		if (ValidationUtil.isNullOrEmpty(account)) {
 			// アカウント名未入力の場合は元のページに戻す
-			request.setAttribute("nullError", "アカウント名の入力は必須です");
+			request.setAttribute("accountError", "アカウント名の入力は必須です");
 			return "search-account.jsp";
 		}
 
@@ -95,7 +95,7 @@ public class SearchAccountAction extends Action {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			request.setAttribute("accountError", "内部エラーが発生しました。");
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "search-account.jsp";
 		}
 	}
