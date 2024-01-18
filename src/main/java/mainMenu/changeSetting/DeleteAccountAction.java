@@ -2,6 +2,7 @@ package mainMenu.changeSetting;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,11 +41,13 @@ public class DeleteAccountAction extends Action {
 		// パスワードの入力チェック
 		// 未入力及び不一致はエラー処理		
 		if (ValidationUtil.isNullOrEmpty(password)) {
-			request.setAttribute("nullError", "パスワードの入力は必須です");
+			request.setAttribute("passwordError", "パスワードの入力は必須です");
 		} else if (ValidationUtil.areValidLengths(32, password)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
+		} else if (!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$", password)) {
+			request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 		}
-
+		
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "delete-account.jsp";
@@ -80,7 +83,7 @@ public class DeleteAccountAction extends Action {
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
 			} else {
-				request.setAttribute("passwordError", "パスワードが一致しません。");
+				request.setAttribute("passwordError", "パスワードが一致しません。再度入力してください。");
 				return "delete-account.jsp";
 			}
 		} catch (Exception e) {
