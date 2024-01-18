@@ -12,52 +12,90 @@
     </div>
     <div class="container">
 		<form action="ChangeNameDateofBirth.action" method="post" autocomplete="off">
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>     
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+            <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+                    <c:import url="/errorMessage/error-message.jsp" />
+	            </c:if>
+            </div>       
 	        <div class="row">
 	            <!-- 姓 -->
-	            <div class="col-md-6 mb-3">
-	                <label class="form-label" for="lastName">名前</label>
-	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="lastName" name="lastName" placeholder="田中" value="<c:out value='${lastName}'/>" required>
-    				<small class="text-muted">姓</small>
-	            </div>
+				<div class="col-md-6 mb-3">
+				    <label class="form-label" for="lastName">名前</label>
+				    <span class="required-label">必須</span>
+				    <input class="form-control ${not empty requestScope['lastNameError'] ? 'error-input' : ''}" id="lastName" type="text" name="lastName" placeholder="田中" value="<c:out value='${lastName}' />" required>
+    				<div class="d-flex align-items-center">
+	    				<small class="text-muted">姓</small>
+			        	<!-- エラー表示  -->
+				        <c:set var="errorMsg" value="${requestScope['lastNameError']}" />
+				        <c:if test="${not empty errorMsg}">
+				            <div class="small-font red input-field margin-left-10" role="alert">
+				                <c:out value="${errorMsg}" />
+				            </div>
+				        </c:if>
+			        </div>
+				</div>
+
 	            <!-- 名 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="firstName">名</label>
-	                <input class="form-control" type="text" id="firstName" name="firstName" placeholder="太郎" value="<c:out value='${firstName}'/>" required>
-    				<small class="text-muted">名</small>
-
+	                <input class="form-control ${not empty requestScope['firstNameError'] ? 'error-input' : ''}" type="text"id="firstName" name="firstName" placeholder="太郎" value="<c:out value='${firstName}' />" required>
+    				<div class="d-flex align-items-center">
+	    				<small class="text-muted">名</small>
+			        	<!-- エラー表示  -->
+				        <c:set var="errorMsg" value="${requestScope['firstNameError']}" />
+				        <c:if test="${not empty errorMsg}">
+				            <div class="small-font red input-field margin-left-10" role="alert">
+				                <c:out value="${errorMsg}" />
+				            </div>
+				        </c:if>
+			        </div>
 	            </div>
    	            <!-- 姓（ふりがな） -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="lastNameRuby">ふりがな</label>
-	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="lastNameRuby" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}'/>" required>
+				    <span class="required-label">必須</span>
+	                <input class="form-control ${not empty requestScope['lastNameRubyError'] ? 'error-input' : ''}" type="text" id="lastNameRuby" name="lastNameRuby" placeholder="たなか" value="<c:out value='${lastNameRuby}' />" required>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['lastNameRubyError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
 	            </div>
 	            <!-- 名（ふりがな） -->
-	            <div class="col-md-6 mb-3">
+	            <div class="col-md-6 mb-5">
 	                <label class="form-label invisible-text" for="firstNameRuby">名（ふりがな）</label>
-	                <input class="form-control" type="text" id="firstNameRuby" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}'/>" required>
+	                <input class="form-control ${not empty requestScope['firstNameRubyError'] ? 'error-input' : ''}" type="text" id="firstNameRuby" name="firstNameRuby" placeholder="たろう" value="<c:out value='${firstNameRuby}' />" required>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['firstNameRubyError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
 	            </div>
-       
+       			<p class="border-bottom"></p>
 	            <!-- 生年月日 -->
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-0">
 	                <label class="form-label" for="birthYear">生年月日</label>
 	                <span class="required-label">必須</span>
-	                <select id="birthYear" name="birthYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
+	                <select id="birthYear" name="birthYear" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 年 --</option>
-	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <=currentYear;
+	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-60; i <= currentYear - 14;
 	                        i++){ %>
 	                        <option value="<%= i %>">
 	                            <%= i %>年
@@ -65,9 +103,9 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-0">
 	                <label class="form-label invisible-text" for="birthMonth">月</label>
-	                <select id="birthMonth" name="birthMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
+	                <select id="birthMonth" name="birthMonth" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -76,9 +114,9 @@
 	                    <% } %>
 	                </select>
 	            </div>
-	            <div class="col-md-4 mb-5">
+	            <div class="col-md-4 mb-0">
 	                <label class="form-label invisible-text" for="birthDay">日</label>
-	                <select id="birthDay" name="birthDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
+	                <select id="birthDay" name="birthDay" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -86,7 +124,16 @@
 	                        </option>
 	                    <% } %>
 	                </select>
-	            </div>	      
+	            </div>
+	        	<!-- エラー表示  -->
+	            <div class="col-md-12 mb-5">			        	
+			        <c:set var="errorMsg" value="${requestScope['birthError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
+	            </div>
 	        </div>
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">	        

@@ -44,40 +44,77 @@ public class ChangeNameDateofBirthAction extends Action {
 		String birthMonth = request.getParameter("birthMonth");
 		String birthDay = request.getParameter("birthDay");
 
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(lastName, firstName, lastNameRuby, firstNameRuby, birthYear, birthMonth,
-				birthDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-name-date-of-birth.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
-		if (ValidationUtil.isHiragana(lastNameRuby, firstNameRuby)) {
-			request.setAttribute("rubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		// 姓のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(lastName)) {
+			request.setAttribute("lastNameError", "入力必須項目です。");
 		}
-
-		// 生年月日が存在しない日付の場合はエラーにする
-		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(birthYear) ||
-				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
-		}
-
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, lastName, firstName, lastNameRuby, firstNameRuby)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
-		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(firstName, lastName)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(lastName)) {
+			request.setAttribute("lastNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, lastName)) {
+			request.setAttribute("lastNameError", "32文字以下で入力してください。");
+		}
+
+		// 名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(firstName)) {
+			request.setAttribute("firstNameError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(firstName)) {
+			request.setAttribute("firstNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, firstName)) {
+			request.setAttribute("firstNameError", "32文字以下で入力してください。");
+		}
+
+		// ふりがなのエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "入力必須項目です。");
+		}
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		else if (ValidationUtil.isHiragana(lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, lastNameRuby)) {
+			request.setAttribute("lastNameRubyError", "32文字以下で入力してください。");
+		}
+
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "入力必須項目です。");
+		}
+		// 「ふりがな」が「ひらがな」で記載されていなければエラーを返す
+		else if (ValidationUtil.isHiragana(firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "「ふりがな」は「ひらがな」で入力してください。");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, firstNameRuby)) {
+			request.setAttribute("firstNameRubyError", "32文字以下で入力してください。");
+		}
+
+		// 生年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(birthYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+			request.setAttribute("birthError", "年月日は正規の桁数で入力してください。");
+		}
+		// 生年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "存在しない日付です。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

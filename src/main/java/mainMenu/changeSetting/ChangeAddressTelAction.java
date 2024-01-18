@@ -40,33 +40,41 @@ public class ChangeAddressTelAction extends Action {
 		String postCode = request.getParameter("postCode");
 		String address = request.getParameter("address");
 
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(tel, postCode, address)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-address-tel.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 電話番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(tel)) {
+			request.setAttribute("telError", "入力必須項目です。");
+		}
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (ValidationUtil.isTenOrElevenDigit(tel)) {
+		else if (ValidationUtil.isTenOrElevenDigit(tel)) {
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
+		// 郵便番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(postCode)) {
+			request.setAttribute("postCodeError", "入力必須項目です。");
+		}
 		// 郵便番号が半角7桁でなければエラーを返す
-		if (ValidationUtil.isSevenDigit(postCode)) {
+		else if (ValidationUtil.isSevenDigit(postCode)) {
 			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す
-		if (ValidationUtil.areValidLengths(64, address)) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		// 住所のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(address)) {
+			request.setAttribute("addressError", "入力必須項目です。");
 		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(address)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(address)) {
+			request.setAttribute("addressError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, address)) {
+			request.setAttribute("addressError", "住所は64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

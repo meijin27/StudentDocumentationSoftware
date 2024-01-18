@@ -12,25 +12,38 @@
     </div>
     <div class="container">
 		<form action="ChangeAddressTel.action" method="post" autocomplete="off">
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>     		
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+            <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+                    <c:import url="/errorMessage/error-message.jsp" />
+	            </c:if>
+            </div>      		
 		
 	        <div class="row">
 	            <!-- 郵便番号 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="postCode">郵便番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="postCode" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>" required>
+	                <input class="form-control  ${not empty requestScope['postCodeError'] ? 'error-input' : ''}" type="text" id="postCode" name="postCode" placeholder="2310017" value="<c:out value='${postCode}'/>" required>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['postCodeError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
 	            </div>
 	            <div class="col-md-9 mb-3"></div>	            
 
@@ -39,14 +52,28 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="address">住所</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text"id="address" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="<c:out value='${address}'/>" required>
+	                <input class="form-control  ${not empty requestScope['addressError'] ? 'error-input' : ''}" type="text"id="address" name="address" placeholder="神奈川県横浜市中区港町１丁目１ 横浜スタジアム"value="<c:out value='${address}'/>" required>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['addressError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
 	            </div>
 	            
 	            <!-- 電話番号 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="tel">電話番号</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="tel" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>" required>
+	                <input class="form-control  ${not empty requestScope['telError'] ? 'error-input' : ''}" type="text" id="tel" name="tel" placeholder="08011112222"value="<c:out value='${tel}'/>" required>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['telError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>
 	            </div>	            
 	        </div>
 		    <!-- トークンの格納  -->

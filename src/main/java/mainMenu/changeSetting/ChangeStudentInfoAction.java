@@ -45,46 +45,80 @@ public class ChangeStudentInfoAction extends Action {
 		String admissionMonth = request.getParameter("admissionMonth");
 		String admissionDay = request.getParameter("admissionDay");
 
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(studentType, className, studentNumber, schoolYear, classNumber, admissionYear,
-				admissionMonth, admissionDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "change-address-tel.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 入学年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(admissionYear, admissionMonth, admissionDay)) {
+			request.setAttribute("admissionError", "入力必須項目です。");
+		}
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(admissionYear) ||
+		else if (ValidationUtil.isFourDigit(admissionYear) ||
 				ValidationUtil.isOneOrTwoDigit(admissionMonth, admissionDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+			request.setAttribute("admissionError", "年月日は正規の桁数で入力してください。");
+		}
+		// 入学年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(admissionYear, admissionMonth, admissionDay)) {
+			request.setAttribute("admissionError", "存在しない日付です。");
 		}
 
+		// クラス名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(className)) {
+			request.setAttribute("classNameError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(className)) {
+			request.setAttribute("classNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(16, className)) {
+			request.setAttribute("classNameError", "クラス名は16文字以下で入力してください。");
+		}
+
+		// 学生種別のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(studentType)) {
+			request.setAttribute("studentTypeError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(studentType)) {
+			request.setAttribute("studentTypeError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(5, studentType)) {
+			request.setAttribute("studentTypeError", "学生種別は5文字以下で入力してください。");
+		}
+
+		// 学籍番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(studentNumber)) {
+			request.setAttribute("studentNumberError", "入力必須項目です。");
+		}
 		// 学籍番号が半角6桁でなければエラーを返す
-		if (ValidationUtil.isSixDigit(studentNumber)) {
+		else if (ValidationUtil.isSixDigit(studentNumber)) {
 			request.setAttribute("studentNumberError", "学籍番号は半角数字6桁で入力してください。");
 		}
 
-		// 学年・クラスが半角1桁でなければエラーを返す
-		if (ValidationUtil.isSingleDigit(schoolYear, classNumber)) {
-			request.setAttribute("numberError", "学年・クラスは半角数字1桁で入力してください。");
+		// 学年のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(schoolYear)) {
+			request.setAttribute("schoolYearError", "入力必須項目です。");
+		}
+		// 学年が半角1桁でなければエラーを返す
+		else if (ValidationUtil.isSingleDigit(schoolYear)) {
+			request.setAttribute("schoolYearError", "学年は半角数字1桁で入力してください。");
 		}
 
-		// 文字数が多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-		if (ValidationUtil.areValidLengths(5, studentType)) {
-			request.setAttribute("valueLongStudentTypeError", "学生種別は5文字以下で入力してください。");
-		} else if (ValidationUtil.areValidLengths(16, className)) {
-			request.setAttribute("valueLongClassNameError", "クラス名は16文字以下で入力してください。");
+		// クラスのエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(classNumber)) {
+			request.setAttribute("classNumberError", "入力必須項目です。");
 		}
-
-		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(studentType, className)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		// クラスが半角1桁でなければエラーを返すclassNumber
+		else if (ValidationUtil.isSingleDigit(classNumber)) {
+			request.setAttribute("classNumberError", "クラスは半角数字1桁で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
