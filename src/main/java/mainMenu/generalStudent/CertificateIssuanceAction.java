@@ -67,12 +67,6 @@ public class CertificateIssuanceAction extends Action {
 		String applicationForm = request.getParameter("applicationForm");
 		String overseasRemittanceCalculator = request.getParameter("overseasRemittanceCalculator");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, use, propose, immigrationBureau)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-issuance.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
@@ -82,6 +76,58 @@ public class CertificateIssuanceAction extends Action {
 		boolean checkReissue = false;
 		boolean checkOther = false;
 
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 入学年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
+		}
+
+		// 用途のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(use)) {
+			request.setAttribute("useError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(use)) {
+			request.setAttribute("useError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(8, use)) {
+			request.setAttribute("useError", "用途は8文字以下で入力してください。");
+		}
+
+		// 提出先のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(propose)) {
+			request.setAttribute("proposeError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(propose)) {
+			request.setAttribute("proposeError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(18, propose)) {
+			request.setAttribute("proposeError", "提出先は18文字以下で入力してください。");
+		}
+
+		// 提出先は入管ですか？ のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(immigrationBureau)) {
+			request.setAttribute("immigrationBureauError", "入力必須項目です。");
+		}
+		// 提出先が「はい」「いいえ」以外の場合はエラーを返す
+		else if (!(immigrationBureau.equals("はい") || immigrationBureau.equals("いいえ"))) {
+			request.setAttribute("immigrationBureauError", "提出先は「はい」「いいえ」から選択してください");
+		}
+
 		// 証明書の入力のチェック
 		// すべてが空の場合はスルー
 		if (ValidationUtil.areAllNullOrEmpty(proofOfStudent, attendanceRate, results, expectedGraduation, diploma,
@@ -89,10 +135,39 @@ public class CertificateIssuanceAction extends Action {
 		} else {
 			// 何か入力されている場合	
 			// 入力されている証明書が半角1桁でなければエラーを返す
-			if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent, attendanceRate, results,
-					expectedGraduation, diploma,
-					certificateCompletion, enrollmentCertificate, healthCertificate, closedPeriod)) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent)) {
+				request.setAttribute("proofOfStudentError", "必要枚数は半角数字１桁で入力してください。");
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(attendanceRate)) {
+				request.setAttribute("attendanceRateError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(results)) {
+				request.setAttribute("resultsError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(expectedGraduation)) {
+				request.setAttribute("expectedGraduationError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(diploma)) {
+				request.setAttribute("diplomaError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(certificateCompletion)) {
+				request.setAttribute("certificateCompletionError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(enrollmentCertificate)) {
+				request.setAttribute("enrollmentCertificateError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(healthCertificate)) {
+				request.setAttribute("healthCertificateError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(closedPeriod)) {
+				request.setAttribute("closedPeriodError", "必要枚数は半角数字１桁で入力してください。");
 			}
 			// 入力チェックをtrueにする
 			checkCredentials = true;
@@ -103,20 +178,40 @@ public class CertificateIssuanceAction extends Action {
 		if (ValidationUtil.areAllNullOrEmpty(englishProofOfStudent, englishResults, englishDiploma)) {
 		} else {
 			// 何か入力されている場合
-			// 英語の姓と名のチェック
-			if (ValidationUtil.isNullOrEmpty(englishLastName, englishFirstName)) {
+			// 英語の姓のチェック
+			if (ValidationUtil.isNullOrEmpty(englishLastName)) {
 				// 姓名のどちらかに未入力がある場合はエラーを返す
-				request.setAttribute("englishNameError", "英文証明書は英語の姓と名を入力してください。");
-			} else if (ValidationUtil.areValidLengths(32, englishLastName, englishFirstName)) {
+				request.setAttribute("englishLastNameError", "英文証明書を発行する場合は英語の姓を入力してください。");
+			} else if (ValidationUtil.areValidLengths(32, englishLastName)) {
 				// 姓名の文字列長が長い場合はエラーを返す
-				request.setAttribute("englishNameError", "英語の氏名は32文字以下で入力してください。");
-			} else if (ValidationUtil.isEnglish(englishLastName, englishFirstName)) {
+				request.setAttribute("englishLastNameError", "英語の姓は32文字以下で入力してください。");
+			} else if (ValidationUtil.isEnglish(englishLastName)) {
 				// 姓名が英語以外で入力された場合はエラーを返す
-				request.setAttribute("englishNameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
-			} else if (ValidationUtil.isValidSingleDigitOrNullEmpty(englishProofOfStudent,
-					englishResults, englishDiploma)) {
-				// 入力されている証明書が半角1桁でなければエラーを返す
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+				request.setAttribute("englishLastNameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
+			}
+
+			// 英語の名のチェック
+			if (ValidationUtil.isNullOrEmpty(englishFirstName)) {
+				// 姓名のどちらかに未入力がある場合はエラーを返す
+				request.setAttribute("englishFirstNameError", "英文証明書を発行する場合は英語の名を入力してください。");
+			} else if (ValidationUtil.areValidLengths(32, englishFirstName)) {
+				// 姓名の文字列長が長い場合はエラーを返す
+				request.setAttribute("englishFirstNameError", "英語の名は32文字以下で入力してください。");
+			} else if (ValidationUtil.isEnglish(englishFirstName)) {
+				// 姓名が英語以外で入力された場合はエラーを返す
+				request.setAttribute("englishFirstNameError", "英文証明書を発行する場合の英語氏名欄は英語で入力してください。");
+			}
+
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(englishProofOfStudent)) {
+				request.setAttribute("englishProofOfStudentError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(englishResults)) {
+				request.setAttribute("englishResultsError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(englishDiploma)) {
+				request.setAttribute("englishDiplomaError", "必要枚数は半角数字１桁で入力してください。");
 			}
 			// 入力チェックをtrueにする
 			checkEnglish = true;
@@ -127,11 +222,17 @@ public class CertificateIssuanceAction extends Action {
 		if (ValidationUtil.areAllNullOrEmpty(reissueBrokenStudentID, reissueLostStudentID,
 				reissueTemporaryIdentification)) {
 		} else {
-
 			// 入力されている証明書が半角1桁でなければエラーを返す
-			if (ValidationUtil.isValidSingleDigitOrNullEmpty(reissueBrokenStudentID, reissueLostStudentID,
-					reissueTemporaryIdentification)) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(reissueBrokenStudentID)) {
+				request.setAttribute("reissueBrokenStudentIDError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(reissueLostStudentID)) {
+				request.setAttribute("reissueLostStudentIDError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(reissueTemporaryIdentification)) {
+				request.setAttribute("reissueTemporaryIdentificationError", "必要枚数は半角数字１桁で入力してください。");
 			}
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
@@ -143,49 +244,26 @@ public class CertificateIssuanceAction extends Action {
 		if (ValidationUtil
 				.areAllNullOrEmpty(internationalRemittanceRequest, applicationForm, overseasRemittanceCalculator)) {
 		} else {
-
 			// 入力されている証明書が半角1桁でなければエラーを返す
-			if (ValidationUtil.isValidSingleDigitOrNullEmpty(internationalRemittanceRequest, applicationForm,
-					overseasRemittanceCalculator)) {
-				request.setAttribute("numberError", "必要枚数は半角数字１桁で入力してください。");
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(internationalRemittanceRequest)) {
+				request.setAttribute("internationalRemittanceRequestError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(applicationForm)) {
+				request.setAttribute("applicationFormError", "必要枚数は半角数字１桁で入力してください。");
+
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(overseasRemittanceCalculator)) {
+				request.setAttribute("overseasRemittanceCalculatorError", "必要枚数は半角数字１桁で入力してください。");
 			}
 			// 何か入力されている場合	
 			// 入力チェックをtrueにする
 			checkOther = true;
 		}
 
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
-		}
-
-		// 文字数が18文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(18, propose)) {
-			request.setAttribute("valueLongError", "提出先は18文字以下で入力してください。");
-		}
-
-		// 文字数が8文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(8, use)) {
-			request.setAttribute("valueLongError", "用途は8文字以下で入力してください。");
-		}
-
-		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(propose, use)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-		}
-
-		// 提出先が「はい」「いいえ」以外の場合はエラーを返す
-		if (!(immigrationBureau.equals("はい") || immigrationBureau.equals("いいえ"))) {
-			request.setAttribute("innerError", "提出先は「はい」「いいえ」から選択してください");
-		}
-
 		// 少なくとも1つの項目が入力されている必要がある
 		if (checkCredentials || checkEnglish || checkReissue || checkOther) {
-			// 何かしらの変更がある場合は問題なし
+			// 何かしらの出力がある場合は問題なし
 		} else {
 			request.setAttribute("inputError", "PDF出力する項目を入力してください。");
 		}
