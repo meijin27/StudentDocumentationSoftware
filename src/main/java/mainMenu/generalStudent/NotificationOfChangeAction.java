@@ -191,10 +191,6 @@ public class NotificationOfChangeAction extends Action {
 			else if (ValidationUtil.validateDate(endYear, endMonth, endDay)) {
 				request.setAttribute("endError", "存在しない日付です。");
 			}
-			// 在留カードの期限が入力されている場合は期間の順序をチェックする
-			else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, endYear, endMonth, endDay)) {
-				request.setAttribute("endError", "期間満了年月日は届出年月日より後の日付でなければなりません。");
-			}
 			changeResidentCard = true;
 		}
 
@@ -203,6 +199,17 @@ public class NotificationOfChangeAction extends Action {
 			// 何かしらの変更がある場合は問題なし
 		} else {
 			request.setAttribute("changeError", "変更する項目を入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "notification-of-change.jsp";
+		}
+
+		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
+		// 在留カードの期限が入力されている場合は期間の順序をチェックする
+		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "期間満了年月日は届出年月日より後の日付でなければなりません。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

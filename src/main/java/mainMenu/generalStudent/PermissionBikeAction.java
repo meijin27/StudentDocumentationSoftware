@@ -53,52 +53,127 @@ public class PermissionBikeAction extends Action {
 		String registrationNumber = request.getParameter("registrationNumber");
 		String modelAndColor = request.getParameter("modelAndColor");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, patron, patronTel, startYear,
-				startMonth, startDay, classification, endYear, endMonth, endDay, registrationNumber, modelAndColor)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "permission-bike.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay, startYear, startMonth, startDay,
-				endYear, endMonth, endDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
-					|| ValidationUtil.validateDate(startYear, startMonth, startDay)
-					|| ValidationUtil.validateDate(endYear, endMonth, endDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-				// 申請日と申請期間の比較
-			} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
-					startDay)) {
-				request.setAttribute("dayError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
-			} else if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
-				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
-			}
+		// 願出年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 願出年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
+		// 期間年月日（自）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(startYear, startMonth, startDay)) {
+			request.setAttribute("startError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(startYear, startMonth, startDay)) {
+			request.setAttribute("startError", "年月日は正規の桁数で入力してください。");
+		}
+		// 期間年月日（自）が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(startYear, startMonth, startDay)) {
+			request.setAttribute("startError", "存在しない日付です。");
+		}
+
+		// 期間年月日（至）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "年月日は正規の桁数で入力してください。");
+		}
+		// 期間年月日（至）が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "存在しない日付です。");
+		}
+
+		// 保護者のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(patron)) {
+			request.setAttribute("patronError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(patron)) {
+			request.setAttribute("patronError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, patron)) {
+			request.setAttribute("patronError", "保護者は32文字以下で入力してください。");
+		}
+
+		// 保護者電話番号のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(patronTel)) {
+			request.setAttribute("patronTelError", "入力必須項目です。");
+		}
 		// 電話番号が半角10~11桁でなければエラーを返す
-		if (ValidationUtil.isTenOrElevenDigit(patronTel)) {
-			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
+		else if (ValidationUtil.isTenOrElevenDigit(patronTel)) {
+			request.setAttribute("patronTelError", "電話番号は半角数字10桁～11桁で入力してください。");
 		}
 
+		// 種別のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(classification)) {
+			request.setAttribute("classificationError", "入力必須項目です。");
+		}
 		// 種別が「自転車」「原動機付自転車」以外の場合はエラーを返す
-		if (!(classification.equals("自転車") || classification.equals("原動機付自転車"))) {
+		else if (!(classification.equals("自転車") || classification.equals("原動機付自転車"))) {
 			request.setAttribute("classificationError", "種別は「自転車」「原動機付自転車」から選択してください");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, patron, registrationNumber, modelAndColor)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		// 登録番号（ナンバー or 防犯登録番号）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(registrationNumber)) {
+			request.setAttribute("registrationNumberError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(registrationNumber)) {
+			request.setAttribute("registrationNumberError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, registrationNumber)) {
+			request.setAttribute("registrationNumberError", "登録番号（ナンバー or 防犯登録番号）は32文字以下で入力してください。");
 		}
 
+		// 車種・色のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(modelAndColor)) {
+			request.setAttribute("modelAndColorError", "入力必須項目です。");
+		}
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(patron, registrationNumber, modelAndColor)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(modelAndColor)) {
+			request.setAttribute("modelAndColorError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, modelAndColor)) {
+			request.setAttribute("modelAndColorError", "車種・色は32文字以下で入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "permission-bike.jsp";
+		}
+
+		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
+		// 期間年月日（自）が願出年月日より前の日付の場合はエラーにする
+		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
+				startDay)) {
+			request.setAttribute("startError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+		}
+
+		if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "期間年月日（至）は期間年月日（自）より後の日付でなければなりません。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

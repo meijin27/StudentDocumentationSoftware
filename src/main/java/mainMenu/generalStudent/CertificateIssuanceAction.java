@@ -85,7 +85,7 @@ public class CertificateIssuanceAction extends Action {
 		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
 			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
 		}
-		// 入学年月日が存在しない日付の場合はエラーにする
+		// 申請年月日が存在しない日付の場合はエラーにする
 		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
 			request.setAttribute("requestError", "存在しない日付です。");
 		}
