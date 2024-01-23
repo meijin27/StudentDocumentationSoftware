@@ -63,13 +63,6 @@ public class PetitionForDeferredPaymentAction extends Action {
 		// 入力された金額をカンマ付きに変更するメソッド
 		NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, reason, howToRaiseFunds, amountPayable,
-				generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay, tuitionFeePaid)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "petition-for-deferred-payment.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
@@ -77,41 +70,141 @@ public class PetitionForDeferredPaymentAction extends Action {
 		LocalDate requestDate = null;
 		LocalDate generalDeliveryDate = null;
 
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay, generalDeliveryYear,
-				generalDeliveryMonth, generalDeliveryDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
-					|| ValidationUtil.validateDate(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+		// 願出年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 願出年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
-		// 文字数が64文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(64, reason, howToRaiseFunds)) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
+		// 納付できない理由のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(reason)) {
+			request.setAttribute("reasonError", "入力必須項目です。");
 		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(reason, howToRaiseFunds)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(reason)) {
+			request.setAttribute("reasonError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, reason)) {
+			request.setAttribute("reasonError", "納付できない理由は64文字以下で入力してください。");
 		}
 
+		// 学費の捻出方法のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(howToRaiseFunds)) {
+			request.setAttribute("howToRaiseFundsError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(howToRaiseFunds)) {
+			request.setAttribute("howToRaiseFundsError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, howToRaiseFunds)) {
+			request.setAttribute("howToRaiseFundsError", "学費の捻出方法は64文字以下で入力してください。");
+		}
+
+		// 納付すべき金額（学費、教材費、積立金等）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(amountPayable)) {
+			request.setAttribute("amountPayableError", "入力必須項目です。");
+		}
 		// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
-		if (!amountPayable.matches("\\d+$") || !tuitionFeePaid.matches("\\d+$") || amountPayable.length() > 7
-				|| tuitionFeePaid.length() > 7) {
-			request.setAttribute("numberError", "金額は数字のみ7桁以下で入力してください。");
-		} else {
-			// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
-			totalPayment += Integer.parseInt(amountPayable) - Integer.parseInt(tuitionFeePaid);
-			// 文字列の数値をカンマ付きに変更する
-			amountPayable = numberFormat.format(Integer.parseInt(amountPayable));
-			tuitionFeePaid = numberFormat.format(Integer.parseInt(tuitionFeePaid));
+		else if (!amountPayable.matches("\\d+$") || amountPayable.length() > 7) {
+			request.setAttribute("amountPayableError", "金額は数字のみ7桁以下で入力してください。");
 		}
 
-		// エラーが発生している場合は元のページに戻す
-		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+		// 通常納期年月日日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay)) {
+			request.setAttribute("generalDeliveryError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay)) {
+			request.setAttribute("generalDeliveryError", "年月日は正規の桁数で入力してください。");
+		}
+		// 通常納期年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay)) {
+			request.setAttribute("generalDeliveryError", "存在しない日付です。");
+		}
+
+		// 通常納期内納付学費等（教材費・積立金等を含む）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(tuitionFeePaid)) {
+			request.setAttribute("tuitionFeePaidError", "入力必須項目です。");
+		}
+		// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
+		else if (!tuitionFeePaid.matches("\\d+$") || tuitionFeePaid.length() > 7) {
+			request.setAttribute("tuitionFeePaidError", "金額は数字のみ7桁以下で入力してください。");
+		}
+
+		try {
+			// データベース操作用クラス
+			UserDAO dao = new UserDAO();
+			// 復号とIDやIV等の取り出しクラスの設定
+			Decrypt decrypt = new Decrypt(dao);
+			DecryptionResult result = decrypt.getDecryptedMasterKey(session);
+			// IDの取り出し
+			String id = result.getId();
+
+			// 学生種類のデータベースからの取り出し
+			String reEncryptedStudentType = dao.getStudentType(id);
+			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
+
+			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
+			if (ValidationUtil.isNullOrEmpty(studentType)) {
+				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
+				response.sendRedirect(contextPath + "/login/login.jsp");
+				return null;
+			}
+
+			// 学生種別が留学生の場合は記入必須項目の確認を行う。
+			if (studentType.equals("留学生")) {
+				// 母国からの送金が入力されていない場合はエラーを返す
+				if (ValidationUtil.isNullOrEmpty(remittanceFromCountry)) {
+					request.setAttribute("remittanceFromCountryError", "母国からの送金有無を選択してください");
+					// 母国からの送金が入力されている場合で「有」「無」以外の入力値の場合はエラーを返す
+				} else if (!(remittanceFromCountry.equals("有") || remittanceFromCountry.equals("無"))) {
+					request.setAttribute("remittanceFromCountryError", "母国からの送金有無は「有」「無」から選択してください");
+					// 母国からの送金が「無」で理由未記載の場合はエラーを返す。
+				} else if (remittanceFromCountry.equals("無")
+						&& ValidationUtil.isNullOrEmpty(reasonNoRemittance)) {
+					request.setAttribute("reasonNoRemittanceError", "母国からの送金がない場合は理由を記載してください。");
+					// 母国からの送金が「無」で文字数が64文字より多い場合はエラーを返す。
+				} else if (remittanceFromCountry.equals("無")
+						&& ValidationUtil.areValidLengths(64, reasonNoRemittance)) {
+					request.setAttribute("reasonNoRemittanceError", "母国からの送金がない理由は64文字以下で入力してください。");
+					// 入力値に特殊文字が入っていないか確認する
+				} else if (remittanceFromCountry.equals("無")
+						&& ValidationUtil.containsForbiddenChars(reasonNoRemittance)) {
+					request.setAttribute("reasonNoRemittanceError", "使用できない特殊文字が含まれています");
+					// 母国からの送金が「有」ならばinvoiceの日時を記載を確認する
+				} else if (remittanceFromCountry.equals("有")
+						&& ValidationUtil.isNullOrEmpty(invoiceYear, invoiceMonth, invoiceDay)) {
+					request.setAttribute("invoiceError", "母国からの送金がある場合は海外送金依頼書INVOICE交付申請年月日を記載してください。");
+				} else if (remittanceFromCountry.equals("有")) {
+					// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+					if (ValidationUtil.isFourDigit(invoiceYear) ||
+							ValidationUtil.isOneOrTwoDigit(invoiceMonth, invoiceDay)) {
+						request.setAttribute("invoiceError", "年月日は正規の桁数で入力してください。");
+					} else {
+						if (ValidationUtil.validateDate(invoiceYear, invoiceMonth, invoiceDay)) {
+							request.setAttribute("invoiceError", "存在しない日付です。");
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			request.setAttribute("innerError", "内部エラーが発生しました。");
 			return "petition-for-deferred-payment.jsp";
 		}
 
@@ -128,42 +221,38 @@ public class PetitionForDeferredPaymentAction extends Action {
 			String deliveryYear = request.getParameter("deliveryYear" + num);
 			String deliveryMonth = request.getParameter("deliveryMonth" + num);
 			String deliveryDay = request.getParameter("deliveryDay" + num);
+			String deliveryError = "delivery" + num + "Error";
 			String deferredPaymentAmount = request.getParameter("deferredPaymentAmount" + num);
+			String deferredPaymentAmountError = "deferredPaymentAmount" + num + "Error";
 
-			// 必須項目に未入力項目があればエラーを返すかブレークする
-			if (ValidationUtil.isNullOrEmpty(deliveryYear, deliveryMonth, deliveryDay, deferredPaymentAmount)) {
-				// 最初の行(1行目)が空ならばエラーを返す
-				if (i == 1) {
-					request.setAttribute("nullError", "未入力項目があります。");
-					return "petition-for-deferred-payment.jsp";
-					// 入力がない場合はその行で終わる
-				} else {
-					break;
-				}
+			// 最初の行(1行目)以外に未入力箇所があればブレークする
+			if (ValidationUtil.isNullOrEmpty(deliveryYear, deliveryMonth, deliveryDay, deferredPaymentAmount)
+					&& i != 1) {
+				break;
 			}
 
-			// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-			if (ValidationUtil.isOneOrTwoDigit(deliveryYear, deliveryMonth, deliveryDay)) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				if (ValidationUtil.validateDate(deliveryYear, deliveryMonth, deliveryDay)) {
-					request.setAttribute("dayError", "存在しない日付です。");
-					// 申請日と申請期間の比較
-				} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
-						deliveryDay)) {
-					request.setAttribute("dayError", "納付期限は願出年月日より後の日付でなければなりません。");
-				} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
-						deliveryYear, deliveryMonth, deliveryDay)) {
-					request.setAttribute("dayError", "納付期限は通常納期年月日より後の日付でなければなりません。");
-				}
+			// 納付期限のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(deliveryYear, deliveryMonth, deliveryDay)) {
+				request.setAttribute(deliveryError, "入力必須項目です。");
+			}
+			// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+			else if (ValidationUtil.isOneOrTwoDigit(deliveryYear, deliveryMonth, deliveryDay)) {
+				request.setAttribute(deliveryError, "年月日は正規の桁数で入力してください。");
+			}
+			// 通常納期年月日が存在しない日付の場合はエラーにする
+			else if (ValidationUtil.validateDate(deliveryYear, deliveryMonth, deliveryDay)) {
+				request.setAttribute(deliveryError, "存在しない日付です。");
 			}
 
+			// 延納金額のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(deferredPaymentAmount)) {
+				request.setAttribute(deferredPaymentAmountError, "入力必須項目です。");
+			}
 			// 入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
-			if (!deferredPaymentAmount.matches("\\d+$") || deferredPaymentAmount.length() > 7) {
-				request.setAttribute("numberError", "金額は数字のみ7桁以下で入力してください。");
-				// 総支払金額より延納金額を減算する
-			} else {
-				totalPayment -= Integer.parseInt(deferredPaymentAmount);
+			else if (!deferredPaymentAmount.matches("\\d+$") || deferredPaymentAmount.length() > 7) {
+				request.setAttribute(deferredPaymentAmountError, "金額は数字のみ7桁以下で入力してください。");
 			}
 
 			// エラーが発生している場合は元のページに戻す
@@ -171,12 +260,34 @@ public class PetitionForDeferredPaymentAction extends Action {
 				return "petition-for-deferred-payment.jsp";
 			}
 
+			// 申請日と申請期間の比較
+			if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
+					deliveryDay)) {
+				request.setAttribute(deliveryError, "納付期限は願出年月日より後の日付でなければなりません。");
+			} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
+					deliveryYear, deliveryMonth, deliveryDay)) {
+				request.setAttribute(deliveryError, "納付期限は通常納期年月日より後の日付でなければなりません。");
+			}
+
+			// 総支払金額より延納金額を減算する
+			totalPayment -= Integer.parseInt(deferredPaymentAmount);
+
 			// 作成する行数カウントの追加
 			count++;
 		}
 
+		// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
+		totalPayment += Integer.parseInt(amountPayable) - Integer.parseInt(tuitionFeePaid);
+		// 文字列の数値をカンマ付きに変更する
+		amountPayable = numberFormat.format(Integer.parseInt(amountPayable));
+		tuitionFeePaid = numberFormat.format(Integer.parseInt(tuitionFeePaid));
+
 		if (totalPayment != 0) {
-			request.setAttribute("numberError", "納付すべき金額と納付学費及び延納金額の合計が一致しません。");
+			request.setAttribute("totalPaymentError", "納付すべき金額と納付学費及び延納金額の合計が一致しません。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "petition-for-deferred-payment.jsp";
 		}
 
@@ -210,58 +321,16 @@ public class PetitionForDeferredPaymentAction extends Action {
 			// 学籍番号のデータベースからの取り出し
 			String reEncryptedStudentNumber = dao.getStudentNumber(id);
 			String studentNumber = decrypt.getDecryptedDate(result, reEncryptedStudentNumber);
+
 			// 学生種類のデータベースからの取り出し
 			String reEncryptedStudentType = dao.getStudentType(id);
 			String studentType = decrypt.getDecryptedDate(result, reEncryptedStudentType);
 
 			// データベースから取り出したデータにnullがあれば初期設定をしていないためログインページにリダイレクト
-			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, schoolYear, classNumber, studentNumber,
-					studentType)) {
+			if (ValidationUtil.isNullOrEmpty(lastName, firstName, className, schoolYear, classNumber, studentNumber)) {
 				session.setAttribute("otherError", "初期設定が完了していません。ログインしてください。");
 				response.sendRedirect(contextPath + "/login/login.jsp");
 				return null;
-			}
-
-			// 学生種別が留学生の場合は記入必須項目の確認を行う。
-			if (studentType.equals("留学生")) {
-				// 母国からの送金が入力されていない場合はエラーを返す
-				if (ValidationUtil.isNullOrEmpty(remittanceFromCountry)) {
-					request.setAttribute("exchangeStudentError", "母国からの送金有無を選択してください");
-					// 母国からの送金が入力されている場合で「有」「無」以外の入力値の場合はエラーを返す
-				} else if (!(remittanceFromCountry.equals("有") || remittanceFromCountry.equals("無"))) {
-					request.setAttribute("exchangeStudentError", "母国からの送金有無は「有」「無」から選択してください");
-					// 母国からの送金が「無」で理由未記載の場合はエラーを返す。
-				} else if (remittanceFromCountry.equals("無")
-						&& ValidationUtil.isNullOrEmpty(reasonNoRemittance)) {
-					request.setAttribute("exchangeStudentError", "母国からの送金がない場合は理由を記載してください。");
-					// 母国からの送金が「無」で文字数が64文字より多い場合はエラーを返す。
-				} else if (remittanceFromCountry.equals("無")
-						&& ValidationUtil.areValidLengths(64, reasonNoRemittance)) {
-					request.setAttribute("exchangeStudentError", "母国からの送金がない理由は64文字以下で入力してください。");
-					// 入力値に特殊文字が入っていないか確認する
-				} else if (remittanceFromCountry.equals("無")
-						&& ValidationUtil.containsForbiddenChars(reasonNoRemittance)) {
-					request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-					// 母国からの送金が「有」ならばinvoiceの日時を記載を確認する
-				} else if (remittanceFromCountry.equals("有")
-						&& ValidationUtil.isNullOrEmpty(invoiceYear, invoiceMonth, invoiceDay)) {
-					request.setAttribute("exchangeStudentError", "母国からの送金がある場合は海外送金依頼書INVOICE交付申請年月日を記載してください。");
-				} else if (remittanceFromCountry.equals("有")) {
-					// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-					if (ValidationUtil.isFourDigit(invoiceYear) ||
-							ValidationUtil.isOneOrTwoDigit(invoiceMonth, invoiceDay)) {
-						request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-					} else {
-						if (ValidationUtil.validateDate(invoiceYear, invoiceMonth, invoiceDay)) {
-							request.setAttribute("dayError", "存在しない日付です。");
-						}
-					}
-				}
-
-				// エラーが発生している場合は元のページに戻す
-				if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-					return "petition-for-deferred-payment.jsp";
-				}
 			}
 
 			// 姓名を結合する			
