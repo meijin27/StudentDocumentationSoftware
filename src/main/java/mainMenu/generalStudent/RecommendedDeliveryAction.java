@@ -49,61 +49,97 @@ public class RecommendedDeliveryAction extends Action {
 		String deadlineDay = request.getParameter("deadlineDay");
 		String nominationForm = request.getParameter("nominationForm");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, propose, subject, deadlineYear,
-				deadlineMonth, deadlineDay, nominationForm)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "recommended-delivery.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay, deadlineYear, deadlineMonth,
-				deadlineDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
-					|| ValidationUtil.validateDate(deadlineYear, deadlineMonth,
-							deadlineDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-				// 申請日と申請期間の比較
-			} else if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deadlineYear, deadlineMonth,
-					deadlineDay)) {
-				request.setAttribute("dayError", "提出期限は申請日より後の日付でなければなりません。");
-			}
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
+		// 提出期限のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(deadlineYear, deadlineMonth, deadlineDay)) {
+			request.setAttribute("deadlineError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(deadlineYear, deadlineMonth, deadlineDay)) {
+			request.setAttribute("deadlineError", "年月日は正規の桁数で入力してください。");
+		}
+		// 提出期限が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(deadlineYear, deadlineMonth, deadlineDay)) {
+			request.setAttribute("deadlineError", "存在しない日付です。");
+		}
+
+		// 事由のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subject)) {
+			request.setAttribute("subjectError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(subject)) {
+			request.setAttribute("subjectError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(12, subject)) {
+			request.setAttribute("subjectError", "事由は12文字以下で入力してください。");
+		}
 		// 事由が「その他」の場合で理由が未記載の場合はエラーを返す
-		if (subject.equals("その他")) {
+		else if (subject.equals("その他")) {
 			if (ValidationUtil.isNullOrEmpty(reason)) {
-				request.setAttribute("nullError", "事由が「その他」の場合は理由を入力してください。");
+				request.setAttribute("reasonError", "事由が「その他」の場合は理由を入力してください。");
 			} else if (ValidationUtil.areValidLengths(18, reason)) {
 				// 文字数が18文字より多い場合はエラーを返す。セレクトボックスの入力値の確認も行う。
-				request.setAttribute("valueLongError", "理由は18文字以下で入力してください。");
-			} else if (ValidationUtil.areValidLengths(12, subject)) {
-				// 文字数が12文字より多い場合はエラーを返す。
-				request.setAttribute("valueLongError", "事由は12文字以下で入力してください。");
-			} else if (ValidationUtil.containsForbiddenChars(reason, subject)) {
+				request.setAttribute("reasonError", "理由は18文字以下で入力してください。");
+			} else if (ValidationUtil.containsForbiddenChars(reason)) {
 				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+				request.setAttribute("reasonError", "使用できない特殊文字が含まれています");
 			}
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, propose)) {
-			request.setAttribute("valueLongError", "提出先は32文字以下で入力してください。");
+		// 提出先のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(propose)) {
+			request.setAttribute("proposeError", "入力必須項目です。");
 		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(propose)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(propose)) {
+			request.setAttribute("proposeError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, propose)) {
+			request.setAttribute("proposeError", "提出先は32文字以下で入力してください。");
 		}
 
+		// 提出先のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(nominationForm)) {
+			request.setAttribute("nominationFormError", "入力必須項目です。");
+		}
 		// 推薦様式が「本校書式」「いいえ」以外の場合はエラーを返す
-		if (!(nominationForm.equals("本校書式") || nominationForm.equals("提出先書式"))) {
-			request.setAttribute("innerError", "推薦様式は「本校書式」「提出先書式」から選択してください");
+		else if (!(nominationForm.equals("本校書式") || nominationForm.equals("提出先書式"))) {
+			request.setAttribute("nominationFormError", "推薦様式は「本校書式」「提出先書式」から選択してください");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "recommended-delivery.jsp";
+		}
+
+		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
+		// 申請日と提出期限の比較
+		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deadlineYear, deadlineMonth,
+				deadlineDay)) {
+			request.setAttribute("deadlineError", "提出期限は申請年月日より後の日付でなければなりません。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
