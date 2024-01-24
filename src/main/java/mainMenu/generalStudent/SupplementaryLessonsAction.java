@@ -47,44 +47,84 @@ public class SupplementaryLessonsAction extends Action {
 		String teacher = request.getParameter("teacher");
 		String reason = request.getParameter("reason");
 
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, fiscalYear, semester, subjectName,
-				teacher, reason)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "supplementary-lessons.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(requestYear) ||
+		else if (ValidationUtil.isFourDigit(requestYear) ||
 				ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
+		// 補習受講年度のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(fiscalYear)) {
+			request.setAttribute("fiscalYearError", "入力必須項目です。");
+		}
 		// 年度は２桁以下でなければエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(fiscalYear)) {
-			request.setAttribute("fiscalYearError", "年度は半角数字2桁以下で入力してください。");
+		else if (ValidationUtil.isOneOrTwoDigit(fiscalYear)) {
+			request.setAttribute("fiscalYearError", "補習受講年度は半角数字2桁以下で入力してください。");
 		}
 
+		// 補習受講学期のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(semester)) {
+			request.setAttribute("semesterError", "入力必須項目です。");
+		}
 		// 学期は半角1桁でなければエラーを返す
-		if (ValidationUtil.isSingleDigit(semester)) {
-			request.setAttribute("semesterError", "学期は半角数字1桁で入力してください。");
+		else if (ValidationUtil.isSingleDigit(semester)) {
+			request.setAttribute("semesterError", "補習受講学期は半角数字1桁で入力してください。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, subjectName, teacher, reason)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		// 担当教員名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(teacher)) {
+			request.setAttribute("teacherError", "入力必須項目です。");
 		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(subjectName, teacher, reason)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(teacher)) {
+			request.setAttribute("teacherError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, teacher)) {
+			request.setAttribute("teacherError", "担当教員名は32文字以下で入力してください。");
+		}
+
+		// 教科名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectName)) {
+			request.setAttribute("subjectNameError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(subjectName)) {
+			request.setAttribute("subjectNameError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, subjectName)) {
+			request.setAttribute("subjectNameError", "教科名は32文字以下で入力してください。");
+		}
+
+		// 受講事由のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(reason)) {
+			request.setAttribute("reasonError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(reason)) {
+			request.setAttribute("reasonError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, reason)) {
+			request.setAttribute("reasonError", "受講事由は32文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
