@@ -45,23 +45,22 @@ public class StudentDiscountCouponAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "student-discount-coupon.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(requestYear) ||
+		else if (ValidationUtil.isFourDigit(requestYear) ||
 				ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
 		// 作成する行数のカウント
@@ -75,60 +74,86 @@ public class StudentDiscountCouponAction extends Action {
 
 			// 入力された値を変数に格納
 			String sheetsRequired = request.getParameter("sheetsRequired" + num);
+			String sheetsRequiredError = "sheetsRequired" + num + "Error";
 			String startingStation = request.getParameter("startingStation" + num);
+			String startingStationError = "startingStation" + num + "Error";
 			String arrivalStation = request.getParameter("arrivalStation" + num);
+			String arrivalStationError = "arrivalStation" + num + "Error";
 			String intendedUse = request.getParameter("intendedUse" + num);
+			String intendedUseError = "intendedUse" + num + "Error";
 			String reason = request.getParameter("reason" + num);
+			String reasonError = "reason" + num + "Error";
 
 			// 未入力項目があればエラーを返す
-			if (ValidationUtil.isNullOrEmpty(sheetsRequired, startingStation, arrivalStation, intendedUse)) {
-				// 最初の行(1行目)が空ならばエラーを返す
-				if (i == 1) {
-					request.setAttribute("nullError", "未入力項目があります。");
-					return "student-discount-coupon.jsp";
-				} else {
-					break;
-				}
+			if (ValidationUtil.isNullOrEmpty(sheetsRequired, startingStation, arrivalStation, intendedUse) && i != 1) {
+				break;
 			}
 
-			// 使用目的がその他で理由未記載の場合はエラーを返す。
-			if (intendedUse.equals("その他")) {
-				if (ValidationUtil.isNullOrEmpty(reason)) {
-					request.setAttribute("nullError", "使用目的がその他の場合は理由を記載してください。");
-				} else if (ValidationUtil.areValidLengths(18, reason)) {
-					request.setAttribute("valueLongError", "18文字以下で入力してください。");
-				} else if (ValidationUtil.containsForbiddenChars(reason)) {
-					request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-				}
+			// 必要枚数のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(sheetsRequired)) {
+				request.setAttribute(sheetsRequiredError, "入力必須項目です。");
+			}
+			// 必要枚数は1か2でなければエラーを返す
+			else if (!(sheetsRequired.equals("1") || sheetsRequired.equals("2"))) {
+				request.setAttribute(sheetsRequiredError, "必要枚数は1枚・2枚から選択してください。");
 			}
 
-			// 必要枚数は半角1桁でなければエラーを返す
-			if (!(sheetsRequired.equals("1") || sheetsRequired.equals("2"))) {
-				request.setAttribute("numberError", "必要枚数は1枚・2枚から選択してください。");
+			// 出発駅のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(startingStation)) {
+				request.setAttribute(startingStationError, "入力必須項目です。");
 			}
-
-			// 文字数が18文字より多い場合はエラーを返す。
-			if (ValidationUtil.areValidLengths(18, startingStation, arrivalStation)) {
-				request.setAttribute("valueLongError", "18文字以下で入力してください。");
-			}
-
-			// 文字数が3文字より多い場合はエラーを返す。
-			if (ValidationUtil.areValidLengths(3, intendedUse)) {
-				request.setAttribute("valueLongError", "3文字以下で入力してください。");
-			}
-
 			// 入力値に特殊文字が入っていないか確認する
-			if (ValidationUtil.containsForbiddenChars(startingStation, arrivalStation, intendedUse)) {
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			else if (ValidationUtil.containsForbiddenChars(startingStation)) {
+				request.setAttribute(startingStationError, "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, startingStation)) {
+				request.setAttribute(startingStationError, "出発駅は18文字以下で入力してください。");
 			}
 
-			// エラーが発生している場合は元のページに戻す
-			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-				return "student-discount-coupon.jsp";
+			// 到着駅のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(arrivalStation)) {
+				request.setAttribute(arrivalStationError, "入力必須項目です。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(arrivalStation)) {
+				request.setAttribute(arrivalStationError, "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, arrivalStation)) {
+				request.setAttribute(arrivalStationError, "到着駅は18文字以下で入力してください。");
+			}
+
+			// 使用目的のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(intendedUse)) {
+				request.setAttribute(intendedUseError, "入力必須項目です。");
+			}
+			// 文字数が3文字より多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(3, intendedUse)) {
+				request.setAttribute(intendedUseError, "3文字以下で入力してください。");
+			}
+			// 使用目的がその他で理由未記載の場合はエラーを返す。
+			else if (intendedUse.equals("その他")) {
+				if (ValidationUtil.isNullOrEmpty(reason)) {
+					request.setAttribute(reasonError, "使用目的がその他の場合は理由を記載してください。");
+				} else if (ValidationUtil.areValidLengths(18, reason)) {
+					request.setAttribute(reasonError, "理由は18文字以下で入力してください。");
+				} else if (ValidationUtil.containsForbiddenChars(reason)) {
+					request.setAttribute(reasonError, "使用できない特殊文字が含まれています");
+				}
 			}
 
 			// 作成する行数カウントの追加
 			count++;
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "student-discount-coupon.jsp";
 		}
 
 		try {
