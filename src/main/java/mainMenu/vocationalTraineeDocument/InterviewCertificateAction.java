@@ -49,14 +49,22 @@ public class InterviewCertificateAction extends Action {
 		String startForenoonOrMidday = "";
 		String endForenoonOrMidday = "";
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(jobSearch)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "interview-certificate.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
+
+		// 求人職種のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(jobSearch)) {
+			request.setAttribute("jobSearchError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(jobSearch)) {
+			request.setAttribute("jobSearchError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, jobSearch)) {
+			request.setAttribute("jobSearchError", "求人職種は32文字以下で入力してください。");
+		}
 
 		// 日付に未入力項目がある場合は、印刷する書類に日時を記入しない
 		if (ValidationUtil.isNullOrEmpty(year, month, day)) {
@@ -80,9 +88,14 @@ public class InterviewCertificateAction extends Action {
 		if (ValidationUtil.isNullOrEmpty(startHour, endHour)) {
 			startHour = "";
 			endHour = "";
-			// 時間は半角2桁以下でなければエラーを返す
-		} else if (ValidationUtil.isOneOrTwoDigit(startHour, endHour)) {
-			request.setAttribute("timeError", "時間は半角数字２桁以下で入力してください。");
+		}
+		// 時間は半角2桁以下でなければエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(startHour)) {
+			request.setAttribute("startHourError", "面接開始時刻は半角数字２桁以下で入力してください。");
+		}
+		// 時間は半角2桁以下でなければエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(endHour)) {
+			request.setAttribute("endHourError", "面接終了時刻は半角数字２桁以下で入力してください。");
 		} else {
 			// 開始時刻が終了時刻よりも前かどうかをチェックする
 			int checkStartHour = Integer.parseInt(startHour);
@@ -90,7 +103,7 @@ public class InterviewCertificateAction extends Action {
 
 			// 時刻が整合取れるか確認する
 			if (checkStartHour > checkEndHour) {
-				request.setAttribute("logicalError", "開始時刻は終了時刻よりも前でなければなりません。");
+				request.setAttribute("startHourError", "開始時刻は終了時刻よりも前でなければなりません。");
 			}
 
 			if (checkStartHour < 12) {
@@ -106,16 +119,6 @@ public class InterviewCertificateAction extends Action {
 				endForenoonOrMidday = "午後";
 				endHour = String.valueOf(checkEndHour - 12);
 			}
-		}
-
-		// 文字数が32文字より多い場合はエラーを返す
-		if (ValidationUtil.areValidLengths(32, jobSearch)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
-		}
-
-		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(jobSearch)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
 		}
 
 		// エラーが発生している場合は元のページに戻す

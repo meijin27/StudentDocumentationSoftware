@@ -47,18 +47,51 @@ public class CertificateVocationalTrainingAction extends Action {
 		String problems = request.getParameter("problems");
 		String income = request.getParameter("income");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(subjectYear, subjectMonth, problems, income)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-vocational-training.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 証明書対象年のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectYear)) {
+			request.setAttribute("subjectYearError", "入力必須項目です。");
+		}
 		// 証明書対象期間は半角2桁以下でなければエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(subjectYear, subjectMonth)) {
-			request.setAttribute("numberError", "証明書対象期間は半角2桁以下で入力してください。");
+		else if (ValidationUtil.isOneOrTwoDigit(subjectYear)) {
+			request.setAttribute("subjectYearError", "証明書対象年は半角2桁以下で入力してください。");
+		}
+
+		// 証明書対象月のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectMonth)) {
+			request.setAttribute("subjectMonthError", "入力必須項目です。");
+		}
+		// 証明書対象月は半角2桁以下でなければエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(subjectMonth)) {
+			request.setAttribute("subjectMonthError", "証明書対象月は半角2桁以下で入力してください。");
+		}
+
+		// 就労・内職有無のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(problems)) {
+			request.setAttribute("problemsError", "入力必須項目です。");
+		}
+		// 就労有無が「した」「しない」以外の場合はエラーを返す
+		else if (!(problems.equals("した") || problems.equals("しない"))) {
+			request.setAttribute("problemsError", "就労有無は「した」「しない」から選択してください");
+		}
+
+		// 収入有無のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(income)) {
+			request.setAttribute("incomeError", "入力必須項目です。");
+		}
+		// 収入有無が「得た」「得ない」以外の場合はエラーを返す
+		else if (!(income.equals("得た") || income.equals("得ない"))) {
+			request.setAttribute("incomeError", "収入有無は「得た」「得ない」から選択してください");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-vocational-training.jsp";
 		}
 
@@ -70,28 +103,21 @@ public class CertificateVocationalTrainingAction extends Action {
 		for (int i = 1; i <= 31; i++) {
 			String day = "day" + i;
 			String marker = request.getParameter(day);
+			String dayError = "day" + i + "Error";
+
 			// カレンダーに存在しない日付であれば強制的に「/」にする
 			if (i > daysInMonth) {
 				calendar.put(i, "／");
 				// 入力された値がnullでなけく、２文字以上であればエラーを返す。
-			} else if (marker != null) {
+			} else if (marker != null && !marker.isEmpty() && !marker.equals("＝") && !marker.equals("〇")
+					&& !marker.equals("△") && !marker.equals("✕") && !marker.equals("／")) {
 				if (marker.length() > 1) {
-					request.setAttribute("innerError", "日付には一文字の記号を入力してください。");
-					return "certificate-vocational-training.jsp";
+					request.setAttribute(dayError, "日付には一文字の記号を入力してください。");
+					request.setAttribute("dayError", "日付には一文字の記号を入力してください。");
 				}
 				// 入力された値がnullでなければ記号を格納する。未選択の場合は空文字列を格納する。	
 				calendar.put(i, marker);
 			}
-		}
-
-		// ラジオボタンの入力値チェック
-		// 就労有無が「した」「しない」以外の場合はエラーを返す
-		if (!(problems.equals("した") || problems.equals("しない"))) {
-			request.setAttribute("problemsError", "就労有無は「した」「しない」から選択してください");
-		}
-		// 収入有無が「得た」「得ない」以外の場合はエラーを返す
-		if (!(income.equals("得た") || income.equals("得ない"))) {
-			request.setAttribute("incomeError", "収入有無は「得た」「得ない」から選択してください");
 		}
 
 		// エラーが発生している場合は元のページに戻す

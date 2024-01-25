@@ -11,18 +11,24 @@
         <h1>「公共職業訓練等受講証明書」作成</h1><br>
     </div>			
 		<form action="CertificateVocationalTraining.action" method="post" autocomplete="off">
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>    
+			<!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+			<div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+				<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+					<c:if test="${fn:endsWith(attr, 'Error')}">
+						<c:set var="hasError" value="true" />
+					</c:if>
+				</c:forEach>
+				<c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+				<c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+						<STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+					</div>
+				</c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+					<c:import url="/errorMessage/error-message.jsp" />
+				</c:if>
+			</div>    
 					
 	        <div class="row">
   		    	<label class="form-label">日付ごとに該当する印を選択してください。</label>
@@ -31,30 +37,43 @@
   		    	<label class="form-label left-align">③病気又は負傷により公共職業訓練等を受けなかった日　〇印</label>
   		    	<label class="form-label left-align">④やむを得ない理由により公共職業訓練等を受けなかった日　△印</label>
    		    	<label class="form-label left-align">⑤やむを得ない理由がなく公共職業訓練等を受けなかった日　✕印</label>
-   		    	<label class="form-label left-align">⑥入校前、修了後、対校日翌日以降、カレンダー上存在しない日　／印</label>
+   		    	<label class="form-label left-align mb-3">⑥入校前、修了後、対校日翌日以降、カレンダー上存在しない日　／印</label>
         
-			<% for (int i = 1; i <= 31; i++) { %>
-			    <div class="col-md-2 mb-3">
-			        <label for="day<%= i %>"><%= i %>日: </label>
-					<% String dayAttribute = request.getParameter("day"+i) != null ? request.getParameter("day"+i) : ""; %>
-	                <c:set var="paramDay" value="day${set}" />
-			        <select class="form-control select-center auto-select" data-selected-value="<c:out value='${param[paramDay]}'/>" id="day<%= i %>" name="day<%= i %>">
-			            <option value="" <% if (dayAttribute.isEmpty()) { %> selected <% } %>>--無--</option>
-			            <option value="＝" <% if ("＝".equals(dayAttribute)) { %> selected <% } %>>＝</option>
-			            <option value="〇" <% if ("〇".equals(dayAttribute)) { %> selected <% } %>>〇</option>
-			            <option value="△" <% if ("△".equals(dayAttribute)) { %> selected <% } %>>△</option>
-			            <option value="✕" <% if ("✕".equals(dayAttribute)) { %> selected <% } %>>✕</option>
-			            <option value="／" <% if ("／".equals(dayAttribute)) { %> selected <% } %>>／</option>
-			        </select>
-			    </div>
-			<% } %>
-			</div>
+				<% for (int i = 1; i <= 31; i++) { %>
+		            <!-- エラー表示用の変数設定 -->  
+					<%
+						String paramDay = "day"+ i;
+					    request.setAttribute("paramDay", paramDay);				    
+						String paramDayError = "day" + i + "Error";
+					    request.setAttribute("paramDayError", paramDayError);
+					%>
+				    <div class="col-md-2 mb-3">
+				        <label for="day<%= i %>"><%= i %>日: </label>
+				        <select class="form-control ${not empty requestScope[paramDayError] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${requestScope[paramDay]}'/>" id="day<%= i %>" name="day<%= i %>">
+				            <option value="" <% if (paramDay.isEmpty()) { %> selected <% } %>>--無--</option>
+				            <option value="＝" <% if ("＝".equals(paramDay)) { %> selected <% } %>>＝</option>
+				            <option value="〇" <% if ("〇".equals(paramDay)) { %> selected <% } %>>〇</option>
+				            <option value="△" <% if ("△".equals(paramDay)) { %> selected <% } %>>△</option>
+				            <option value="✕" <% if ("✕".equals(paramDay)) { %> selected <% } %>>✕</option>
+				            <option value="／" <% if ("／".equals(paramDay)) { %> selected <% } %>>／</option>
+				        </select>
+				    </div>
+				<% } %>
+	        	<!-- エラー表示  -->
+	            <div class="col-md-12 mb-5">			        	
+			        <c:set var="errorMsg" value="${requestScope['dayError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 	
+				</div>
 	        <div class="row">				
 	            <!-- 証明書対象期間 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="subjectYear">証明書対象期間（令和　年　月）</label>
 	                <span class="required-label">必須</span>
-	                <select id="subjectYear" name="subjectYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
+	                <select id="subjectYear" name="subjectYear" class="form-control ${not empty requestScope['subjectYearError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 令和　年 --</option>
 	                    <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear - 2017;
 	                        i++){ %>
@@ -63,10 +82,17 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['subjectYearError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>   	
 	            </div>
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label invisible-text" for="subjectMonth">月</label>
-	                <select id="subjectMonth" name="subjectMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
+	                <select id="subjectMonth" name="subjectMonth" class="form-control ${not empty requestScope['subjectMonthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 月 --</option>
 	                    <% for(int i=1; i <=12; i++){ %>
 	                        <option value="<%= i %>">
@@ -74,6 +100,13 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['subjectMonthError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>   	
 	            </div>
 				<!-- 就労・内職 -->
 				<div class="col-md-12 mb-3 text-center">
@@ -95,6 +128,13 @@
 					        </label>
 					    </div>
 					</div>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['problemsError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>   	
 				</div>
 				<!-- 収入 -->
 				<div class="col-md-12 mb-5 text-center">
@@ -116,6 +156,13 @@
 				            </label>
 				        </div>
 				    </div>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['incomeError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>   	
 				</div>
 	        </div>
 		    <!-- トークンの格納  -->
