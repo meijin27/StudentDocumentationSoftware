@@ -59,18 +59,20 @@ public class CertificateOfEmploymentAction extends Action {
 		String firstMonth = request.getParameter("firstMonth");
 		String secondMonth = request.getParameter("secondMonth");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(firstMonth)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-of-employment.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
+		// 一月目に未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(firstMonth)) {
+			request.setAttribute("firstMonthError", "未入力項目があります。");
+		}
 		// 一月目は半角数字2桁以下でなければエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(firstMonth)) {
-			request.setAttribute("numberError", "月は半角数字2桁以下で入力してください。");
+		else if (ValidationUtil.isOneOrTwoDigit(firstMonth)) {
+			request.setAttribute("firstMonthError", "月は半角数字2桁以下で入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-of-employment.jsp";
 		}
 
@@ -80,12 +82,16 @@ public class CertificateOfEmploymentAction extends Action {
 		// 日付毎に入力された記号をMAPに格納する()
 		Map<Integer, String> firstMonthCalendar = new HashMap<>();
 		for (int i = 1; i <= 31; i++) {
+
+			// 入力された値を変数に格納
 			String day = "firstMonthDay" + i;
 			String marker = request.getParameter(day);
+			String dayError = day + "Error";
+
 			// 就労日が空文字か「〇」以外の入力があった場合にエラーを返す
 			if (marker != null && !marker.isEmpty() && !marker.equals("〇")) {
-				request.setAttribute("markerError", "就労日は「〇」以外入力しないでください。");
-				return "certificate-of-employment.jsp";
+				request.setAttribute(dayError, "就労日は「〇」以外入力しないでください。");
+				request.setAttribute("firstMonthDayError", "就労日は「〇」以外入力しないでください。");
 			}
 			// 指定された月の最後の日以降の日付であれば強制的に空文字にする
 			if (i > lastDay) {
@@ -102,13 +108,16 @@ public class CertificateOfEmploymentAction extends Action {
 		} else {
 			// 二月目は半角数字2桁以下でなければエラーを返す
 			if (ValidationUtil.isOneOrTwoDigit(secondMonth)) {
-				request.setAttribute("numberError", "月は半角数字2桁以下で入力してください。");
-				return "certificate-of-employment.jsp";
+				request.setAttribute("secondMonthError", "月は半角数字2桁以下で入力してください。");
 			}
 
 			// 二月目と一月目が同一ならばエラーを返す
 			if (secondMonth.equals(firstMonth)) {
-				request.setAttribute("logicalError", "一月目と二月目は異なる月にしてください。");
+				request.setAttribute("secondMonthError", "一月目と二月目は異なる月にしてください。");
+			}
+
+			// エラーが発生している場合は元のページに戻す
+			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 				return "certificate-of-employment.jsp";
 			}
 
@@ -120,10 +129,12 @@ public class CertificateOfEmploymentAction extends Action {
 			for (int i = 1; i <= 31; i++) {
 				String day = "secondMonthDay" + i;
 				String marker = request.getParameter(day);
+				String dayError = day + "Error";
+
 				// 就労日が空文字か「〇」以外の入力があった場合にエラーを返す
 				if (marker != null && !marker.isEmpty() && !marker.equals("〇")) {
-					request.setAttribute("markerError", "就労日は「〇」以外入力しないでください。");
-					return "certificate-of-employment.jsp";
+					request.setAttribute(dayError, "就労日は「〇」以外入力しないでください。");
+					request.setAttribute("secondMonthDayError", "就労日は「〇」以外入力しないでください。");
 				}
 				// 指定された月の最後の日以降の日付であれば強制的に空文字にする
 				if (i > lastDay) {
@@ -132,6 +143,11 @@ public class CertificateOfEmploymentAction extends Action {
 					secondMonthCalendar.put(i, marker);
 				}
 			}
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "certificate-of-employment.jsp";
 		}
 
 		try {

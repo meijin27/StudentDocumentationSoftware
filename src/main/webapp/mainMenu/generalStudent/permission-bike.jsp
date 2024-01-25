@@ -25,16 +25,10 @@
 		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
 		            </div>
 		        </c:if>        			          				
-		        <c:set var="errorMsg" value="${requestScope['inputError']}" />
-		        <c:if test="${not empty errorMsg and empty innerErrorMsg}">
-					<div class="alert alert-danger text-center input-field" role="alert">
-		                <STRONG><c:out value="${errorMsg}" /></STRONG>
-		            </div>
-		        </c:if>     
 				<c:if test="${hasError and empty innerErrorMsg}">
                     <c:import url="/errorMessage/error-message.jsp" />
 	            </c:if>
-            </div>    	
+            </div>   
 					
 			<p class="text-start text-center red"><strong>当該書類は印刷後、氏名及び保護者欄に押印をお願いします。</strong></p>
 

@@ -47,45 +47,69 @@ public class CertificateIssuanceAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay, reason, propose)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "certificate-issuance.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
+
+		// 申請理由（具体的に）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(reason)) {
+			request.setAttribute("reasonError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(reason)) {
+			request.setAttribute("reasonError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, reason)) {
+			request.setAttribute("reasonError", "申請理由は64文字以下で入力してください。");
+		}
+
+		// 提出先のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(propose)) {
+			request.setAttribute("proposeError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(propose)) {
+			request.setAttribute("proposeError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, propose)) {
+			request.setAttribute("proposeError", "提出先は64文字以下で入力してください。");
+		}
+
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
+		}
 
 		// 証明書の必要部数を全て選択していない場合、エラーを返す
 		if (ValidationUtil.areAllNullOrEmpty(proofOfStudent, certificateOfCompletion,
 				certificateOfExpectedCompletion)) {
-			request.setAttribute("nullError", "証明書は1種類以上発行する必要があります。");
-			return "certificate-issuance.jsp";
-		}
-
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
+			request.setAttribute("inputError", "証明書は1種類以上発行する必要があります。");
 		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
+			// 何か入力されている場合	
+			// 入力されている証明書が半角1桁でなければエラーを返す
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent)) {
+				request.setAttribute("proofOfStudentError", "必要枚数は半角数字１桁で入力してください。");
 			}
-		}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(certificateOfCompletion)) {
+				request.setAttribute("certificateOfCompletionError", "必要枚数は半角数字１桁で入力してください。");
 
-		// 必要枚数は半角1桁でなければエラーを返す
-		if (ValidationUtil.isValidSingleDigitOrNullEmpty(proofOfStudent, certificateOfCompletion,
-				certificateOfExpectedCompletion)) {
-			request.setAttribute("numberError", "必要枚数は半角数字1桁で入力してください。");
-		}
+			}
+			if (ValidationUtil.isValidSingleDigitOrNullEmpty(certificateOfExpectedCompletion)) {
+				request.setAttribute("certificateOfExpectedCompletionError", "必要枚数は半角数字１桁で入力してください。");
 
-		// 文字数が64文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(64, reason, propose)) {
-			request.setAttribute("valueLongError", "64文字以下で入力してください。");
-		}
-
-		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(reason, propose)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+			}
 		}
 
 		// エラーが発生している場合は元のページに戻す

@@ -11,30 +11,24 @@
         <h1>「学割証発行願」作成</h1><br>
     </div>			  
 	<form action="StudentDiscountCoupon.action" method="post" autocomplete="off">
-		<!-- 入力エラーがある場合のみエラーメッセージを表示 -->
-		<div class="col-md-12 mb-5">
-			<c:set var="hasError" value="false" />
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-				<c:if test="${fn:endsWith(attr, 'Error')}">
-				    <c:set var="hasError" value="true" />
-				</c:if>
-			</c:forEach>
-			<c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
-			<c:if test="${not empty innerErrorMsg}">
-				<div class="alert alert-danger text-center input-field" role="alert">
-	         	   <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
-				</div>
-			</c:if>        			          				
-			<c:set var="errorMsg" value="${requestScope['totalPaymentError']}" />
-			<c:if test="${not empty errorMsg}">
-				<div class="alert alert-danger text-center input-field" role="alert">
-	            	<STRONG><c:out value="${errorMsg}" /></STRONG>
-				</div>
-			</c:if>     
-			<c:if test="${hasError and empty errorMsg and empty innerErrorMsg}">
-			   <c:import url="/errorMessage/error-message.jsp" />
-			</c:if>
-		</div> 
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+            <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+                    <c:import url="/errorMessage/error-message.jsp" />
+	            </c:if>
+            </div>   
 		<div class="row">
             <!-- 申請年月日 -->
             <div class="col-md-4 mb-0">
@@ -146,7 +140,7 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="startingStation<%= set %>">出発駅</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control ${not empty requestScope['paramStartingStationError'] ? 'error-input' : ''}" type="text" id="startingStation<%= set %>" name="startingStation<%= set %>" value="<c:out value='${requestScope[paramStartingStation]}'/>" placeholder="希望ヶ丘" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control ${not empty requestScope[paramStartingStationError] ? 'error-input' : ''}" type="text" id="startingStation<%= set %>" name="startingStation<%= set %>" value="<c:out value='${requestScope[paramStartingStation]}'/>" placeholder="希望ヶ丘" <%= (set == 1) ? "required" : "" %> data-required="true">
 		        	<!-- エラー表示  -->
 			        <c:set var="errorMsg" value="${requestScope[paramStartingStationError]}" />
 			        <c:if test="${not empty errorMsg}">
@@ -159,7 +153,7 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="arrivalStation<%= set %>">到着駅</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control ${not empty requestScope['paramArrivalStationError'] ? 'error-input' : ''}" type="text" id="arrivalStation<%= set %>" name="arrivalStation<%= set %>" value="<c:out value='${requestScope[paramArrivalStation]}'/>" placeholder="大阪" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control ${not empty requestScope[paramArrivalStationError] ? 'error-input' : ''}" type="text" id="arrivalStation<%= set %>" name="arrivalStation<%= set %>" value="<c:out value='${requestScope[paramArrivalStation]}'/>" placeholder="大阪" <%= (set == 1) ? "required" : "" %> data-required="true">
 		        	<!-- エラー表示  -->
 			        <c:set var="errorMsg" value="${requestScope[paramArrivalStationError]}" />
 			        <c:if test="${not empty errorMsg}">
@@ -172,7 +166,7 @@
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="intendedUse<%= set %>">使用目的</label>
 	                <span class="required-label">必須</span>
-	                <select id="intendedUse<%= set %>" name="intendedUse<%= set %>" class="form-control ${not empty requestScope['paramIntendedUseError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${requestScope[paramIntendedUse]}'/>"  <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <select id="intendedUse<%= set %>" name="intendedUse<%= set %>" class="form-control ${not empty requestScope[paramIntendedUseError] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${requestScope[paramIntendedUse]}'/>"  <%= (set == 1) ? "required" : "" %> data-required="true">
 	                    <option value="" disabled selected class="display_none">-- 使用目的 --</option>
 	                    <option value="帰省">帰省</option>
 	                    <option value="見学">見学</option>
@@ -189,7 +183,7 @@
 	            <!-- その他の理由 -->
 	            <div class="col-md-8 mb-5">
 	                <label class="form-label" for="reason<%= set %>">使用目的がその他の場合は理由を記載</label>
-	                <input class="form-control ${not empty requestScope['paramReasonError'] ? 'error-input' : ''}" type="text" id="reason<%= set %>" name="reason<%= set %>" value="<c:out value='${requestScope[paramReason]}'/>" placeholder="就職活動のため">
+	                <input class="form-control ${not empty requestScope[paramReasonError] ? 'error-input' : ''}" type="text" id="reason<%= set %>" name="reason<%= set %>" value="<c:out value='${requestScope[paramReason]}'/>" placeholder="就職活動のため">
 		        	<!-- エラー表示  -->
 			        <c:set var="errorMsg" value="${requestScope[paramReasonError]}" />
 			        <c:if test="${not empty errorMsg}">

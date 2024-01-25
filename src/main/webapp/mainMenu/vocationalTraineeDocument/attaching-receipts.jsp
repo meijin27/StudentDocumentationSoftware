@@ -11,18 +11,24 @@
         <h1>「別紙　領収書添付用」作成</h1><br>
     </div>			
 		<form action="AttachingReceipts.action" method="post" autocomplete="off">
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach>     
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+            <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+                    <c:import url="/errorMessage/error-message.jsp" />
+	            </c:if>
+            </div>   	
 		    <!-- トークンの格納  -->
  		    <input type="hidden" name="csrfToken" value="${csrfToken}">
 			<!-- 作成ボタン -->

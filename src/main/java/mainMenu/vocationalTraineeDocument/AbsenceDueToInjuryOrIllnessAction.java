@@ -53,42 +53,93 @@ public class AbsenceDueToInjuryOrIllnessAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(disease, reason, requestYear, requestMonth, requestDay, startYear, startMonth,
-				startDay, endYear, endMonth, endDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "absence-due-to-injury-or-illness.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 生年月日が存在しない日付の場合はエラーにする
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
 		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(requestYear, startYear, endYear) ||
-				ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay, startMonth, startDay, endMonth, endDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay) ||
-					ValidationUtil.validateDate(startYear, startMonth,
-							startDay)
-					||
-					ValidationUtil.validateDate(endYear, endMonth, endDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-				// 申請日と申請期間の比較
-			} else if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
-				request.setAttribute("dayError", "期間年月日（自）は期間年月日（至）より前の日付でなければなりません。");
-			}
+		else if (ValidationUtil.isFourDigit(requestYear) || ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
 		}
 
-		// 文字数が32文字より多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, disease, reason)) {
-			request.setAttribute("valueLongError", "32文字以下で入力してください。");
+		// 期間年月日（自）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(startYear, startMonth, startDay)) {
+			request.setAttribute("startError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(startYear) || ValidationUtil.isOneOrTwoDigit(startMonth, startDay)) {
+			request.setAttribute("startError", "年月日は正規の桁数で入力してください。");
+		}
+		// 期間年月日（自）が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(startYear, startMonth, startDay)) {
+			request.setAttribute("startError", "存在しない日付です。");
 		}
 
+		// 期間年月日（至）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(endYear) || ValidationUtil.isOneOrTwoDigit(endMonth, endDay)) {
+			request.setAttribute("endError", "年月日は正規の桁数で入力してください。");
+		}
+		// 期間年月日（至）が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "存在しない日付です。");
+		}
+
+		// 病状のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(disease)) {
+			request.setAttribute("diseaseError", "入力必須項目です。");
+		}
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(disease, reason)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(disease)) {
+			request.setAttribute("diseaseError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, disease)) {
+			request.setAttribute("diseaseError", "病状は32文字以下で入力してください。");
+		}
+
+		// 理由のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(reason)) {
+			request.setAttribute("reasonError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(reason)) {
+			request.setAttribute("reasonError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(32, reason)) {
+			request.setAttribute("reasonError", "理由は32文字以下で入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "absence-due-to-injury-or-illness.jsp";
+		}
+
+		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
+		// 期間年月日（自）が申請年月日より前の日付の場合はエラーにする
+		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
+				startDay)) {
+			request.setAttribute("startError", "期間年月日（自）は申請年月日より後の日付でなければなりません。");
+		}
+
+		if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
+			request.setAttribute("endError", "期間年月日（至）は期間年月日（自）より後の日付でなければなりません。");
 		}
 
 		// エラーが発生している場合は元のページに戻す
