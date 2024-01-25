@@ -11,24 +11,30 @@
         <h1>「委託訓練欠席（遅刻・早退）届」作成</h1><br>
     </div>			  
 	<form action="NotificationAbsenceOfTtraining.action" method="post" autocomplete="off">
-        <!-- エラー表示  -->
-		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-		    <c:set var="attrName" value="${attr}" />
-		    <c:if test="${fn:endsWith(attrName, 'Error')}">
-		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-		        <c:if test="${not empty errorMsg}">
-		            <div class="alert alert-danger text-center input-field" role="alert">
-		                <c:out value="${errorMsg}" />
-		            </div>
-		        </c:if>
-		    </c:if>
-		</c:forEach>    	
+		<!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+		<div class="col-md-12 mb-5">
+			<c:set var="hasError" value="false" />
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+				<c:if test="${fn:endsWith(attr, Error)}">
+					<c:set var="hasError" value="true" />
+				</c:if>
+			</c:forEach>
+			<c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+			<c:if test="${not empty innerErrorMsg}">
+				<div class="alert alert-danger text-center input-field" role="alert">
+		             <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+				</div>
+			</c:if>        			          				
+			<c:if test="${hasError and empty innerErrorMsg}">
+				<c:import url="/errorMessage/error-message.jsp" />
+			</c:if>
+		</div>   	
         <div class="row">
   	            <!-- 対象年月 -->
             <div class="col-md-4 mb-3">
                 <label class="form-label" for="subjectYear">対象年</label>
                 <span class="required-label">必須</span>
-                <select id="subjectYear" name="subjectYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
+                <select id="subjectYear" name="subjectYear" class="form-control ${not empty requestScope['subjectYearError'] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.subjectYear}'/>" required>
                     <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear - 2019; i <= currentYear-2018;
                         i++){ %>
@@ -37,11 +43,18 @@
                         </option>
                     <% } %>
                 </select>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['subjectYearError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>   	
             </div>
             <div class="col-md-4 mb-3">
                 <label class="form-label" for="subjectMonth">対象月</label>
                 <span class="required-label">必須</span>
-                <select id="subjectMonth" name="subjectMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
+                <select id="subjectMonth" name="subjectMonth" class="form-control ${not empty requestScope['subjectMonthError'] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.subjectMonth}'/>" required>
                     <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
@@ -49,17 +62,37 @@
                         </option>
                     <% } %>
                 </select>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['subjectMonthError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>   	
             </div>
             <div class="col-md-4 mb-3"></div>
         </div>
         <% for(int set = 1; set <= 10; set++){ %>
+            <!-- エラー表示用の変数設定 -->  
+			<%
+				String paramRestedDayStart = "restedDayStart"+ i;
+			    request.setAttribute("paramRestedDayStart", paramRestedDayStart);				    
+				String paramRestedDayStartError = "restedDayStart" + i + "Error";
+			    request.setAttribute("paramRestedDayStartError", paramRestedDayStartError);
+			    
+				String paramRestedDayEnd = "restedDayEnd"+ i;
+			    request.setAttribute("paramRestedDayEnd", paramRestedDayEnd);				    
+				String paramRestedDayEndError = "restedDayEnd" + i + "Error";
+			    request.setAttribute("paramRestedDayEndError", paramRestedDayEndError);			    
+			    
+			%>        
 		    <div class="row set <% if (set != 1) { %> additional-set hidden <% } %>" data-set="<%= set %>">
                <h3 class="border-bottom"><%= set %>番目の期間</h3>
                <!-- 休業開始日 -->
 		       <div class="col-md-3 mb-3">
 		            <label class="form-label" for="restedDayStart<%= set %>">休業開始日</label>
 		            <span class="required-label">必須</span>
- 		            <select id="restedDayStart<%= set %>" name="restedDayStart<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
+ 		            <select id="restedDayStart<%= set %>" name="restedDayStart<%= set %>" class="form-control ${not empty requestScope[paramRestedDayStartError] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${requestScope[paramRestedDayStart]}'/>"  <%= (set == 1) ? "required" : "" %> data-required="true">
 		                <option value="" disabled selected class="display_none">-- 日 --</option>
 		                <% for(int i = 1; i <= 31; i++){ %>
 		                    <option value="<%= i %>">
@@ -67,12 +100,19 @@
 		                    </option>
 		                <% } %>
 		            </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramRestedDayStartError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>   
 		        </div>
 	 	            <!-- 休業終了日 -->
 	            <div class="col-md-3 mb-3">
 	                <label class="form-label" for="restedDayEnd<%= set %>">休業終了日</label>
 	                <span class="required-label">必須</span>
-	                <select id="restedDayEnd<%= set %>" name="restedDayEnd<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <select id="restedDayEnd<%= set %>" name="restedDayEnd<%= set %>" class="form-control ${not empty requestScope[paramRestedDayEndError] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${requestScope[paramRestedDayEnd]}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
 	                    <option value="" disabled selected class="display_none">-- 日 --</option>
 	                    <% for(int i=1; i <=31; i++){ %>
 	                        <option value="<%= i %>">
@@ -80,12 +120,19 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramRestedDayEndError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  
 	            </div>	         
 	  	            <!-- 理由 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="reason<%= set %>">理由（22文字以下）</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control" type="text" id="reason<%= set %>" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control ${not empty requestScope[Error] ? 'error-input' : ''} " type="text" id="reason<%= set %>" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
 	            </div>
 	            <!-- 終日休業有無 -->
 				<div class="col-md-12 mb-3 text-center">
@@ -114,7 +161,7 @@
 	            <!-- 欠席期間時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="deadTime<%= set %>">欠席期間時限数</label>
-	                <select id="deadTime<%= set %>" name="deadTime<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="deadTime<%= set %>" name="deadTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=110; i++){ %>
 	                        <option value="<%= i %>">
@@ -126,7 +173,7 @@
 	            <!-- 遅刻時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="latenessTime<%= set %>">遅刻時限数</label>
-	                <select id="latenessTime<%= set %>" name="latenessTime<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="latenessTime<%= set %>" name="latenessTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=8; i++){ %>
 	                        <option value="<%= i %>">
@@ -138,7 +185,7 @@
 	            <!-- 早退時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="leaveEarlyTime<%= set %>">早退時限数</label>
-	                <select id="leaveEarlyTime<%= set %>" name="leaveEarlyTime<%= set %>" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="leaveEarlyTime<%= set %>" name="leaveEarlyTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=8; i++){ %>
 	                        <option value="<%= i %>">

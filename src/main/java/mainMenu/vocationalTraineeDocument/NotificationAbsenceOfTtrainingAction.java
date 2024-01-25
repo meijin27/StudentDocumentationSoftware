@@ -69,14 +69,28 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 		String subjectYear = request.getParameter("subjectYear");
 		String subjectMonth = request.getParameter("subjectMonth");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(subjectYear, subjectMonth)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "notification-absence-of-training.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
+
+		// 対象年のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectYear)) {
+			request.setAttribute("subjectYearError", "入力必須項目です。");
+		}
+		// 証明書対象期間は半角2桁以下でなければエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(subjectYear)) {
+			request.setAttribute("subjectYearError", "対象年は半角2桁以下で入力してください。");
+		}
+
+		// 対象月のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(subjectMonth)) {
+			request.setAttribute("subjectMonthError", "入力必須項目です。");
+		}
+		// 証明書対象月は半角2桁以下でなければエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(subjectMonth)) {
+			request.setAttribute("subjectMonthError", "対象月は半角2桁以下で入力してください。");
+		}
 
 		// 入力値の数が不明なため、自動計算される値はMAPに格納する
 		Map<String, String> parameters = new HashMap<>();
@@ -95,13 +109,21 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 
 			// 入力された値を変数に格納
 			String restedDayStart = request.getParameter("restedDayStart" + num);
+			String restedDayStartError = "restedDayStart" + num + "Error";
 			String restedDayEnd = request.getParameter("restedDayEnd" + num);
+			String restedDayEndError = "restedDayEnd" + num + "Error";
 			String reason = request.getParameter("reason" + num);
+			String reasonError = "reason" + num + "Error";
 			String allDayOff = request.getParameter("allDayOff" + num);
+			String allDayOffError = "allDayOff" + num + "Error";
 			String deadTime = request.getParameter("deadTime" + num);
+			String deadTimeError = "deadTime" + num + "Error";
 			String latenessTime = request.getParameter("latenessTime" + num);
+			String latenessTimeError = "latenessTime" + num + "Error";
 			String leaveEarlyTime = request.getParameter("leaveEarlyTime" + num);
+			String leaveEarlyTimeError = "leaveEarlyTime" + num + "Error";
 			String attachmentOfCertificate = request.getParameter("attachmentOfCertificate" + num);
+			String attachmentOfCertificateError = "attachmentOfCertificate" + num + "Error";
 
 			// 未入力項目があればエラーを返す
 			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate, restedDayStart, restedDayEnd, reason,
