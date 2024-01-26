@@ -31,7 +31,7 @@
 		                <STRONG><c:out value="${errorMsg}" /></STRONG>
 		            </div>
 		        </c:if>     
-				<c:if test="${hasError and empty errorMsg and empty innerErrorMsg}">
+				<c:if test="${hasError and empty innerErrorMsg}">
                     <c:import url="/errorMessage/error-message.jsp" />
 	            </c:if>
             </div>     		
