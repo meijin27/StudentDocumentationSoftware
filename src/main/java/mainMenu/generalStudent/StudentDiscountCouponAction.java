@@ -84,7 +84,7 @@ public class StudentDiscountCouponAction extends Action {
 			String reason = request.getParameter("reason" + num);
 			String reasonError = "reason" + num + "Error";
 
-			// 未入力項目があればエラーを返す
+			// 未入力項目があればループ処理終了
 			if (ValidationUtil.isNullOrEmpty(sheetsRequired, startingStation, arrivalStation, intendedUse) && i != 1) {
 				break;
 			}

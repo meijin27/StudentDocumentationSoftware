@@ -125,37 +125,54 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			String attachmentOfCertificate = request.getParameter("attachmentOfCertificate" + num);
 			String attachmentOfCertificateError = "attachmentOfCertificate" + num + "Error";
 
+			// 未入力項目があればループ処理終了
+			if (ValidationUtil.isNullOrEmpty(restedDayStart, restedDayEnd, reason, allDayOff, attachmentOfCertificate)
+					&& i != 1) {
+				break;
+			}
+
+			// 全日休みのエラー処理
 			// 未入力項目があればエラーを返す
-			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate, restedDayStart, restedDayEnd, reason,
-					allDayOff)) {
-				// 最初の行(1行目)が空ならばエラーを返す
-				if (i == 1) {
-					request.setAttribute("nullError", "未入力項目があります。");
-					return "notification-absence-of-training.jsp";
-				} else {
-					break;
-				}
+			if (ValidationUtil.isNullOrEmpty(allDayOff)) {
+				request.setAttribute(allDayOffError, "入力必須項目です。");
 			}
-
 			// 全日休みは「はい」「いいえ」以外の場合はエラーを返す
-			if (!(allDayOff.equals("はい") || allDayOff.equals("いいえ"))) {
-				request.setAttribute("allDayOffError", "全日休確認は「はい」「いいえ」から選択してください");
-				return "notification-absence-of-training.jsp";
+			else if (!(allDayOff.equals("はい") || allDayOff.equals("いいえ"))) {
+				request.setAttribute(allDayOffError, "全日休確認は「はい」「いいえ」から選択してください");
 			}
 
+			// 証明添付有無のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate)) {
+				request.setAttribute(attachmentOfCertificateError, "入力必須項目です。");
+			}
 			// 証明添付有無は「有」「無」以外の場合はエラーを返す
-			if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
-				request.setAttribute("attachmentOfCertificateError", "証明添付有無は「有」「無」から選択してください");
+			else if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
+				request.setAttribute(attachmentOfCertificateError, "証明添付有無は「有」「無」から選択してください");
+			}
+
+			// 理由のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(reason)) {
+				request.setAttribute(reasonError, "入力必須項目です。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(reason)) {
+				request.setAttribute(reasonError, "使用できない特殊文字が含まれています");
+			}
+			// 文字数が22文字より多い場合はエラーを返す
+			else if (ValidationUtil.areValidLengths(22, reason)) {
+				request.setAttribute(reasonError, "理由は22文字以下で入力してください。");
 			}
 
 			// 終日休業が「はい」の場合の処理
-			if (allDayOff.equals("はい")) {
+			if (!ValidationUtil.isNullOrEmpty(allDayOff) && allDayOff.equals("はい")) {
 				// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
 				if (ValidationUtil.isNullOrEmpty(deadTime)) {
-					request.setAttribute("deadTimeError", "欠席期間時限数を入力してください。");
+					request.setAttribute(deadTimeError, "欠席期間時限数を入力してください。");
 					// 終日休業が「はい」かつ休業時限数が数字以外の場合はエラーを返す
 				} else if (ValidationUtil.isOneOrTwoOrThreeDigit(deadTime)) {
-					request.setAttribute("numberError", "時間は半角数字3桁以下で入力してください。");
+					request.setAttribute(deadTimeError, "欠席期間時限数は半角数字3桁以下で入力してください。");
 					// 終日休業が「はい」ならば欠席時限数を累計時限に追加する
 				} else {
 					totalHours += Integer.parseInt(deadTime);
@@ -163,21 +180,21 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			}
 
 			// 終日休業が「いいえ」の場合の処理
-			if (allDayOff.equals("いいえ")) {
+			if (!ValidationUtil.isNullOrEmpty(allDayOff) && allDayOff.equals("いいえ")) {
 				// 遅刻時限もしくは早退時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
 				if (ValidationUtil.areAllNullOrEmpty(latenessTime, leaveEarlyTime)) {
-					request.setAttribute("timeError", "遅刻時限数時限数か早退時限数を入力してください。両方の入力も可能です。");
-					// 遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
-				} else if (!ValidationUtil.isNullOrEmpty(latenessTime)
+					request.setAttribute(latenessTimeError, "遅刻時限数か早退時限数を入力してください。両方の入力も可能です。");
+					request.setAttribute(leaveEarlyTimeError, "遅刻時限数か早退時限数を入力してください。両方の入力も可能です。");
+				}
+				// 遅刻時限数の入力されている値が数字以外の場合はエラーを返す
+				else if (!ValidationUtil.isNullOrEmpty(latenessTime)
 						&& ValidationUtil.isOneOrTwoDigit(latenessTime)) {
-					request.setAttribute("numberError", "時間は半角数字で入力してください。");
-				} else if (!ValidationUtil.isNullOrEmpty(leaveEarlyTime)
+					request.setAttribute(latenessTimeError, "遅刻時限数は半角数字で入力してください。");
+				}
+				// 早退時限数の入力されている値が数字以外の場合はエラーを返す
+				else if (!ValidationUtil.isNullOrEmpty(leaveEarlyTime)
 						&& ValidationUtil.isOneOrTwoDigit(leaveEarlyTime)) {
-					// 遅刻時限もしくは早退時限の入力されている値が数字以外の場合はエラーを返す
-					request.setAttribute("numberError", "時間は半角数字で入力してください。");
-					// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
-				} else if (!restedDayStart.equals(restedDayEnd)) {
-					request.setAttribute("logicalError", "複数の日付をまたぐ場合は終日休業になります。");
+					request.setAttribute(leaveEarlyTimeError, "早退時限数は半角数字で入力してください。");
 				} else {
 					// 遅刻時限数が入力されていた場合
 					if (!ValidationUtil.isNullOrEmpty(latenessTime)) {
@@ -190,62 +207,88 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 				}
 			}
 
-			// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-			if (ValidationUtil.isOneOrTwoDigit(subjectYear, subjectMonth, restedDayStart, restedDayEnd)) {
-				request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-			} else {
-				if (ValidationUtil.validateDate(subjectYear, subjectYear, restedDayStart)
-						|| ValidationUtil.validateDate(subjectYear, subjectYear, restedDayEnd)) {
-					request.setAttribute("dayError", "存在しない日付です。");
-				} else {
+			// 休業開始日のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(restedDayStart)) {
+				request.setAttribute(restedDayStartError, "入力必須項目です。");
+			}
+			// 休業開始日が１・２桁になっていることを検証し、違う場合はエラーを返す
+			else if (ValidationUtil.isOneOrTwoDigit(restedDayStart)) {
+				request.setAttribute(restedDayStartError, "年月日は正規の桁数で入力してください。");
+			}
+
+			// 休業終了日のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(restedDayEnd)) {
+				request.setAttribute(restedDayEndError, "入力必須項目です。");
+			}
+			// 休業終了日が１・２桁になっていることを検証し、違う場合はエラーを返す
+			else if (ValidationUtil.isOneOrTwoDigit(restedDayEnd)) {
+				request.setAttribute(restedDayEndError, "年月日は正規の桁数で入力してください。");
+			}
+
+			// 日付エラーのチェック
+			// エラーが発生していない場合はエラー処理を行う
+			if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("subjectYearError"),
+					(String) request.getAttribute("subjectMonthError"),
+					(String) request.getAttribute(restedDayStartError),
+					(String) request.getAttribute(restedDayEndError))) {
+				// 休業開始日が存在しない日付の場合はエラーにする
+				if (ValidationUtil.validateDate(subjectYear, subjectMonth, restedDayStart)) {
+					request.setAttribute(restedDayStartError, "存在しない日付です。");
+				}
+				// 休業開始日が存在しない日付の場合はエラーにする
+				if (ValidationUtil.validateDate(subjectYear, subjectMonth, restedDayEnd)) {
+					request.setAttribute(restedDayEndError, "存在しない日付です。");
+				}
+				if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute(restedDayStartError),
+						(String) request.getAttribute(restedDayEndError))) {
 					int checkStartDay = Integer.parseInt(restedDayStart);
 					int checkEndDay = Integer.parseInt(restedDayEnd);
 					// 休業開始日が休業終了日よりも前かどうかをチェックする
 					if (checkStartDay > checkEndDay) {
-						request.setAttribute("logicalError", "休業開始日は休業終了日よりも前でなければなりません。");
+						request.setAttribute(restedDayStartError, "休業開始日は休業終了日よりも前でなければなりません。");
+					}
+					// 終日休業が「いいえ」で複数の日付をまたぐ場合はエラーを返す
+					else if (allDayOff.equals("いいえ") && !restedDayStart.equals(restedDayEnd)) {
+						request.setAttribute(allDayOffError, "複数の日付をまたぐ場合は終日休業になります。");
 					}
 				}
 			}
 
-			// 文字数が22文字より多い場合はエラーを返す
-			if (ValidationUtil.areValidLengths(22, reason)) {
-				request.setAttribute("valueLongError", "22文字以下で入力してください。");
+			// エラーが発生していない場合におこなう処理
+			if (!RequestAndSessionUtil.hasErrorAttributes(request)) {
+
+				// 日付フォーマットの定義
+				String checkYear = String.valueOf(Integer.parseInt(subjectYear) + 2018);
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+				// 文字列からLocalDateに変換
+				LocalDate startDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayStart, formatter);
+				LocalDate endDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayEnd, formatter);
+
+				// startDateおよびendDateの曜日を取得し、漢字一文字に変換
+				String startDayOfWeekKanji = convertToKanji(startDate.getDayOfWeek());
+				String endDayOfWeekKanji = convertToKanji(endDate.getDayOfWeek());
+
+				// 曜日をparametersのMAPに格納
+				parameters.put("startDayOfWeek" + num, startDayOfWeekKanji);
+				parameters.put("endDayOfWeek" + num, endDayOfWeekKanji);
+
+				// 間の日数を計算
+				String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
+				parameters.put("daysBetween" + num, daysBetween);
+
+				// 作成する行数カウントの追加
+				count++;
+
+				// 行ごとの累計時限をMAPに格納
+				parameters.put("totalHours" + num, String.valueOf(totalHours));
 			}
+		}
 
-			// 入力値に特殊文字が入っていないか確認する
-			if (ValidationUtil.containsForbiddenChars(reason)) {
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-			}
-
-			// エラーが発生している場合は元のページに戻す
-			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-				return "notification-absence-of-training.jsp";
-			}
-
-			// 日付フォーマットの定義
-			String checkYear = String.valueOf(Integer.parseInt(subjectYear) + 2018);
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
-			// 文字列からLocalDateに変換
-			LocalDate startDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayStart, formatter);
-			LocalDate endDate = LocalDate.parse(checkYear + "-" + subjectMonth + "-" + restedDayEnd, formatter);
-
-			// startDateおよびendDateの曜日を取得し、漢字一文字に変換
-			String startDayOfWeekKanji = convertToKanji(startDate.getDayOfWeek());
-			String endDayOfWeekKanji = convertToKanji(endDate.getDayOfWeek());
-
-			// 曜日をparametersのMAPに格納
-			parameters.put("startDayOfWeek" + num, startDayOfWeekKanji);
-			parameters.put("endDayOfWeek" + num, endDayOfWeekKanji);
-
-			// 間の日数を計算
-			String daysBetween = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
-			parameters.put("daysBetween" + num, daysBetween);
-
-			// 作成する行数カウントの追加
-			count++;
-
-			// 行ごとの累計時限をMAPに格納
-			parameters.put("totalHours" + num, String.valueOf(totalHours));
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
+			return "notification-absence-of-training.jsp";
 		}
 
 		try {

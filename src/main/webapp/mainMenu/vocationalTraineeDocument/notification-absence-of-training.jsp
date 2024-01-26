@@ -15,20 +15,21 @@
 		<div class="col-md-12 mb-5">
 			<c:set var="hasError" value="false" />
 			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-				<c:if test="${fn:endsWith(attr, Error)}">
+				<c:if test="${fn:endsWith(attr, 'Error')}">
 					<c:set var="hasError" value="true" />
 				</c:if>
 			</c:forEach>
 			<c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
 			<c:if test="${not empty innerErrorMsg}">
 				<div class="alert alert-danger text-center input-field" role="alert">
-		             <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+					<STRONG><c:out value="${innerErrorMsg}" /></STRONG>
 				</div>
 			</c:if>        			          				
 			<c:if test="${hasError and empty innerErrorMsg}">
 				<c:import url="/errorMessage/error-message.jsp" />
 			</c:if>
-		</div>   	
+		</div>    
+  
         <div class="row">
   	            <!-- 対象年月 -->
             <div class="col-md-4 mb-3">
@@ -75,15 +76,41 @@
         <% for(int set = 1; set <= 10; set++){ %>
             <!-- エラー表示用の変数設定 -->  
 			<%
-				String paramRestedDayStart = "restedDayStart"+ i;
+				String paramRestedDayStart = "restedDayStart"+ set;
 			    request.setAttribute("paramRestedDayStart", paramRestedDayStart);				    
-				String paramRestedDayStartError = "restedDayStart" + i + "Error";
+				String paramRestedDayStartError = "restedDayStart" + set + "Error";
 			    request.setAttribute("paramRestedDayStartError", paramRestedDayStartError);
 			    
-				String paramRestedDayEnd = "restedDayEnd"+ i;
+				String paramRestedDayEnd = "restedDayEnd"+ set;
 			    request.setAttribute("paramRestedDayEnd", paramRestedDayEnd);				    
-				String paramRestedDayEndError = "restedDayEnd" + i + "Error";
+				String paramRestedDayEndError = "restedDayEnd" + set + "Error";
 			    request.setAttribute("paramRestedDayEndError", paramRestedDayEndError);			    
+			    
+				String paramReason = "reason"+ set;
+			    request.setAttribute("paramReason", paramReason);				    
+				String paramReasonError = "reason" + set + "Error";
+			    request.setAttribute("paramReasonError", paramReasonError);				    
+			    
+				String paramAllDayOffError = "allDayOff" + set + "Error";
+			    request.setAttribute("paramAllDayOffError", paramAllDayOffError);						    
+			    
+				String paramDeadTime = "deadTime"+ set;
+			    request.setAttribute("paramDeadTime", paramDeadTime);				    
+				String paramDeadTimeError = "deadTime" + set + "Error";
+			    request.setAttribute("paramDeadTimeError", paramDeadTimeError);					    
+			    
+				String paramLatenessTime = "latenessTime"+ set;
+			    request.setAttribute("paramLatenessTime", paramLatenessTime);				    
+				String paramLatenessTimeError = "latenessTime" + set + "Error";
+			    request.setAttribute("paramLatenessTimeError", paramLatenessTimeError);					    
+			    
+				String paramLeaveEarlyTime = "leaveEarlyTime"+ set;
+			    request.setAttribute("paramLeaveEarlyTime", paramLeaveEarlyTime);				    
+				String paramLeaveEarlyTimeError = "leaveEarlyTime" + set + "Error";
+			    request.setAttribute("paramLeaveEarlyTimeError", paramLeaveEarlyTimeError);					    
+
+			    String paramAttachmentOfCertificateError = "attachmentOfCertificate" + set + "Error";
+			    request.setAttribute("paramAttachmentOfCertificateError", paramAttachmentOfCertificateError);					    
 			    
 			%>        
 		    <div class="row set <% if (set != 1) { %> additional-set hidden <% } %>" data-set="<%= set %>">
@@ -132,7 +159,14 @@
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="reason<%= set %>">理由（22文字以下）</label>
 	                <span class="required-label">必須</span>
-	                <input class="form-control ${not empty requestScope[Error] ? 'error-input' : ''} " type="text" id="reason<%= set %>" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" <%= (set == 1) ? "required" : "" %> data-required="true">
+	                <input class="form-control ${not empty requestScope[paramReasonError] ? 'error-input' : ''} " type="text" id="reason<%= set %>" name="reason<%= set %>" placeholder="腹痛のため（自宅療養）" value="<c:out value='${requestScope[paramReason]}'/>" <%= (set == 1) ? "required" : "" %> data-required="true">
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramReasonError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  
 	            </div>
 	            <!-- 終日休業有無 -->
 				<div class="col-md-12 mb-3 text-center">
@@ -154,6 +188,13 @@
 				            </label>
 				        </div>
 				    </div>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramAllDayOffError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  				    
 				</div>
 				<p>終日休んだ場合は欠席期間時限数を入力してください</p>
 				<p>終日休んでいない場合は遅刻時限数か早退時限数を入力してください</p>
@@ -161,7 +202,7 @@
 	            <!-- 欠席期間時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="deadTime<%= set %>">欠席期間時限数</label>
-	                <select id="deadTime<%= set %>" name="deadTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="deadTime<%= set %>" name="deadTime<%= set %>" class="form-control ${not empty requestScope[paramDeadTimeError] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${requestScope[paramDeadTime]}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=110; i++){ %>
 	                        <option value="<%= i %>">
@@ -169,11 +210,18 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramDeadTimeError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  	
 	            </div>
 	            <!-- 遅刻時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="latenessTime<%= set %>">遅刻時限数</label>
-	                <select id="latenessTime<%= set %>" name="latenessTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="latenessTime<%= set %>" name="latenessTime<%= set %>" class="form-control ${not empty requestScope[paramLatenessTimeError] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${requestScope[paramLatenessTime]}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=8; i++){ %>
 	                        <option value="<%= i %>">
@@ -181,11 +229,18 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramLatenessTimeError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  	
 	            </div>
 	            <!-- 早退時限数 -->
 	            <div class="col-md-4 mb-3">
 	                <label class="form-label" for="leaveEarlyTime<%= set %>">早退時限数</label>
-	                <select id="leaveEarlyTime<%= set %>" name="leaveEarlyTime<%= set %>" class="form-control ${not empty requestScope[Error] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${param.year}'/>">
+	                <select id="leaveEarlyTime<%= set %>" name="leaveEarlyTime<%= set %>" class="form-control ${not empty requestScope[paramLeaveEarlyTimeError] ? 'error-input' : ''}  select-center auto-select" data-selected-value="<c:out value='${requestScope[paramLeaveEarlyTime]}'/>">
 	                    <option value="">-- 時限数 --</option>
 	                    <% for(int i=1; i <=8; i++){ %>
 	                        <option value="<%= i %>">
@@ -193,6 +248,13 @@
 	                        </option>
 	                    <% } %>
 	                </select>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramLeaveEarlyTimeError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  	
 	            </div>
 	            <!-- 証明添付有無 -->
 				<div class="col-md-12 mb-3 text-center">
@@ -214,6 +276,13 @@
 				            </label>
 				        </div>
 				    </div>
+  		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope[paramAttachmentOfCertificateError]}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  					    
 				</div>
 				<% if (set != 1) { %>
 		            <!-- 削除ボタン -->
