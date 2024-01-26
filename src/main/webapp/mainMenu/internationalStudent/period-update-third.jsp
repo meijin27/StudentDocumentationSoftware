@@ -37,7 +37,7 @@
                 <label class="form-label" for="relationship">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</label>
                 <label class="form-label" for="relationship">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</label>
 	            <div class="col-md-12 mb-3">
-	                <select id="relationship" name="relationship" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.relationship}'/>">
+	                <select id="relationship" name="relationship" class="form-control ${not empty requestScope['relationshipError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.relationship}'/>">
 	                    <option value="">-- 申請人との関係 --</option>
 	                    <option value="夫">夫（Husband）</option>
 	                    <option value="妻">妻（Wife）</option>
@@ -56,11 +56,25 @@
    	                    <option value="取引関係者・現地企業等職員の親族">取引関係者・現地企業等職員の親族（Relative of business connection / personnel of local enterprise）</option>
    	                    <option value="その他">その他（Others）</option>
 	                </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['relationshipError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if>  
 	            </div>	        
  	            <!-- その他の内容 -->
                 <label class="form-label" for="relationshipOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="relationshipOtherContents" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['relationshipOtherContentsError'] ? 'error-input' : ''}" type="text" id="relationshipOtherContents" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['relationshipOtherContentsError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>   	            
 
       			<p class="border-bottom"></p>
@@ -68,36 +82,58 @@
        			<p class="text-start form-label">奨学金支給機関 （2枚目でで奨学金を選択した場合に記入）※複数選択可</p>
 				<p class="text-start">Organization which provide scholarship (Check one of the following when the answer to the question 22(1) is scholarship)* multiple answers possible</p>
 				<div class="col-md-6 mb-3 d-flex align-items-center">
-				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="foreignGovernment" name="foreignGovernment" value="foreignGovernment">
+				    <input class="form-check-input mt-0 mb-0 ${not empty requestScope['foreignGovernmentError'] ? 'error-input' : ''}" type="checkbox" id="foreignGovernment" name="foreignGovernment" value="foreignGovernment"<% if ("foreignGovernment".equals(request.getParameter("foreignGovernment"))) { %> checked <% } %>>
 				    <label for="foreignGovernment">外国政府（Foreign government）</label>
 				</div>
 				<div class="col-md-6 mb-3 d-flex align-items-center">
-				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="japaneseGovernment" name="japaneseGovernment" value="japaneseGovernment">
+				    <input class="form-check-input mt-0 mb-0 ${not empty requestScope['japaneseGovernmentError'] ? 'error-input' : ''}" type="checkbox" id="japaneseGovernment" name="japaneseGovernment" value="japaneseGovernment" <% if ("japaneseGovernment".equals(request.getParameter("japaneseGovernment"))) { %> checked <% } %>>
 				    <label for="japaneseGovernment">日本国政府（Japanese government）</label>
 				</div>
 				<div class="col-md-6 mb-3 d-flex align-items-center">
-				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="localGovernment" name="localGovernment" value="localGovernment">
+				    <input class="form-check-input mt-0 mb-0 ${not empty requestScope['localGovernmentError'] ? 'error-input' : ''}" type="checkbox" id="localGovernment" name="localGovernment" value="localGovernment" <% if ("localGovernment".equals(request.getParameter("localGovernment"))) { %> checked <% } %>>
 				    <label for="localGovernment">地方公共団体（Local government）</label>
 				</div>
 				<div class="col-md-6 mb-3 d-flex align-items-center">
-				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="otherOrganization" name="otherOrganization" value="otherOrganization">
+				    <input class="form-check-input mt-0 mb-0 ${not empty requestScope['otherOrganizationError'] ? 'error-input' : ''}" type="checkbox" id="otherOrganization" name="otherOrganization" value="otherOrganization" <% if ("otherOrganization".equals(request.getParameter("otherOrganization"))) { %> checked <% } %>>
 				    <label for="otherOrganization">その他（Others）</label>
 				</div>
 				<div class="col-md-12 mb-3 d-flex align-items-center">
-				    <input class="form-check-input mt-0 mb-0" type="checkbox" id="publicInterest" name="publicInterest" value="publicInterest">
+				    <input class="form-check-input mt-0 mb- ${not empty requestScope['publicInterestError'] ? 'error-input' : ''}0" type="checkbox" id="publicInterest" name="publicInterest" value="publicInterest" <% if ("publicInterest".equals(request.getParameter("publicInterest"))) { %> checked <% } %>>
 				    <label for="publicInterest">公益社団法人又は公益財団法人（Public interest incorporated association /Public interest incorporated foundation）</label>
 				</div>
-				
+	        	<!-- エラー表示  -->
+	        	<div class="col-md-12 mb-3">
+			        <c:set var="errorMsg" value="${requestScope['publicError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 		
+			    </div>  				
  	            <!-- 公益社団法人又は公益財団法人の内容 -->
                 <label class="form-label" for="organizationpublicInterestContents">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</label>
 	            <div class="col-md-12 mb-3">
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="organizationpublicInterestContents" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
+	                <input class="form-control ${not empty requestScope['organizationpublicInterestContentsError'] ? 'error-input' : ''}" type="text" id="organizationpublicInterestContents" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['organizationpublicInterestContentsError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>   	       
 
  	            <!-- その他の内容 -->
                 <label class="form-label" for="organizationOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="organizationOtherContents" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['organizationOtherContentsError'] ? 'error-input' : ''}" type="text" id="organizationOtherContents" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['organizationOtherContentsError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>   	            
       			
        			<p class="border-bottom"></p>
@@ -121,6 +157,13 @@
 					        </label>
 					    </div>
 					</div>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['otherActivityError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 				</div>            
 
 	  			<p class="text-start form-label">資格外活動が有の場合は，(1)から(4)までの各欄を記入（複数ある場合は全て記入すること）※任意様式の別紙可</p> 
@@ -128,36 +171,78 @@
  	            <!-- 内容 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="work">(1)内容（Type of work）</label>
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="work" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
+	                <input class="form-control ${not empty requestScope['workError'] ? 'error-input' : ''}" type="text" id="work" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['workError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>
    	            <!-- 勤務先名称 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="employment">(2)勤務先名称（Place of employment）</label>
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="employment" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
+	                <input class="form-control ${not empty requestScope['employmentError'] ? 'error-input' : ''}" type="text" id="employment" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['employmentError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>
    	            <!-- 勤務先電話番号 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workPhone">勤務先電話番号（Telephone No.）</label>
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="workPhone" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
+	                <input class="form-control ${not empty requestScope['workPhoneError'] ? 'error-input' : ''}" type="text" id="workPhone" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['workPhoneError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>
    	            <!-- 週間稼働時間 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workTimePerWeek">(3)週間稼働時間（Work time per week）</label>
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="workTimePerWeek" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
+	                <input class="form-control ${not empty requestScope['workTimePerWeekError'] ? 'error-input' : ''}" type="text" id="workTimePerWeek" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['workTimePerWeekError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>
    	            <!-- 報酬 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="salary">(4)報酬（Salary）</label>
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="salary" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
+	                <input class="form-control ${not empty requestScope['salaryError'] ? 'error-input' : ''}" type="text" id="salary" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['salaryError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>	            
   	            <!-- 月額か日額か -->
    	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="monthlyOrDaily">月額・日額（Monthly or Daily）</label>
-	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.monthlyOrDaily}'/>">
+	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control ${not empty requestScope['monthlyOrDailyError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.monthlyOrDaily}'/>">
 	                    <option value="">-- 月額・日額 --</option>
 	                    <option value="月額">月額（Monthly）</option>
 	                    <option value="日額">日額（Daily）</option>
 	                </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['monthlyOrDailyError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>	
 	            
        			<p class="border-bottom"></p>
@@ -166,19 +251,33 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
 	                <span class="required-label">必須</span>
-	                <select id="afterGraduation" name="afterGraduation" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
+	                <select id="afterGraduation" name="afterGraduation" class="form-control ${not empty requestScope['afterGraduationError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 卒業後の予定 --</option>
 	                    <option value="帰国">帰国（Return to home country）</option>
 	                    <option value="日本での進学">日本での進学（Enter a school of higher education in Japan）</option>
 	                    <option value="日本での就職">日本での就職（Find work in Japan）</option>
 	                    <option value="その他">その他（Others）</option>
 	                </select>
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['afterGraduationError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>	
 	            
  	            <!-- その他の内容 -->
                 <label class="form-label" for="afterGraduationOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="afterGraduationOtherContents" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['afterGraduationOtherContentsError'] ? 'error-input' : ''}" type="text" id="afterGraduationOtherContents" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
+		        	<!-- エラー表示  -->
+			        <c:set var="errorMsg" value="${requestScope['afterGraduationOtherContentsError']}" />
+			        <c:if test="${not empty errorMsg}">
+			            <div class="small-font red input-field" role="alert">
+			                <c:out value="${errorMsg}" />
+			            </div>
+			        </c:if> 
 	            </div>
 	        </div>   	    
 		    <!-- トークンの格納  -->

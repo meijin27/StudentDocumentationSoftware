@@ -354,7 +354,7 @@ public class PeriodUpdateSecondAction extends Action {
 		boolean checkSupporter = false;
 
 		
-		// 経費支弁者が全て未入力なら問題なし
+		// 経費支弁者が全て未入力なら問題なし(※任意様式の別紙可のため)
 		if (ValidationUtil.areAllNullOrEmpty(supporterName, supporterAddress, supporterTel, supporterIncome,
 				supporterEmployment, supporterWorkTel)) {
 		} else {

@@ -53,7 +53,7 @@
 		        </c:if> 
             </div>	     
             <div class="col-md-8 mb-3"></div>   
- 		    	<p>就労日を選択してください</p>
+ 		    <p>就労日を選択してください</p>
 			<% for (int i = 1; i <= 31; i++) { %>
 	            <!-- エラー表示用の変数設定 -->  
 				<%
@@ -69,12 +69,14 @@
 			    </div>
 			<% } %>
         	<!-- エラー表示  -->
-	        <c:set var="errorMsg" value="${requestScope['firstMonthDayError']}" />
-	        <c:if test="${not empty errorMsg}">
-	            <div class="small-font red input-field" role="alert">
-	                <c:out value="${errorMsg}" />
-	            </div>
-	        </c:if> 				
+        	<div class="col-md-12 mb-3">
+		        <c:set var="errorMsg" value="${requestScope['firstMonthDayError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if> 				
+			</div>
 		</div>
 		<div class="row">
  		    	<p class="text-start text-center red margin-top-50"><strong>一か月分を作成する場合は下記は選択しないでください</strong></p>

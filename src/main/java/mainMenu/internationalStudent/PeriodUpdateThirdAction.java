@@ -64,120 +64,268 @@ public class PeriodUpdateThirdAction extends Action {
 		// 入力された金額をカンマ付きに変更するメソッド
 		NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
-		// 申請人との関係がその他の場合で詳細記入がなければエラーを返す
-		if (relationship.equals("その他")) {
-			if (ValidationUtil.isNullOrEmpty(relationshipOtherContents)) {
-				request.setAttribute("otherError", "申請人との関係でその他を選択した場合は詳細も入力してください。");
-			} else if (ValidationUtil.areValidLengths(16, relationshipOtherContents, relationship)) {
-				// 文字数が16文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-				request.setAttribute("otherError", "その他の詳細は16文字以下で入力してください。");
-			} else if (ValidationUtil.containsForbiddenChars(relationshipOtherContents, relationship)) {
+		// 請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）のエラー処理
+		// 申請人との関係が未入力なら問題なし
+		if (ValidationUtil.areAllNullOrEmpty(relationship)) {
+		} 
+		// 入力されている場合
+		else {
+			// 申請人との関係のエラー処理
+			// 文字数が16文字より多い場合はエラーを返す
+			if (ValidationUtil.areValidLengths(16, relationship)) {
+				request.setAttribute("relationshipError", "16文字以下で入力してください。");
+			} 
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(relationship)) {
+				request.setAttribute("relationshipError", "使用できない特殊文字が含まれています");
+			} 
+			
+			// その他を選択した場合は詳細記入のエラー処理
+			// 申請人との関係がその他の場合で詳細記入がなければエラーを返す
+			if (relationship.equals("その他")) {
+				if (ValidationUtil.isNullOrEmpty(relationshipOtherContents)) {
+					request.setAttribute("relationshipOtherContentsError", "申請人との関係でその他を選択した場合は詳細も入力してください。");
+				}
+				// 文字数が16文字より多い場合はエラーを返す
+				else if (ValidationUtil.areValidLengths(16, relationshipOtherContents)) {
+					request.setAttribute("relationshipOtherContentsError", "その他の詳細は16文字以下で入力してください。");
+				} 
 				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+				else if (ValidationUtil.containsForbiddenChars(relationshipOtherContents)) {
+					request.setAttribute("relationshipOtherContentsError", "使用できない特殊文字が含まれています");
+				}
+			}	
+		}
+
+		// 外国政府（Foreign government）のエラー処理
+		// 未入力なら問題なし
+		if (ValidationUtil.isNullOrEmpty(foreignGovernment)) {
+		}
+		// 入力されている場合
+		else {
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(foreignGovernment)) {
+				request.setAttribute("foreignGovernmentError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, foreignGovernment)) {
+				request.setAttribute("foreignGovernmentError", "奨学金支給機関名は18文字以下で入力してください。");
 			}
 		}
-
-		// 奨学金支給機関名は18文字以下
-		if (ValidationUtil.areValidLengths(18, foreignGovernment)
-				|| ValidationUtil.areValidLengths(18, japaneseGovernment)
-				|| ValidationUtil.areValidLengths(18, localGovernment)
-				|| ValidationUtil.areValidLengths(18, otherOrganization)
-				|| ValidationUtil.areValidLengths(18, publicInterest)) {
-			request.setAttribute("publicInterestError", " 奨学金支給機関名は18文字以下で入力してください。");
+		
+		// 日本国政府（Japanese government）のエラー処理
+		// 未入力なら問題なし
+		if (ValidationUtil.isNullOrEmpty(japaneseGovernment)) {
 		}
+		// 入力されている場合
+		else {
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(japaneseGovernment)) {
+				request.setAttribute("japaneseGovernmentError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, japaneseGovernment)) {
+				request.setAttribute("japaneseGovernmentError", "奨学金支給機関名は18文字以下で入力してください。");
+			}
+		}
+		
+		// 地方公共団体（Local government）のエラー処理
+		// 未入力なら問題なし
+		if (ValidationUtil.isNullOrEmpty(localGovernment)) {
+		}
+		// 入力されている場合
+		else {
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(localGovernment)) {
+				request.setAttribute("localGovernmentError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, localGovernment)) {
+				request.setAttribute("localGovernmentError", "奨学金支給機関名は18文字以下で入力してください。");
+			}
+		}				
+		
+		// その他（Others）のエラー処理
+		// 未入力なら問題なし
+		if (ValidationUtil.isNullOrEmpty(otherOrganization)) {
+		}
+		// 入力されている場合
+		else {
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(otherOrganization)) {
+				request.setAttribute("otherOrganizationError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, otherOrganization)) {
+				request.setAttribute("otherOrganizationError", "奨学金支給機関名は18文字以下で入力してください。");
+			}
 
-		// 奨学金支給機関が公益社団法人又は公益財団法人の場合で詳細記入がなければエラーを返す
-		if (!ValidationUtil.isNullOrEmpty(publicInterest)) {
+			// 奨学金支給機関がその他の場合で詳細記入がなければエラーを返す
+			if (ValidationUtil.isNullOrEmpty(organizationOtherContents)) {
+				request.setAttribute("organizationOtherContentsError", "奨学金支給機関でその他を選択した場合は詳細も入力してください。");
+			} 
+			// 文字数が16文字より多い場合はエラーを返す
+			else if (ValidationUtil.areValidLengths(16, organizationOtherContents)) {
+				request.setAttribute("organizationOtherContentsError", "その他の詳細は16文字以下で入力してください。");
+			} 
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(organizationOtherContents)) {
+				request.setAttribute("organizationOtherContentsError", "使用できない特殊文字が含まれています");
+			}
+		
+		}						
+		
+		// 公益社団法人又は公益財団法人（Public interest incorporated association /Public interest incorporated foundation）のエラー処理
+		// 未入力なら問題なし
+		if (ValidationUtil.isNullOrEmpty(publicInterest)) {
+		}
+		// 入力されている場合
+		else {
+			// 入力値に特殊文字が入っていないか確認する
+			if (ValidationUtil.containsForbiddenChars(publicInterest)) {
+				request.setAttribute("publicInterestError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(18, publicInterest)) {
+				request.setAttribute("publicInterestError", "奨学金支給機関名は18文字以下で入力してください。");
+			}
+
+			// 奨学金支給機関が公益社団法人又は公益財団法人の場合で詳細記入がなければエラーを返す
 			if (ValidationUtil.isNullOrEmpty(organizationpublicInterestContents)) {
-				request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人を選択した場合は詳細も入力してください。");
+				request.setAttribute("organizationpublicInterestContentsError", "公益社団法人又は公益財団法人を選択した場合は詳細も入力してください。");
 			} else if (ValidationUtil.areValidLengths(16, organizationpublicInterestContents)) {
 				// 文字数が16文字より多い場合はエラーを返す
-				request.setAttribute("publicInterestError", "公益社団法人又は公益財団法人の詳細は16文字以下で入力してください。");
+				request.setAttribute("organizationpublicInterestContentsError", "公益社団法人又は公益財団法人の詳細は16文字以下で入力してください。");
 			} else if (ValidationUtil.containsForbiddenChars(organizationpublicInterestContents)) {
 				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+				request.setAttribute("organizationpublicInterestContentsError", "使用できない特殊文字が含まれています");
 			}
-		}
-
-		// 奨学金支給機関がその他の場合で詳細記入がなければエラーを返す
-		if (!ValidationUtil.isNullOrEmpty(otherOrganization)) {
-			if (ValidationUtil.isNullOrEmpty(organizationOtherContents)) {
-				request.setAttribute("otherOrganizationError", "奨学金支給機関でその他を選択した場合は詳細も入力してください。");
-			} else if (ValidationUtil.areValidLengths(16, organizationOtherContents)) {
-				// 文字数が16文字より多い場合はエラーを返す
-				request.setAttribute("otherOrganizationError", "その他の詳細は16文字以下で入力してください。");
-			} else if (ValidationUtil.containsForbiddenChars(organizationOtherContents)) {
-				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-			}
+		}							
+		
+		// 奨学金支給機関名にエラーがある場合
+		if (!ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("foreignGovernmentError"),
+				(String) request.getAttribute("japaneseGovernmentError"),(String) request.getAttribute("localGovernmentError"),(String) request.getAttribute("otherOrganizationError"),(String) request.getAttribute("publicInterestError"))) {
+			request.setAttribute("publicError", " 奨学金支給機関名は18文字以下で特殊文字を含めずに入力してください。");
 		}
 
 		// 更新項目確認用変数
 		boolean checkOtherActivity = false;
 
-		// ラジオボタンの入力値チェック
+		// 資格外活動の有無（Are you engaging in activities other than those permitted under the status of residence previously granted?）のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(otherActivity)) {
+			request.setAttribute("otherActivityError", "入力必須項目です。");
+		}
 		// 資格外活動の有無が「有」「無」以外の場合はエラーを返す
-		if (!(otherActivity.equals("有") || otherActivity.equals("無"))) {
+		else if (!(otherActivity.equals("有") || otherActivity.equals("無"))) {
 			request.setAttribute("otherActivityError", "資格外活動は「有（Yes）」「無（No）」から選択してください");
 		}
-
-		// 資格外活動の有無が有の場合で内容等が全て未入力なら問題なし
-		if (otherActivity.equals("有")) {
+		else if (otherActivity.equals("有")) {
+			// 資格外活動の有無が有の場合で内容等が全て未入力なら問題なし(※任意様式の別紙可のため)
 			if (ValidationUtil.areAllNullOrEmpty(work, employment, workPhone, workTimePerWeek,
 					salary, monthlyOrDaily)) {
-			} else if (ValidationUtil.isNullOrEmpty(work, employment, workPhone, workTimePerWeek,
-					salary, monthlyOrDaily)) {
-				// どれかだけ入力されている場合
-				request.setAttribute("otherActivityError", "資格外活動の内容を入力する場合は(1)～(4)の全項目を入力してください。");
-			} else if (ValidationUtil.areValidLengths(32, work, employment)) {
-				// 文字数が32文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-				request.setAttribute("otherActivityError", "32文字以下で入力してください。");
-			} else if (!(monthlyOrDaily.equals("月額") || monthlyOrDaily.equals("日額"))) {
-				// セレクトボックスの選択肢外の場合はエラーを返す。
-				request.setAttribute("otherActivityError", "セレクトボックスの選択肢から選んでください");
-			} else if (ValidationUtil.containsForbiddenChars(work, employment)) {
+			} 
+			// 入力事項がある場合のエラー処理
+			else {
+				// 内容（Type of work）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(work)) {
+					request.setAttribute("workError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 
+				// 文字数が32文字より多い場合はエラーを返す
+				else if (ValidationUtil.areValidLengths(32, work)) {
+					request.setAttribute("workError", "32文字以下で入力してください。");
+				} 
 				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-			} else if (ValidationUtil.isTenOrElevenDigit(workPhone)) {
+				else if (ValidationUtil.containsForbiddenChars(work)) {
+					request.setAttribute("workError", "使用できない特殊文字が含まれています");
+				} 		
+				
+				// 勤務先名称（Place of employment）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(employment)) {
+					request.setAttribute("employmentError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 
+				// 文字数が32文字より多い場合はエラーを返す
+				else if (ValidationUtil.areValidLengths(32, employment)) {
+					request.setAttribute("employmentError", "32文字以下で入力してください。");
+				} 
+				// 入力値に特殊文字が入っていないか確認する
+				else if (ValidationUtil.containsForbiddenChars(employment)) {
+					request.setAttribute("employmentError", "使用できない特殊文字が含まれています");
+				} 						
+				
+				// 勤務先電話番号（Telephone No.）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(workPhone)) {
+					request.setAttribute("workPhoneError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 
 				// 電話番号が半角10~11桁でなければエラーを返す
-				request.setAttribute("otherActivityError", "電話番号は半角数字10桁～11桁で入力してください。");
-			} else if (!workTimePerWeek.matches("\\d+") || workTimePerWeek.length() > 3 || !salary.matches("\\d+")
-					|| salary.length() > 7) {
-				// 稼働時間及び入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
-				request.setAttribute("otherActivityError", "稼働時間は数字のみ3桁以下、報酬は数字のみ7桁以下で入力してください。");
-			} else {
+				else if (ValidationUtil.isTenOrElevenDigit(workPhone)) {
+					request.setAttribute("workPhoneError", "電話番号は半角数字10桁～11桁で入力してください。");
+				}
 				// 電話番号に「-」をつける
-				if (workPhone.length() == 11) {
+				else if (workPhone.length() == 11) {
 					workPhone = workPhone.substring(0, 3) + "-" + workPhone.substring(3, 7) + "-"
 							+ workPhone.substring(7, 11);
 				} else {
 					workPhone = workPhone.substring(0, 3) + "-" + workPhone.substring(3, 6) + "-"
 							+ workPhone.substring(6, 10);
 				}
+				
+				// 週間稼働時間（Work time per week）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(workTimePerWeek)) {
+					request.setAttribute("workTimePerWeekError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 				
+				// 稼働時間及び入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
+				else if (!workTimePerWeek.matches("\\d+") || workTimePerWeek.length() > 3) {
+					request.setAttribute("workTimePerWeekError", "稼働時間は数字のみ3桁以下で入力してください。");				
+				}
+			
+				// 報酬（Salary）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(salary)) {
+					request.setAttribute("salaryError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 				
+				// 稼働時間及び入力金額に数字以外が含まれている、もしくは数字が１０００万円を超える場合はエラーを返す
+				else if (!salary.matches("\\d+") || salary.length() > 7) {
+					request.setAttribute("salaryError", "報酬は数字のみ7桁以下で入力してください。");				
+				}				
 				// 文字列の数値をカンマ付きに変更する
-				salary = numberFormat.format(Integer.parseInt(salary));
+				else {
+					salary = numberFormat.format(Integer.parseInt(salary));				
+				}
+				
+				// 月額・日額（Monthly or Daily）のエラー処理
+				if (ValidationUtil.isNullOrEmpty(monthlyOrDaily)) {
+					request.setAttribute("monthlyOrDailyError", "資格外活動の内容を入力する場合は全項目を入力してください。");
+				} 							
+				else if (!(monthlyOrDaily.equals("月額") || monthlyOrDaily.equals("日額"))) {
+					// セレクトボックスの選択肢外の場合はエラーを返す。
+					request.setAttribute("monthlyOrDailyError", "セレクトボックスの選択肢から選んでください");
+				}
 				checkOtherActivity = true;
-			}
+			}	
 		}
 
-		if (ValidationUtil.areValidLengths(6, afterGraduation)) {
-			// 文字数が6文字より多い場合はエラーを返す。。
+		// 卒業後の予定（Plan after graduation） のエラー処理
+		if (ValidationUtil.isNullOrEmpty(afterGraduation)) {
+			request.setAttribute("afterGraduationError", "入力必須項目です。");
+		} 				
+		// 文字数が6文字より多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(6, afterGraduation)) {
 			request.setAttribute("afterGraduationError", "卒業後の予定は6文字以下で入力してください。");
-		} else if (ValidationUtil.containsForbiddenChars(afterGraduation)) {
-			// 入力値に特殊文字が入っていないか確認する
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		} 
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(afterGraduation)) {
+			request.setAttribute("afterGraduationError", "使用できない特殊文字が含まれています");
 		}
-
 		// 卒業後の予定がその他の場合で詳細記入がなければエラーを返す
-		if (afterGraduation.equals("その他")) {
+		else if (afterGraduation.equals("その他")) {
 			if (ValidationUtil.isNullOrEmpty(afterGraduationOtherContents)) {
-				request.setAttribute("afterGraduationError", "卒業後の予定でその他を選択した場合は詳細も入力してください。");
+				request.setAttribute("afterGraduationOtherContentsError", "卒業後の予定でその他を選択した場合は詳細も入力してください。");
 			} else if (ValidationUtil.areValidLengths(32, afterGraduationOtherContents)) {
 				// 文字数が21文字より多い場合はエラーを返す。セレクトボックスの有効範囲画外の場合もエラーを返す。
-				request.setAttribute("afterGraduationError", "卒業後の予定のその他の詳細は32文字以下で入力してください。");
+				request.setAttribute("afterGraduationOtherContentsError", "卒業後の予定のその他の詳細は32文字以下で入力してください。");
 			} else if (ValidationUtil.containsForbiddenChars(afterGraduationOtherContents)) {
 				// 入力値に特殊文字が入っていないか確認する
-				request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+				request.setAttribute("afterGraduationOtherContentsError", "使用できない特殊文字が含まれています");
 			}
 		}
 

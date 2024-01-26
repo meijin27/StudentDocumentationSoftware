@@ -64,7 +64,7 @@ public class CertificateOfEmploymentAction extends Action {
 
 		// 一月目に未入力項目があればエラーを返す
 		if (ValidationUtil.isNullOrEmpty(firstMonth)) {
-			request.setAttribute("firstMonthError", "未入力項目があります。");
+			request.setAttribute("firstMonthError", "入力必須項目です。");
 		}
 		// 一月目は半角数字2桁以下でなければエラーを返す
 		else if (ValidationUtil.isOneOrTwoDigit(firstMonth)) {
