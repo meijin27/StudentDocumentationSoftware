@@ -160,20 +160,19 @@ public class PermissionBikeAction extends Action {
 			request.setAttribute("modelAndColorError", "車種・色は32文字以下で入力してください。");
 		}
 
-		// エラーが発生している場合は元のページに戻す
-		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-			return "permission-bike.jsp";
-		}
+		// 年月日入力にエラーがないことを確認した後に日付の順序のエラーをチェックする
+		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("startError"),
+				(String) request.getAttribute("endError"),
+				(String) request.getAttribute("requestError"))) {
+			// 期間年月日（自）が願出年月日より前の日付の場合はエラーにする
+			if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
+					startDay)) {
+				request.setAttribute("startError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
+			}
 
-		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
-		// 期間年月日（自）が願出年月日より前の日付の場合はエラーにする
-		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, startYear, startMonth,
-				startDay)) {
-			request.setAttribute("startError", "期間年月日（自）は願出年月日より後の日付でなければなりません。");
-		}
-
-		if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
-			request.setAttribute("endError", "期間年月日（至）は期間年月日（自）より後の日付でなければなりません。");
+			if (ValidationUtil.isBefore(startYear, startMonth, startDay, endYear, endMonth, endDay)) {
+				request.setAttribute("endError", "期間年月日（至）は期間年月日（自）より後の日付でなければなりません。");
+			}
 		}
 
 		// エラーが発生している場合は元のページに戻す

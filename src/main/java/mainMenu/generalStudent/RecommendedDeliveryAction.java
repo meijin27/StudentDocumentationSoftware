@@ -120,7 +120,7 @@ public class RecommendedDeliveryAction extends Action {
 			request.setAttribute("proposeError", "提出先は32文字以下で入力してください。");
 		}
 
-		// 提出先のエラー処理
+		// 推薦様式のエラー処理
 		// 未入力項目があればエラーを返す
 		if (ValidationUtil.isNullOrEmpty(nominationForm)) {
 			request.setAttribute("nominationFormError", "入力必須項目です。");
@@ -130,16 +130,14 @@ public class RecommendedDeliveryAction extends Action {
 			request.setAttribute("nominationFormError", "推薦様式は「本校書式」「提出先書式」から選択してください");
 		}
 
-		// エラーが発生している場合は元のページに戻す
-		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-			return "recommended-delivery.jsp";
-		}
-
-		// 年月日入力にnullがないことを確認した後に日付の順序のエラーをチェックする
-		// 申請日と提出期限の比較
-		if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deadlineYear, deadlineMonth,
-				deadlineDay)) {
-			request.setAttribute("deadlineError", "提出期限は申請年月日より後の日付でなければなりません。");
+		// 年月日入力にエラーがないことを確認した後に日付の順序のエラーをチェックする
+		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("deadlineError"),
+				(String) request.getAttribute("requestError"))) {
+			// 申請日と提出期限の比較
+			if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deadlineYear, deadlineMonth,
+					deadlineDay)) {
+				request.setAttribute("deadlineError", "提出期限は申請年月日より後の日付でなければなりません。");
+			}
 		}
 
 		// エラーが発生している場合は元のページに戻す

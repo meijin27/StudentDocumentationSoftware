@@ -40,7 +40,7 @@ public class NotificationOfChangeAction extends Action {
 		// 入力された値を変数に格納
 		String changeYear = request.getParameter("changeYear");
 		String changeMonth = request.getParameter("changeMonth");
-		String changetDay = request.getParameter("changeDay");
+		String changeDay = request.getParameter("changeDay");
 		String lastName = request.getParameter("lastName");
 		String firstName = request.getParameter("firstName");
 		String postCode = request.getParameter("postCode");
@@ -55,64 +55,90 @@ public class NotificationOfChangeAction extends Action {
 		boolean changeAddress = false;
 		boolean changeTel = false;
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(changeYear, changeMonth, changetDay, requestYear, requestMonth, requestDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "notification-of-change.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 年月日が１・２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isOneOrTwoDigit(changeYear, changeMonth, changetDay, requestYear, requestMonth,
-				requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)
-					|| ValidationUtil.validateDate(changeYear, changeMonth, changetDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+		// 変更年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(changeYear, changeMonth, changeDay)) {
+			request.setAttribute("changeDateError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(changeYear, changeMonth, changeDay)) {
+			request.setAttribute("changeDateError", "年月日は正規の桁数で入力してください。");
+		}
+		// 変更年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(changeYear, changeMonth, changeDay)) {
+			request.setAttribute("changeDateError", "存在しない日付です。");
 		}
 
 		// 姓と名のチェック
 		if (ValidationUtil.areAllNullOrEmpty(lastName, firstName)) {
 			// すべてが空の場合は問題なし
-		} else if (ValidationUtil.isNullOrEmpty(lastName, firstName)) {
-			// 何か一つだけ入力されている場合
-			request.setAttribute("nameError", "姓と名を全て入力してください。");
-		} else if (ValidationUtil.areValidLengths(32, lastName, firstName)) {
-			// 姓名の文字列長が長い場合はエラーを返す
-			request.setAttribute("nameError", "名前は32文字以下で入力してください。");
-		} else if (ValidationUtil.containsForbiddenChars(lastName, firstName)) {
-			// 入力値に特殊文字が入っていないか確認する	
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-		} else {
+		}
+		// 入力されている場合
+		else {
+			// 姓のエラー処理
+			if (ValidationUtil.isNullOrEmpty(lastName)) {
+				request.setAttribute("lastNameError", "変更する場合は姓と名は両方入力してください。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(lastName)) {
+				request.setAttribute("lastNameError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(32, lastName)) {
+				request.setAttribute("lastNameError", "姓は32文字以下で入力してください。");
+			}
+			// 名のエラー処理
+			if (ValidationUtil.isNullOrEmpty(firstName)) {
+				request.setAttribute("firstNameError", "変更する場合は姓と名は両方入力してください。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(firstName)) {
+				request.setAttribute("firstNameError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(32, firstName)) {
+				request.setAttribute("firstNameError", "名は32文字以下で入力してください。");
+			}
 			changeName = true;
 		}
 
 		// 郵便番号と住所のチェック
 		if (ValidationUtil.areAllNullOrEmpty(postCode, address)) {
 			// どちらも空の場合は問題なし
-		} else if (ValidationUtil.isNullOrEmpty(postCode, address)) {
-			// どちらかだけ入力されている場合
-			request.setAttribute("addressError", "郵便番号と住所は両方とも入力してください。");
-		} else if (ValidationUtil.areValidLengths(64, address)) {
-			// 文字数が64文字より多い場合はエラーを返す
-			request.setAttribute("addressError", "住所は64文字以下で入力してください。");
-		} else if (ValidationUtil.isSevenDigit(postCode)) {
+		}
+		// 入力されている場合
+		else {
+			// 郵便番号のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(postCode)) {
+				request.setAttribute("postCodeError", "変更する場合は郵便番号と住所は両方とも入力してください。");
+			}
 			// 郵便番号が半角7桁でなければエラーを返す
-			request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
-		} else if (ValidationUtil.containsForbiddenChars(address)) {
-			// 入力値に特殊文字が入っていないか確認する	
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
-		} else {
+			else if (ValidationUtil.isSevenDigit(postCode)) {
+				request.setAttribute("postCodeError", "郵便番号は半角数字7桁で入力してください。");
+			}
+			// 住所のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(address)) {
+				request.setAttribute("addressError", "変更する場合は郵便番号と住所は両方とも入力してください。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(address)) {
+				request.setAttribute("addressError", "使用できない特殊文字が含まれています");
+			}
+			// 文字数が多い場合はエラーを返す。
+			else if (ValidationUtil.areValidLengths(64, address)) {
+				request.setAttribute("addressError", "住所は64文字以下で入力してください。");
+			}
 			changeAddress = true;
 		}
 
 		// 電話番号のチェック
 		if (ValidationUtil.areAllNullOrEmpty(tel)) {
-			// 空の場合は問題なし		
+			// 空の場合は問題なし
 		} else if (ValidationUtil.isTenOrElevenDigit(tel)) {
 			// 電話番号が半角10~11桁でなければエラーを返す
 			request.setAttribute("telError", "電話番号は半角数字10桁～11桁で入力してください。");
@@ -120,16 +146,38 @@ public class NotificationOfChangeAction extends Action {
 			changeTel = true;
 		}
 
-		// エラーが発生している場合は元のページに戻す
-		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-			return "notification-of-change.jsp";
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isOneOrTwoDigit(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
+		}
+
+		// 年月日入力にエラーがないことを確認した後に日付の順序のエラーをチェックする
+		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("changeDateError"),
+				(String) request.getAttribute("requestError"))) {
+			// 在留カードの期限が入力されている場合は期間の順序をチェックする
+			if (ValidationUtil.isBefore(changeYear, changeMonth, changeDay, requestYear, requestMonth, requestDay)) {
+				request.setAttribute("requestError", "申請年月日は変更年月日より後の日付でなければなりません。");
+			}
 		}
 
 		// 少なくとも1つの項目が入力されている必要がある
 		if (changeName || changeAddress || changeTel) {
 			// 入力されている場合は問題なし			
 		} else {
-			request.setAttribute("inputError", "変更する項目を入力してください。");
+			request.setAttribute("changeError", "変更する項目を入力してください。");
+		}
+
+		// エラーが発生している場合は元のページに戻す
+		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "notification-of-change.jsp";
 		}
 
@@ -238,7 +286,7 @@ public class NotificationOfChangeAction extends Action {
 			// 変更年月日
 			editor.writeText(font, changeYear, 305f, 667f, 70f, "left", 12);
 			editor.writeText(font, changeMonth, 348f, 667f, 70f, "left", 12);
-			editor.writeText(font, changetDay, 390f, 667f, 70f, "left", 12);
+			editor.writeText(font, changeDay, 390f, 667f, 70f, "left", 12);
 			// 変更前後の名前
 			if (changeName) {
 				editor.writeText(font, oldLastName, 185f, 540f, 77f, "center", 12);

@@ -11,31 +11,45 @@
         <h1>「欠席理由申立書」作成</h1><br>
     </div>			  
 	<form action="ReasonsForNonAttendance.action" method="post" autocomplete="off">
-        <!-- エラー表示  -->
-		<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-		    <c:set var="attrName" value="${attr}" />
-		    <c:if test="${fn:endsWith(attrName, 'Error')}">
-		        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-		        <c:if test="${not empty errorMsg}">
-		            <div class="alert alert-danger text-center input-field" role="alert">
-		                <c:out value="${errorMsg}" />
-		            </div>
-		        </c:if>
-		    </c:if>
-		</c:forEach>     	
+		<!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+		<div class="col-md-12 mb-5">
+			<c:set var="hasError" value="false" />
+			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
+				<c:if test="${fn:endsWith(attr, 'Error')}">
+					<c:set var="hasError" value="true" />
+				</c:if>
+			</c:forEach>
+			<c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+			<c:if test="${not empty innerErrorMsg}">
+				<div class="alert alert-danger text-center input-field" role="alert">
+					<STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+				</div>
+			</c:if>        			          				
+			<c:if test="${hasError and empty innerErrorMsg}">
+				<c:import url="/errorMessage/error-message.jsp" />
+			</c:if>
+		</div>    
+    	
         <div class="row">
   	            <!-- 親族氏名 -->
             <div class="col-md-6 mb-3">
                 <label class="form-label" for="relativeName">親族氏名</label>
                 <span class="required-label">必須</span>
-                <input class="form-control" type="text" id="relativeName" name="relativeName" placeholder="鈴木　一郎" value="<c:out value='${relativeName}'/>" required>
+                <input class="form-control ${not empty requestScope['relativeNameError'] ? 'error-input' : ''}" type="text" id="relativeName" name="relativeName" placeholder="鈴木　一郎" value="<c:out value='${relativeName}'/>" required>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['relativeNameError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>  
             </div>
             <div class="col-md-6 mb-3"></div>
             <!-- 親族生年月日-->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label" for="birthYear">親族生年月日</label>
                 <span class="required-label">必須</span>
-                <select id="birthYear" name="birthYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
+                <select id="birthYear" name="birthYear" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthYear}'/>" required>
                     <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% int currentYear=java.time.Year.now().getValue(); for(int i=currentYear-110; i <=currentYear;
                         i++){ %>
@@ -45,9 +59,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="birthMonth">月</label>
-                <select id="birthMonth" name="birthMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
+                <select id="birthMonth" name="birthMonth" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthMonth}'/>" required>
                     <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
@@ -56,9 +70,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="birthDay">日</label>
-                <select id="birthDay" name="birthDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
+                <select id="birthDay" name="birthDay" class="form-control ${not empty requestScope['birthError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.birthDay}'/>" required>
                     <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
@@ -67,16 +81,32 @@
                     <% } %>
                 </select>
             </div>	        
-  	            <!-- 親族住所 -->
+        	<!-- エラー表示  -->
+            <div class="col-md-12 mb-3">			        	
+		        <c:set var="errorMsg" value="${requestScope['birthError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+            </div>   
+            <!-- 親族住所 -->
             <div class="col-md-12 mb-3">
                 <label class="form-label" for="relativeAddress">親族住所</label>
                 <span class="required-label">必須</span>
-                <input class="form-control" type="text" id="relativeAddress" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
+                <input class="form-control ${not empty requestScope['relativeAddressError'] ? 'error-input' : ''}" type="text" id="relativeAddress" name="relativeAddress" placeholder="秋田県秋田市飯島南字田尻堰越" value="<c:out value='${relativeAddress}'/>" required>
+	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['relativeAddressError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>  
             </div>
 	        <!-- 欠席理由 -->
                <label class="form-label" for="nonAttendanceReason">欠席理由を選択してください。<span class="required-label">必須</span></label>
             <div class="col-md-4 mb-5">
-                <select id="nonAttendanceReason" name="nonAttendanceReason" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.nonAttendanceReason}'/>" required>
+                <select id="nonAttendanceReason" name="nonAttendanceReason" class="form-control ${not empty requestScope['nonAttendanceReasonError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.nonAttendanceReason}'/>" required>
                    <option value="" disabled selected class="display_none">--- 欠席理由 ---</option>
 		           <option value="看護">看護</option>
 		           <option value="危篤">危篤</option>
@@ -88,14 +118,21 @@
                    <option value="卒園式">卒園式</option>
             	   <option value="卒業式">卒業式</option>
      		    </select>
+ 	        	<!-- エラー表示  -->
+		        <c:set var="errorMsg" value="${requestScope['nonAttendanceReasonError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if> 
             </div>
             <div class="col-md-8 mb-5"></div>       			
             <p class="border-bottom"></p>
             <!-- 期間年月日（自） -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label" for="startYear">期間年月日（自）</label>
                 <span class="required-label">必須</span>   	                
-                <select id="startYear" name="startYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startYear}'/>" required>
+                <select id="startYear" name="startYear" class="form-control ${not empty requestScope['startError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.startYear}'/>" required>
                     <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
@@ -105,9 +142,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="startMonth">月</label>
-                <select id="startMonth" name="startMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startMonth}'/>" required>
+                <select id="startMonth" name="startMonth" class="form-control ${not empty requestScope['startError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.startMonth}'/>" required>
                     <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
@@ -116,9 +153,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="startDay">日</label>
-                <select id="startDay" name="startDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.startDay}'/>" required>
+                <select id="startDay" name="startDay" class="form-control ${not empty requestScope['startError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.startDay}'/>" required>
                     <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
@@ -127,11 +164,20 @@
                     <% } %>
                 </select>
             </div>	        
- 	            <!-- 期間年月日（至） -->
-            <div class="col-md-4 mb-5">
+        	<!-- エラー表示  -->
+            <div class="col-md-12 mb-3">			        	
+		        <c:set var="errorMsg" value="${requestScope['startError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+            </div>               
+            <!-- 期間年月日（至） -->
+            <div class="col-md-4 mb-0">
                 <label class="form-label" for="endYear">期間年月日（至）</label>
                 <span class="required-label">必須</span>   		                
-                <select id="endYear" name="endYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endYear}'/>" required>
+                <select id="endYear" name="endYear" class="form-control ${not empty requestScope['endError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.endYear}'/>" required>
                     <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
@@ -141,9 +187,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-5">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="endMonth">月</label>
-                <select id="endMonth" name="endMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endMonth}'/>" required>
+                <select id="endMonth" name="endMonth" class="form-control ${not empty requestScope['endError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.endMonth}'/>" required>
                     <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
@@ -152,9 +198,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-5">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="endDay">日</label>
-                <select id="endDay" name="endDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.endDay}'/>" required>
+                <select id="endDay" name="endDay" class="form-control ${not empty requestScope['endError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.endDay}'/>" required>
                     <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
@@ -163,12 +209,21 @@
                     <% } %>
                 </select>
             </div>	        
-      			<p class="border-bottom"></p>
+        	<!-- エラー表示  -->
+            <div class="col-md-12 mb-5">			        	
+		        <c:set var="errorMsg" value="${requestScope['endError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+            </div>    
+   			<p class="border-bottom"></p>
             <!-- 申請年月日 -->
-            <div class="col-md-4 mb-5">
+            <div class="col-md-4 mb-0">
                 <label class="form-label" for="requestYear">申請年月日</label>
                 <span class="required-label">必須</span>
-                <select id="requestYear" name="requestYear" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestYear}'/>" required>
+                <select id="requestYear" name="requestYear" class="form-control ${not empty requestScope['requestError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.requestYear}'/>" required>
                     <option value="" disabled selected class="display_none">-- 年 --</option>
                     <% for(int i=currentYear-1; i <=currentYear;
                         i++){ %>
@@ -178,9 +233,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-5">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="requestMonth">月</label>
-                <select id="requestMonth" name="requestMonth" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestMonth}'/>" required>
+                <select id="requestMonth" name="requestMonth" class="form-control ${not empty requestScope['requestError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.requestMonth}'/>" required>
                     <option value="" disabled selected class="display_none">-- 月 --</option>
                     <% for(int i=1; i <=12; i++){ %>
                         <option value="<%= i %>">
@@ -189,9 +244,9 @@
                     <% } %>
                 </select>
             </div>
-            <div class="col-md-4 mb-5">
+            <div class="col-md-4 mb-0">
                 <label class="form-label invisible-text" for="requestDay">日</label>
-                <select id="requestDay" name="requestDay" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.requestDay}'/>" required>
+                <select id="requestDay" name="requestDay" class="form-control ${not empty requestScope['requestError'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.requestDay}'/>" required>
                     <option value="" disabled selected class="display_none">-- 日 --</option>
                     <% for(int i=1; i <=31; i++){ %>
                         <option value="<%= i %>">
@@ -200,6 +255,15 @@
                     <% } %>
                 </select>
             </div>	        
+        	<!-- エラー表示  -->
+            <div class="col-md-12 mb-5">			        	
+		        <c:set var="errorMsg" value="${requestScope['requestError']}" />
+		        <c:if test="${not empty errorMsg}">
+		            <div class="small-font red input-field" role="alert">
+		                <c:out value="${errorMsg}" />
+		            </div>
+		        </c:if>
+            </div>    
         </div>      	 
 	    <!-- トークンの格納  -->
 		    <input type="hidden" name="csrfToken" value="${csrfToken}">			

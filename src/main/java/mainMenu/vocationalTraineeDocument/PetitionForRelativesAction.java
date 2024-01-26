@@ -47,39 +47,65 @@ public class PetitionForRelativesAction extends Action {
 		String requestMonth = request.getParameter("requestMonth");
 		String requestDay = request.getParameter("requestDay");
 
-		// 必須項目に未入力項目があればエラーを返す
-		if (ValidationUtil.isNullOrEmpty(relativeName, birthYear, birthMonth, birthDay, relativeAddress, requestYear,
-				requestMonth, requestDay)) {
-			request.setAttribute("nullError", "未入力項目があります。");
-			return "petition-for-relatives.jsp";
-		}
-
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
 
-		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
-		if (ValidationUtil.isFourDigit(birthYear, requestYear) ||
-				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay, requestMonth, requestDay)) {
-			request.setAttribute("dayError", "年月日は正規の桁数で入力してください。");
-		} else {
-			if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay) ||
-					ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
-				request.setAttribute("dayError", "存在しない日付です。");
-			}
+		// 親族氏名のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(relativeName)) {
+			request.setAttribute("relativeNameError", "入力必須項目です。");
 		}
-
 		// 入力値に特殊文字が入っていないか確認する
-		if (ValidationUtil.containsForbiddenChars(relativeName, relativeAddress)) {
-			request.setAttribute("validationError", "使用できない特殊文字が含まれています");
+		else if (ValidationUtil.containsForbiddenChars(relativeName)) {
+			request.setAttribute("relativeNameError", "使用できない特殊文字が含まれています");
 		}
-
 		// 文字数が多い場合はエラーを返す。
-		if (ValidationUtil.areValidLengths(32, relativeName)) {
-			request.setAttribute("valueLongError", "名前は32文字以下で入力してください。");
+		else if (ValidationUtil.areValidLengths(32, relativeName)) {
+			request.setAttribute("relativeNameError", "親族氏名は32文字以下で入力してください。");
 		}
 
-		if (ValidationUtil.areValidLengths(64, relativeAddress)) {
-			request.setAttribute("valueLongAddressError", "住所は64文字以下で入力してください。");
+		// 親族生年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(birthYear) ||
+				ValidationUtil.isOneOrTwoDigit(birthMonth, birthDay)) {
+			request.setAttribute("birthError", "年月日は正規の桁数で入力してください。");
+		}
+		// 親族生年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(birthYear, birthMonth, birthDay)) {
+			request.setAttribute("birthError", "存在しない日付です。");
+		}
+
+		// 申請年月日のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "入力必須項目です。");
+		}
+		// 年月日が年４桁、月日２桁になっていることを検証し、違う場合はエラーを返す
+		else if (ValidationUtil.isFourDigit(requestYear) ||
+				ValidationUtil.isOneOrTwoDigit(requestMonth, requestDay)) {
+			request.setAttribute("requestError", "年月日は正規の桁数で入力してください。");
+		}
+		// 申請年月日が存在しない日付の場合はエラーにする
+		else if (ValidationUtil.validateDate(requestYear, requestMonth, requestDay)) {
+			request.setAttribute("requestError", "存在しない日付です。");
+		}
+
+		// 親族住所のエラー処理
+		// 未入力項目があればエラーを返す
+		if (ValidationUtil.isNullOrEmpty(relativeAddress)) {
+			request.setAttribute("relativeAddressError", "入力必須項目です。");
+		}
+		// 入力値に特殊文字が入っていないか確認する
+		else if (ValidationUtil.containsForbiddenChars(relativeAddress)) {
+			request.setAttribute("relativeAddressError", "使用できない特殊文字が含まれています");
+		}
+		// 文字数が多い場合はエラーを返す。
+		else if (ValidationUtil.areValidLengths(64, relativeAddress)) {
+			request.setAttribute("relativeAddressError", "親族住所は64文字以下で入力してください。");
 		}
 
 		// エラーが発生している場合は元のページに戻す

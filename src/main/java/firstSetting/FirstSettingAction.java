@@ -85,7 +85,7 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("firstNameError", "32文字以下で入力してください。");
 		}
 
-		// ふりがなのエラー処理
+		// ふりがな（姓）のエラー処理
 		// 未入力項目があればエラーを返す
 		if (ValidationUtil.isNullOrEmpty(lastNameRuby)) {
 			request.setAttribute("lastNameRubyError", "入力必須項目です。");
@@ -99,6 +99,7 @@ public class FirstSettingAction extends Action {
 			request.setAttribute("lastNameRubyError", "32文字以下で入力してください。");
 		}
 
+		// ふりがな（名）のエラー処理
 		// 未入力項目があればエラーを返す
 		if (ValidationUtil.isNullOrEmpty(firstNameRuby)) {
 			request.setAttribute("firstNameRubyError", "入力必須項目です。");
