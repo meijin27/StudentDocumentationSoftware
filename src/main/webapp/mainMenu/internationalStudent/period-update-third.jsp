@@ -11,18 +11,24 @@
         <h1>「在留期間更新許可申請書　３枚目」作成</h1><br>
     </div>			  
 		<form action="PeriodUpdateThird.action" method="post" autocomplete="off">
-	        <!-- エラー表示  -->
-			<c:forEach var="attr" items="${pageContext.request.attributeNames}">
-			    <c:set var="attrName" value="${attr}" />
-			    <c:if test="${fn:endsWith(attrName, 'Error')}">
-			        <c:set var="errorMsg" value="${requestScope[attrName]}" />
-			        <c:if test="${not empty errorMsg}">
-			            <div class="alert alert-danger text-center input-field" role="alert">
-			                <c:out value="${errorMsg}" />
-			            </div>
-			        </c:if>
-			    </c:if>
-			</c:forEach> 		
+            <!-- 入力エラーがある場合のみエラーメッセージを表示 -->
+            <div class="col-md-12 mb-5">
+				<c:set var="hasError" value="false" />
+	            <c:forEach var="attr" items="${pageContext.request.attributeNames}">
+	                <c:if test="${fn:endsWith(attr, 'Error')}">
+	                    <c:set var="hasError" value="true" />
+	                </c:if>
+	            </c:forEach>
+		        <c:set var="innerErrorMsg" value="${requestScope['innerError']}" />
+		        <c:if test="${not empty innerErrorMsg}">
+					<div class="alert alert-danger text-center input-field" role="alert">
+		                <STRONG><c:out value="${innerErrorMsg}" /></STRONG>
+		            </div>
+		        </c:if>        			          				
+				<c:if test="${hasError and empty innerErrorMsg}">
+                    <c:import url="/errorMessage/error-message.jsp" />
+	            </c:if>
+            </div>     				
    			<p class="text-start">・在留期間更新許可申請書は３枚組で、当該書類は３枚目です。</p>
   			<p class="text-start margin-bottom-50 mb-5">(The application form for permission to extend the period of stay is in triplicate, and the said document is the third one.)</p>
    			<p class="border-bottom"></p>
@@ -31,7 +37,7 @@
                 <label class="form-label" for="relationship">申請人との関係 （2枚目で在外経費支弁者負担又は在日経費支弁者負担を選択した場合に記入）</label>
                 <label class="form-label" for="relationship">Relationship with the applicant (Check one of the followings when your answer to the question 22(1) is supporter living abroad or Japan)</label>
 	            <div class="col-md-12 mb-3">
-	                <select id="relationship" name="relationship" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.relationship}'/>">
+	                <select id="relationship" name="relationship" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.relationship}'/>">
 	                    <option value="">-- 申請人との関係 --</option>
 	                    <option value="夫">夫（Husband）</option>
 	                    <option value="妻">妻（Wife）</option>
@@ -54,7 +60,7 @@
  	            <!-- その他の内容 -->
                 <label class="form-label" for="relationshipOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" id="relationshipOtherContents" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="relationshipOtherContents" name="relationshipOtherContents" placeholder="" value="<c:out value='${relationshipOtherContents}'/>">
 	            </div>   	            
 
       			<p class="border-bottom"></p>
@@ -85,13 +91,13 @@
  	            <!-- 公益社団法人又は公益財団法人の内容 -->
                 <label class="form-label" for="organizationpublicInterestContents">公益社団法人又は公益財団法人を選択した場合は詳細記入（If you have selected a public interest incorporated association or public interest incorporated foundation, please provide details.）</label>
 	            <div class="col-md-12 mb-3">
-	                <input class="form-control" type="text" id="organizationpublicInterestContents" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="organizationpublicInterestContents" name="organizationpublicInterestContents" placeholder="" value="<c:out value='${organizationpublicInterestContents}'/>">
 	            </div>   	       
 
  	            <!-- その他の内容 -->
                 <label class="form-label" for="organizationOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" id="organizationOtherContents" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="organizationOtherContents" name="organizationOtherContents" placeholder="" value="<c:out value='${organizationOtherContents}'/>">
 	            </div>   	            
       			
        			<p class="border-bottom"></p>
@@ -122,32 +128,32 @@
  	            <!-- 内容 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="work">(1)内容（Type of work）</label>
-	                <input class="form-control" type="text" id="work" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="work" name="work" placeholder="レジ係" value="<c:out value='${work}'/>">
 	            </div>
    	            <!-- 勤務先名称 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="employment">(2)勤務先名称（Place of employment）</label>
-	                <input class="form-control" type="text" id="employment" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="employment" name="employment" placeholder="〇〇コンビニ" value="<c:out value='${employment}'/>">
 	            </div>
    	            <!-- 勤務先電話番号 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workPhone">勤務先電話番号（Telephone No.）</label>
-	                <input class="form-control" type="text" id="workPhone" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="workPhone" name="workPhone" placeholder="046123456" value="<c:out value='${workPhone}'/>">
 	            </div>
    	            <!-- 週間稼働時間 -->
 	            <div class="col-md-6 mb-3">
 	                <label class="form-label" for="workTimePerWeek">(3)週間稼働時間（Work time per week）</label>
-	                <input class="form-control" type="text" id="workTimePerWeek" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="workTimePerWeek" name="workTimePerWeek" placeholder="15" value="<c:out value='${workTimePerWeek}'/>">
 	            </div>
    	            <!-- 報酬 -->
 	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="salary">(4)報酬（Salary）</label>
-	                <input class="form-control" type="text" id="salary" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="salary" name="salary" placeholder="20000" value="<c:out value='${salary}'/>">
 	            </div>	            
   	            <!-- 月額か日額か -->
    	            <div class="col-md-6 mb-5">
 	                <label class="form-label" for="monthlyOrDaily">月額・日額（Monthly or Daily）</label>
-	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.monthlyOrDaily}'/>">
+	                <select id="monthlyOrDaily" name="monthlyOrDaily" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.monthlyOrDaily}'/>">
 	                    <option value="">-- 月額・日額 --</option>
 	                    <option value="月額">月額（Monthly）</option>
 	                    <option value="日額">日額（Daily）</option>
@@ -160,7 +166,7 @@
 	            <div class="col-md-12 mb-3">
 	                <label class="form-label" for="afterGraduation">卒業後の予定（Plan after graduation）</label>
 	                <span class="required-label">必須</span>
-	                <select id="afterGraduation" name="afterGraduation" class="form-control select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
+	                <select id="afterGraduation" name="afterGraduation" class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''} select-center auto-select" data-selected-value="<c:out value='${param.afterGraduation}'/>" required>
 	                    <option value="" disabled selected class="display_none">-- 卒業後の予定 --</option>
 	                    <option value="帰国">帰国（Return to home country）</option>
 	                    <option value="日本での進学">日本での進学（Enter a school of higher education in Japan）</option>
@@ -172,7 +178,7 @@
  	            <!-- その他の内容 -->
                 <label class="form-label" for="afterGraduationOtherContents">その他を選択した場合は詳細記入（If you select "Others", please provide the following information）</label>
 	            <div class="col-md-12 mb-5">
-	                <input class="form-control" type="text" id="afterGraduationOtherContents" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
+	                <input class="form-control ${not empty requestScope['Error'] ? 'error-input' : ''}" type="text" id="afterGraduationOtherContents" name="afterGraduationOtherContents" placeholder="他国へ留学する" value="<c:out value='${afterGraduationOtherContents}'/>">
 	            </div>
 	        </div>   	    
 		    <!-- トークンの格納  -->
