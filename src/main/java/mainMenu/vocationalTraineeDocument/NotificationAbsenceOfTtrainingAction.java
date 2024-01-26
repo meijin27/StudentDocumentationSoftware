@@ -140,33 +140,8 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 			else if (!(allDayOff.equals("はい") || allDayOff.equals("いいえ"))) {
 				request.setAttribute(allDayOffError, "全日休確認は「はい」「いいえ」から選択してください");
 			}
-
-			// 証明添付有無のエラー処理
-			// 未入力項目があればエラーを返す
-			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate)) {
-				request.setAttribute(attachmentOfCertificateError, "入力必須項目です。");
-			}
-			// 証明添付有無は「有」「無」以外の場合はエラーを返す
-			else if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
-				request.setAttribute(attachmentOfCertificateError, "証明添付有無は「有」「無」から選択してください");
-			}
-
-			// 理由のエラー処理
-			// 未入力項目があればエラーを返す
-			if (ValidationUtil.isNullOrEmpty(reason)) {
-				request.setAttribute(reasonError, "入力必須項目です。");
-			}
-			// 入力値に特殊文字が入っていないか確認する
-			else if (ValidationUtil.containsForbiddenChars(reason)) {
-				request.setAttribute(reasonError, "使用できない特殊文字が含まれています");
-			}
-			// 文字数が22文字より多い場合はエラーを返す
-			else if (ValidationUtil.areValidLengths(22, reason)) {
-				request.setAttribute(reasonError, "理由は22文字以下で入力してください。");
-			}
-
 			// 終日休業が「はい」の場合の処理
-			if (!ValidationUtil.isNullOrEmpty(allDayOff) && allDayOff.equals("はい")) {
+			else if (allDayOff.equals("はい")) {
 				// 休業時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
 				if (ValidationUtil.isNullOrEmpty(deadTime)) {
 					request.setAttribute(deadTimeError, "欠席期間時限数を入力してください。");
@@ -178,9 +153,8 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 					totalHours += Integer.parseInt(deadTime);
 				}
 			}
-
 			// 終日休業が「いいえ」の場合の処理
-			if (!ValidationUtil.isNullOrEmpty(allDayOff) && allDayOff.equals("いいえ")) {
+			else if (allDayOff.equals("いいえ")) {
 				// 遅刻時限もしくは早退時限数を適切に選択していない場合、エラーを返す。適切な場合は累計時限に追加する
 				if (ValidationUtil.areAllNullOrEmpty(latenessTime, leaveEarlyTime)) {
 					request.setAttribute(latenessTimeError, "遅刻時限数か早退時限数を入力してください。両方の入力も可能です。");
@@ -205,6 +179,30 @@ public class NotificationAbsenceOfTtrainingAction extends Action {
 						totalHours += Integer.parseInt(leaveEarlyTime);
 					}
 				}
+			}
+
+			// 証明添付有無のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(attachmentOfCertificate)) {
+				request.setAttribute(attachmentOfCertificateError, "入力必須項目です。");
+			}
+			// 証明添付有無は「有」「無」以外の場合はエラーを返す
+			else if (!(attachmentOfCertificate.equals("有") || attachmentOfCertificate.equals("無"))) {
+				request.setAttribute(attachmentOfCertificateError, "証明添付有無は「有」「無」から選択してください");
+			}
+
+			// 理由のエラー処理
+			// 未入力項目があればエラーを返す
+			if (ValidationUtil.isNullOrEmpty(reason)) {
+				request.setAttribute(reasonError, "入力必須項目です。");
+			}
+			// 入力値に特殊文字が入っていないか確認する
+			else if (ValidationUtil.containsForbiddenChars(reason)) {
+				request.setAttribute(reasonError, "使用できない特殊文字が含まれています");
+			}
+			// 文字数が22文字より多い場合はエラーを返す
+			else if (ValidationUtil.areValidLengths(22, reason)) {
+				request.setAttribute(reasonError, "理由は22文字以下で入力してください。");
 			}
 
 			// 休業開始日のエラー処理

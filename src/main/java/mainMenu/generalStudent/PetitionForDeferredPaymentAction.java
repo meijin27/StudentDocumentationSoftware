@@ -1,7 +1,6 @@
 package mainMenu.generalStudent;
 
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,10 +64,6 @@ public class PetitionForDeferredPaymentAction extends Action {
 
 		// 入力された値をリクエストに格納	
 		RequestAndSessionUtil.storeParametersInRequest(request);
-
-		// 各種日付の整合確認用
-		LocalDate requestDate = null;
-		LocalDate generalDeliveryDate = null;
 
 		// 願出年月日のエラー処理
 		// 未入力項目があればエラーを返す
@@ -255,32 +250,43 @@ public class PetitionForDeferredPaymentAction extends Action {
 				request.setAttribute(deferredPaymentAmountError, "金額は数字のみ7桁以下で入力してください。");
 			}
 
-			// エラーが発生している場合は元のページに戻す
-			if (RequestAndSessionUtil.hasErrorAttributes(request)) {
-				return "petition-for-deferred-payment.jsp";
+			// 日付エラーのチェック
+			// エラーが発生していない場合はエラー処理を行う
+			if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("requestError"),
+					(String) request.getAttribute(deliveryError),
+					(String) request.getAttribute("generalDeliveryError"))) {
+				// 申請日と申請期間の比較
+				if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
+						deliveryDay)) {
+					request.setAttribute(deliveryError, "納付期限は願出年月日より後の日付でなければなりません。");
+				} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
+						deliveryYear, deliveryMonth, deliveryDay)) {
+					request.setAttribute(deliveryError, "納付期限は通常納期年月日より後の日付でなければなりません。");
+				}
 			}
 
-			// 申請日と申請期間の比較
-			if (ValidationUtil.isBefore(requestYear, requestMonth, requestDay, deliveryYear, deliveryMonth,
-					deliveryDay)) {
-				request.setAttribute(deliveryError, "納付期限は願出年月日より後の日付でなければなりません。");
-			} else if (ValidationUtil.isBefore(generalDeliveryYear, generalDeliveryMonth, generalDeliveryDay,
-					deliveryYear, deliveryMonth, deliveryDay)) {
-				request.setAttribute(deliveryError, "納付期限は通常納期年月日より後の日付でなければなりません。");
+			// 支払い総額へ減算処理
+			// エラーが発生していない場合は減算処理を行う
+			if (ValidationUtil.areAllNullOrEmpty(
+					(String) request.getAttribute(deferredPaymentAmountError))) {
+				// 総支払金額より延納金額を減算する
+				totalPayment -= Integer.parseInt(deferredPaymentAmount);
 			}
-
-			// 総支払金額より延納金額を減算する
-			totalPayment -= Integer.parseInt(deferredPaymentAmount);
 
 			// 作成する行数カウントの追加
 			count++;
 		}
 
-		// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
-		totalPayment += Integer.parseInt(amountPayable) - Integer.parseInt(tuitionFeePaid);
-		// 文字列の数値をカンマ付きに変更する
-		amountPayable = numberFormat.format(Integer.parseInt(amountPayable));
-		tuitionFeePaid = numberFormat.format(Integer.parseInt(tuitionFeePaid));
+		// 支払い総額へ加減算処理
+		// エラーが発生していない場合は加減算処理を行う
+		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("amountPayableError"),
+				(String) request.getAttribute("tuitionFeePaidError"))) {
+			// 総支払金額に納付すべき金額を加算して、通常納期内納付学費等を減算する
+			totalPayment += Integer.parseInt(amountPayable) - Integer.parseInt(tuitionFeePaid);
+			// 文字列の数値をカンマ付きに変更する
+			amountPayable = numberFormat.format(Integer.parseInt(amountPayable));
+			tuitionFeePaid = numberFormat.format(Integer.parseInt(tuitionFeePaid));
+		}
 
 		if (totalPayment != 0) {
 			request.setAttribute("totalPaymentError", "納付すべき金額と納付学費及び延納金額の合計が一致しません。");
