@@ -103,7 +103,6 @@ public class EditPDF {
 			for (Map.Entry<Integer, String> entry : daySymbolMap.entrySet()) {
 				Integer day = entry.getKey();
 				String symbol = entry.getValue();
-				System.out.println(day + symbol);
 				// Calculate position based on day number. This depends on the layout of your PDF.
 				int row = (day - 1) / 7; // Assuming a 7-day week starting from day 1.
 				int column = (day - 1) % 7;
