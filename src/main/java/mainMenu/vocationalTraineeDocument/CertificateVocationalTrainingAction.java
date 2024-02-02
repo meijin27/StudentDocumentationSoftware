@@ -109,6 +109,7 @@ public class CertificateVocationalTrainingAction extends Action {
 			// 入力された値がnullでなく、特定の記号出なければエラーを返す。
 			else if (!marker.equals("＝") && !marker.equals("〇")
 					&& !marker.equals("△") && !marker.equals("✕") && !marker.equals("／")) {
+				request.setAttribute(dayError, "日付には一文字の指定された記号を入力してください。");
 				request.setAttribute("dayError", "日付には一文字の指定された記号を入力してください。");
 			}
 			// 入力された記号を格納する。未選択の場合は空文字列を格納する。	
@@ -118,10 +119,6 @@ public class CertificateVocationalTrainingAction extends Action {
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-vocational-training.jsp";
-		}
-
-		for (int i = 1; i <= 31; i++) {
-			System.out.println(calendar.get(i));
 		}
 
 		// エラーが発生している場合は元のページに戻す
