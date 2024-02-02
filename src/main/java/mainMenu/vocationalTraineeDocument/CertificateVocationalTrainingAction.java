@@ -90,32 +90,38 @@ public class CertificateVocationalTrainingAction extends Action {
 			request.setAttribute("incomeError", "収入有無は「得た」「得ない」から選択してください");
 		}
 
-		// 日付毎に入力された記号をMAPに格納する
-		int year = Integer.parseInt(subjectYear);
-		int month = Integer.parseInt(subjectMonth);
-		int daysInMonth = YearMonth.of(year + 2018, month).lengthOfMonth(); // 令和年を西暦に変換
+		// 日付毎の記号を格納するマップ
 		Map<Integer, String> calendar = new HashMap<>();
-		for (int i = 1; i <= 31; i++) {
-			String day = "day" + i;
-			String marker = request.getParameter(day);
-			String dayError = "day" + i + "Error";
-			// カレンダーに存在しない日付であれば強制的に「/」にする
-			if (i > daysInMonth) {
-				calendar.put(i, "／");
+		
+		// エラーが発生していない場合はエラー処理を行う
+		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("subjectYearError"),
+				(String) request.getAttribute("subjectMonthError"))) {
+			// 日付毎に入力された記号をMAPに格納する
+			int year = Integer.parseInt(subjectYear);
+			int month = Integer.parseInt(subjectMonth);
+			int daysInMonth = YearMonth.of(year + 2018, month).lengthOfMonth(); // 令和年を西暦に変換
+			for (int i = 1; i <= 31; i++) {
+				String day = "day" + i;
+				String marker = request.getParameter(day);
+				String dayError = "day" + i + "Error";
+				// カレンダーに存在しない日付であれば強制的に「/」にする
+				if (i > daysInMonth) {
+					calendar.put(i, "／");
+				}
+				// 未入力項目であればそのままスルー
+				else if (ValidationUtil.isNullOrEmpty(marker)) {
+				}
+				// 入力された値がnullでなく、特定の記号出なければエラーを返す。
+				else if (!marker.equals("＝") && !marker.equals("〇")
+						&& !marker.equals("△") && !marker.equals("✕") && !marker.equals("／")) {
+					request.setAttribute(dayError, "日付には一文字の指定された記号を入力してください。");
+					request.setAttribute("dayError", "日付には一文字の指定された記号を入力してください。");
+				}
+				// 入力された記号を格納する。未選択の場合は空文字列を格納する。	
+				calendar.put(i, marker);
 			}
-			// 未入力項目であればそのままスルー
-			else if (ValidationUtil.isNullOrEmpty(marker)) {
-			}
-			// 入力された値がnullでなく、特定の記号出なければエラーを返す。
-			else if (!marker.equals("＝") && !marker.equals("〇")
-					&& !marker.equals("△") && !marker.equals("✕") && !marker.equals("／")) {
-				request.setAttribute(dayError, "日付には一文字の指定された記号を入力してください。");
-				request.setAttribute("dayError", "日付には一文字の指定された記号を入力してください。");
-			}
-			// 入力された記号を格納する。未選択の場合は空文字列を格納する。	
-			calendar.put(i, marker);
 		}
-
+			
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-vocational-training.jsp";
