@@ -92,7 +92,7 @@ public class CertificateVocationalTrainingAction extends Action {
 
 		// 日付毎の記号を格納するマップ
 		Map<Integer, String> calendar = new HashMap<>();
-		
+
 		// エラーが発生していない場合はエラー処理を行う
 		if (ValidationUtil.areAllNullOrEmpty((String) request.getAttribute("subjectYearError"),
 				(String) request.getAttribute("subjectMonthError"))) {
@@ -118,10 +118,12 @@ public class CertificateVocationalTrainingAction extends Action {
 					request.setAttribute("dayError", "日付には一文字の指定された記号を入力してください。");
 				}
 				// 入力された記号を格納する。未選択の場合は空文字列を格納する。	
-				calendar.put(i, marker);
+				else {
+					calendar.put(i, marker);
+				}
 			}
 		}
-			
+
 		// エラーが発生している場合は元のページに戻す
 		if (RequestAndSessionUtil.hasErrorAttributes(request)) {
 			return "certificate-vocational-training.jsp";
