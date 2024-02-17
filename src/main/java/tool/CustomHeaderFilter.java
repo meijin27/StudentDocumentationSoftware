@@ -25,8 +25,8 @@ public class CustomHeaderFilter implements Filter {
 
 		// X-Content-Type-Options ヘッダーを追加
 		httpResp.setHeader("X-Content-Type-Options", "nosniff");
-		// 次回以降のアクセスをすべてHTTPS経由でのみ行うように要求するヘッダー
-		httpResp.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+		// アクセスをすべてHTTPS経由でのみ行うように要求するヘッダー
+		httpResp.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
 		// ブラウザの機能（例：カメラ、マイク、位置情報など）をどのように使用するかを制御するヘッダー
 		httpResp.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
