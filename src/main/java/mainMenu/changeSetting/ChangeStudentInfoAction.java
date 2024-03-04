@@ -201,7 +201,7 @@ public class ChangeStudentInfoAction extends Action {
 			request.getSession().removeAttribute("csrfToken");
 
 			// 変更した学生種類が職業訓練生かつ未登録の場合は情報登録画面に遷移する
-			if (studentType.equals("職業訓練生") && user.getNamePESO() == null) {
+			if (studentType.equals("職業訓練生") && dao.getNamePESO(id) == null) {
 				// セッションに職業訓練生未登録情報を持たせる				
 				session.setAttribute("vocationalSetting", "unregistered");
 				// 職業訓練生登録ページへリダイレクト
